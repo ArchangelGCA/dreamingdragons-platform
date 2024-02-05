@@ -1,4 +1,13 @@
-# Work in progress - ritf-svelte
+# Work-in-progress - ritf-svelte
+
+## TODO:
+- Database model, hosting and management.
+- User authentication.
+- Website design and layout.
+- Object storage (storing images and other files).
+- Email service (for sending notifications and newsletters) (Can't really do).
+
+**Using a VPS would be the best option for hosting the website.**
 
 ## Developing
 
