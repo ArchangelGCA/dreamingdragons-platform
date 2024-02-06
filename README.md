@@ -13,6 +13,20 @@
 - Making a /static folder alongside the build nodeapp folder, and using NGINX make it public (route /static), this for storing **IMAGES** and **UPLOADED FILES**.
 - Deploying
 
+## AUTHENTICATION:
+- We're using Supabase for authentication and database management. For users we're using the basic example: [Link]('https://supabase.com/docs/guides/getting-started/tutorials/with-sveltekit')
+
+## MANUAL REQUIREMENTS:
+- To run the project you must create a .env file in the root directory of the project and add the following environment variables:
+  - `PUBLIC_SUPABASE_URL` - The URL of your Supabase project.
+  - `PUBLIC_SUPABASE_ANON_KEY` - The anonymous key of your Supabase project.
+
+#### Example .env:
+```env
+PUBLIC_SUPABASE_URL=https://<your_project_id>.supabase.co
+PUBLIC_SUPABASE_ANON_KEY=<your_public_anon_key>
+```
+
 ## Developing
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
