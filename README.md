@@ -18,8 +18,8 @@
 
 ## MANUAL REQUIREMENTS:
 - To run the project you must create a .env file in the root directory of the project and add the following environment variables:
-  - `PUBLIC_SUPABASE_URL` - The URL of your Supabase project.
-  - `PUBLIC_SUPABASE_ANON_KEY` - The anonymous key of your Supabase project.
+    - `PUBLIC_SUPABASE_URL` - The URL of your Supabase project.
+    - `PUBLIC_SUPABASE_ANON_KEY` - The anonymous key of your Supabase project.
 
 #### Example .env:
 ```env
