@@ -1,6 +1,7 @@
 <script>
     import { enhance } from '$app/forms';
     import Avatar from '$lib/components/profile/Avatar.svelte';
+    import {toast} from "@zerodevx/svelte-toast";
 
     export let data;
     export let form;
@@ -41,19 +42,35 @@
     }
 
     const handleSubmit = () => {
-        loading = true
+        loading = true;
         return async () => {
-            loading = false
-        }
-    }
+            loading = false;
+            toast.push('Profile updated!', {
+                theme: {
+                    '--toastBackground': '#029fcc',
+                    '--toastProgressBackground': '#38d971',
+                    '--toastProgressText': '#ffffff',
+                    '--toastText': '#868686',
+                },
+            });
+        };
+    };
 
     const handleSignOut = () => {
         loading = true
         return async ({ update }) => {
-            loading = false
-            update()
-        }
-    }
+            loading = false;
+            toast.push('You have been signed out!', {
+                theme: {
+                    '--toastBackground': '#029fcc',
+                    '--toastProgressBackground': '#38d971',
+                    '--toastProgressText': '#ffffff',
+                    '--toastText': '#868686',
+                },
+            });
+            update();
+        };
+    };
 </script>
 
 <div class="container-fluid">
@@ -62,6 +79,7 @@
             <h1 class="text-center">Profile</h1>
         </div>
     </div>
+
     <div class="row border-top border-light-subtle justify-content-center pt-2 pb-2">
         <!-- Accordion for avatar -->
         <div class="col-11 col-md-7 col-xxl-5">
@@ -75,6 +93,10 @@
                     <div id="avatarCollapse" class="accordion-collapse collapse" aria-labelledby="avatarHeading" data-bs-parent="#avatarAccordion">
                         <div class="accordion-body">
                             <form class="form" method="post" action="?/update" use:enhance={handleSubmit} bind:this={profileForm}>
+                                <!-- Hidden input for other profile details -->
+                                <input type="hidden" name="fullName" value={fullName} />
+                                <input type="hidden" name="username" value={username} />
+                                <input type="hidden" name="website" value={website} />
                                 <div class="row justify-content-center">
                                     <Avatar {supabase} bind:url={avatarUrl} size={10} on:upload={() => {profileForm.requestSubmit();}}/>
                                 </div>
@@ -96,13 +118,7 @@
                     </h2>
                     <div id="profileCollapse" class="accordion-collapse collapse" aria-labelledby="profileHeading" data-bs-parent="#profileAccordion">
                         <div class="accordion-body">
-                            <form
-                                    class="form-widget"
-                                    method="post"
-                                    action="?/update"
-                                    use:enhance={handleSubmit}
-                                    bind:this={profileForm}
-                            >
+                            <form class="form" method="post" action="?/update" use:enhance={handleSubmit} bind:this={profileForm}>
                                 <div class="row">
                                     <div class="col-12 mb-3">
                                         <label for="email" class="form-label">Email</label>
@@ -124,6 +140,9 @@
                                         <input id="website" name="website" type="url" value={website} class="form-control" />
                                     </div>
                                 </div>
+
+                                <!-- Hidden input for avatar url -->
+                                <input type="hidden" name="avatarUrl" value={avatarUrl} />
 
                                 <div class="mb-3">
                                     <input

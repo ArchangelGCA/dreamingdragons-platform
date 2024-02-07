@@ -24,6 +24,7 @@
 		"@supabase/auth-ui-shared": "^0.1.8",
 		"@supabase/auth-ui-svelte": "^0.2.9",
 		"@sveltejs/adapter-node": "^4.0.1",
-		"@sveltejs/enhanced-img": "^0.1.8"
+		"@sveltejs/enhanced-img": "^0.1.8",
+		"@zerodevx/svelte-toast": "^0.9.5"
 	}
 }

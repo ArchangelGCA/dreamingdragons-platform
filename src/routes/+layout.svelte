@@ -2,6 +2,7 @@
     import { invalidate } from '$app/navigation'
     import {onMount} from "svelte";
     import favicon from "$lib/images/favicon.png";
+    import { SvelteToast } from '@zerodevx/svelte-toast'
 
     export let data;
 
@@ -62,6 +63,8 @@
     const copyright = `© ${currentYear} ${owner}. All rights reserved.`;
 
 </script>
+
+<SvelteToast />
 
 <div class="row border-bottom border-light-subtle py-2">
     <div class="col-2">
