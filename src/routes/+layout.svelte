@@ -1,7 +1,7 @@
 <script>
     import { invalidate } from '$app/navigation'
     import {onMount} from "svelte";
-    import favicon from "$lib/images/favicon.png";
+    import favicon from "$lib/images/favicon.webp";
     import { SvelteToast } from '@zerodevx/svelte-toast'
 
     export let data;

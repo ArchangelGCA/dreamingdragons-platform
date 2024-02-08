@@ -3,10 +3,59 @@
     import {toast} from "@zerodevx/svelte-toast";
     import Dropzone from "svelte-file-dropzone";
     import {onMount} from "svelte";
+    import Editor from '@tinymce/tinymce-svelte';
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
     });
+
+    let conf = {
+        skin: 'oxide-dark',
+        content_css: 'dark',
+        block_unsupported_drop: true,
+        branding: false,
+        plugins: 'link autolink wordcount charmap code fullscreen',
+        default_link_target: '_blank',
+        images_upload_handler: () => Promise.reject({
+            remove: true,
+            message: 'You can\'t upload images in the description.',
+        }),
+        toolbar_mode: 'sliding',
+        toolbar: [
+            {
+                name: 'history',
+                items: ['undo', 'redo']
+            },
+            {
+                name: 'links',
+                items: ['link']
+            },
+            {
+                name: 'formatting',
+                items: ['bold', 'italic']
+            },
+            {
+                name: 'alignment',
+                items: ['alignleft', 'aligncenter', 'alignright', 'alignjustify']
+            },
+            {
+                name: 'indentation',
+                items: ['outdent', 'indent']
+            },
+            {
+                name: 'tools',
+                items: ['wordcount', 'charmap', 'code', 'fullscreen']
+            }
+        ],
+        setup: function (editor) {
+            editor.on('init', function () {
+                const promotionLink = document.querySelector('.tox-promotion-link');
+                if (promotionLink) {
+                    promotionLink.remove();
+                }
+            });
+        },
+    };
 
     export let data;
 
@@ -17,7 +66,7 @@
     let fileName = '';
     let selectedBook;
     let chapterTitle = '';
-    let selectedOption = 'book';
+    $: selectedOption = 'book';
 
     function handleFilesSelect(e) {
         const { acceptedFiles } = e.detail;
@@ -139,6 +188,11 @@
                                     <div class="col-12 mb-2">
                                             <label for="chapter-editor" class="form-label"><i class="fas fa-edit"></i> Content</label>
                                             <textarea class="form-control" id="chapter-editor" rows="10" required></textarea>
+                                    </div>
+                                    <div class="col-12 mb-2">
+                                        <Editor {conf}
+                                                scriptSrc="tinymce/tinymce.min.js"
+                                        />
                                     </div>
                                     <div class="col-12">
                                         <button type="submit" class="btn btn-lg btn-outline-primary w-100">Submit</button>

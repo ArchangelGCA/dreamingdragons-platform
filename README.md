@@ -14,12 +14,13 @@
 - Deploying
 
 ## AUTHENTICATION:
-- We're using Supabase for authentication and database management. For users we're using the basic example: [Link]('https://supabase.com/docs/guides/getting-started/tutorials/with-sveltekit')
+- We're using Supabase for authentication and database management. For users we're using the basic example: [Link](https://supabase.com/docs/guides/getting-started/tutorials/with-sveltekit)
 
 ## MANUAL REQUIREMENTS:
-- To run the project you must create a .env file in the root directory of the project and add the following environment variables:
+- To run the project you must create a `.env` file in the root directory of the project and add the following environment variables:
     - `PUBLIC_SUPABASE_URL` - The URL of your Supabase project.
     - `PUBLIC_SUPABASE_ANON_KEY` - The anonymous key of your Supabase project.
+- Add to your static folder tinymce, you first [download](https://www.tiny.cloud/get-tiny/) it and then extract the zip, open folders `tinymce/js/tinymce` and move this last subfolder tinymce to `/static`.
 
 #### Example .env:
 ```env
