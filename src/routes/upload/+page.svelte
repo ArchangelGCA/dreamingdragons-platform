@@ -1,9 +1,9 @@
 <script>
-    import { enhance } from '$app/forms';
+    import {deserialize} from '$app/forms';
     import {toast} from "@zerodevx/svelte-toast";
-    import Dropzone from "svelte-file-dropzone";
     import {onMount} from "svelte";
     import Editor from '@tinymce/tinymce-svelte';
+    import {invalidateAll} from "$app/navigation";
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
@@ -68,27 +68,16 @@
     let chapterTitle = '';
     $: selectedOption = 'book';
 
-    function handleFilesSelect(e) {
-        const { acceptedFiles } = e.detail;
-        if (acceptedFiles.length > 0) {
-            const file = acceptedFiles[0];
-            if (file.type.startsWith('image/') && file.size <= 2.5 * 1024 * 1024) {
-                previewUrl = URL.createObjectURL(file);
-                fileName = file.name;
-                toast.push('Cover selected: ' + fileName, {
-                    theme: {
-                        '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
-                    }
-                });
-            } else {
-                toast.push('Error: Invalid file type or size', {
-                    theme: {
-                        '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
-                    }
-                });
-            }
+    // Function to load image preview
+    function loadImagePreview(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                previewUrl = reader.result;
+            };
+            reader.readAsDataURL(file);
+            fileName = file.name;
         }
     }
 
@@ -98,6 +87,47 @@
 
     function handleEditorChange({ detail }) {
         content = detail;
+    }
+
+    async function handleBookUpload(event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+
+        const toastId = toast.push('Uploading...', {
+            duration: 600000,
+            theme: {
+                '--toastBackground': '#ffcc00',
+                '--toastColor': '#000'
+            }
+        });
+
+        const response = await fetch('?/postbook', {
+            method: 'POST',
+            body: formData,
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        await invalidateAll();
+        if (result.type === 'success') {
+            toast.push('Book uploaded successfully', {
+                theme: {
+                    '--toastBackground': '#4caf50',
+                    '--toastColor': '#fff'
+                }
+            })
+            event.target.reset();
+            previewUrl = '';
+        } else {
+            toast.push('Error: ' + result.data.body.message, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        }
     }
 </script>
 
@@ -109,26 +139,6 @@
             </div>
         </div>
         <hr>
-        <div class="row justify-content-center mb-3">
-            <div class="col-12 text-center">
-                <Dropzone
-                        accept="image/*"
-                        maxSize={2.5 * 1024 * 1024}
-                        multiple="false"
-                        containerClasses="bg-dark rounded-4 p-3 border-light-subtle"
-                        on:drop={handleFilesSelect}
-                >
-                    <span class="text-light text-opacity-75">Optional: Drop your cover image here or click to browse</span>
-                    <span class="text-light text-opacity-50" data-bs-toggle="tooltip" title="Max size: 2.5MB">Max size: 2.5MB - Recommended 15:10 aspect ratio or 1500x1000  max </span>
-                    {#if previewUrl}
-                        <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 rounded-4" style="max-height: 50vh;" />
-                    {/if}
-                    {#if fileName}
-                        <span class="text-light text-opacity-75 mt-2">Selected file: {fileName}</span>
-                    {/if}
-                </Dropzone>
-            </div>
-        </div>
         <div class="row justify-content-center text-center mb-3">
             <div class="col-12 text-center">
                 <select class="form-select" aria-label="Select upload type" bind:value={selectedOption} on:change={handleOptionChange}>
@@ -144,15 +154,26 @@
                     </div>
                     <div class="row mt-3 justify-content-center">
                         <div class="col">
-                            <form>
+                            <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
                                 <div class="row mx-auto">
                                     <div class="col-12 mb-3 bg-danger bg-opacity-10 p-3 rounded-3">
+                                        <label for="file" class="form-label" data-bs-toggle="tooltip" title="Your book's cover image"><i class="fas fa-image"></i> Cover</label>
+                                        <input class="form-control form-control-lg mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required />
+                                        <span class="text-light text-opacity-50" data-bs-toggle="tooltip" title="Max size: 2.5MB">Max size: 2.5MB - Recommended 15:10 aspect ratio or 1500x1000  max </span>
+                                        {#if previewUrl}
+                                            <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh;" />
+                                        {/if}
+                                        {#if fileName}
+                                            <span class="text-light text-opacity-75">Selected file: {fileName}</span>
+                                        {/if}
+                                    </div>
+                                    <div class="col-12 mb-3 bg-danger bg-opacity-10 p-3 rounded-3">
                                             <label for="title" class="form-label" data-bs-toggle="tooltip" title="Your book's public title"><i class="fas fa-book"></i> Title</label>
-                                            <input type="text" class="form-control bg-black bg-opacity-50" id="title" placeholder="Title" required>
+                                            <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
                                     </div>
                                     <div class="col-12 mb-3 bg-danger bg-opacity-10 p-3 rounded-3">
                                             <label for="description" class="form-label" data-bs-toggle="tooltip" title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
-                                            <textarea class="form-control bg-black bg-opacity-50" id="description" rows="3" placeholder="Description" required></textarea>
+                                            <textarea class="form-control bg-black bg-opacity-50" name="description" id="description" rows="3" placeholder="Description" required></textarea>
                                     </div>
                                     <div class="col-12 px-0">
                                         <button type="submit" class="btn btn-lg btn-outline-danger w-100">Submit</button>
@@ -186,10 +207,7 @@
                                             <input type="text" class="form-control" id="title" bind:value={chapterTitle} placeholder="Title" required>
                                     </div>
                                     <div class="col-12 mb-2">
-                                            <label for="chapter-editor" class="form-label"><i class="fas fa-edit"></i> Content</label>
-                                            <textarea class="form-control" id="chapter-editor" rows="10" required></textarea>
-                                    </div>
-                                    <div class="col-12 mb-2">
+                                        <p class="mb-2"><i class="fas fa-edit"></i> Content</p>
                                         <Editor {conf}
                                                 scriptSrc="tinymce/tinymce.min.js"
                                         />
