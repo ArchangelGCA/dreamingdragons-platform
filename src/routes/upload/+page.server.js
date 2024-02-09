@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit'
-import {GetObjectCommand, PutObjectCommand} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { STORJ_SHARE_LINK, STORJ_BUCKET_NAME } from '$env/static/private';
 
 export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
     const session = await getSession();
@@ -46,7 +46,6 @@ export const actions = {
         }
 
         if (!image || !image.type.startsWith('image/')) {
-            console.log(image);
             return {
                 status: 400,
                 body: {
@@ -66,7 +65,7 @@ export const actions = {
         // Upload cover to S3 STORJ
         const coverUrl = `covers/${newImageName}`;
         const coverParams = {
-            Bucket: 'images',
+            Bucket: STORJ_BUCKET_NAME,
             Key: coverUrl,
             Body: imageBuffer,
             ACL: 'public-read',
@@ -86,8 +85,11 @@ export const actions = {
             }
         }
 
+        // Hacky way of building the final public URL
+        const finalURL = `${STORJ_SHARE_LINK}/${STORJ_BUCKET_NAME}/${coverUrl}?wrap=0`;
+
         // Get final URL of the cover
-        const getObjectCommand = new GetObjectCommand({
+        /*const getObjectCommand = new GetObjectCommand({
             Bucket: 'images',
             Key: coverUrl,
         });
@@ -103,11 +105,11 @@ export const actions = {
                     message: error.message
                 }
             }
-        }
+        }*/
 
         // Insert book into database
         const { error } = await supabase.from('book').insert([
-            { title, description, cover_url: signedUrl, owner_id: session.user.id }
+            { title, description, cover_url: finalURL, owner_id: session.user.id }
         ]);
 
         if (error) {
