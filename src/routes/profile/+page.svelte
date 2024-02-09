@@ -18,7 +18,7 @@
     let isAccordionOpen = false;
     let isAvatarAccordionOpen = false;
 
-    $: if (profile !== null) {
+    if (profile !== null) {
         try {
             fullName = profile.full_name;
         } catch (e) {

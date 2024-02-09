@@ -167,13 +167,15 @@
                                             <span class="text-light text-opacity-75">Selected file: {fileName}</span>
                                         {/if}
                                     </div>
-                                    <div class="col-12 mb-3 bg-danger bg-opacity-10 p-3 rounded-3">
+                                    <div class="col-12 col-md-6 mb-3 px-0 pe-md-2">
+                                        <div class="col-12 h-100 bg-danger bg-opacity-10 p-3 rounded-3">
                                             <label for="title" class="form-label" data-bs-toggle="tooltip" title="Your book's public title"><i class="fas fa-book"></i> Title</label>
                                             <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
+                                        </div>
                                     </div>
-                                    <div class="col-12 mb-3 bg-danger bg-opacity-10 p-3 rounded-3">
-                                            <label for="description" class="form-label" data-bs-toggle="tooltip" title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
-                                            <textarea class="form-control bg-black bg-opacity-50" name="description" id="description" rows="3" placeholder="Description" required></textarea>
+                                    <div class="col-12 col-md-6 mb-3 bg-danger bg-opacity-10 p-3 rounded-3">
+                                        <label for="description" class="form-label" data-bs-toggle="tooltip" title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
+                                        <textarea class="form-control bg-black bg-opacity-50" name="description" id="description" rows="3" placeholder="Description" required></textarea>
                                     </div>
                                     <div class="col-12 px-0">
                                         <button type="submit" class="btn btn-lg btn-outline-danger w-100">Submit</button>
