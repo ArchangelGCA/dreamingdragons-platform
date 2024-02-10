@@ -13,6 +13,7 @@
     let website = '';
     let avatarUrl = '';
     let finalAvatarUrl = '';
+    let avatarFound = true;
     let count = 0;
 
     if (profile !== null) {
@@ -42,9 +43,19 @@
             }
 
             finalAvatarUrl = URL.createObjectURL(data);
+
+            /*const img = new Image();
+            img.src = finalAvatarUrl;
+            img.onload = () => {
+                avatarFound = true;
+            };
+            img.onerror = () => {
+                avatarFound = false;
+            };*/
         } catch (error) {
             if (error instanceof Error) {
                 console.log('Error downloading image: ', error.message);
+                avatarFound = false;
             }
         }
     }
@@ -52,10 +63,10 @@
     $: if (avatarUrl) downloadAvatar(avatarUrl);
 </script>
 
-<div class="container-fluid">
+<div class="container-fluid px-0" style="min-height: 71vh">
     <div class="row justify-content-center">
-        <div class="col-12 px-0">
-            {#if finalAvatarUrl === ''}
+        <div class="col-12">
+            {#if finalAvatarUrl === '' && avatarFound}
                 <div class="row text-center justify-content-center mt-3">
                     <div class="col-auto">
                         <div class="spinner-border text-light align-self-center" role="status">
@@ -67,7 +78,16 @@
                 <div class="bg-image rounded-bottom-5" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({finalAvatarUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                     <div class="row justify-content-center align-items-end" style="height: 100%;">
                         <div class="col-auto">
-                            <img src="{finalAvatarUrl}" alt="{username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon">
+                            <img src="{finalAvatarUrl}" alt="{username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon" on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
+                        </div>
+                    </div>
+                </div>
+            {/if}
+            {#if !avatarFound}
+                <div class="row justify-content-center mt-3">
+                    <div class="col-auto">
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fa-solid fa-exclamation-triangle"></i> Avatar not found, please upload one from your profile <a class="link-light" href="/settings">Settings</a>.
                         </div>
                     </div>
                 </div>

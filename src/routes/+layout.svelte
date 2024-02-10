@@ -81,7 +81,7 @@
                 <li><a class="dropdown-item" href="/profile">Profile</a></li>
                 <li><a class="dropdown-item" href="/settings">Settings</a></li>
                 <li><a class="dropdown-item animate-button rounded-3 py-2" href="/upload">Upload</a></li>
-                <li><a class="dropdown-item" href="/profile?/signout">Logout</a></li>
+                <li><a class="dropdown-item" href="/settings?/signout" data-sveltekit-preload-data="tap">Logout</a></li>
             </ul>
         </div>
     </div>
