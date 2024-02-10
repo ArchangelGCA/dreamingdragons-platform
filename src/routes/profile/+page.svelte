@@ -14,7 +14,10 @@
     let avatarUrl = '';
     let finalAvatarUrl = '';
     let avatarFound = true;
-    let count = 0;
+    let createdAt = '';
+    let yearCreated = '';
+    let followers = 0; // TODO: Get number of followers
+    let likes = 0; // TODO: Get total likes
 
     if (profile !== null) {
         try {
@@ -31,6 +34,18 @@
             avatarUrl = profile.avatar_url;
         } catch (e4) {
             avatarUrl = '';
+        }
+        try {
+            createdAt = profile.created_at;
+        } catch (e5) {
+            createdAt = '';
+        }
+        if (createdAt !== '') {
+            // Format date with mmmm yyyy
+            const date = new Date(createdAt);
+            const options = { year: 'numeric', month: 'long' };
+            createdAt = date.toLocaleDateString('en-US', options);
+            yearCreated = date.getFullYear();
         }
     }
 
@@ -96,7 +111,43 @@
     </div>
     <div class="row justify-content-center mt-3">
         <div class="col text-center">
-            <p class="h1">{username}</p>
+            <span class="h1 mt-2 mb-1">{username}</span>
+        </div>
+    </div>
+    <div class="row justify-content-center mt-3 mx-1">
+        <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
+            <div class="row justify-content-center align-items-center text-center py-3">
+                <div class="col-4 align-items-center">
+                    <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Followers">
+                        <div class="col-auto d-flex align-items-center pe-0">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="col-auto mt-1">
+                            <span class="">{followers}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Total likes">
+                        <div class="col-auto d-flex align-items-center pe-0">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="col-auto mt-1">
+                            <span class="">{likes}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Joined: {createdAt}">
+                        <div class="col-auto d-flex align-items-center pe-0">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="col-auto mt-1">
+                            <span class="h6">{yearCreated}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row mt-5 mb-5 justify-content-center">
@@ -106,3 +157,13 @@
         </div>
     </div>
 </div>
+
+<style>
+    .fa-user, .fa-heart, .fa-calendar-alt {
+        font-size: 1.6rem;
+    }
+
+    .bg-info-profile {
+        background: linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+    }
+</style>

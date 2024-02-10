@@ -75,7 +75,7 @@
 <div class="container-fluid px-0" style="min-height: 70vh">
     <div class="row mt-3 mb-3 mx-1">
         <div class="col-12 bg-light-subtle bg-opacity-0 rounded-4 pt-2 mx-auto">
-            <h1 class="text-center">Profile</h1>
+            <h1 class="text-center">Profile Settings</h1>
         </div>
     </div>
     <hr class="mx-1 mb-0">
