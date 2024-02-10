@@ -54,7 +54,7 @@
 
     const owner = 'Roses In The Flames Official'
 
-    const designedBy = 'ArchangelGCA';
+    const designedBy = 'Contributors of RiTF';
     const designedByLink = 'https://archangelgca.eu';
 
     const tosLink = '/tos'

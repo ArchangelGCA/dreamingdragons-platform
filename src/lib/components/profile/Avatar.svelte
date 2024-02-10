@@ -67,6 +67,7 @@
         <img
                 src={avatarUrl}
                 alt={avatarUrl ? 'Avatar' : 'No image'}
+                loading="lazy"
                 class="avatar image"
                 style="height: {size}em; width: {size}em;"
         />

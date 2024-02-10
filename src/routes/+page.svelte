@@ -12,4 +12,10 @@
             <h1 class="text-center">If you can see this, the project is working!</h1>
         </div>
     </div>
+    <!-- Work In Progress with worker helmet yellow -->
+    <div class="row justify-content-center">
+        <div class="col text-center">
+            <i class="fa-solid fa-helmet-safety fa-5x text-warning" data-aos="zoom-in"></i>
+        </div>
+    </div>
 </div>
