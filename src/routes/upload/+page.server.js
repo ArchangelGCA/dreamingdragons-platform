@@ -43,6 +43,10 @@ const uploadImage = async (image, s3) => {
     return `${STORJ_SHARE_LINK}/${STORJ_BUCKET_NAME}/${coverUrl}?wrap=0`;
 }
 
+export const config = {
+    runtime: 'edge',
+};
+
 export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
     const session = await getSession();
 
