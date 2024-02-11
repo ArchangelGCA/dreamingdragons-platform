@@ -58,15 +58,6 @@
             }
 
             finalAvatarUrl = URL.createObjectURL(data);
-
-            /*const img = new Image();
-            img.src = finalAvatarUrl;
-            img.onload = () => {
-                avatarFound = true;
-            };
-            img.onerror = () => {
-                avatarFound = false;
-            };*/
         } catch (error) {
             if (error instanceof Error) {
                 console.log('Error downloading image: ', error.message);
