@@ -1,15 +1,31 @@
 import {redirect} from '@sveltejs/kit'
 import {PutObjectCommand} from "@aws-sdk/client-s3";
-import {STORJ_BUCKET_NAME, STORJ_SHARE_LINK} from '$env/static/private';
+import {STORJ_BUCKET_NAME, STORJ_SHARE_LINK, COVER_MAX_WIDTH, COVER_MAX_HEIGHT, COVER_MAX_RESIZE, COVER_MAX_UPLOAD_SIZE_BYTES} from '$env/static/private';
 import sharp from 'sharp';
 
 const uploadImage = async (image, s3) => {
 
-    // Make image a buffer
-    image = await image.arrayBuffer();
+    const imageSharp = sharp(await image.arrayBuffer());
+    const metadata = await imageSharp.metadata();
 
-    // convert image to webp with 80% quality
-    const buffer = await sharp(image)
+    // Get image res, if more than 5000px, error
+    if (metadata.width > COVER_MAX_WIDTH || metadata.height > COVER_MAX_HEIGHT) {
+        return {
+            status: 400,
+            body: {
+                message: `Image too big (max ${COVER_MAX_WIDTH}x${COVER_MAX_HEIGHT})`
+            }
+        }
+    }
+
+    // Resize the image
+    let resizedImageSharp = imageSharp.resize(COVER_MAX_RESIZE, COVER_MAX_RESIZE, {
+        fit: sharp.fit.inside,
+        withoutEnlargement: true
+    });
+
+    // convert image to webp
+    const buffer = await resizedImageSharp
         .webp({ quality: 80 })
         .toBuffer();
 
@@ -95,67 +111,20 @@ export const actions = {
             }
         }
 
-
-
-        // Assign to image a random name
-        /*const random = Math.random().toString(36).substring(2, 15);
-        const imageExtension = image.type.split('/')[1];
-        const newImageName = `${random}.${imageExtension}`;
-
-        // Make a compatible body format for S3
-        const imageBuffer = await image.arrayBuffer();
-
-        // Upload cover to S3 STORJ
-        const coverUrl = `covers/${newImageName}`;
-        const coverParams = {
-            Bucket: STORJ_BUCKET_NAME,
-            Key: coverUrl,
-            Body: imageBuffer,
-            ACL: 'public-read',
-            ContentType: image.type
-        };
-
-        try {
-            const putObjectCommand = new PutObjectCommand(coverParams);
-            await s3.send(putObjectCommand);
-        } catch (error) {
-            console.error(error);
+        // Get image size and check if it's bigger than 10MB
+        if (image.size > COVER_MAX_UPLOAD_SIZE_BYTES) {
             return {
-                status: 500,
+                status: 400,
                 body: {
-                    message: error.message
+                    message: `File size too big (max ${COVER_MAX_UPLOAD_SIZE_BYTES} or about 10MB)`
                 }
             }
         }
 
-        // Hacky way of building the final public URL
-        const finalURL = `${STORJ_SHARE_LINK}/${STORJ_BUCKET_NAME}/${coverUrl}?wrap=0`;
-
-        // Get final URL of the cover
-        /*const getObjectCommand = new GetObjectCommand({
-            Bucket: 'images',
-            Key: coverUrl,
-        });
-
-        let signedUrl;
-        try {
-            signedUrl = await getSignedUrl(s3, getObjectCommand);
-        } catch (error) {
-            console.error(error);
-            return {
-                status: 500,
-                body: {
-                    message: error.message
-                }
-            }
-        }*/
-
         const finalURL = await uploadImage(image, s3);
 
-        // Check if return is an error
-
-        // check if return starts with https
-        if (!finalURL.startsWith('https://')) {
+        // If error or object, return it
+        if (typeof finalURL === 'object') {
             return finalURL;
         }
 

@@ -112,16 +112,25 @@
         const result = deserialize(await response.text());
         await invalidateAll();
         if (result.type === 'success') {
-            toast.push('Book uploaded successfully', {
-                theme: {
-                    '--toastBackground': '#4caf50',
-                    '--toastColor': '#fff'
-                }
-            })
-            event.target.reset();
-            previewUrl = '';
+            if (result.data.status === 200) {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#4caf50',
+                        '--toastColor': '#fff'
+                    }
+                })
+                event.target.reset();
+                previewUrl = '';
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+            }
         } else {
-            toast.push('Error: ' + result.data.body.message, {
+            toast.push('Error: Upload failed' , {
                 theme: {
                     '--toastBackground': '#ff4d4d',
                     '--toastColor': '#fff'
