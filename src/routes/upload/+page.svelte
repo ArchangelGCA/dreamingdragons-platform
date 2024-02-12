@@ -64,8 +64,7 @@
 
     let previewUrl = '';
     let fileName = '';
-    let selectedBook;
-    let chapterTitle = '';
+    let editorContent = '';
     $: selectedOption = 'book';
 
     // Function to load image preview
@@ -81,12 +80,12 @@
         }
     }
 
-    function handleOptionChange(e) {
-        selectedOption = e.target.value;
+    function handleEditorChange(event) {
+        editorContent = event.getContent();
     }
 
-    function handleEditorChange({ detail }) {
-        content = detail;
+    function handleOptionChange(e) {
+        selectedOption = e.target.value;
     }
 
     async function handleBookUpload(event) {
@@ -121,6 +120,57 @@
                 })
                 event.target.reset();
                 previewUrl = '';
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+            }
+        } else {
+            toast.push('Error: Upload failed' , {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        }
+    }
+
+    async function handleChapterUpload(event) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        formData.append('content', editorContent);
+
+        const toastId = toast.push('Uploading...', {
+            duration: 600000,
+            theme: {
+                '--toastBackground': '#ffcc00',
+                '--toastColor': '#000'
+            }
+        });
+
+        const response = await fetch('?/postchapter', {
+            method: 'POST',
+            body: formData,
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        await invalidateAll();
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#4caf50',
+                        '--toastColor': '#fff'
+                    }
+                })
+                event.target.reset();
+                editorContent = '';
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -203,24 +253,25 @@
                     </div>
                     <div class="row mt-3 justify-content-center">
                         <div class="col">
-                            <form>
+                            <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleChapterUpload}>
                                 <div class="row">
                                     <div class="col-12 mb-2">
                                         <label for="book" class="form-label"><i class="fas fa-book"></i> Book</label>
-                                        <select class="form-select" id="book" bind:value={selectedBook} required>
+                                        <select class="form-select" name="book" id="book" required>
                                             {#each books as book (book.id)}
                                                 <option value={book.id}>{book.title}</option>
                                             {/each}
                                         </select>
                                     </div>
                                     <div class="col-12 mb-2">
-                                            <label for="title" class="form-label"><i class="fas fa-heading"></i> Title</label>
-                                            <input type="text" class="form-control" id="title" bind:value={chapterTitle} placeholder="Title" required>
+                                        <label for="title" class="form-label"><i class="fas fa-heading"></i> Title</label>
+                                        <input type="text" class="form-control" name="title" id="title" placeholder="Title" required>
                                     </div>
                                     <div class="col-12 mb-2">
                                         <p class="mb-2"><i class="fas fa-edit"></i> Content</p>
                                         <Editor {conf}
                                                 scriptSrc="tinymce/tinymce.min.js"
+                                                bind:value={editorContent}
                                         />
                                     </div>
                                     <div class="col-12">

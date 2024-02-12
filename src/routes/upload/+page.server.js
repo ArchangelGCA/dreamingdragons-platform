@@ -148,5 +148,48 @@ export const actions = {
                 message: "Book added successfully"
             }
         }
+    },
+    postchapter: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            throw redirect(303, '/login');
+        }
+
+        const bookId = formData.book;
+        const title = formData.title;
+        const content = formData.content;
+
+        if (bookId === null || title === null || content === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        // Insert chapter into database
+        const { error } = await supabase.from('chapters').insert([
+            { title, text: content, book_id: bookId, owner_id: session.user.id }
+        ]);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Chapter added successfully"
+            }
+        }
     }
 }
