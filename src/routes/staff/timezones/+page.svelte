@@ -35,16 +35,6 @@
 
         return () => clearInterval(interval);
     });
-
-    /*let staffMembers = [
-        {username: 'ArchangelGCA', timezone: 'Europe/Rome', country: 'IT'},
-        {username: 'Master-Satellite', timezone: 'Asia/Dubai', country: '?'},
-        {username: 'DarkCoder', timezone: 'Pacific/Auckland', country: 'NZ'},
-        {username: 'CringleDragons', timezone: 'America/New_York', country: 'US'}
-    ];*/
-
-    let staffMembers = timedata;
-    console.log('Staff members:', staffMembers);
 </script>
 
 <div class="container-fluid">
@@ -60,7 +50,7 @@
         </div>
     </div>
     <div class="row justify-content-around mb-3">
-        {#each staffMembers as member (member.username)}
+        {#each timedata as member (member.username)}
             <div class="col-12 col-xl-4 px-0 px-xl-2">
                 <StaffTime {...member}/>
             </div>
