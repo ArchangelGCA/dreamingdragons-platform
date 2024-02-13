@@ -1,6 +1,7 @@
 import {redirect} from '@sveltejs/kit'
 import {PutObjectCommand} from "@aws-sdk/client-s3";
-import {STORJ_BUCKET_NAME, STORJ_SHARE_LINK, COVER_MAX_WIDTH, COVER_MAX_HEIGHT, COVER_MAX_RESIZE, COVER_MAX_UPLOAD_SIZE_BYTES} from '$env/static/private';
+import {STORJ_BUCKET_NAME, STORJ_SHARE_LINK} from '$env/static/private';
+import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_COVER_MAX_RESIZE } from "$env/static/public";
 import sharp from 'sharp';
 
 const uploadImage = async (image, s3) => {
@@ -9,17 +10,20 @@ const uploadImage = async (image, s3) => {
     const metadata = await imageSharp.metadata();
 
     // Get image res, if more than 5000px, error
-    if (metadata.width > COVER_MAX_WIDTH || metadata.height > COVER_MAX_HEIGHT) {
+    if (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT) {
         return {
             status: 400,
             body: {
-                message: `Image too big (max ${COVER_MAX_WIDTH}x${COVER_MAX_HEIGHT})`
+                message: `Image too big (max ${PUBLIC_COVER_MAX_WIDTH}x${PUBLIC_COVER_MAX_HEIGHT})`
             }
         }
     }
 
+    // Pass PUBLIC_COVER_MAX_RESIZE to INT
+    const resize = parseInt(PUBLIC_COVER_MAX_RESIZE);
+
     // Resize the image
-    let resizedImageSharp = imageSharp.resize(COVER_MAX_RESIZE, COVER_MAX_RESIZE, {
+    let resizedImageSharp = imageSharp.resize(resize, resize, {
         fit: sharp.fit.inside,
         withoutEnlargement: true
     });
@@ -112,11 +116,11 @@ export const actions = {
         }
 
         // Get image size and check if it's bigger than 10MB
-        if (image.size > COVER_MAX_UPLOAD_SIZE_BYTES) {
+        if (image.size > PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES) {
             return {
                 status: 400,
                 body: {
-                    message: `File size too big (max ${COVER_MAX_UPLOAD_SIZE_BYTES} or about 10MB)`
+                    message: `File size too big (max ${PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES} or about 10MB)`
                 }
             }
         }

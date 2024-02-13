@@ -1,4 +1,5 @@
 <script>
+    import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES } from "$env/static/public";
     import {deserialize} from '$app/forms';
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
@@ -74,6 +75,7 @@
     let { session, supabase, books } = data;
     $: ({ session, supabase } = data);
 
+    const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = '';
     let fileName = '';
     let editorContent = '';
@@ -237,7 +239,7 @@
                                         <div class="col-12 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
                                             <label for="file" class="form-label" title="Your book's cover image" use:tooltip={{animation: 'fade'}}><i class="fas fa-image"></i> Cover</label>
                                             <input class="form-control form-control-lg mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required />
-                                            <span class="text-light text-opacity-50" use:tooltip={{animation: 'fade'}} title="Max size: 2.5MB">Max size: 2.5MB - Recommended 15:10 aspect ratio or 1500x1000  max </span>
+                                            <span class="text-light text-opacity-50" use:tooltip={{animation: 'fade'}} title="Max size: 2.5MB">Max size: {maxFileSizeMB}MB - Recommended max size: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                             {#if previewUrl}
                                                 <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh;" />
                                             {/if}
@@ -263,7 +265,6 @@
                             </div>
                         </div>
                     </div>
-
                 {/if}
                 {#if selectedOption === 'chapter'}
                     <div in:send={{duration: 500}} out:receive={{duration: 500}}>

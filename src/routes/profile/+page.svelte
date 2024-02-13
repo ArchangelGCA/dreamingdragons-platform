@@ -1,6 +1,6 @@
 <script>
     import {onMount} from "svelte";
-    import ContentProfile from "$lib/components/profile/ContentProfile.svelte";
+    import ContentCard from "$lib/components/profile/ContentCard.svelte";
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
@@ -167,8 +167,8 @@
             </div>
         {/if}
         {#each profile as content (content.book_id)}
-            <div class="col-12 col-lg-4 col-xxl-3 d-flex align-items-stretch px-0 px-lg-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Open content">
-                <ContentProfile content={content} />
+            <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 d-flex align-items-stretch px-0 px-sm-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Open content">
+                <ContentCard content={content} />
             </div>
         {/each}
     </div>

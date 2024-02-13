@@ -45,11 +45,11 @@
     </div>
     <div class="card-body border-top border-light-subtle pb-2">
         <div class="row justify-content-center">
-            <div class="col-6">
+            <div class="col-9">
                 <span class="h5">{content.book_title}</span>
                 <p class="card-text"><small class="text-muted">Posted by {content.username}</small></p>
             </div>
-            <div class="col-6 mb-1 text-end">
+            <div class="col-3 mb-1 text-end">
                 <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick}>
                     <i class="fas fa-heart fa-3x"></i>
                 </button>
