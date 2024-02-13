@@ -48,47 +48,51 @@
 
 <style>
     .staff-card {
-        background: linear-gradient(45deg, #1b1e21, #3a3f44, #1b1e21);
-        transition: all 0.2s ease-in-out;
+        background: linear-gradient(45deg, #120339, #4B0082, #120339);
+        transition: all 0.15s ease-in-out;
     }
 
     .staff-card:hover {
         transform: scale(1.03);
     }
 
+    span.fs-3 {
+        color: #ffffff;
+    }
+
     .card-header {
         font-size: 1.5em;
-        color: #f8f9fa;
+        color: #ffffff;
     }
 
     .card-title {
         font-size: 1.2em;
-        color: #f8f9fa;
+        color: #c2c2c2;
     }
 
     .card-text {
         font-size: 1em;
-        color: #adb5bd;
+        color: #c2c2c2;
     }
 
     i.fa-user-shield {
-        color: #e83e8c;
+        color: #ff8c00;
     }
 
     i.fa-user {
-        color: #fd7e14;
+        color: #00bfff;
     }
 
     i.fa-clock {
-        color: #0dcaf0;
+        color: #32cd32;
     }
 
     i.fa-calendar-alt {
-        color: #20c997;
+        color: #ff00ff;
     }
 
     i.fa-globe {
-        color: #6610f2;
+        color: #ff4500;
     }
 
     i {

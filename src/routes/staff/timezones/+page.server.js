@@ -4,8 +4,6 @@ export const load = async ({locals: {supabase}}) => {
         .select('username, timezone, country')
         .order('username', {ascending: true});
 
-    console.log(timedata);
-
     if (error) {
         return {
             status: 500,

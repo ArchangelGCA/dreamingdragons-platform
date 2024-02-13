@@ -37,7 +37,7 @@
 </script>
 
 <div class="container-fluid">
-    <div class="row justify-content-center text-center my-3 pt-2 bg-danger bg-opacity-25 rounded-4">
+    <div class="row justify-content-center text-center my-3 pt-2 bg-animated bg-opacity-25 rounded-4">
         <div class="col-12">
             <span class="h1">Timezones</span>
             <p class="mb-2">Current time for different users:</p>
@@ -45,7 +45,7 @@
     </div>
     <div class="row justify-content-center text-center my-3">
         <div class="col-12 px-0">
-            <p class="fw-bold bg-warning bg-opacity-10 rounded-3 py-2">Your time is: {date}</p>
+            <p class="fw-bold bg-primary bg-opacity-25 rounded-3 py-2">Your time is: {date}</p>
         </div>
     </div>
     <div class="row justify-content-around mb-3">
@@ -56,3 +56,17 @@
         {/each}
     </div>
 </div>
+
+<style>
+    .bg-animated {
+        background: linear-gradient(270deg, #0b0086, #5c00a6, #0b0086);
+        background-size: 200% 200%;
+        animation: Gradient 5s ease infinite, tranform 1s ease-in-out;
+    }
+
+    @keyframes Gradient {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+</style>
