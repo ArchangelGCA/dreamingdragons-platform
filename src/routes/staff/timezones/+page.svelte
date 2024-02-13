@@ -13,7 +13,6 @@
 
     if (browser){
         userLocale = navigator.language;
-        console.log('User locale:', userLocale);
         is12Hour = new Intl.DateTimeFormat(userLocale, {hour: '2-digit'}).formatToParts(new Date()).find(x => x.type === 'dayPeriod') !== undefined;
     }
 
