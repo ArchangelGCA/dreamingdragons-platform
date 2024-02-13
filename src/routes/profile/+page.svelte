@@ -1,5 +1,6 @@
 <script>
     import {onMount} from "svelte";
+    import ContentProfile from "$lib/components/profile/ContentProfile.svelte";
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
@@ -8,6 +9,23 @@
     export let data;
 
     let { session, supabase, profile } = data;
+
+    // Each profile (profile is an array) has a structure like this:
+    /*
+    {
+        user_id: 'an_unique_user_id',
+        username: 'ArchangelGCA',
+        full_name: 'GCA',
+        avatar_url: '0.20207563595383804.png',
+        website: 'userWebsite',
+        can_upload: true,
+        user_created_at: 'timestampz',
+        book_id: 1,
+        book_title: 'Example Book',
+        book_description: "Example Book's Description",
+        book_cover_url: 'urlToCover'
+    }
+     */
 
     let username = '';
     let website = '';
@@ -21,22 +39,22 @@
 
     if (profile !== null) {
         try {
-            username = profile.username;
+            username = profile[0].username;
         } catch (e2) {
             username = '';
         }
         try {
-            website = profile.website;
+            website = profile[0].website;
         } catch (e3) {
             website = '';
         }
         try {
-            avatarUrl = profile.avatar_url;
+            avatarUrl = profile[0].avatar_url;
         } catch (e4) {
             avatarUrl = '';
         }
         try {
-            createdAt = profile.created_at;
+            createdAt = profile[0].user_created_at;
         } catch (e5) {
             createdAt = '';
         }
@@ -141,11 +159,18 @@
             </div>
         </div>
     </div>
-    <div class="row mt-5 mb-5 justify-content-center">
-        <div class="col text-center">
-            <p class="h1">TODO</p>
-            <i class="fa-solid fa-helmet-safety fa-5x text-warning" data-aos="zoom-in"></i>
-        </div>
+    <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-0 px-1">
+        {#if profile[0].book_id == null}
+            <div class="col text-center">
+                <p class="h1">No content found, yet!</p>
+                <i class="fa-solid fa-bookmark fa-5x text-warning" data-aos="zoom-in"></i>
+            </div>
+        {/if}
+        {#each profile as content (content.book_id)}
+            <div class="col-12 col-lg-4 col-xxl-3 d-flex align-items-stretch px-0 px-lg-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Open content">
+                <ContentProfile content={content} />
+            </div>
+        {/each}
     </div>
 </div>
 

@@ -17,10 +17,9 @@ export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
     }
 
     const { data: profile } = await supabase
-        .from('profiles')
-        .select(`username, website, avatar_url, created_at`)
-        .eq('id', session.user.id)
-        .single();
+        .from('user_books')
+        .select('*')
+        .eq('user_id', session.user.id);
 
     return { session, profile };
 }
