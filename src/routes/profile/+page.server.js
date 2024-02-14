@@ -79,7 +79,61 @@ export const actions = {
             }
         }
 
-        // TODO: Database Like Table + Add like + Also update user_books view to return if user has liked the book
-        // TODO: Also make new policies for book_likes and chapter_likes tables.
+        const { data: likes, error } = await supabase
+            .from('book_likes')
+            .select('*')
+            .eq('book_id', contentId)
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        const action = likes.length === 0 ? 'added' : 'removed';
+
+        if (likes.length === 0) {
+            const { error } = await supabase
+                .from('book_likes')
+                .insert([{ book_id: contentId, user_id: userId }]);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        } else {
+            const { error } = await supabase
+                .from('book_likes')
+                .delete()
+                .eq('book_id', contentId)
+                .eq('user_id', userId);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Like " + action + " successfully"
+            }
+        }
     }
 }

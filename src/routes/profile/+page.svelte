@@ -1,14 +1,24 @@
 <script>
     import {onMount} from "svelte";
     import ContentCard from "$lib/components/profile/ContentCard.svelte";
+    import { tooltip } from "@svelte-plugins/tooltips";
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
     });
 
     export let data;
-
     let { session, supabase, profile } = data;
+    const tooltipConfig = {
+        animation: 'fade',
+        delay: 0,
+        style: {
+            color: 'white',
+            backgroundColor: '#5c00a6',
+            padding: '10px',
+            borderRadius: '5px'
+        }
+    };
 
     // Each profile (profile is an array) has a structure like this:
     /*
@@ -61,7 +71,6 @@
             createdAt = '';
         }
         if (createdAt !== '') {
-            // Format date with mmmm yyyy
             const date = new Date(createdAt);
             const options = { year: 'numeric', month: 'long' };
             createdAt = date.toLocaleDateString('en-US', options);
@@ -145,7 +154,7 @@
         <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
             <div class="row justify-content-center align-items-center text-center py-3">
                 <div class="col-4 align-items-center">
-                    <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Followers">
+                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Followers">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-user"></i>
                         </div>
@@ -155,7 +164,7 @@
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Total likes">
+                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Total likes">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-heart"></i>
                         </div>
@@ -165,7 +174,7 @@
                     </div>
                 </div>
                 <div class="col-4">
-                    <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Joined: {createdAt}">
+                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Joined: {createdAt}">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
@@ -185,7 +194,7 @@
             </div>
         {:else}
             {#each profile as content (content.book_id)}
-                <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 d-flex align-items-stretch px-0 px-sm-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Open content">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2" use:tooltip={{...tooltipConfig}} data-bs-placement="top" title="Open content">
                     <ContentCard content={content} />
                 </div>
             {/each}

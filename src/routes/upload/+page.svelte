@@ -74,6 +74,16 @@
 
     let { session, supabase, books } = data;
     $: ({ session, supabase } = data);
+    const tooltipConfig = {
+        animation: 'fade',
+        delay: 0,
+        style: {
+            color: 'white',
+            backgroundColor: '#5c00a6',
+            padding: '10px',
+            borderRadius: '5px'
+        }
+    };
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = '';
@@ -217,10 +227,10 @@
             <div class="col-12 text-center">
                 <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
                 <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
-                    <button type="button" class="btn btn-outline-danger {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{animation: 'fade'}} title="Create book">
+                    <button type="button" class="btn btn-outline-danger {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create book">
                         <i class="fas fa-book"></i> Book
                     </button>
-                    <button type="button" class="btn btn-outline-primary {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{animation: 'fade'}} title="Create chapter for book">
+                    <button type="button" class="btn btn-outline-primary {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter for book">
                         <i class="fas fa-file-alt"></i> Chapter
                     </button>
                 </div>
@@ -237,9 +247,9 @@
                                 <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
                                     <div class="row mx-auto mt-1">
                                         <div class="col-12 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
-                                            <label for="file" class="form-label" title="Your book's cover image" use:tooltip={{animation: 'fade'}}><i class="fas fa-image"></i> Cover</label>
+                                            <label for="file" class="form-label" title="Your book's cover image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
                                             <input class="form-control form-control-lg mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required />
-                                            <span class="text-light text-opacity-50" use:tooltip={{animation: 'fade'}} title="Max size: 2.5MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
+                                            <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: 2.5MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                             {#if previewUrl}
                                                 <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh;" />
                                             {/if}
@@ -249,16 +259,16 @@
                                         </div>
                                         <div class="col-12 col-md-6 mb-2 mb-md-2 px-0 pe-md-2">
                                             <div class="col-12 h-100 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
-                                                <label for="title" class="form-label" use:tooltip={{animation: 'fade'}} title="Your book's public title"><i class="fas fa-book"></i> Title</label>
+                                                <label for="title" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public title"><i class="fas fa-book"></i> Title</label>
                                                 <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
-                                            <label for="description" class="form-label" use:tooltip={{animation: 'fade'}} title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
+                                            <label for="description" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
                                             <textarea class="form-control bg-black bg-opacity-50" name="description" id="description" rows="3" placeholder="Description" required></textarea>
                                         </div>
                                         <div class="col-12 mb-1 mt-1 px-0">
-                                            <button type="submit" class="btn btn-lg btn-outline-danger animate-button w-100" use:tooltip={{animation: 'fade'}} title="Click to submit">Submit</button>
+                                            <button type="submit" class="btn btn-lg btn-outline-danger animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                         </div>
                                     </div>
                                 </form>
@@ -279,7 +289,7 @@
                                 <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleChapterUpload}>
                                     <div class="row mx-auto">
                                         <div class="col-12 bg-primary bg-opacity-10 rounded-3 mt-1 mb-2 p-3 px-2 px-md-3">
-                                            <label for="book" class="form-label" use:tooltip={{animation: 'fade'}} title="Your target's book"><i class="fas fa-book"></i> Book</label>
+                                            <label for="book" class="form-label" use:tooltip={{...tooltipConfig}} title="Your target's book"><i class="fas fa-book"></i> Book</label>
                                             <select class="form-select bg-black" name="book" id="book" required>
                                                 {#each books as book (book.id)}
                                                     <option value={book.id}>{book.title}</option>
@@ -287,18 +297,18 @@
                                             </select>
                                         </div>
                                         <div class="col-12 bg-primary bg-opacity-10 rounded-3 mb-2 p-3 px-2 px-md-3">
-                                            <label for="title" class="form-label" use:tooltip={{animation: 'fade'}} title="Your chapter's title"><i class="fas fa-heading"></i> Title</label>
+                                            <label for="title" class="form-label" use:tooltip={{...tooltipConfig}} title="Your chapter's title"><i class="fas fa-heading"></i> Title</label>
                                             <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
                                         </div>
                                         <div class="col-12 bg-primary bg-opacity-10 rounded-3 mb-2 p-3 px-2 px-md-3">
-                                            <p class="mb-2" use:tooltip={{animation: 'fade'}} title="Your chapter's text"><i class="fas fa-edit"></i> Text</p>
+                                            <p class="mb-2" use:tooltip={{...tooltipConfig}} title="Your chapter's text"><i class="fas fa-edit"></i> Text</p>
                                             <Editor {conf}
                                                     scriptSrc="tinymce/tinymce.min.js"
                                                     bind:value={editorContent}
                                             />
                                         </div>
                                         <div class="col-12 mb-1 mt-1 px-0">
-                                            <button type="submit" class="btn btn-lg btn-outline-primary animate-button w-100" use:tooltip={{animation: 'fade'}} title="Click to submit">Submit</button>
+                                            <button type="submit" class="btn btn-lg btn-outline-primary animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                         </div>
                                     </div>
                                 </form>

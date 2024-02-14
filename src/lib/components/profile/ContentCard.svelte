@@ -71,7 +71,7 @@
             </div>
             <div class="col-3 mb-1 text-end">
                 <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick}>
-                    <i class="fas fa-heart fa-3x {isLiked ? 'liked' : ''}"></i>
+                    <i class="fas fa-heart fa-3x {isLiked ? 'liked' : 'unliked'}"></i>
                 </button>
             </div>
         </div>
@@ -87,11 +87,34 @@
     .liked {
         color: #bd135a;
         animation: heart-pulse 0.3s ease-in-out;
+        transition: 0.15s all ease-in-out;
+    }
+
+    .liked:hover {
+        transform: scale(1.1);
+    }
+
+    .unliked {
+        transform: scale(0.8);
+        color: #ffffff;
+        animation: heart-unpulse 0.3s ease-in-out;
+        transition: 0.15s all ease-in-out;
+    }
+
+    .unliked:hover {
+        color: #bd135a;
+        transform: scale(0.9);
     }
 
     @keyframes heart-pulse {
         0% { transform: scale(1); }
         50% { transform: scale(1.2); }
         100% { transform: scale(1); }
+    }
+
+    @keyframes heart-unpulse {
+        0% { transform: scale(0.8); }
+        50% { transform: scale(1); }
+        100% { transform: scale(0.8); }
     }
 </style>
