@@ -1,9 +1,12 @@
 <script>
     import {onMount} from "svelte";
+    import {deserialize} from "$app/forms";
+    import {toast} from "@zerodevx/svelte-toast";
 
     export let content;
     let isLoading = true;
     let backgroundImage = '';
+    let isLiked = content.is_liked;
 
     async function loadImage(url) {
         return new Promise((resolve, reject) => {
@@ -12,10 +15,6 @@
             img.onload = () => resolve(img);
             img.onerror = reject;
         });
-    }
-
-    function handleHeartClick() {
-        console.log('Heart clicked');
     }
 
     onMount(() => {
@@ -32,6 +31,37 @@
             isLoading = false;
         }
     });
+
+    async function handleHeartClick() {
+        const data = new FormData();
+        data.append('contentId', content.book_id);
+
+        const response = await fetch('?/like', {
+            method: 'POST',
+            body: data
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                isLiked = !isLiked;
+            } else {
+                toast.push('Error during action: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('Error during action', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+    }
 </script>
 
 <div class="card border-0 bg-placeholder img-home w-100" data-aos="fade-up">
@@ -51,7 +81,7 @@
             </div>
             <div class="col-3 mb-1 text-end">
                 <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick}>
-                    <i class="fas fa-heart fa-3x"></i>
+                    <i class="fas fa-heart fa-3x {isLiked ? 'liked' : ''}"></i>
                 </button>
             </div>
         </div>
@@ -62,5 +92,16 @@
     .btn-link {
         color: inherit;
         text-decoration: none;
+    }
+
+    .liked {
+        color: #bd135a;
+        animation: heart-pulse 0.3s ease-in-out;
+    }
+
+    @keyframes heart-pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
     }
 </style>

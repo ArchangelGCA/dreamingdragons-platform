@@ -23,7 +23,8 @@
         book_id: 1,
         book_title: 'Example Book',
         book_description: "Example Book's Description",
-        book_cover_url: 'urlToCover'
+        book_cover_url: 'urlToCover',
+        is_liked: true
     }
      */
 
@@ -34,6 +35,7 @@
     let avatarFound = true;
     let createdAt = '';
     let yearCreated = '';
+    let hasBooks = true;
     let followers = 0; // TODO: Get number of followers
     let likes = 0; // TODO: Get total likes
 
@@ -65,6 +67,11 @@
             createdAt = date.toLocaleDateString('en-US', options);
             yearCreated = date.getFullYear();
         }
+        try {
+            hasBooks = profile[0].book_id !== null;
+        } catch (e6) {
+            hasBooks = false;
+        }
     }
 
     async function downloadAvatar(path) {
@@ -90,7 +97,14 @@
 <div class="container-fluid px-0" style="min-height: 71vh">
     <div class="row justify-content-center">
         <div class="col-12">
-            {#if finalAvatarUrl === '' && avatarFound}
+            {#if avatarUrl === ''}
+                <div class="bg-image rounded-bottom-5" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                    <div class="row justify-content-center align-items-end" style="height: 100%;">
+                        <div class="col-auto">
+                        </div>
+                    </div>
+                </div>
+            {:else if finalAvatarUrl === '' && avatarFound}
                 <div class="row text-center justify-content-center mt-3">
                     <div class="col-auto">
                         <div class="spinner-border text-light align-self-center" role="status">
@@ -120,7 +134,11 @@
     </div>
     <div class="row justify-content-center mt-3">
         <div class="col text-center">
-            <span class="h1 mt-2 mb-1">{username}</span>
+            {#if username === "Please update your username"}
+                <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
+            {:else}
+                <span class="h1 mt-2 mb-1">{username}</span>
+            {/if}
         </div>
     </div>
     <div class="row justify-content-center mt-3 mx-1">
@@ -160,17 +178,18 @@
         </div>
     </div>
     <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-0 px-1">
-        {#if profile[0].book_id == null}
+        {#if !hasBooks}
             <div class="col text-center">
                 <p class="h1">No content found, yet!</p>
                 <i class="fa-solid fa-bookmark fa-5x text-warning" data-aos="zoom-in"></i>
             </div>
+        {:else}
+            {#each profile as content (content.book_id)}
+                <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 d-flex align-items-stretch px-0 px-sm-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Open content">
+                    <ContentCard content={content} />
+                </div>
+            {/each}
         {/if}
-        {#each profile as content (content.book_id)}
-            <div class="col-12 col-sm-6 col-lg-4 col-xxl-3 d-flex align-items-stretch px-0 px-sm-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Open content">
-                <ContentCard content={content} />
-            </div>
-        {/each}
     </div>
 </div>
 

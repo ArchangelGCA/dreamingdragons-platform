@@ -239,7 +239,7 @@
                                         <div class="col-12 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
                                             <label for="file" class="form-label" title="Your book's cover image" use:tooltip={{animation: 'fade'}}><i class="fas fa-image"></i> Cover</label>
                                             <input class="form-control form-control-lg mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required />
-                                            <span class="text-light text-opacity-50" use:tooltip={{animation: 'fade'}} title="Max size: 2.5MB">Max size: {maxFileSizeMB}MB - Recommended max size: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
+                                            <span class="text-light text-opacity-50" use:tooltip={{animation: 'fade'}} title="Max size: 2.5MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                             {#if previewUrl}
                                                 <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh;" />
                                             {/if}
