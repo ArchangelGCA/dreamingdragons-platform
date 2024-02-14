@@ -5,32 +5,21 @@
 
     export let content;
     let isLoading = true;
-    let backgroundImage = '';
     let isLiked = content.is_liked;
-
-    async function loadImage(url) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.src = url;
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-        });
-    }
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
-    });
-
-    onMount(async () => {
-        try {
-            await loadImage(content.book_cover_url);
-            backgroundImage = `url(${content.book_cover_url})`;
-        } catch (error) {
-            console.error('Failed to load image', error);
-        } finally {
-            isLoading = false;
+        const imgElement = document.querySelector('.img-home img');
+        if (imgElement && imgElement.complete) {
+            handleImageLoad();
         }
     });
+
+    function handleImageLoad() {
+        if (!isLoading) return;
+        isLoading = false;
+        console.log('Image loaded');
+    }
 
     async function handleHeartClick() {
         const data = new FormData();
@@ -66,12 +55,13 @@
 
 <div class="card border-0 bg-placeholder img-home w-100" data-aos="fade-up">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background"
-         style="background-image: {backgroundImage}; background-size: cover; background-position: center; height: 45vh;">
+         style="height: 45vh; overflow: hidden;">
         {#if isLoading}
             <div class="spinner-border text-light" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
         {/if}
+        <img src={content.book_cover_url} alt="Book cover" class="w-100 h-100" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
     </div>
     <div class="card-body border-top border-light-subtle pb-2">
         <div class="row justify-content-center">

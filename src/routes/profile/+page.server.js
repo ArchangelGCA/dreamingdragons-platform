@@ -80,5 +80,6 @@ export const actions = {
         }
 
         // TODO: Database Like Table + Add like + Also update user_books view to return if user has liked the book
+        // TODO: Also make new policies for book_likes and chapter_likes tables.
     }
 }
