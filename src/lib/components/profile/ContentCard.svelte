@@ -25,6 +25,8 @@
         const data = new FormData();
         data.append('contentId', content.book_id);
 
+        isLiked = !isLiked;
+
         const response = await fetch('?/like', {
             method: 'POST',
             body: data
@@ -33,8 +35,9 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                isLiked = !isLiked;
+                // isLiked = !isLiked;
             } else {
+                isLiked = !isLiked;
                 toast.push('Error during action: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
@@ -43,6 +46,7 @@
                 });
             }
         } else {
+            isLiked = !isLiked;
             toast.push('Error during action', {
                 theme: {
                     '--toastBackground': '#f44336',

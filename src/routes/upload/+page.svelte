@@ -227,10 +227,10 @@
             <div class="col-12 text-center">
                 <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
                 <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
-                    <button type="button" class="btn btn-outline-danger {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create book">
+                    <button type="button" class="btn btn-lg btn-outline-danger {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create book">
                         <i class="fas fa-book"></i> Book
                     </button>
-                    <button type="button" class="btn btn-outline-primary {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter for book">
+                    <button type="button" class="btn btn-lg btn-outline-primary {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter for book">
                         <i class="fas fa-file-alt"></i> Chapter
                     </button>
                 </div>

@@ -25,12 +25,15 @@ export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
 
     // If the profile doesn't exist, insert a new one
     if (!profile || profile.length === 0) {
+
+        const randomIdUsernameShort = Math.random().toString(36).substring(2, 6);
+
         const { error } = await supabase
             .from('profiles')
             .insert([{
                 id: session.user.id,
                 full_name: PUBLIC_DEFAULT_NAME,
-                username: PUBLIC_DEFAULT_USERNAME,
+                username: PUBLIC_DEFAULT_USERNAME + "-" + randomIdUsernameShort,
                 website: '',
                 avatar_url: '',
                 updated_at: new Date(),

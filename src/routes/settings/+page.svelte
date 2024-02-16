@@ -82,7 +82,7 @@
     <div class="row mx-1">
         <div class="col-12 col-md-6">
             <div class="row justify-content-center pt-2 pb-0 pb-md-2">
-                <!-- Accordion for avatar -->
+                <!-- Avatar Accordion -->
                 <div class="col-12 px-1">
                     <div class="accordion" id="avatarAccordion">
                         <div class="accordion-item">
@@ -94,7 +94,6 @@
                             <div id="avatarCollapse" class="accordion-collapse collapse" aria-labelledby="avatarHeading" data-bs-parent="#avatarAccordion">
                                 <div class="accordion-body">
                                     <form class="form" method="post" action="?/update" use:enhance={handleSubmit} bind:this={profileForm}>
-                                        <!-- Hidden input for other profile details -->
                                         <input type="hidden" name="fullName" value={fullName} />
                                         <input type="hidden" name="username" value={username} />
                                         <input type="hidden" name="website" value={website} />

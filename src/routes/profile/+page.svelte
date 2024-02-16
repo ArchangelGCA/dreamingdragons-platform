@@ -2,6 +2,7 @@
     import {onMount} from "svelte";
     import ContentCard from "$lib/components/profile/ContentCard.svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import { PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
@@ -147,7 +148,7 @@
     </div>
     <div class="row justify-content-center mt-3">
         <div class="col text-center">
-            {#if username === "Please update your username"}
+            {#if username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                 <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
             {:else}
                 <span class="h1 mt-2 mb-1">{username}</span>
