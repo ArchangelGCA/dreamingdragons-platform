@@ -1,8 +1,8 @@
 /*import { ListBucketsCommand } from '@aws-sdk/client-s3';*/
 import { PUBLIC_DEFAULT_NAME, PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
-import { redirect } from '@sveltejs/kit'
+import {error, redirect} from '@sveltejs/kit'
 
-export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
+export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) => {
     const session = await getSession();
 
     /*const command = new ListBucketsCommand({});
@@ -12,6 +12,24 @@ export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
     } catch (err) {
         console.log(err);
     }*/
+
+    const id = url.searchParams.get('id');
+
+    if (id) {
+        let {data: profile} = await supabase
+            .from('user_books_new')
+            .select('*')
+            .eq('user_id', id);
+
+        if (!profile || profile.length === 0) {
+            error(404, "Profile not found");
+            return;
+        }
+
+        if (session) return { session, profile };
+
+        return { profile };
+    }
 
     if (!session) {
         throw redirect(303, '/login');
@@ -60,6 +78,7 @@ export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
 
     return { session, profile };
 }
+
 
 export const actions = {
     like: async ({ request, locals: { supabase, getSession } }) => {

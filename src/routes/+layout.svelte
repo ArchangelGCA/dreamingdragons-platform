@@ -78,10 +78,10 @@
                 <i class="fa-solid fa-user"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                <li><a class="dropdown-item" href="/settings">Settings</a></li>
-                <li><a class="dropdown-item animate-button rounded-3 py-2" href="/upload">Upload</a></li>
-                <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap">Logout</a></li>
+                <li><a class="dropdown-item" href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                <li><a class="dropdown-item" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
+                <li><a class="dropdown-item animate-button rounded-3 py-2" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
+                <li><a class="dropdown-item mt-1" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
             </ul>
         </div>
     </div>

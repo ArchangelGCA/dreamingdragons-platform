@@ -4,12 +4,6 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import { PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
 
-    onMount(() => {
-        window.$('[data-bs-toggle="tooltip"]').tooltip();
-    });
-
-    export let data;
-    let { session, supabase, profile } = data;
     const tooltipConfig = {
         animation: 'fade',
         delay: 0,
@@ -20,6 +14,13 @@
             borderRadius: '5px'
         }
     };
+
+    onMount(() => {
+        window.$('[data-bs-toggle="tooltip"]').tooltip();
+    });
+
+    export let data;
+    let { session, supabase, profile } = data;
 
     // Each profile (profile is an array) has a structure like this:
     /*
@@ -72,6 +73,11 @@
         } catch (e5) {
             createdAt = '';
         }
+        try { // TODO: Dispatch event when user likes something on his profile
+            likes = profile[0].total_likes;
+        } catch (e7) {
+            likes = 0;
+        }
         if (createdAt !== '') {
             const date = new Date(createdAt);
             const options = { year: 'numeric', month: 'long' };
@@ -80,6 +86,9 @@
         }
         try { // TODO: Fix redundancy in this block
             hasBooks = profile[0].books.length !== 0;
+            if (hasBooks && profile[0].books[0].book_id === null) {
+                hasBooks = false;
+            }
         } catch (e6) {
             hasBooks = false;
         }
@@ -193,13 +202,13 @@
     </div>
     <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-0 px-1">
         {#if !hasBooks}
-            <div class="col text-center">
+            <div class="col mt-4 text-center">
                 <p class="h1">No content found, yet!</p>
                 <i class="fa-solid fa-bookmark fa-5x text-warning" data-aos="zoom-in"></i>
             </div>
         {:else}
             {#each books as content (content.book_id)}
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2" use:tooltip={{...tooltipConfig}} data-bs-placement="top" title="Open content">
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
                     <ContentCard content={content} />
                 </div>
             {/each}

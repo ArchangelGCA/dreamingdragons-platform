@@ -35,12 +35,7 @@
 
     let bookContent = data.bookContent;
     let foundBook = false;
-    let chapters = [];
-
-    if (bookContent.length > 0) {
-        chapters = bookContent[0].chapters;
-        foundBook = true;
-    }
+    let chapters = bookContent[0].chapters;
 </script>
 
 <h1 class="text-center">TODO</h1>

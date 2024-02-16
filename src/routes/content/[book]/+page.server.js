@@ -1,3 +1,5 @@
+import {error as errorx} from '@sveltejs/kit';
+
 export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } }) => {
     const session = await getSession();
     let isOwner = false;
@@ -29,14 +31,9 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
         }
     }
 
-    // If bookContent is empty, return 404
-    if (bookContent.length === 0) {
-        return {
-            status: 404,
-            body: {
-                message: "Book not found"
-            }
-        }
+    if (!bookContent || bookContent.length === 0) {
+        errorx(404, "Book not found");
+        return;
     }
 
     if (!session) {
