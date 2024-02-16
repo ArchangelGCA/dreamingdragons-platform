@@ -1,11 +1,8 @@
 # Work-in-progress - ritf-svelte
 
 ## TODO:
-- Database model, hosting and management.
-- User authentication.
 - Website design and layout.
-- Object storage (storing images and other files).
-- Email service (for sending notifications and newsletters) (Can't really do).
+- Functionalities (Please read commits todo list).
 
 **Using a VPS would be the best option for hosting the website.**
 
@@ -16,7 +13,7 @@
 ## AUTHENTICATION:
 - We're using Supabase for authentication and database management. For users we're using the basic example: [Link](https://supabase.com/docs/guides/getting-started/tutorials/with-sveltekit)
 
-## MANUAL REQUIREMENTS:
+## MANUAL REQUIREMENTS: [OUTDATED]
 - To run the project you must create a `.env` file in the root directory of the project and add the following environment variables:
     - `PUBLIC_SUPABASE_URL` - The URL of your Supabase project.
     - `PUBLIC_SUPABASE_ANON_KEY` - The anonymous key of your Supabase project.
@@ -24,7 +21,7 @@
     - `STORJ_BUCKET` - The name of the bucket you want to use for storing files.
 - Add to your static folder tinymce, you first [download](https://www.tiny.cloud/get-tiny/) it and then extract the zip, open folders `tinymce/js/tinymce` and move this last subfolder tinymce to `/static`.
 
-#### Example .env:
+#### Example .env: [OUTDATED]
 ```env
 PUBLIC_SUPABASE_URL=https://<your_project_id>.supabase.co
 PUBLIC_SUPABASE_ANON_KEY=<your_public_anon_key>

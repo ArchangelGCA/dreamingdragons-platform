@@ -46,6 +46,7 @@
     let createdAt = '';
     let yearCreated = '';
     let hasBooks = true;
+    let books = [];
     let followers = 0; // TODO: Get number of followers
     let likes = 0; // TODO: Get total likes
 
@@ -76,10 +77,13 @@
             createdAt = date.toLocaleDateString('en-US', options);
             yearCreated = date.getFullYear();
         }
-        try {
-            hasBooks = profile[0].book_id !== null;
+        try { // TODO: Fix redundancy in this block
+            hasBooks = profile[0].books.length !== 0;
         } catch (e6) {
             hasBooks = false;
+        }
+        if (hasBooks) { // TODO: Fix even more redundancy
+            books = profile[0].books;
         }
     }
 
@@ -193,7 +197,7 @@
                 <i class="fa-solid fa-bookmark fa-5x text-warning" data-aos="zoom-in"></i>
             </div>
         {:else}
-            {#each profile as content (content.book_id)}
+            {#each books as content (content.book_id)}
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2" use:tooltip={{...tooltipConfig}} data-bs-placement="top" title="Open content">
                     <ContentCard content={content} />
                 </div>
