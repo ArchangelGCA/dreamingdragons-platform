@@ -75,7 +75,7 @@
     <div class="col-10 text-end">
         <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle animate-button" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa-solid fa-user"></i>
+                <i class="fa-solid fa-user pe-1"></i>
             </button>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item" href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>

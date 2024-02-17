@@ -74,7 +74,7 @@
 
 <div class="container-fluid px-0" style="min-height: 70vh">
     <div class="row mt-3 mb-3 mx-1">
-        <div class="col-12 bg-light-subtle bg-opacity-0 rounded-4 pt-2 mx-auto">
+        <div class="col-12 bg-animated-gradient bg-opacity-0 rounded-4 pt-2 mx-auto">
             <h1 class="text-center">Profile Settings</h1>
         </div>
     </div>
@@ -173,3 +173,17 @@
         </div>
     </div>
 </div>
+
+<style>
+    .bg-animated-gradient {
+        background: linear-gradient(270deg, #0b0086, #5c00a6);
+        background-size: 200% 200%;
+        animation: Gradient 10s ease infinite, tranform 1s ease-in-out;
+    }
+
+    @keyframes Gradient {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
+    }
+</style>

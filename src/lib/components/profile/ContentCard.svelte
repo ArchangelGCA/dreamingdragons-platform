@@ -88,7 +88,7 @@
                 <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile?id={content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.username}</a></small></p>
             </div>
             <div class="col-3 mb-1 text-end">
-                <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick} use:tooltip={{...tooltipConfig}} title="{isLiked ? 'Unlike' : 'Like'}">
+                <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick} use:tooltip={{...tooltipConfig}} title={isLiked ? 'Unlike' : 'Like'}>
                     <i class="fas fa-heart fa-3x {isLiked ? 'liked' : 'unliked'}"></i>
                 </button>
             </div>
