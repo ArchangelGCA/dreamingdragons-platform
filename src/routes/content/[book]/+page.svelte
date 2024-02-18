@@ -47,13 +47,15 @@
     ]
      */
 
-    let bookContent = data.bookContent;
-    let chapters = bookContent[0].chapters;
+    let bookContent = data.bookContent[0];
+    let chapters = bookContent.chapters;
     let finalAvatarUrl = '';
     let avatarFound = true;
+    let viewsCount = 0;
+    let commentsCount = 0;
 
-    if (bookContent[0].owner_avatar_url) {
-        avatarUrl = bookContent[0].owner_avatar_url;
+    if (bookContent.owner_avatar_url) {
+        avatarUrl = bookContent.owner_avatar_url;
     }
 
     async function downloadAvatar(path) {
@@ -79,8 +81,8 @@
 <div class="container-xxl">
     <div class="row justify-content-center text-center">
         <div class="col my-4" use:tooltip={{...tooltipConfig}} title="Original Cover">
-            <a href="{bookContent[0].book_cover_url}" target="_blank">
-                <img src="{bookContent[0].book_cover_url}" alt="{bookContent[0].book_title}" class="img-fluid" style="max-height: 75vh" loading="lazy">
+            <a href="{bookContent.book_cover_url}" target="_blank">
+                <img src="{bookContent.book_cover_url}" alt="{bookContent.book_title}" class="img-fluid" style="max-height: 75vh" loading="lazy">
             </a>
         </div>
     </div>
@@ -89,17 +91,49 @@
         <div class="col-12 mb-3">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-3 text-end">
-                    <a href="/profile?id={bookContent[0].book_owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
-                        <img src="{finalAvatarUrl}" alt="{bookContent[0].owner_username}" class="img-fluid rounded-circle" style="max-height: 100px" loading="lazy">
+                    <a href="/profile?id={bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
+                        <img src="{finalAvatarUrl}" alt="{bookContent.owner_username}" class="img-fluid rounded-circle" style="max-height: 100px" loading="lazy">
                     </a>
                 </div>
                 <div class="col-9 text-center">
-                    <h2>{bookContent[0].book_title}</h2>
-                    <h6>by <a href="/profile?id={bookContent[0].book_owner_id}">{bookContent[0].owner_username}</a></h6>
+                    <h2>{bookContent.book_title}</h2>
+                    <h6>by <a href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a></h6>
                 </div>
             </div>
         </div>
         <hr>
+    </div>
+    <div class="row justify-content-between px-lg-5 py-2 py-lg-3 mb-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
+        <div class="col">
+            <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Total likes">
+                <div class="col-auto d-flex align-items-center pe-0">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="col-auto mt-1">
+                    <span class="">{bookContent.likes_count}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Views">
+                <div class="col-auto d-flex align-items-center pe-0">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <div class="col-auto mt-1">
+                    <span class="">{viewsCount}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Comments">
+                <div class="col-auto d-flex align-items-center pe-0">
+                    <i class="fas fa-comment"></i>
+                </div>
+                <div class="col-auto mt-1">
+                    <span class="">{commentsCount}</span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="row justify-content-center text-center">
         <div class="col">
@@ -107,4 +141,15 @@
         </div>
     </div>
 </div>
+
+<style>
+
+    .fa-heart, .fa-eye, .fa-comment {
+        font-size: 1.6rem;
+    }
+
+    .bg-info-stats {
+        background: linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+    }
+</style>
 
