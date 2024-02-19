@@ -1,4 +1,4 @@
-import {error as errorx} from '@sveltejs/kit';
+import {error as errorx, redirect} from '@sveltejs/kit';
 
 export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } }) => {
     const session = await getSession();
@@ -43,8 +43,88 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     }
 
     // add isOwner to bookContent
-    bookContent[0].isOwner = isOwner;
+    bookContent[0].is_owner = isOwner;
 
     // return
     return { bookContent };
+}
+
+export const actions = {
+    like: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            throw redirect(303, '/login');
+        }
+
+        const contentId = formData.contentId;
+        const userId = session.user.id;
+
+        if (contentId === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { data: likes, error } = await supabase
+            .from('book_likes')
+            .select('*')
+            .eq('book_id', contentId)
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        const action = likes.length === 0 ? 'added' : 'removed';
+
+        if (likes.length === 0) {
+            const { error } = await supabase
+                .from('book_likes')
+                .insert([{ book_id: contentId, user_id: userId }]);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        } else {
+            const { error } = await supabase
+                .from('book_likes')
+                .delete()
+                .eq('book_id', contentId)
+                .eq('user_id', userId);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Like " + action + " successfully"
+            }
+        }
+    }
 }

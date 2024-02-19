@@ -30,7 +30,6 @@
     function handleImageLoad() {
         if (!isLoading) return;
         isLoading = false;
-        console.log('Image loaded');
     }
 
     async function handleHeartClick() {
