@@ -18,6 +18,8 @@
     export let content;
     let isLoading = true;
     let isLiked = content.is_liked;
+    let likes = content.total_likes;
+    let likeActionActive = false;
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
@@ -33,10 +35,23 @@
     }
 
     async function handleHeartClick() {
+
+        if (likeActionActive) {
+            return;
+        }
+
+        likeActionActive = true;
+
         const data = new FormData();
         data.append('contentId', content.book_id);
 
         isLiked = !isLiked;
+
+        if (isLiked) {
+            likes++;
+        } else {
+            likes--;
+        }
 
         const response = await fetch('?/like', {
             method: 'POST',
@@ -49,6 +64,8 @@
                 // isLiked = !isLiked;
             } else {
                 isLiked = !isLiked;
+                likes--;
+
                 toast.push('Error during action: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
@@ -58,13 +75,17 @@
             }
         } else {
             isLiked = !isLiked;
-            toast.push('Error during action', {
+            likes--;
+
+            toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
                     '--toastColor': '#fff',
                 }
             });
         }
+
+        likeActionActive = false;
     }
 </script>
 
@@ -88,7 +109,10 @@
             </div>
             <div class="col-3 mb-1 text-end">
                 <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick} use:tooltip={{...tooltipConfig}} title={isLiked ? 'Unlike' : 'Like'}>
-                    <i class="fas fa-heart fa-3x {isLiked ? 'liked' : 'unliked'}"></i>
+                    <span class="heart-icon {isLiked ? 'liked' : 'unliked'}">
+                        <i class="fas fa-heart fa-3x"></i>
+                        <span class="likes-counter">{likes}</span>
+                    </span>
                 </button>
             </div>
         </div>
@@ -149,6 +173,24 @@
     .unliked:hover {
         color: #bd135a;
         transform: scale(0.9);
+    }
+
+    .heart-icon {
+        position: relative;
+        display: inline-block;
+    }
+
+    .heart-icon .fas.fa-heart {
+        font-size: 3rem; /* Adjust as needed */
+    }
+
+    .heart-icon .likes-counter {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff; /* Adjust color as needed */
+        font-size: 1rem; /* Adjust as needed */
     }
 
     @keyframes heart-pulse {
