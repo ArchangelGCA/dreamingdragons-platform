@@ -215,108 +215,110 @@
     }
 </script>
 
-<div class="row justify-content-center">
-    <div class="col">
-        <div class="row justify-content-center">
-            <div class="col-12">
-                <p class="h1 text-center mt-3 mb-0 py-2 bg-light-subtle bg-opacity-25 rounded-4 animate-button">Upload content</p>
-            </div>
-        </div>
-        <hr>
-        <div class="row justify-content-center text-center mb-3">
-            <div class="col-12 text-center">
-                <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
-                <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
-                    <button type="button" class="btn btn-lg btn-outline-danger {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create book">
-                        <i class="fas fa-book"></i> Book
-                    </button>
-                    <button type="button" class="btn btn-lg btn-outline-primary {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter for book">
-                        <i class="fas fa-file-alt"></i> Chapter
-                    </button>
+<div class="container-xxl px-0">
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <p class="h1 text-center mt-3 mb-0 py-2 bg-light-subtle bg-opacity-25 rounded-4 animate-button">Upload content</p>
                 </div>
-                {#if selectedOption === 'book'}
-                    <div in:send={{duration: 500}} out:receive={{duration: 500}}>
-                        <hr>
-                        <div class="row justify-content-center text-center mt-3 bg-danger bg-opacity-25 mx-auto rounded-3">
-                            <div class="col-12">
-                                <p class="h3 pt-2">Book:</p>
+            </div>
+            <hr>
+            <div class="row justify-content-center text-center mb-3">
+                <div class="col-12 text-center">
+                    <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
+                    <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
+                        <button type="button" class="btn btn-lg btn-outline-danger {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create book">
+                            <i class="fas fa-book"></i> Book
+                        </button>
+                        <button type="button" class="btn btn-lg btn-outline-primary {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter for book">
+                            <i class="fas fa-file-alt"></i> Chapter
+                        </button>
+                    </div>
+                    {#if selectedOption === 'book'}
+                        <div in:send={{duration: 500}} out:receive={{duration: 500}}>
+                            <hr>
+                            <div class="row justify-content-center text-center mt-3 bg-danger bg-opacity-25 mx-auto rounded-3">
+                                <div class="col-12">
+                                    <p class="h3 pt-2">Book:</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-3 mx-0 py-2 justify-content-center border border-danger border-opacity-50 rounded-3">
-                            <div class="col">
-                                <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
-                                    <div class="row mx-auto mt-1">
-                                        <div class="col-12 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
-                                            <label for="file" class="form-label" title="Your book's cover image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
-                                            <input class="form-control form-control-lg mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required />
-                                            <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: 2.5MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
-                                            {#if previewUrl}
-                                                <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh;" />
-                                            {/if}
-                                            {#if fileName}
-                                                <span class="text-light text-opacity-75">Selected file: {fileName}</span>
-                                            {/if}
-                                        </div>
-                                        <div class="col-12 col-md-6 mb-2 mb-md-2 px-0 pe-md-2">
-                                            <div class="col-12 h-100 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
-                                                <label for="title" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public title"><i class="fas fa-book"></i> Title</label>
-                                                <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
+                            <div class="row mt-3 mx-0 py-2 justify-content-center border border-danger border-opacity-50 rounded-3">
+                                <div class="col">
+                                    <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
+                                        <div class="row mx-auto mt-1">
+                                            <div class="col-12 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
+                                                <label for="file" class="form-label" title="Your book's cover image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
+                                                <input class="form-control form-control-lg mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required />
+                                                <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: 2.5MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
+                                                {#if previewUrl}
+                                                    <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh;" />
+                                                {/if}
+                                                {#if fileName}
+                                                    <span class="text-light text-opacity-75">Selected file: {fileName}</span>
+                                                {/if}
+                                            </div>
+                                            <div class="col-12 col-md-6 mb-2 mb-md-2 px-0 pe-md-2">
+                                                <div class="col-12 h-100 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
+                                                    <label for="title" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public title"><i class="fas fa-book"></i> Title</label>
+                                                    <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-6 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
+                                                <label for="description" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
+                                                <textarea class="form-control bg-black bg-opacity-50" name="description" id="description" rows="3" placeholder="Description" required></textarea>
+                                            </div>
+                                            <div class="col-12 mb-1 mt-1 px-0">
+                                                <button type="submit" class="btn btn-lg btn-outline-danger animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-6 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
-                                            <label for="description" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
-                                            <textarea class="form-control bg-black bg-opacity-50" name="description" id="description" rows="3" placeholder="Description" required></textarea>
-                                        </div>
-                                        <div class="col-12 mb-1 mt-1 px-0">
-                                            <button type="submit" class="btn btn-lg btn-outline-danger animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
-                                        </div>
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {/if}
-                {#if selectedOption === 'chapter'}
-                    <div in:send={{duration: 500}} out:receive={{duration: 500}}>
-                        <hr>
-                        <div class="row justify-content-center text-center mt-3 bg-primary bg-opacity-25 mx-auto rounded-3">
-                            <div class="col-12">
-                                <p class="h3 pt-2">Chapter:</p>
+                    {/if}
+                    {#if selectedOption === 'chapter'}
+                        <div in:send={{duration: 500}} out:receive={{duration: 500}}>
+                            <hr>
+                            <div class="row justify-content-center text-center mt-3 bg-primary bg-opacity-25 mx-auto rounded-3">
+                                <div class="col-12">
+                                    <p class="h3 pt-2">Chapter:</p>
+                                </div>
+                            </div>
+                            <div class="row mx-auto mt-3 py-2 justify-content-center border border-primary-subtle rounded-4">
+                                <div class="col">
+                                    <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleChapterUpload}>
+                                        <div class="row mx-auto">
+                                            <div class="col-12 bg-primary bg-opacity-10 rounded-3 mt-1 mb-2 p-3 px-2 px-md-3">
+                                                <label for="book" class="form-label" use:tooltip={{...tooltipConfig}} title="Your target's book"><i class="fas fa-book"></i> Book</label>
+                                                <select class="form-select bg-black" name="book" id="book" required>
+                                                    {#each books as book (book.id)}
+                                                        <option value={book.id}>{book.title}</option>
+                                                    {/each}
+                                                </select>
+                                            </div>
+                                            <div class="col-12 bg-primary bg-opacity-10 rounded-3 mb-2 p-3 px-2 px-md-3">
+                                                <label for="title" class="form-label" use:tooltip={{...tooltipConfig}} title="Your chapter's title"><i class="fas fa-heading"></i> Title</label>
+                                                <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
+                                            </div>
+                                            <div class="col-12 bg-primary bg-opacity-10 rounded-3 mb-2 p-3 px-2 px-md-3">
+                                                <p class="mb-2" use:tooltip={{...tooltipConfig}} title="Your chapter's text"><i class="fas fa-edit"></i> Text</p>
+                                                <Editor {conf}
+                                                        scriptSrc="tinymce/tinymce.min.js"
+                                                        bind:value={editorContent}
+                                                />
+                                            </div>
+                                            <div class="col-12 mb-1 mt-1 px-0">
+                                                <button type="submit" class="btn btn-lg btn-outline-primary animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                        <div class="row mx-auto mt-3 py-2 justify-content-center border border-primary-subtle rounded-4">
-                            <div class="col">
-                                <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleChapterUpload}>
-                                    <div class="row mx-auto">
-                                        <div class="col-12 bg-primary bg-opacity-10 rounded-3 mt-1 mb-2 p-3 px-2 px-md-3">
-                                            <label for="book" class="form-label" use:tooltip={{...tooltipConfig}} title="Your target's book"><i class="fas fa-book"></i> Book</label>
-                                            <select class="form-select bg-black" name="book" id="book" required>
-                                                {#each books as book (book.id)}
-                                                    <option value={book.id}>{book.title}</option>
-                                                {/each}
-                                            </select>
-                                        </div>
-                                        <div class="col-12 bg-primary bg-opacity-10 rounded-3 mb-2 p-3 px-2 px-md-3">
-                                            <label for="title" class="form-label" use:tooltip={{...tooltipConfig}} title="Your chapter's title"><i class="fas fa-heading"></i> Title</label>
-                                            <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
-                                        </div>
-                                        <div class="col-12 bg-primary bg-opacity-10 rounded-3 mb-2 p-3 px-2 px-md-3">
-                                            <p class="mb-2" use:tooltip={{...tooltipConfig}} title="Your chapter's text"><i class="fas fa-edit"></i> Text</p>
-                                            <Editor {conf}
-                                                    scriptSrc="tinymce/tinymce.min.js"
-                                                    bind:value={editorContent}
-                                            />
-                                        </div>
-                                        <div class="col-12 mb-1 mt-1 px-0">
-                                            <button type="submit" class="btn btn-lg btn-outline-primary animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
 
-                {/if}
+                    {/if}
+                </div>
             </div>
         </div>
     </div>

@@ -132,7 +132,7 @@
             }
         } else {
             isLiked = !isLiked;
-            toast.push('Error during action', {
+            toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
                     '--toastColor': '#fff',

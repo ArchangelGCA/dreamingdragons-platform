@@ -181,7 +181,7 @@
     }
 
     .heart-icon .fas.fa-heart {
-        font-size: 3rem; /* Adjust as needed */
+        font-size: 3rem;
     }
 
     .heart-icon .likes-counter {
@@ -189,8 +189,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: #fff; /* Adjust color as needed */
-        font-size: 1rem; /* Adjust as needed */
+        color: #fff;
+        font-size: 1rem;
     }
 
     @keyframes heart-pulse {
