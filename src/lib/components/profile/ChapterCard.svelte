@@ -43,8 +43,9 @@
             </div>
         {/if}
         {#if content.chapter_image_url}
-            <img src={content.chapter_image_url} alt="Chapter image" class="w-100 h-100 content-image" loading="lazy"
+            <img src={content.chapter_image_url} alt="Chapter {content.chapter_title}" class="w-100 h-100 content-image" loading="lazy"
                  style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
+            <div class="chapter-number-over">{index}</div>
         {:else}
             <div class="chapter-number">{content.chapter_id}</div>
         {/if}
@@ -52,10 +53,10 @@
     <div class="card-body border-top border-light-subtle pb-2 rounded-bottom-4">
         <div class="row justify-content-center">
             <div class="col-9 my-auto">
-                <span class="h5"><b class="fw-bolder text-primary-emphasis">{index}</b> - {content.chapter_title}</span>
+                <span class="h5">{content.chapter_title}</span>
             </div>
             <div class="col-3 mb-1 text-end">
-                <span class="likes-icon text-primary-emphasis" use:tooltip={{...tooltipConfig}} title="Likes">
+                <span class="likes-icon" use:tooltip={{...tooltipConfig}} title="Likes">
                     <i class="fas fa-heart fa-3x"></i>
                     <span class="likes-counter">{likes}</span>
                 </span>
@@ -74,12 +75,35 @@
         transform: translate(-50%, -50%);
     }
 
+    .chapter-number-over {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: rgba(74, 0, 126, 0.75);
+        color: white;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 50%;
+        padding-top: 1px;
+        font-size: 20px;
+        transition: 0.2s all ease-in-out;
+    }
+
+    .chapter-number-over:hover {
+        background-color: rgba(74, 0, 126, 1);
+    }
+
     .content-image {
         transition: 0.2s all ease-in-out;
     }
 
+    .card-body {
+        background-color: rgb(92, 0, 166);
+    }
+
     .content-image:hover {
-        /* also change luminance, but only to its edges, giving a cool effect to its edges */
         filter: brightness(1.3);
         transform: scale(1.1);
     }
@@ -91,6 +115,15 @@
 
     .likes-icon .fas.fa-heart {
         font-size: 3rem;
+    }
+
+    .fas.fa-heart {
+        color: #bd135a;
+        transition: 0.2s all ease-in-out;
+    }
+
+    .fas.fa-heart:hover {
+        color: #ff2d5d;
     }
 
     .likes-icon .likes-counter {
