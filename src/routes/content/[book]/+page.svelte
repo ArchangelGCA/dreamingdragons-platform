@@ -3,6 +3,7 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
+    import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
 
 
     export let data;
@@ -53,6 +54,7 @@
 
     let bookContent = data.bookContent[0];
     let chapters = bookContent.chapters;
+    let chaptersFound = false;
     let finalAvatarUrl = '';
     let avatarFound = true;
     let loadedAvatar = false;
@@ -63,6 +65,17 @@
 
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
+    }
+
+    if (chapters !== undefined && chapters !== null) {
+        // For each chapter, add the url image from the book cover
+        if (chapters[0].chapter_id !== null) {
+            chaptersFound = true;
+            chapters.forEach((item) => item.chapter_image_url = bookContent.book_cover_url);
+            /*for (let i = 0; i < chapters.length; i++) {
+                chapters[i].chapter_image_url = bookContent.book_cover_url;
+            }*/
+        }
     }
 
     async function downloadAvatar(path) {
@@ -167,7 +180,6 @@
                         {:else if avatarFound === true}
                             <img src="{finalAvatarUrl}" alt="{bookContent.owner_username}" class="img-fluid rounded-circle" style="max-height: 100px" loading="lazy">
                         {:else}
-                            <!-- Avatar not found, empty circle using css -->
                             <img class="img-fluid rounded-circle bg-purple py-3 py-lg-5" alt="Avatar Not Found!">
                         {/if}
                     </a>
@@ -215,10 +227,34 @@
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col">
-            <h1>TODO</h1>
+        <div class="col-12 px-0">
+            <p class="fs-5 bg-purple-opacity-25 p-3 rounded-4">{bookContent.book_description}</p>
         </div>
     </div>
+    <div class="row justify-content-center text-center">
+        <hr>
+        <div class="col-12 pb-2 text-center">
+            <p class="h1">Chapters:</p>
+        </div>
+        <div class="col-12 bg-purple-opacity-25 p-3 px-2 rounded-4 mb-3">
+            {#if !chaptersFound}
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        <span class="h3">No chapters found!</span>
+                    </div>
+                </div>
+            {:else}
+                <div class="row justify-content-evely gy-3 mx-0">
+                    {#each chapters as chapter, index (chapter.chapter_id)}
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
+                            <ChapterCard content={chapter} index={index + 1} />
+                        </div>
+                    {/each}
+                </div>
+            {/if}
+        </div>
+    </div>
+
 </div>
 
 <style>
@@ -232,6 +268,10 @@
 
     .bg-purple {
         background-color: #5c00a6;
+    }
+
+    .bg-purple-opacity-25 {
+        background-color: rgba(92, 0, 166, 0.25);
     }
 
     .liked {

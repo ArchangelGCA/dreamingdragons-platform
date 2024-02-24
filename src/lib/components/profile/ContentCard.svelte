@@ -139,7 +139,6 @@
     }
 
     .content-image:hover {
-        /* also change luminance, but only to its edges, giving a cool effect to its edges */
         filter: brightness(1.3);
         transform: scale(1.1);
     }
