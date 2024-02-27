@@ -62,6 +62,7 @@
     let commentsCount = 0;
     let isLiked = bookContent.is_liked;
     let likeActionActive = false;
+    let currentYear = new Date().getFullYear();
 
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
@@ -72,9 +73,6 @@
         if (chapters[0].chapter_id !== null) {
             chaptersFound = true;
             chapters.forEach((item) => item.chapter_image_url = bookContent.book_cover_url);
-            /*for (let i = 0; i < chapters.length; i++) {
-                chapters[i].chapter_image_url = bookContent.book_cover_url;
-            }*/
         }
     }
 
@@ -252,6 +250,15 @@
                     {/each}
                 </div>
             {/if}
+        </div>
+    </div>
+    <div class="row justify-content-center text-start">
+        <div class="col-12 px-0">
+            <p class="text-secondary text-center">
+                <small>
+                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile?id={bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{bookContent.owner_username}</a> - {bookContent.book_title}
+                </small>
+            </p>
         </div>
     </div>
 
