@@ -99,7 +99,7 @@
             </div>
         {/if}
         {#if content.chapter_image_url}
-            <a href="/content/{content.book_id}/{content.chapter_id}" target="_blank">
+            <a href="/content/{content.book_id}/{content.chapter_id}">
                 <img src={content.chapter_image_url} alt="Chapter {content.chapter_title}" class="w-100 h-100 content-image" loading="lazy"
                      style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
                 <div class="chapter-number-over">{index}</div>

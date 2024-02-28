@@ -63,6 +63,8 @@
     let isLiked = bookContent.is_liked;
     let likeActionActive = false;
     let currentYear = new Date().getFullYear();
+    let createdAt = new Date(bookContent.created_at);
+    let createdAtFormatted = `${createdAt.getDate()}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
 
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
@@ -183,8 +185,8 @@
                     </a>
                 </div>
                 <div class="col-9 text-center">
-                    <h2>{bookContent.book_title}</h2>
-                    <h6>by <a href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a></h6>
+                    <p class="h2">{bookContent.book_title}</p>
+                    <p class="h6">by <a href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
                 </div>
             </div>
         </div>

@@ -33,8 +33,8 @@
     let likeActionActive = false;
     let text = 'Text not found!';
     let currentYear = new Date().getFullYear();
-    let liked = chapterContent.is_liked;
-    let likes = chapterContent.likes_count;
+    let createdAt = new Date(chapterContent.created_at);
+    let createdAtFormatted = `${createdAt.getDate()}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
 
     if (chapterContent.owner_avatar_url) {
         avatarUrl = chapterContent.owner_avatar_url;
@@ -152,7 +152,7 @@
                 </div>
                 <div class="col-9 text-center">
                     <h2>{chapterContent.book_title}: {chapterContent.title}</h2>
-                    <h6>by <a href="/profile?id={chapterContent.owner_id}">{chapterContent.owner_username}</a></h6>
+                    <h6>by <a href="/profile?id={chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></h6>
                 </div>
             </div>
         </div>
@@ -197,12 +197,12 @@
             <p class="fs-5 bg-purple-opacity-25 p-3 rounded-4">{chapterContent.title}</p>
         </div>
     </div>
-    <div class="row justify-content-center text-center">
-        <div class="col-12 px-0">
+    <div class="row justify-content-center bg-text-opacity-10 rounded-3 py-3 px-3 px-md-auto">
+        <div class="col-12 col-lg-10 bg-black bg-opacity-25 shadow-lg mx-auto p-5 pt-3 pb-2 rounded-3">
             {@html text}
         </div>
     </div>
-    <div class="row justify-content-center text-start">
+    <div class="row justify-content-center text-start mt-3">
         <div class="col-12 px-0">
             <p class="text-secondary text-center">
                 <small>
@@ -224,6 +224,10 @@
 
     .bg-purple {
         background-color: #5c00a6;
+    }
+
+    .bg-text-opacity-10 {
+        background-color: rgba(128, 0, 128, 0.1);
     }
 
     .bg-purple-opacity-25 {
