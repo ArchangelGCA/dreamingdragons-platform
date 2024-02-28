@@ -2,6 +2,7 @@
     import {onMount} from "svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
+    import {deserialize} from "$app/forms";
 
     export let data;
     let { supabase } = data;
@@ -32,6 +33,8 @@
     let likeActionActive = false;
     let text = 'Text not found!';
     let currentYear = new Date().getFullYear();
+    let liked = chapterContent.is_liked;
+    let likes = chapterContent.likes_count;
 
     if (chapterContent.owner_avatar_url) {
         avatarUrl = chapterContent.owner_avatar_url;
@@ -60,19 +63,63 @@
     }
 
     async function handleHeartClick() {
-        // Send toast saying TODO
-        if (likeActionActive) return;
+
+        if (likeActionActive) {
+            return;
+        }
 
         likeActionActive = true;
+        const data = new FormData();
+        data.append('chapterId', chapterContent.chapter_id);
 
-        toast.push('TODO!', {
-            theme: {
-                '--toastBackground': '#5c00a6',
-                '--toastColor': 'white',
-                '--toastProgressBackground': 'rgba(255, 255, 255, 0.5)',
-                '--toastProgressColor': 'black'
-            }
+        isLiked = !isLiked;
+
+        const response = await fetch('?/like', {
+            method: 'POST',
+            body: data
         });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                // isLiked = !isLiked;
+                if (isLiked) {
+                    chapterContent.likes_count++;
+                    toast.push('Book liked ❤️', {
+                        theme: {
+                            '--toastBackground': '#5c00a6',
+                            '--toastColor': '#fff',
+                        }
+                    });
+                } else {
+                    chapterContent.likes_count--;
+                    toast.push('Book unliked 💔', {
+                        theme: {
+                            '--toastBackground': '#5c00a6',
+                            '--toastColor': '#fff',
+                        }
+                    });
+                }
+            } else {
+                isLiked = !isLiked;
+                toast.push('Error during action: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            isLiked = !isLiked;
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+
+        likeActionActive = false;
     }
 
     $: if (avatarUrl) downloadAvatar(avatarUrl);

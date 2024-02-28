@@ -2,6 +2,7 @@
     import {onMount} from "svelte";
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import {deserialize} from "$app/forms";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -18,6 +19,8 @@
     export let index;
     let isLoading = true;
     let likes = content.chapter_likes_count;
+    let liked = content.is_liked;
+    let likeActionActive = false;
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
@@ -30,6 +33,59 @@
     function handleImageLoad() {
         if (!isLoading) return;
         isLoading = false;
+    }
+
+    async function handleHeartClick(){
+        if (likeActionActive) {
+            return;
+        }
+
+        likeActionActive = true;
+
+        const data = new FormData();
+        data.append('chapterId', content.chapter_id);
+
+        liked = !liked;
+
+        if (liked) {
+            likes++;
+        } else {
+            likes--;
+        }
+
+        const response = await fetch('?/like_chapter', {
+            method: 'POST',
+            body: data
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                // isLiked = !isLiked;
+            } else {
+                liked = !liked;
+                likes--;
+
+                toast.push('Error during action: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            liked = !liked;
+            likes--;
+
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+
+        likeActionActive = false;
     }
 </script>
 
@@ -58,10 +114,12 @@
                 <span class="h5">{content.chapter_title}</span>
             </div>
             <div class="col-3 mb-1 text-end">
-                <span class="likes-icon" use:tooltip={{...tooltipConfig}} title="Likes">
-                    <i class="fas fa-heart fa-3x"></i>
-                    <span class="likes-counter">{likes}</span>
-                </span>
+                <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick} use:tooltip={{...tooltipConfig}} title={liked ? 'Unlike' : 'Like'}>
+                    <span class="likes-icon {liked ? 'liked' : 'unliked'}">
+                        <i class="fas fa-heart fa-3x"></i>
+                        <span class="likes-counter">{likes}</span>
+                    </span>
+                </button>
             </div>
         </div>
     </div>
@@ -119,13 +177,26 @@
         font-size: 3rem;
     }
 
-    .fas.fa-heart {
+    .liked {
         color: #bd135a;
-        transition: 0.2s all ease-in-out;
+        animation: heart-pulse 0.3s ease-in-out;
+        transition: 0.15s all ease-in-out;
     }
 
-    .fas.fa-heart:hover {
-        color: #ff2d5d;
+    .liked:hover {
+        transform: scale(1.1);
+    }
+
+    .unliked {
+        transform: scale(0.8);
+        color: #ffffff;
+        animation: heart-unpulse 0.3s ease-in-out;
+        transition: 0.15s all ease-in-out;
+    }
+
+    .unliked:hover {
+        color: #bd135a;
+        transform: scale(0.9);
     }
 
     .likes-icon .likes-counter {
@@ -135,5 +206,17 @@
         transform: translate(-50%, -50%);
         color: #fff;
         font-size: 1rem;
+    }
+
+    @keyframes heart-pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    @keyframes heart-unpulse {
+        0% { transform: scale(0.8); }
+        50% { transform: scale(1); }
+        100% { transform: scale(0.8); }
     }
 </style>

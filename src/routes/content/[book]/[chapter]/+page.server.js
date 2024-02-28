@@ -59,3 +59,83 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     // return
     return { chapterContent };
 }
+
+export const actions = {
+    like: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            throw redirect(303, '/login');
+        }
+
+        const chapterId = formData.chapterId;
+        const userId = session.user.id;
+
+        if (chapterId === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { data: likes, error } = await supabase
+            .from('chapter_likes')
+            .select('*')
+            .eq('chapter_id', chapterId)
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        const action = likes.length === 0 ? 'added' : 'removed';
+
+        if (likes.length === 0) {
+            const { error } = await supabase
+                .from('chapter_likes')
+                .insert([{ chapter_id: chapterId, user_id: userId }]);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        } else {
+            const { error } = await supabase
+                .from('chapter_likes')
+                .delete()
+                .eq('chapter_id', chapterId)
+                .eq('user_id', userId);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Like " + action + " successfully"
+            }
+        }
+    }
+}
