@@ -85,7 +85,7 @@
                 // isLiked = !isLiked;
                 if (isLiked) {
                     chapterContent.likes_count++;
-                    toast.push('Book liked ❤️', {
+                    toast.push('Chapter liked ❤️', {
                         theme: {
                             '--toastBackground': '#5c00a6',
                             '--toastColor': '#fff',
@@ -93,7 +93,7 @@
                     });
                 } else {
                     chapterContent.likes_count--;
-                    toast.push('Book unliked 💔', {
+                    toast.push('Chapter unliked 💔', {
                         theme: {
                             '--toastBackground': '#5c00a6',
                             '--toastColor': '#fff',
