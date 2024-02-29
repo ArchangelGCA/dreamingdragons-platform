@@ -197,8 +197,8 @@
             <p class="fs-5 bg-purple-opacity-25 p-3 rounded-4">{chapterContent.title}</p>
         </div>
     </div>
-    <div class="row justify-content-center bg-text-opacity-10 rounded-3 py-3 px-3 px-md-auto">
-        <div class="col-12 col-lg-10 bg-black bg-opacity-25 shadow-lg mx-auto p-5 pt-3 pb-2 rounded-3">
+    <div class="row justify-content-center bg-text-opacity-10 rounded-3 py-3 px-2 px-md-auto">
+        <div class="col-12 col-lg-10 bg-black bg-opacity-25 shadow-lg mx-auto px-2 px-md-5 pt-3 pb-2 rounded-3">
             {@html text}
         </div>
     </div>
