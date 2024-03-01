@@ -215,7 +215,7 @@
     }
 </script>
 
-<div class="container-xxl px-0">
+<div class="container-md px-0">
     <div class="row justify-content-center">
         <div class="col">
             <div class="row justify-content-center">
@@ -228,29 +228,28 @@
                 <div class="col-12 text-center">
                     <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
                     <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
-                        <button type="button" class="btn btn-lg btn-outline-danger {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create book">
+                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create book">
                             <i class="fas fa-book"></i> Book
                         </button>
-                        <button type="button" class="btn btn-lg btn-outline-primary {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter for book">
+                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter">
                             <i class="fas fa-file-alt"></i> Chapter
                         </button>
                     </div>
                     {#if selectedOption === 'book'}
                         <div in:send={{duration: 500}} out:receive={{duration: 500}}>
-                            <hr>
-                            <div class="row justify-content-center text-center mt-3 bg-danger bg-opacity-25 mx-auto rounded-3">
+                            <div class="row justify-content-center text-center mt-4 mx-auto rounded-3">
                                 <div class="col-12">
-                                    <p class="h3 pt-2">Book:</p>
+                                    <p class="h2 pt-2">Create Book:</p>
                                 </div>
                             </div>
-                            <div class="row mt-3 mx-0 py-2 justify-content-center border border-danger border-opacity-50 rounded-3">
-                                <div class="col">
+                            <div class="row mt-3 mx-0 justify-content-center">
+                                <div class="col px-0">
                                     <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
                                         <div class="row mx-auto mt-1">
-                                            <div class="col-12 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
+                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center" style="min-height: 30vh">
                                                 <label for="file" class="form-label" title="Your book's cover image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
-                                                <input class="form-control form-control-lg mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required />
-                                                <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: 2.5MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
+                                                <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required />
+                                                <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                                 {#if previewUrl}
                                                     <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh;" />
                                                 {/if}
@@ -258,18 +257,21 @@
                                                     <span class="text-light text-opacity-75">Selected file: {fileName}</span>
                                                 {/if}
                                             </div>
-                                            <div class="col-12 col-md-6 mb-2 mb-md-2 px-0 pe-md-2">
-                                                <div class="col-12 h-100 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
-                                                    <label for="title" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public title"><i class="fas fa-book"></i> Title</label>
-                                                    <input type="text" class="form-control bg-black bg-opacity-50" name="title" id="title" placeholder="Title" required>
+                                            <div class="col-12 px-0">
+                                                <p class="fs-5 text-start mb-1 mt-3 ms-1"><i class="fas fa-book"></i> Title:</p>
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Your book's public title">
+                                                    <input type="text" class="form-control form-control-custom" name="title" id="title" placeholder="Title" required>
+                                                    <label for="title">Title</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 col-md-6 mb-2 bg-danger bg-opacity-10 p-3 px-2 px-md-3 rounded-3">
+                                            <div class="col-12 mb-2 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Your book's description">
+                                                <!--
                                                 <label for="description" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
-                                                <textarea class="form-control bg-black bg-opacity-50" name="description" id="description" rows="3" placeholder="Description" required></textarea>
+                                                -->
+                                                <textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" required></textarea>
                                             </div>
                                             <div class="col-12 mb-1 mt-1 px-0">
-                                                <button type="submit" class="btn btn-lg btn-outline-danger animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                             </div>
                                         </div>
                                     </form>
@@ -279,7 +281,6 @@
                     {/if}
                     {#if selectedOption === 'chapter'}
                         <div in:send={{duration: 500}} out:receive={{duration: 500}}>
-                            <hr>
                             <div class="row justify-content-center text-center mt-3 bg-primary bg-opacity-25 mx-auto rounded-3">
                                 <div class="col-12">
                                     <p class="h3 pt-2">Chapter:</p>
@@ -331,6 +332,13 @@
         animation: Gradient 10s ease infinite, tranform 1s ease-in-out;
     }
 
+    .animate-button:hover {
+        border: 2px solid #5c00a6;
+        background: linear-gradient(270deg, #0b0086, #5c00a6);
+        background-size: 200% 200%;
+        animation: Gradient 1.5s ease infinite;
+    }
+
     .btn.active {
         background: linear-gradient(270deg, #0b0086, #5c00a6);
         background-size: 200% 200%;
@@ -338,9 +346,32 @@
         color: #dcd6f7;
     }
 
+    .form-animated-background {
+        background-size: 200% 200%;
+        background-image: linear-gradient(270deg, #000, #3d006c, #000);
+        animation: ColorShift 4s ease infinite;
+    }
+
+    .form-control-custom {
+        background: linear-gradient(45deg, rgba(92, 0, 166, 0.65), rgb(11, 0, 134));
+        color: #dcd6f7;
+        border: none;
+    }
+
+    .form-control-custom:focus {
+        outline: none;
+        box-shadow: 0 0 5px #5c00a6;
+    }
+
     @keyframes Gradient {
-        0% {background-position: 0% 50%;}
+        0% {background-position: 0 50%;}
         50% {background-position: 100% 50%;}
-        100% {background-position: 0% 50%;}
+        100% {background-position: 0 50%;}
+    }
+
+    @keyframes ColorShift {
+        0% {background: #000;}
+        50% {background: #3d006c;}
+        100% {background: #000;}
     }
 </style>
