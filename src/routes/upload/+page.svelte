@@ -6,21 +6,10 @@
     import {onMount} from "svelte";
     import Editor from '@tinymce/tinymce-svelte';
     import {invalidateAll} from "$app/navigation";
-    import { crossfade } from 'svelte/transition';
     import autoAnimate from '@formkit/auto-animate';
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
-    });
-
-    const [send, receive] = crossfade({
-        fallback(node, params) {
-            return {
-                duration: 500,
-                easing: t => t,
-                css: t => `opacity: ${t}`
-            };
-        }
     });
 
     let conf = {
@@ -221,7 +210,7 @@
         <div class="col">
             <div class="row justify-content-center">
                 <div class="col-12">
-                    <p class="h1 text-center mt-3 mb-0 py-2 bg-light-subtle bg-opacity-25 rounded-4 animate-button">Upload content</p>
+                    <p class="h1 text-center mt-3 mb-0 py-2 bg-light-subtle bg-opacity-25 rounded-4 animate-background">Upload content</p>
                 </div>
             </div>
             <hr>
@@ -248,7 +237,7 @@
                                     <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
                                         <div class="row mx-auto mt-1">
                                             <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center" style="min-height: 30vh">
-                                                <label for="file" class="form-label" title="Your book's cover image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
+                                                <label for="file" class="form-label" title="Book's cover image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
                                                 <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required/>
                                                 <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                                 {#if previewUrl}
@@ -260,15 +249,12 @@
                                             </div>
                                             <div class="col-12 px-0">
                                                 <p class="fs-5 text-start mb-1 mt-3 ms-1"><i class="fas fa-book"></i> Title:</p>
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Your book's public title">
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Book's public title">
                                                     <input type="text" class="form-control form-control-custom" name="title" id="title" placeholder="Title" required>
                                                     <label for="title"><i class="fas fa-heading"></i> Title</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Your book's description">
-                                                <!--
-                                                <label for="description" class="form-label" use:tooltip={{...tooltipConfig}} title="Your book's public short description"><i class="fas fa-info-circle"></i> Description</label>
-                                                -->
+                                            <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Book's description">
                                                 <textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" required></textarea>
                                             </div>
                                             <div class="col-12 mb-1 mt-2 px-0">
@@ -294,7 +280,7 @@
                                         <div class="row">
                                             <div class="col-12 rounded-3 mt-1 px-0">
                                                 <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Book</p>
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Your target's book">
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Target's book">
                                                     <select class="form-select form-select-lg form-select-custom" name="book" id="book" required>
                                                         {#each books as book (book.id)}
                                                             <option class="option-custom" value={book.id}>{book.title}</option>
@@ -304,7 +290,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 rounded-3 mb-2 px-0 mt-2">
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Your chapter's title">
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Chapter's title">
                                                     <input type="text" class="form-control form-control-lg form-control-custom" name="title" id="title" placeholder="Title" required>
                                                     <label for="title" class="form-label"><i class="fas fa-heading"></i> Title</label>
                                                 </div>
@@ -354,6 +340,12 @@
         color: #dcd6f7;
     }
 
+    .animate-background {
+        background: linear-gradient(270deg, #0b0086, #5c00a6);
+        background-size: 200% 200%;
+        animation: Gradient 10s ease infinite, tranform 1s ease-in-out;
+    }
+
     .form-animated-background {
         background-size: 200% 200%;
         background-image: linear-gradient(270deg, #000, #3d006c, #000);
@@ -367,6 +359,10 @@
         transition: 0.15s ease-in-out all;
     }
 
+    .form-control-custom:hover {
+        background-color: rgba(92, 0, 166, 0.5);
+    }
+
     .form-control-custom:focus {
         outline: none;
         box-shadow: 0 0 8px #5c00a6;
@@ -378,6 +374,10 @@
         color: #dcd6f7;
         border: none;
         transition: 0.15s ease-in-out all;
+    }
+
+    .form-select-custom:hover {
+        background-color: rgba(92, 0, 166, 0.5);
     }
 
     .option-custom {

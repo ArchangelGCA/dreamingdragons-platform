@@ -2,7 +2,8 @@
     import { invalidate } from '$app/navigation'
     import {onMount} from "svelte";
     import favicon from "$lib/images/favicon.webp";
-    import { SvelteToast } from '@zerodevx/svelte-toast'
+    import { SvelteToast } from '@zerodevx/svelte-toast';
+    import autoAnimate from '@formkit/auto-animate';
 
     export let data;
 
@@ -87,7 +88,10 @@
     </div>
 </div>
 
-<slot></slot>
+<div use:autoAnimate>
+    <slot></slot>
+</div>
+
 
 <div class="row border-top border-light-subtle pt-3 pb-2">
     <div class="col">
