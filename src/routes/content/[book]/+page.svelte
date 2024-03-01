@@ -160,8 +160,16 @@
 </script>
 
 <div class="container-xxl">
+    <!-- Shortcut to go down to chapters section -->
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <a href="#chapters" class="btn btn-lg btn-outline-secondary text-light opacity-50 w-100 rounded-3 mt-3">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </div>
     <div class="row justify-content-center text-center">
-        <div class="col my-4" use:tooltip={{...tooltipConfig}} title="Original Cover">
+        <div class="col-auto mb-4 mt-3" use:tooltip={{...tooltipConfig}} title="Original Cover">
             <a href="{bookContent.book_cover_url}" target="_blank">
                 <img src="{bookContent.book_cover_url}" alt="{bookContent.book_title}" class="img-fluid rounded-4" style="max-height: 75vh" loading="lazy">
             </a>
@@ -186,7 +194,7 @@
                 </div>
                 <div class="col-9 text-center">
                     <p class="h2">{bookContent.book_title}</p>
-                    <p class="h6">by <a href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
+                    <p class="h6">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
                 </div>
             </div>
         </div>
@@ -231,7 +239,7 @@
             <p class="fs-5 bg-purple-opacity-25 p-3 rounded-4">{bookContent.book_description}</p>
         </div>
     </div>
-    <div class="row justify-content-center text-center">
+    <div class="row justify-content-center text-center" id="chapters">
         <hr>
         <div class="col-12 pb-2 text-center">
             <p class="h1">Chapters:</p>

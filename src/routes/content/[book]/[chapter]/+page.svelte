@@ -127,8 +127,8 @@
 
 <div class="container-xxl">
     <div class="row justify-content-center text-center">
-        <div class="col my-4" use:tooltip={{...tooltipConfig}} title="Original Cover">
-            <a href="{chapterContent.book_cover_url}" target="_blank">
+        <div class="col my-4" use:tooltip={{...tooltipConfig}} title="Open Book">
+            <a href="/content/{chapterContent.book_id}">
                 <img src="{chapterContent.book_cover_url}" alt="{chapterContent.book_title + ' ' + chapterContent.title}" class="img-fluid rounded-4" style="max-height: 75vh" loading="lazy">
             </a>
         </div>
@@ -151,8 +151,8 @@
                     </a>
                 </div>
                 <div class="col-9 text-center">
-                    <h2>{chapterContent.book_title}: {chapterContent.title}</h2>
-                    <h6>by <a href="/profile?id={chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></h6>
+                    <h2><a class="link-light link-opacity-75 text-decoration-none" href="/content/{chapterContent.book_id}">{chapterContent.book_title}</a>: {chapterContent.title}</h2>
+                    <h6>by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></h6>
                 </div>
             </div>
         </div>

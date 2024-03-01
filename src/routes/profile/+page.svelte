@@ -164,7 +164,7 @@
             {/if}
         </div>
     </div>
-    <div class="row justify-content-center mt-3 mx-1">
+    <div class="row justify-content-center mx-0 mt-3">
         <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
             <div class="row justify-content-center align-items-center text-center py-3">
                 <div class="col-4 align-items-center">
@@ -200,7 +200,7 @@
             </div>
         </div>
     </div>
-    <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-0 px-1">
+    <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-auto">
         {#if !hasBooks}
             <div class="col mt-4 text-center">
                 <p class="h1">No content found, yet!</p>
