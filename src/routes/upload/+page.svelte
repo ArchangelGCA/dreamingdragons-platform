@@ -154,13 +154,18 @@
         await invalidateAll();
         if (result.type === 'success') {
             if (result.data.status === 200) {
-                toast.push(result.data.body.message, {
+
+                const bookId = result.data.body.book_id;
+                const bookUrl = '/content/' + bookId;
+
+                toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + bookUrl + '" target="_blank">here</a>.', {
                     theme: {
                         '--toastBackground': '#4caf50',
                         '--toastColor': '#fff'
                     }
-                })
+                });
                 event.target.reset();
+                tags = [];
                 previewUrl = '';
             } else {
                 toast.push('Error: ' + result.data.body.message, {
@@ -205,13 +210,19 @@
         await invalidateAll();
         if (result.type === 'success') {
             if (result.data.status === 200) {
-                toast.push(result.data.body.message, {
+
+                const bookId = result.data.body.book_id;
+                const chapterId = result.data.body.chapter_id;
+                const bookUrl = '/content/' + bookId + "/" + chapterId;
+
+                toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + bookUrl + '" target="_blank">here</a>.', {
                     theme: {
                         '--toastBackground': '#4caf50',
                         '--toastColor': '#fff'
                     }
                 })
                 event.target.reset();
+                tags = [];
                 editorContent = '';
             } else {
                 toast.push('Error: ' + result.data.body.message, {
@@ -268,7 +279,7 @@
                                                 <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required/>
                                                 <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                                 {#if previewUrl}
-                                                    <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh;" />
+                                                    <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" />
                                                 {/if}
                                                 {#if fileName}
                                                     <span class="text-light text-opacity-75">Selected file: {fileName}</span>
@@ -286,7 +297,7 @@
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
                                                 <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
-                                                <div class="d-flex flex-wrap justify-content-center justify-content-sm-start text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate>
+                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate>
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>

@@ -96,6 +96,7 @@ export const actions = {
         const title = formData.title;
         const description = formData.description;
         const image = formData.image;
+        const tag_names_temp = formData.tags;
 
         if (image === null || title === null || description === null) {
             return {
@@ -132,10 +133,17 @@ export const actions = {
             return finalURL;
         }
 
-        // Insert book into database
-        const { error } = await supabase.from('book').insert([
+        // Insert book into database and get id
+        const { data, error } = await supabase.rpc('insert_book_return_id', {
+            book_title: title,
+            book_description:  description,
+            book_cover_url: finalURL,
+            owner_id: session.user.id
+        });
+
+        /*const { error } = await supabase.from('book').insert([
             { title, description, cover_url: finalURL, owner_id: session.user.id }
-        ]);
+        ]);*/
 
         if (error) {
             return {
@@ -146,10 +154,37 @@ export const actions = {
             }
         }
 
+        const book_id = data;
+
+        if (tag_names_temp !== null && tag_names_temp !== undefined && tag_names_temp !== "") {
+
+            const tag_names = tag_names_temp.split(',');
+
+            tag_names.forEach((tag, index) => {
+                tag_names[index] = tag.trim();
+            });
+
+            const { error } = await supabase
+                .rpc('add_tags_to_book', {
+                    book_id,
+                    tag_names
+                });
+
+            if (error) {
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        }
+
         return {
             status: 200,
             body: {
-                message: "Book added successfully"
+                message: "Book added successfully",
+                book_id: book_id
             }
         }
     },
@@ -164,6 +199,7 @@ export const actions = {
         const bookId = formData.book;
         const title = formData.title;
         const content = formData.content;
+        const tag_names_temp = formData.tags;
 
         if (bookId === null || title === null || content === null) {
             return {
@@ -175,9 +211,9 @@ export const actions = {
         }
 
         // Insert chapter into database
-        const { error } = await supabase.from('chapters').insert([
-            { title, text: content, book_id: bookId, owner_id: session.user.id }
-        ]);
+        const { data, error } = await supabase.rpc('insert_chapter_return_id', {
+            chapter_title: title, chapter_text: content, book_id: bookId, owner_id: session.user.id
+        });
 
         if (error) {
             console.error(error);
@@ -189,10 +225,38 @@ export const actions = {
             }
         }
 
+        const chapter_id = data;
+
+        if (tag_names_temp !== null && tag_names_temp !== undefined && tag_names_temp !== "") {
+
+            const tag_names = tag_names_temp.split(',');
+
+            tag_names.forEach((tag, index) => {
+                tag_names[index] = tag.trim();
+            });
+
+            const { error } = await supabase
+                .rpc('add_tags_to_chapter', {
+                    chapter_id,
+                    tag_names
+                });
+
+            if (error) {
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        }
+
         return {
             status: 200,
             body: {
-                message: "Chapter added successfully"
+                message: "Chapter added successfully",
+                book_id: bookId,
+                chapter_id: chapter_id
             }
         }
     }
