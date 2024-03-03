@@ -80,7 +80,7 @@
     let fileName = '';
     let editorContent = '';
     let selectedOption = 'book';
-    $: if (selectedOption) {
+    /* $: if (selectedOption) {
         toast.push(`Mode: ${selectedOption}`, {
             duration: 850,
             theme: {
@@ -88,6 +88,33 @@
                 '--toastColor': '#fff'
             }
         });
+    } */ // Disabled, it looks better without
+
+    let tags = [];
+    function addTag(e) {
+        if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
+            e.preventDefault();
+            const tag = e.target.value.trim();
+            if (tag) {
+                if (tags.includes(tag)){
+                    toast.push('Tag already added', {
+                        // Warning yellow-ish dark themed colors
+                        theme: {
+                            '--toastBackground': '#ffcc00',
+                            '--toastColor': '#000'
+                        }
+                    });
+                    e.target.value = '';
+                    return;
+                }
+                tags = [...tags, tag];
+                e.target.value = '';
+            }
+        }
+    }
+
+    function removeTag(tag) {
+        tags = tags.filter(t => t !== tag);
     }
 
     // Function to load image preview
@@ -257,6 +284,20 @@
                                             <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Book's description">
                                                 <textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" required></textarea>
                                             </div>
+                                            <div class="col-12 mt-2 px-0 rounded-3">
+                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
+                                                <div class="d-flex flex-wrap justify-content-center justify-content-sm-start text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate>
+                                                    {#each tags as tag}
+                                                        <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
+                                                            <span>{tag}</span>
+                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
+                                                        </div>
+                                                    {/each}
+                                                    <input class="input-tags my-auto ms-1" type="text" placeholder="Add tags" on:keydown={addTag} />
+                                                    <!-- Hidden input bind with tags -->
+                                                    <input type="hidden" name="tags" value={tags} />
+                                                </div>
+                                            </div>
                                             <div class="col-12 mb-1 mt-2 px-0">
                                                 <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                             </div>
@@ -300,6 +341,20 @@
                                                         scriptSrc="tinymce/tinymce.min.js"
                                                         bind:value={editorContent}
                                                 />
+                                            </div>
+                                            <div class="col-12 mt-2 px-0 rounded-3">
+                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
+                                                <div class="d-flex flex-wrap justify-content-center justify-content-sm-start text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate>
+                                                    {#each tags as tag}
+                                                        <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
+                                                            <span>{tag}</span>
+                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
+                                                        </div>
+                                                    {/each}
+                                                    <input class="input-tags my-auto ms-1" type="text" placeholder="Add tags" on:keydown={addTag} />
+                                                    <!-- Hidden input bind with tags -->
+                                                    <input type="hidden" name="tags" value={tags} />
+                                                </div>
                                             </div>
                                             <div class="col-12 mb-1 mt-2 px-0">
                                                 <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
@@ -380,9 +435,34 @@
         background-color: rgba(92, 0, 166, 0.5);
     }
 
+    .tag-custom {
+        background-color: rgba(92, 0, 166, 0.86);
+        color: #dcd6f7;
+        border: none;
+        transition: 0.15s ease-in-out all;
+    }
+
+    .tag-custom:hover {
+        background-color: rgba(92, 0, 166, 0.5);
+    }
+
     .option-custom {
         background-color: rgb(47, 0, 89);
         color: #c2c2c2;
+    }
+
+    .button-tags {
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+    }
+
+    .input-tags {
+        all: unset;
     }
 
     @keyframes Gradient {
