@@ -71,7 +71,6 @@
     }
 
     if (chapters !== undefined && chapters !== null) {
-        // For each chapter, add the url image from the book cover
         if (chapters[0].chapter_id !== null) {
             chaptersFound = true;
             chapters.forEach((item) => item.chapter_image_url = bookContent.book_cover_url);
@@ -160,18 +159,17 @@
 </script>
 
 <div class="container-xxl">
-    <!-- Shortcut to go down to chapters section -->
     <div class="row justify-content-center">
-        <div class="col-12 text-center">
-            <a href="#chapters" class="btn btn-lg btn-outline-secondary text-light opacity-50 w-100 rounded-3 mt-3">
+        <div class="col-12 text-center px-0">
+            <a href="#chapters" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3 mt-3" use:tooltip={{...tooltipConfig}} title="Go to Chapters">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-auto mb-4 mt-3" use:tooltip={{...tooltipConfig}} title="Original Cover">
+        <div class="col-auto mb-4 mt-3 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
             <a href="{bookContent.book_cover_url}" target="_blank">
-                <img src="{bookContent.book_cover_url}" alt="{bookContent.book_title}" class="img-fluid rounded-4" style="max-height: 75vh" loading="lazy">
+                <img src="{bookContent.book_cover_url}" alt="{bookContent.book_title}" class="img-fluid rounded-4" style="max-height: 60vh" loading="lazy">
             </a>
         </div>
     </div>
@@ -289,6 +287,15 @@
 
     .bg-purple-opacity-25 {
         background-color: rgba(92, 0, 166, 0.25);
+    }
+
+    .btn-shortcut {
+        background-color: transparent;
+    }
+
+    .btn-shortcut:hover {
+        background-color: #4a007f;
+        border-color: #4a007f;
     }
 
     .liked {

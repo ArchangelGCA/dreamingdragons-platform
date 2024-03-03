@@ -126,10 +126,17 @@
 </script>
 
 <div class="container-xxl">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center px-0">
+            <a href="#title" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3 mt-3" use:tooltip={{...tooltipConfig}} title="Go to Text">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </div>
     <div class="row justify-content-center text-center">
-        <div class="col my-4" use:tooltip={{...tooltipConfig}} title="Open Book">
+        <div class="col-auto mb-4 mt-3 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
             <a href="/content/{chapterContent.book_id}">
-                <img src="{chapterContent.book_cover_url}" alt="{chapterContent.book_title + ' ' + chapterContent.title}" class="img-fluid rounded-4" style="max-height: 75vh" loading="lazy">
+                <img src="{chapterContent.book_cover_url}" alt="{chapterContent.book_title + ' ' + chapterContent.title}" class="img-fluid rounded-4" style="max-height: 60vh" loading="lazy">
             </a>
         </div>
     </div>
@@ -192,7 +199,7 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-center text-center">
+    <div class="row justify-content-center text-center" id="title">
         <div class="col-12 px-0">
             <p class="fs-5 bg-purple-opacity-25 p-3 rounded-4">{chapterContent.title}</p>
         </div>
@@ -232,6 +239,15 @@
 
     .bg-purple-opacity-25 {
         background-color: rgba(92, 0, 166, 0.25);
+    }
+
+    .btn-shortcut {
+        background-color: transparent;
+    }
+
+    .btn-shortcut:hover {
+        background-color: #4a007f;
+        border-color: #4a007f;
     }
 
     .liked {
