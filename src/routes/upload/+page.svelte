@@ -355,7 +355,7 @@
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
                                                 <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
-                                                <div class="d-flex flex-wrap justify-content-center justify-content-sm-start text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate>
+                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate>
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>

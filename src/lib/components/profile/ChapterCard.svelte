@@ -3,6 +3,7 @@
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
     import {deserialize} from "$app/forms";
+    import autoAnimate from '@formkit/auto-animate';
 
     const tooltipConfig = {
         animation: 'fade',
@@ -89,7 +90,7 @@
     }
 </script>
 
-<div class="card border-0 bg-placeholder img-home w-100 rounded-4" data-aos="fade-up" use:tooltip={{...tooltipConfig}}
+<div class="card border-0 bg-placeholder img-home w-100 rounded-4" use:autoAnimate use:tooltip={{...tooltipConfig}}
      title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-top-4"
          style="height: 45vh; overflow: hidden;">

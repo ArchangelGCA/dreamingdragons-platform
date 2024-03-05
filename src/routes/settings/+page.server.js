@@ -1,4 +1,3 @@
-/*import { ListBucketsCommand } from '@aws-sdk/client-s3';*/
 import { fail, redirect } from '@sveltejs/kit'
 
 export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {

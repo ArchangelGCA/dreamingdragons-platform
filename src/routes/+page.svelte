@@ -1,5 +1,6 @@
 <script>
     import {onMount} from "svelte";
+    import autoAnimate from '@formkit/auto-animate';
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
@@ -15,7 +16,7 @@
     <!-- Work In Progress with worker helmet yellow -->
     <div class="row justify-content-center">
         <div class="col text-center">
-            <i class="fa-solid fa-helmet-safety fa-5x text-warning" data-aos="zoom-in"></i>
+            <i class="fa-solid fa-helmet-safety fa-5x text-warning" use:autoAnimate></i>
         </div>
     </div>
 </div>

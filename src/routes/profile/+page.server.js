@@ -1,4 +1,3 @@
-/*import { ListBucketsCommand } from '@aws-sdk/client-s3';*/
 import { PUBLIC_DEFAULT_NAME, PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
 import {error, redirect} from '@sveltejs/kit'
 

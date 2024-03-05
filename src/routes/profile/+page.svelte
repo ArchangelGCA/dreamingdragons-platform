@@ -3,6 +3,7 @@
     import ContentCard from "$lib/components/profile/ContentCard.svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import { PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
+    import autoAnimate from '@formkit/auto-animate';
 
     const tooltipConfig = {
         animation: 'fade',
@@ -204,7 +205,7 @@
         {#if !hasBooks}
             <div class="col mt-4 text-center">
                 <p class="h1">No content found, yet!</p>
-                <i class="fa-solid fa-bookmark fa-5x text-warning" data-aos="zoom-in"></i>
+                <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
             </div>
         {:else}
             {#each books as content (content.book_id)}

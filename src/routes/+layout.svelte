@@ -27,12 +27,6 @@
 
         window.$('[data-bs-toggle="tooltip"]').tooltip();
 
-        // Init AOS
-        AOS.init({
-            once: true,
-        });
-        window.AOS = AOS;
-
         return () => data.subscription.unsubscribe();
     });
 
