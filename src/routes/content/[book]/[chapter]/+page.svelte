@@ -166,6 +166,15 @@
                 <div class="col-9 text-center">
                     <h2><a class="link-light link-opacity-75 text-decoration-none" href="/content/{chapterContent.book_id}">{chapterContent.book_title}</a>: {chapterContent.title}</h2>
                     <h6>by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></h6>
+                    {#if tags.length !== 0}
+                        <div class="row justify-content-center">
+                            <div class="col-auto">
+                                {#each tags as tag (tag.tags.id)}
+                                    <a href="{tag.url}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.tags.name}">{tag.tags.name}</a>
+                                {/each}
+                            </div>
+                        </div>
+                    {/if}
                 </div>
             </div>
         </div>

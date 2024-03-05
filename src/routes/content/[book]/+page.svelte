@@ -199,6 +199,13 @@
                 <div class="col-9 text-center">
                     <p class="h2">{bookContent.book_title}</p>
                     <p class="h6">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
+                    <div class="row justify-content-center">
+                        <div class="col-auto">
+                            {#each tags as tag (tag.tags.id)}
+                                <a href="{tag.url}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.tags.name}">{tag.tags.name}</a>
+                            {/each}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
