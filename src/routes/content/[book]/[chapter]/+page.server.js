@@ -47,6 +47,21 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
         return;
     }
 
+    const { data: tags, error: tagsError } = await supabase
+        .from('chapter_tags')
+        .select('tags(*)')
+        .eq('chapter_id', chapterId);
+
+    if (tagsError) {
+        console.error(tagsError);
+        return {
+            status: 500,
+            body: {
+                message: tagsError.message
+            }
+        }
+    }
+
     if (!session) {
         isOwner = false;
     } else {
@@ -57,7 +72,7 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     chapterContent[0].is_owner = isOwner;
 
     // return
-    return { chapterContent };
+    return { chapterContent, tags };
 }
 
 export const actions = {

@@ -23,6 +23,7 @@
     });
 
     let chapterContent = data.chapterContent[0];
+    let tags = data.tags;
     let finalAvatarUrl = '';
     let loadedAvatar = false;
     let avatarFound = true;
@@ -42,6 +43,11 @@
 
     if (chapterContent.text) {
         text = chapterContent.text;
+    }
+
+    if (tags.length > 0){
+        // add url to tags using tags[i].tags.name
+        tags.forEach((item) => item.url = `/search?tag=${item.tags.name}`);
     }
 
     async function downloadAvatar(path) {

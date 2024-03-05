@@ -54,6 +54,7 @@
 
     let bookContent = data.bookContent[0];
     let chapters = bookContent.chapters;
+    let tags = data.tags;
     let chaptersFound = false;
     let finalAvatarUrl = '';
     let avatarFound = true;
@@ -75,6 +76,11 @@
             chaptersFound = true;
             chapters.forEach((item) => item.chapter_image_url = bookContent.book_cover_url);
         }
+    }
+
+    if (tags.length > 0){
+        // add url to tags using tags[i].tags.name
+        tags.forEach((item) => item.url = `/search?tag=${item.tags.name}`);
     }
 
     async function downloadAvatar(path) {
