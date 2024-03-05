@@ -15,18 +15,26 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
 
     const bookId = params.book;
 
-    // Get book_content where book_id = bookId
-    const { data: bookContent, error } = await supabase
-        .from('book_content')
-        .select('*')
-        .eq('book_id', bookId);
+    const [bookContentResult, tagsResult] = await Promise.all([
+        supabase
+            .from('book_content')
+            .select('*')
+            .eq('book_id', bookId),
+        supabase
+            .from('book_tags')
+            .select('tags(*)')
+            .eq('book_id', bookId)
+    ]);
 
-    if (error) {
-        console.error(error);
+    const { data: bookContent, error: error } = bookContentResult;
+    const { data: tags, error: tagsError } = tagsResult;
+
+    if (error || tagsError) {
+        console.error(error || tagsError);
         return {
             status: 500,
             body: {
-                message: error.message
+                message: (error || tagsError).message
             }
         }
     }
@@ -34,21 +42,6 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     if (!bookContent || bookContent.length === 0) {
         errorx(404, "Book not found");
         return;
-    }
-
-    const { data: tags, error: tagsError } = await supabase
-        .from('book_tags')
-        .select('tags(*)')
-        .eq('book_id', bookId);
-
-    if (tagsError) {
-        console.error(tagsError);
-        return {
-            status: 500,
-            body: {
-                message: tagsError.message
-            }
-        }
     }
 
     if (!session) {

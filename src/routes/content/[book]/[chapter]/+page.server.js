@@ -4,20 +4,11 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     const session = await getSession();
     let isOwner = false;
 
-    if (!params.book) {
+    if (!params.book || !params.chapter) {
         return {
             status: 400,
             body: {
-                message: "Missing required fields (Book)"
-            }
-        }
-    }
-
-    if (!params.chapter) {
-        return {
-            status: 400,
-            body: {
-                message: "Missing required fields (Chapter)"
+                message: "Missing required fields"
             }
         }
     }
@@ -26,18 +17,27 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     const chapterId = params.chapter;
 
     // Get chapter_content where book_id = bookId and chapter_id = chapterId
-    const { data: chapterContent, error } = await supabase
-        .from('chapter_content')
-        .select('*')
-        .eq('book_id', bookId)
-        .eq('chapter_id', chapterId);
+    const [chapterContentResult, tagsResult] = await Promise.all([
+        supabase
+            .from('chapter_content')
+            .select('*')
+            .eq('book_id', bookId)
+            .eq('chapter_id', chapterId),
+        supabase
+            .from('chapter_tags')
+            .select('tags(*)')
+            .eq('chapter_id', chapterId)
+    ]);
 
-    if (error) {
-        console.error(error);
+    const { data: chapterContent, error: error } = chapterContentResult;
+    const { data: tags, error: tagsError } = tagsResult;
+
+    if (error || tagsError) {
+        console.error(error || tagsError);
         return {
             status: 500,
             body: {
-                message: error.message
+                message: (error || tagsError).message
             }
         }
     }
@@ -45,21 +45,6 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     if (!chapterContent || chapterContent.length === 0) {
         errorx(404, "Chapter and/or Book not found");
         return;
-    }
-
-    const { data: tags, error: tagsError } = await supabase
-        .from('chapter_tags')
-        .select('tags(*)')
-        .eq('chapter_id', chapterId);
-
-    if (tagsError) {
-        console.error(tagsError);
-        return {
-            status: 500,
-            body: {
-                message: tagsError.message
-            }
-        }
     }
 
     if (!session) {
