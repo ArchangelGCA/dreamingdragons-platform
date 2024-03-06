@@ -156,5 +156,49 @@ export const actions = {
                 message: "Like " + action + " successfully"
             }
         }
+    },
+    follow: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            throw redirect(303, '/login');
+        }
+
+        const profileId = formData.profileId;
+        const userId = session.user.id;
+
+        if (profileId === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        // Use function follow_user, which asks for followed_id and follower_id, and returns a boolean if followed or unfollowed
+        const { data: follow, error } = await supabase
+            .rpc('follow_user', { followed_id: profileId, follower_id: userId });
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        const action = follow ? 'followed' : 'unfollowed';
+
+        return {
+            status: 200,
+            body: {
+                message: action + " successfully",
+                follow: follow
+            }
+        }
     }
 }
