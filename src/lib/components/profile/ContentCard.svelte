@@ -3,7 +3,6 @@
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
-    import autoAnimate from '@formkit/auto-animate';
 
     const tooltipConfig = {
         animation: 'fade',
@@ -90,7 +89,7 @@
     }
 </script>
 
-<div class="card border-0 bg-placeholder img-home w-100 rounded-4" use:autoAnimate use:tooltip={{...tooltipConfig}} title="View">
+<div class="card border-0 bg-placeholder img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-top-4"
          style="height: 45vh; overflow: hidden;">
         {#if isLoading}
@@ -102,7 +101,7 @@
             <img src={content.book_cover_url} alt="Book cover" class="w-100 h-100 content-image" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
         </a>
     </div>
-    <div class="card-body border-top border-light-subtle pb-2 rounded-bottom-4">
+    <div class="card-body pb-2 rounded-bottom-4">
         <div class="row justify-content-center">
             <div class="col-9">
                 <a class="link-light text-decoration-none" href="/content/{content.book_id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.book_title}</span></a>

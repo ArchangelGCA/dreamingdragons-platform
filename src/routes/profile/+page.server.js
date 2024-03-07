@@ -40,7 +40,7 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
         .select('*')
         .eq('user_id', session.user.id);
 
-    // If the profile doesn't exist, insert a new one
+    // If the profile doesn't exist, insert/create a new one
     if (!profile || profile.length === 0) {
 
         const randomIdUsernameShort = Math.random().toString(36).substring(2, 6);
@@ -64,15 +64,15 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
                     message: "Error creating profile"
                 }
             }
-        } else {
-            // Retrieve the user_books again after the insert operation
-            const { data: updatedProfile } = await supabase
-                .from('user_books_new')
-                .select('*')
-                .eq('user_id', session.user.id);
-
-            profile = updatedProfile;
         }
+
+        // Retrieve the user_books again after the insert operation
+        const { data: updatedProfile } = await supabase
+            .from('user_books_new')
+            .select('*')
+            .eq('user_id', session.user.id);
+
+        profile = updatedProfile;
     }
 
     return { session, profile };

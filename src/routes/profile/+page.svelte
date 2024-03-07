@@ -4,6 +4,9 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import { PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
     import autoAnimate from '@formkit/auto-animate';
+    import {deserialize} from "$app/forms";
+    import {invalidateAll} from "$app/navigation";
+    import {toast} from "@zerodevx/svelte-toast";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -112,6 +115,56 @@
                 console.log('Error downloading image: ', error.message);
                 avatarFound = false;
             }
+        }
+    }
+
+    async function handleFollow(e) {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('profileId', profile[0].user_id);
+
+        const response = await fetch('?/follow', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const result = deserialize(await response.text());
+        await invalidateAll(); // Not sure if it's actually necessary.
+        if (result.type === 'success') {
+            if (result.data.status === 200){
+                if (result.data.body.follow){
+                    followers += 1;
+                    toast.push('➕ You\'re now following ' + username + "!", {
+                        theme: {
+                            '--toastBackground': '#00cc66',
+                            '--toastColor': '#fff'
+                        }
+                    });
+                } else {
+                    followers -= 1;
+                    toast.push('➖ You\'ve unfollowed ' + username + "!", {
+                        theme: {
+                            '--toastBackground': '#ff4d4d',
+                            '--toastColor': '#fff'
+                        }
+                    });
+                }
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+            }
+        } else {
+            toast.push('Error: ' + result.data.body.message, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
         }
     }
 

@@ -35,8 +35,7 @@
     let text = 'Text not found!';
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(chapterContent.created_at);
-    let createdAtFormatted = `${createdAt.getDate()}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
-
+    let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
     if (chapterContent.owner_avatar_url) {
         avatarUrl = chapterContent.owner_avatar_url;
     }
@@ -45,10 +44,7 @@
         text = chapterContent.text;
     }
 
-    if (tags.length > 0){
-        // add url to tags using tags[i].tags.name
-        tags.forEach((item) => item.url = `/search?tag=${item.tags.name}`);
-    }
+    tags.forEach((item) => item.url = `/search?tag=${item.name}`);
 
     async function downloadAvatar(path) {
         try {
@@ -169,8 +165,8 @@
                     {#if tags.length !== 0}
                         <div class="row justify-content-center">
                             <div class="col-auto">
-                                {#each tags as tag (tag.tags.id)}
-                                    <a href="{tag.url}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.tags.name}">{tag.tags.name}</a>
+                                {#each tags as tag (tag.id)}
+                                    <a href="{tag.url}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
                                 {/each}
                             </div>
                         </div>

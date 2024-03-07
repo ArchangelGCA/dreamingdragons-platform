@@ -15,29 +15,22 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
 
     const bookId = params.book;
 
-    const [bookContentResult, tagsResult] = await Promise.all([
-        supabase
-            .from('book_content')
-            .select('*')
-            .eq('book_id', bookId),
-        supabase
-            .from('book_tags')
-            .select('tags(*)')
-            .eq('book_id', bookId)
-    ]);
+    const { data: bookContent, error} = await supabase
+        .from('book_content')
+        .select('*, book_tags(tags(id, name))')
+        .eq('book_id', bookId);
 
-    const { data: bookContent, error: error } = bookContentResult;
-    const { data: tags, error: tagsError } = tagsResult;
-
-    if (error || tagsError) {
-        console.error(error || tagsError);
+    if (error) {
+        console.error(error);
         return {
             status: 500,
             body: {
-                message: (error || tagsError).message
+                message: error.message
             }
         }
     }
+
+    let tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
 
     if (!bookContent || bookContent.length === 0) {
         errorx(404, "Book not found");
@@ -50,10 +43,8 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
         isOwner = bookContent[0].owner_id === session.user.id;
     }
 
-    // add isOwner to bookContent
     bookContent[0].is_owner = isOwner;
 
-    // return
     return { bookContent, tags };
 }
 

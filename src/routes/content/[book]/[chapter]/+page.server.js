@@ -16,31 +16,24 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     const bookId = params.book;
     const chapterId = params.chapter;
 
-    // Get chapter_content where book_id = bookId and chapter_id = chapterId
-    const [chapterContentResult, tagsResult] = await Promise.all([
-        supabase
+
+    const {data: chapterContent, error} = await supabase
             .from('chapter_content')
-            .select('*')
+            .select('*, chapter_tags(tags(id, name))')
             .eq('book_id', bookId)
-            .eq('chapter_id', chapterId),
-        supabase
-            .from('chapter_tags')
-            .select('tags(*)')
-            .eq('chapter_id', chapterId)
-    ]);
+            .eq('chapter_id', chapterId);
 
-    const { data: chapterContent, error: error } = chapterContentResult;
-    const { data: tags, error: tagsError } = tagsResult;
-
-    if (error || tagsError) {
-        console.error(error || tagsError);
+    if (error) {
+        console.error(error);
         return {
             status: 500,
             body: {
-                message: (error || tagsError).message
+                message: error.message
             }
         }
     }
+
+    let tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
 
     if (!chapterContent || chapterContent.length === 0) {
         errorx(404, "Chapter and/or Book not found");
