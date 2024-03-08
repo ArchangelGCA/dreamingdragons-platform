@@ -13,7 +13,7 @@
         delay: 0,
         style: {
             color: 'white',
-            backgroundColor: '#5c00a6',
+            backgroundColor: 'rgba(92,0,166,0.9)',
             padding: '10px',
             borderRadius: '5px'
         }
@@ -202,7 +202,7 @@
                     </div>
                 </div>
             {:else}
-                <div class="bg-image rounded-bottom-5" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({finalAvatarUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                <div class="bg-image rounded-bottom-5 shadow-sm" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({finalAvatarUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                     <div class="row justify-content-center align-items-end" style="height: 100%;">
                         <div class="col-auto">
                             <img src="{finalAvatarUrl}" alt="{username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon" on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
@@ -263,11 +263,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-3">
-                    <button class="btn btn-outline-light w-auto mt-4 mt-md-0 shadow" on:click={handleFollow} use:tooltip={{...tooltipConfig}} title="Follow/Unfollow">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="ms-2">{isFollowing ? 'Unfollow' : 'Follow'}</span>
-                    </button>
+                <div class="col-12 col-md-3 px-4">
+                    <div class="row justify-content-center">
+                        <div class="col-11 col-md-auto px-0">
+                            <button class="btn btn-outline-light w-100 mt-3 mt-md-0 shadow" on:click={handleFollow} use:tooltip={{...tooltipConfig}} title="Follow/Unfollow">
+                                <i class="fas {isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
+                                <span class="ms-1">{isFollowing ? 'Unfollow' : 'Follow'}</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

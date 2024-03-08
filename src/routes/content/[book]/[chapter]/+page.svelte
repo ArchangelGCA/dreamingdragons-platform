@@ -12,7 +12,7 @@
         delay: 0,
         style: {
             color: 'white',
-            backgroundColor: '#5c00a6',
+            backgroundColor: 'rgba(92,0,166,0.9)',
             padding: '10px',
             borderRadius: '5px'
         }
@@ -142,8 +142,7 @@
             </a>
         </div>
     </div>
-    <div class="row justify-content-center text-center">
-        <hr>
+    <div class="row justify-content-center text-center bg-purple-opacity-10 pt-3 pb-2 mb-3 rounded-4">
         <div class="col-12 mb-3">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-3 text-end">
@@ -174,7 +173,6 @@
                 </div>
             </div>
         </div>
-        <hr>
     </div>
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 mb-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
@@ -250,6 +248,10 @@
 
     .bg-purple-opacity-25 {
         background-color: rgba(92, 0, 166, 0.25);
+    }
+
+    .bg-purple-opacity-10 {
+        background-color: rgba(92, 0, 166, 0.1);
     }
 
     .btn-shortcut {

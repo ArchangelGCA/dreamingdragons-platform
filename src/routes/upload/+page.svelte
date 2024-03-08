@@ -69,7 +69,7 @@
         delay: 0,
         style: {
             color: 'white',
-            backgroundColor: '#5c00a6',
+            backgroundColor: 'rgba(92,0,166,0.9)',
             padding: '10px',
             borderRadius: '5px'
         }

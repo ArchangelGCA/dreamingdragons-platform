@@ -9,7 +9,7 @@
         delay: 0,
         style: {
             color: 'white',
-            backgroundColor: '#5c00a6',
+            backgroundColor: 'rgba(92,0,166,0.9)',
             padding: '10px',
             borderRadius: '5px'
         }
@@ -135,7 +135,7 @@
     }
 
     .content-image {
-        transition: 0.2s all ease-in-out;
+        transition: 0.2s all ease-in;
     }
 
     .content-image:hover {
@@ -144,7 +144,7 @@
     }
 
     .card-body {
-        background-color: #5c00a6;
+        background-color: rgba(92, 0, 166, 0.95);
         transition: 0.15s all ease-in-out;
     }
 

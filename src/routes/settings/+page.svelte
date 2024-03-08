@@ -2,6 +2,18 @@
     import { enhance } from '$app/forms';
     import Avatar from '$lib/components/profile/Avatar.svelte';
     import {toast} from "@zerodevx/svelte-toast";
+    import { tooltip } from "@svelte-plugins/tooltips";
+
+    const tooltipConfig = {
+        animation: 'fade',
+        delay: 0,
+        style: {
+            color: 'white',
+            backgroundColor: 'rgba(92,0,166,0.9)',
+            padding: '10px',
+            borderRadius: '5px'
+        }
+    };
 
     export let data;
 
@@ -73,21 +85,20 @@
 </script>
 
 <div class="container-xxl px-0" style="min-height: 70vh">
-    <div class="row mt-3 mb-3 mx-1">
+    <div class="row mt-3 mb-2 mx-1">
         <div class="col-12 bg-animated-gradient bg-opacity-0 rounded-4 pt-2 mx-auto">
             <h1 class="text-center">Profile Settings</h1>
         </div>
     </div>
-    <hr class="mx-1 mb-0">
     <div class="row mx-1">
         <div class="col-12 col-md-6">
             <div class="row justify-content-center pt-2 pb-0 pb-md-2">
                 <!-- Avatar Accordion -->
                 <div class="col-12 px-1">
                     <div class="accordion" id="avatarAccordion">
-                        <div class="accordion-item">
+                        <div class="accordion-item border-0">
                             <h2 class="accordion-header" id="avatarHeading">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#avatarCollapse" aria-expanded={isAvatarAccordionOpen} aria-controls="avatarCollapse" on:click={() => isAvatarAccordionOpen = !isAvatarAccordionOpen}>
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#avatarCollapse" aria-expanded={isAvatarAccordionOpen} aria-controls="avatarCollapse" on:click={() => isAvatarAccordionOpen = !isAvatarAccordionOpen} use:tooltip={{...tooltipConfig}} title="Avatar Settings">
                                     Avatar
                                 </button>
                             </h2>
@@ -112,9 +123,9 @@
             <div class="row justify-content-center pt-2 pb-2">
                 <div class="col-12 px-1">
                     <div class="accordion" id="profileAccordion">
-                        <div class="accordion-item">
+                        <div class="accordion-item border-0">
                             <h2 class="accordion-header" id="profileHeading">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#profileCollapse" aria-expanded={isAccordionOpen} aria-controls="profileCollapse" on:click={() => isAccordionOpen = !isAccordionOpen}>
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#profileCollapse" aria-expanded={isAccordionOpen} aria-controls="profileCollapse" on:click={() => isAccordionOpen = !isAccordionOpen} use:tooltip={{...tooltipConfig}} title="Profile Settings">
                                     Profile Details
                                 </button>
                             </h2>
@@ -163,11 +174,11 @@
             </div>
         </div>
     </div>
-    <div class="row border-top border-light-subtle pt-3 mx-1">
+    <div class="row pt-2 mx-1">
         <div class="col px-1">
             <form method="post" action="?/signout" use:enhance={handleSignOut}>
                 <div class="mb-3">
-                    <button class="btn btn-outline-danger w-100" disabled={loading}>Sign Out</button>
+                    <button class="btn btn-outline-danger w-100" disabled={loading} use:tooltip={{...tooltipConfig}} title="Click to Logout">Sign Out</button>
                 </div>
             </form>
         </div>

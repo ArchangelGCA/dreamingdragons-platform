@@ -9,7 +9,7 @@
         delay: 0,
         style: {
             color: 'white',
-            backgroundColor: '#5c00a6',
+            backgroundColor: 'rgba(92,0,166,0.9)',
             padding: '10px',
             borderRadius: '5px'
         }
@@ -156,16 +156,16 @@
     }
 
     .content-image {
-        transition: 0.2s all ease-in-out;
-    }
-
-    .card-body {
-        background-color: rgb(92, 0, 166);
+        transition: 0.2s all ease-in;
     }
 
     .content-image:hover {
         filter: brightness(1.3);
         transform: scale(1.1);
+    }
+
+    .card-body {
+        background-color: rgba(92, 0, 166, 0.95);
     }
 
     .likes-icon {
