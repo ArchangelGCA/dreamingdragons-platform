@@ -13,6 +13,8 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
     }*/
 
     const id = url.searchParams.get('id');
+    let isFollowing = false;
+    let isOwner = false;
 
     if (id) {
         let {data: profile} = await supabase
@@ -25,9 +27,34 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
             return;
         }
 
-        if (session) return { session, profile };
+        isOwner = profile[0].user_id === session.user.id;
 
-        return { profile };
+        if (session) {
+
+            if (!isOwner) {
+                const { data: follow, error } = await supabase
+                    .from('followers')
+                    .select('*')
+                    .eq('following_id', profile[0].user_id)
+                    .eq('follower_id', session.user.id);
+
+                if (error) {
+                    console.error(error);
+                    return {
+                        status: 500,
+                        body: {
+                            message: error.message
+                        }
+                    }
+                }
+
+                isFollowing = follow.length > 0;
+            }
+
+            return {session, profile, isOwner, isFollowing};
+        }
+
+        return { profile, isOwner, isFollowing };
     }
 
     if (!session) {
@@ -67,15 +94,47 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
         }
 
         // Retrieve the user_books again after the insert operation
-        const { data: updatedProfile } = await supabase
+        const { data: updatedProfile, errorNew } = await supabase
             .from('user_books_new')
             .select('*')
             .eq('user_id', session.user.id);
 
+        if (errorNew) {
+            console.error('Error retrieving profile', errorNew);
+            return {
+                status: 500,
+                body: {
+                    message: "Error retrieving profile"
+                }
+            }
+        }
+
         profile = updatedProfile;
     }
 
-    return { session, profile };
+    isOwner = profile[0].user_id === session.user.id;
+
+    if (!isOwner) {
+        const { data: follow, error } = await supabase
+            .from('followers')
+            .select('*')
+            .eq('following_id', profile[0].user_id)
+            .eq('follower_id', session.user.id);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        isFollowing = follow.length > 0;
+    }
+
+    return { session, profile, isOwner, isFollowing };
 }
 
 
@@ -157,7 +216,7 @@ export const actions = {
             }
         }
     },
-    follow: async ({ request, locals: { supabase, getSession } }) => {
+    follow: async ({ request, locals: { supabase, getSession } }) => { // TODO: Refactor to use rules directly on database.
         const formData = Object.fromEntries(await request.formData());
         const session = await getSession();
 
@@ -167,6 +226,7 @@ export const actions = {
 
         const profileId = formData.profileId;
         const userId = session.user.id;
+        let follow = false;
 
         if (profileId === null) {
             return {
@@ -177,9 +237,21 @@ export const actions = {
             }
         }
 
-        // Use function follow_user, which asks for followed_id and follower_id, and returns a boolean if followed or unfollowed
-        const { data: follow, error } = await supabase
-            .rpc('follow_user', { followed_id: profileId, follower_id: userId });
+        if (profileId === userId) {
+            return {
+                status: 400,
+                body: {
+                    message: "You can't follow yourself"
+                }
+            }
+        }
+
+        // Insert follower if not already following, if already following, delete it from followers
+        let { data: followData, error } = await supabase
+            .from('followers')
+            .select('*')
+            .eq('following_id', profileId)
+            .eq('follower_id', userId);
 
         if (error) {
             console.error(error);
@@ -189,6 +261,42 @@ export const actions = {
                     message: error.message
                 }
             }
+        }
+
+        if (followData.length === 0) {
+            const { error } = await supabase
+                .from('followers')
+                .insert([{ following_id: profileId, follower_id: userId }]);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+
+            follow = true;
+        } else {
+            const { error } = await supabase
+                .from('followers')
+                .delete()
+                .eq('following_id', profileId)
+                .eq('follower_id', userId);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+
+            follow = false;
         }
 
         const action = follow ? 'followed' : 'unfollowed';

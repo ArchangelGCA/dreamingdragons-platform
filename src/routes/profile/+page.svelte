@@ -24,7 +24,7 @@
     });
 
     export let data;
-    let { session, supabase, profile } = data;
+    let { session, supabase, profile, isOwner, isFollowing } = data;
 
     // Each profile (profile is an array) has a structure like this:
     /*
@@ -54,7 +54,8 @@
     let hasBooks = true;
     let books = [];
     let followers = 0; // TODO: Get number of followers
-    let likes = 0; // TODO: Get total likes
+    let likes = 0;
+    let followActionActive = false;
 
     if (profile !== null) {
         try {
@@ -121,6 +122,11 @@
     async function handleFollow(e) {
         e.preventDefault();
 
+        if (followActionActive) return;
+        followActionActive = true;
+
+        isFollowing = !isFollowing;
+
         const formData = new FormData();
         formData.append('profileId', profile[0].user_id);
 
@@ -135,22 +141,25 @@
             if (result.data.status === 200){
                 if (result.data.body.follow){
                     followers += 1;
+                    isFollowing = true;
                     toast.push('➕ You\'re now following ' + username + "!", {
                         theme: {
-                            '--toastBackground': '#00cc66',
+                            '--toastBackground': '#8b00b6',
                             '--toastColor': '#fff'
                         }
                     });
                 } else {
                     followers -= 1;
+                    isFollowing = false;
                     toast.push('➖ You\'ve unfollowed ' + username + "!", {
                         theme: {
-                            '--toastBackground': '#ff4d4d',
+                            '--toastBackground': '#7b2eff',
                             '--toastColor': '#fff'
                         }
                     });
                 }
             } else {
+                isFollowing = !isFollowing;
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
@@ -159,6 +168,7 @@
                 });
             }
         } else {
+            isFollowing = !isFollowing;
             toast.push('Error: ' + result.data.body.message, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
@@ -166,6 +176,8 @@
                 }
             });
         }
+
+        followActionActive = false;
     }
 
     $: if (avatarUrl) downloadAvatar(avatarUrl);
@@ -221,7 +233,7 @@
     <div class="row justify-content-center mx-0 mt-3">
         <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
             <div class="row justify-content-center align-items-center text-center py-3">
-                <div class="col-4 align-items-center">
+                <div class="col-4 col-md-3 align-items-center">
                     <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Followers">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-user"></i>
@@ -231,7 +243,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-4 col-md-3">
                     <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Total likes">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-heart"></i>
@@ -241,7 +253,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-4">
+                <div class="col-4 col-md-3">
                     <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Joined: {createdAt}">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-calendar-alt"></i>
@@ -250,6 +262,12 @@
                             <span class="h6">{yearCreated}</span>
                         </div>
                     </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <button class="btn btn-outline-light w-auto mt-4 mt-md-0 shadow" on:click={handleFollow} use:tooltip={{...tooltipConfig}} title="Follow/Unfollow">
+                        <i class="fas fa-user-plus"></i>
+                        <span class="ms-2">{isFollowing ? 'Unfollow' : 'Follow'}</span>
+                    </button>
                 </div>
             </div>
         </div>
