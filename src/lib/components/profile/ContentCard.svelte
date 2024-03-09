@@ -90,7 +90,7 @@
 </script>
 
 <div class="card border-0 bg-placeholder img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
-    <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-top-4"
+    <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
         {#if isLoading}
             <div class="spinner-border text-light" role="status">
@@ -101,8 +101,8 @@
             <img src={content.book_cover_url} alt="Book cover" class="w-100 h-100 content-image" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
         </a>
     </div>
-    <div class="card-body pb-2 rounded-bottom-4">
-        <div class="row justify-content-center">
+    <div class="card-img-overlay overlay-custom d-flex flex-column justify-content-end p-0">
+        <div class="row custom-overlay-content justify-content-center rounded-bottom-4 ps-3 pb-1 pt-3 mx-0">
             <div class="col-9">
                 <a class="link-light text-decoration-none" href="/content/{content.book_id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.book_title}</span></a>
                 <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile?id={content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.username}</a></small></p>
@@ -117,6 +117,22 @@
             </div>
         </div>
     </div>
+    <!--<div class="card-body pb-2 rounded-bottom-4">
+        <div class="row justify-content-center">
+            <div class="col-9">
+                <a class="link-light text-decoration-none" href="/content/{content.book_id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.book_title}</span></a>
+                <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile?id={content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.username}</a></small></p>
+            </div>
+            <div class="col-3 mb-1 text-end">
+                <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick} use:tooltip={{...tooltipConfig}} title={isLiked ? 'Unlike' : 'Like'}>
+                    <span class="heart-icon {isLiked ? 'liked' : 'unliked'}">
+                        <i class="fas fa-heart fa-3x"></i>
+                        <span class="likes-counter">{likes}</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>-->
 </div>
 
 <style>
@@ -150,6 +166,24 @@
 
     .card-body:hover {
         background-color: #4a007e;
+    }
+
+    .overlay-custom {
+        transition: 0.15s all ease-in-out;
+        opacity: 0;
+    }
+
+    .custom-overlay-content {
+        background: radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%);
+        padding-left: 3px;
+        padding-bottom: 1px;
+        padding-top: 3px;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .overlay-custom:hover{
+        opacity: 1 !important;
     }
 
     .liked {
