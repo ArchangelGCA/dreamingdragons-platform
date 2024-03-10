@@ -83,6 +83,11 @@
         } catch (e7) {
             likes = 0;
         }
+        try {
+            followers = profile[0].total_followers;
+        } catch (e8) {
+            followers = 0;
+        }
         if (createdAt !== '') {
             const date = new Date(createdAt);
             const options = { year: 'numeric', month: 'long' };
