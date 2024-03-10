@@ -3,6 +3,11 @@
     import Avatar from '$lib/components/profile/Avatar.svelte';
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import {onMount} from "svelte";
+
+    onMount(() => {
+        window.$('[data-bs-toggle="tooltip"]').tooltip();
+    });
 
     const tooltipConfig = {
         animation: 'fade',

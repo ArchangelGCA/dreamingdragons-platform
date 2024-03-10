@@ -20,7 +20,6 @@
     let isLiked = content.is_liked;
     let likes = content.total_likes;
     let likeActionActive = false;
-    let clickedHeart = false;
 
     onMount(() => {
         window.$('[data-bs-toggle="tooltip"]').tooltip();
@@ -147,6 +146,14 @@
 
 <style>
 
+    .card {
+        transition: 0.12s all ease-in-out;
+    }
+
+    .card:hover {
+        box-shadow: 0 0 10px 0 rgb(211, 26, 103);
+    }
+
     .link-light {
         transition: 0.15s all ease-in-out;
     }
@@ -160,15 +167,6 @@
         text-decoration: none;
     }
 
-    /*.card-body {
-        background-color: rgba(92, 0, 166, 0.95);
-        transition: 0.15s all ease-in-out;
-    }
-
-    .card-body:hover {
-        background-color: #4a007e;
-    }*/
-
     .overlay-custom {
         transition: 0.15s all ease-in-out;
         opacity: 0;
@@ -176,12 +174,11 @@
 
     .overlay-custom:hover{
         opacity: 1 !important;
-        /* also increase size of the image */
         backdrop-filter: brightness(1.2) ;
     }
 
     .custom-overlay-content {
-        background: radial-gradient(circle at center, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.8) 100%);
+        background: radial-gradient(circle at center, rgba(92, 0, 166, 0.3) 0%, rgba(92, 0, 166, 0.95) 100%);
     }
 
     .to-scale {

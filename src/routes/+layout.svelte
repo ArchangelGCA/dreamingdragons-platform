@@ -26,6 +26,9 @@
         });
 
         window.$('[data-bs-toggle="tooltip"]').tooltip();
+        window.$('[data-bs-toggle="tooltip"]').on('hidden.bs.tooltip', function () {
+            window.$('[data-bs-toggle="tooltip"]').tooltip('dispose');
+        });
 
         return () => data.subscription.unsubscribe();
     });
