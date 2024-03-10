@@ -53,7 +53,8 @@
     let yearCreated = '';
     let hasBooks = true;
     let books = [];
-    let followers = 0; // TODO: Get number of followers
+    let followers = 0;
+    let followersArray = [];
     let likes = 0;
     let followActionActive = false;
 
@@ -87,6 +88,13 @@
             followers = profile[0].total_followers;
         } catch (e8) {
             followers = 0;
+        }
+        try {
+            if (followers !== 0) {
+                followersArray = profile[0].followers;
+            }
+        } catch (e9) {
+            followersArray = [];
         }
         if (createdAt !== '') {
             const date = new Date(createdAt);
@@ -122,6 +130,12 @@
                 avatarFound = false;
             }
         }
+    }
+
+    async function handleVisit(e) {
+        e.preventDefault();
+        console.log('Visiting profile: ' + e.target.href);
+        window.location.href = e.target.href;
     }
 
     async function handleFollow(e) {
@@ -238,7 +252,7 @@
     <div class="row justify-content-center mx-0 mt-3">
         <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
             <div class="row justify-content-center align-items-center text-center py-3">
-                <div class="col-4 col-md-3 align-items-center">
+                <div class="col-4 col-md-3 align-items-center" id="followers" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Followers">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-user"></i>
@@ -246,6 +260,15 @@
                         <div class="col-auto mt-1">
                             <span class="">{followers}</span>
                         </div>
+                    </div>
+                    <div class="dropdown-menu ms-md-5" aria-labelledby="followers"> <!-- TODO: Fix positioning -->
+                        {#if followersArray.length === 0}
+                            <span class="dropdown-item rounded-3">No followers yet</span>
+                        {:else}
+                            {#each followersArray as follower (follower)}
+                                <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none" href="/profile?id={follower.follower_user_id}" on:click={handleVisit}>{follower.follower_name}</a></span>
+                            {/each}
+                        {/if}
                     </div>
                 </div>
                 <div class="col-4 col-md-3">
@@ -304,5 +327,17 @@
 
     .bg-info-profile {
         background: linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+    }
+
+    .dropdown-menu {
+        background-color: rgba(60, 0, 104, 0.8);
+    }
+
+    .dropdown-item:hover {
+        background-color: rgba(43, 0, 73, 0.9);
+    }
+
+    #followers {
+        cursor: pointer;
     }
 </style>

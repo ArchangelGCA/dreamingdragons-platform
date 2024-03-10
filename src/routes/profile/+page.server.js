@@ -18,7 +18,7 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
 
     if (id) {
         let {data: profile} = await supabase
-            .from('user_books_new')
+            .from('user_books_followers')
             .select('*')
             .eq('user_id', id);
 
@@ -63,7 +63,7 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
 
     // Check if a profile with the given id already exists
     let { data: profile } = await supabase
-        .from('user_books_new')
+        .from('user_books_followers')
         .select('*')
         .eq('user_id', session.user.id);
 
@@ -95,7 +95,7 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
 
         // Retrieve the user_books again after the insert operation
         const { data: updatedProfile, errorNew } = await supabase
-            .from('user_books_new')
+            .from('user_books_followers')
             .select('*')
             .eq('user_id', session.user.id);
 
