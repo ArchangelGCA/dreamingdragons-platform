@@ -1,0 +1,53 @@
+<script>
+
+    export let notification;
+    let message = undefined;
+    let icon = undefined;
+
+    let dateFormatted = new Date(notification.created_at).toLocaleDateString('en-GB');
+</script>
+
+<div class="row border border-light-subtle rounded-3 p-2 mb-2 bg-black bg-opacity-10 notification">
+    <div class="col">
+        <p class="fs-6 my-auto">
+            {#if notification.type === 'like'}
+                <i class="fas fa-heart text-purple" ></i> Someone liked your activity: <a class="link-purple text-decoration-none" href="{notification.content}">Visit</a>
+            {:else if notification.type === 'follow'}
+                <i class="fas fa-user-plus text-purple" ></i> Someone started following you: <a class="link-purple text-decoration-none" href="{notification.content}">Visit</a>
+            {:else if notification.type === 'followed_activity'}
+                <i class="fas fa-bell text-purple" ></i> Someone you follow shared something: <a class="link-purple text-decoration-none" href="{notification.content}">Visit</a>
+            {:else if notification.typeof === 'comment'}
+                <i class="fas fa-comment text-purple" ></i> Someone commented on your activity: <a class="link-purple text-decoration-none" href="{notification.content}">Visit</a>
+            {/if}
+        </p>
+        <p class="fs-6 text-start text-muted text-date my-auto">{dateFormatted}</p>
+    </div>
+</div>
+
+<style>
+
+    .notification {
+        transition: all 0.3s;
+    }
+
+    .notification:hover {
+        background-color: #1a1a1a !important;
+        box-shadow: 0 0 10px 0 #a83fff;
+    }
+
+    .text-purple {
+        color: #a83fff;
+    }
+
+    .link-purple {
+        color: #a83fff;
+    }
+
+    .link-purple:hover {
+        color: #8100e7;
+    }
+
+    .text-date {
+        font-size: 0.9rem !important;
+    }
+</style>

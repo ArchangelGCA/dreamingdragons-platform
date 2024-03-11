@@ -4,10 +4,11 @@
     import favicon from "$lib/images/favicon.webp";
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import autoAnimate from '@formkit/auto-animate';
+    import Notification from "$lib/components/layout/Notification.svelte";
 
     export let data;
 
-    let { supabase, session } = data;
+    let { supabase, session, notifications } = data;
     $: ({ supabase, session } = data);
 
     onMount(() => {
@@ -26,9 +27,6 @@
         });
 
         window.$('[data-bs-toggle="tooltip"]').tooltip();
-        window.$('[data-bs-toggle="tooltip"]').on('hidden.bs.tooltip', function () {
-            window.$('[data-bs-toggle="tooltip"]').tooltip('dispose');
-        });
 
         return () => data.subscription.unsubscribe();
     });
@@ -47,18 +45,18 @@
         },
     ];
 
-
     const currentYear = new Date().getFullYear(); // Will use this in the footer to automatically update the year
-
     const owner = 'Roses In The Flames Official'
-
     const designedBy = 'Contributors of RiTF';
     const designedByLink = 'https://archangelgca.eu';
-
     const tosLink = '/tos'
     const privacyPolicyLink = '/privacy-policy'
-
     const copyright = `© ${currentYear} ${owner}. All rights reserved.`;
+
+    let notificationsCount = 0;
+    if (notifications !== null && notifications.length !== 0) {
+        notificationsCount = notifications.length;
+    }
 
 </script>
 
@@ -71,17 +69,53 @@
         </a>
     </div>
     <div class="col-10 text-end">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle animate-button" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fa-solid fa-user pe-1"></i>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
-                <li><a class="dropdown-item" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
-                <li><a class="dropdown-item animate-button rounded-3 py-2" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
-                <li><a class="dropdown-item mt-1" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
-            </ul>
+        <div class="row align-items-center">
+            {#if notificationsCount !== 0}
+                <div class="col pe-3 mt-1">
+                    <div class="position-relative">
+                        <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
+                        <span class="position-absolute top-0 start-100 mt-1 ms-2 translate-middle badge rounded-pill bg-danger">{notificationsCount}</span>
+                    </div>
+                </div>
+            {:else}
+                <div class="col pe-1">
+                    <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
+                </div>
+            {/if}
+            <div class="col-auto">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle animate-button" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user pe-1"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
+                        <li><a class="dropdown-item animate-button rounded-3 py-2" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
+                        <li><a class="dropdown-item mt-1" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-end rounded-4 p-2 my-2 me-1" tabindex="-1" id="notifications" aria-labelledby="notifications">
+    <div class="offcanvas-header bg-light bg-opacity-10 rounded-4">
+        <h5 class="offcanvas-title mt-1">Notifications</h5>
+        <button type="button" class="btn-close me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        {#if notifications !== null && notifications.length !== 0}
+            {#each notifications as notification}
+                <Notification {notification} />
+            {/each}
+        {:else}
+            <div class="row border border-light-subtle rounded-3 p-2 mb-2">
+                <div class="col">
+                    <p class="fs-6 text-center">No notifications found.</p>
+                </div>
+            </div>
+        {/if}
     </div>
 </div>
 
@@ -136,6 +170,11 @@
 
     .animate-button:active {
         transform: scale(0.95);
+    }
+
+    #notificationBell {
+        cursor: pointer;
+        font-size: 1.1rem;
     }
 
     @keyframes Gradient {

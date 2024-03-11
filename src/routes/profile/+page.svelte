@@ -330,11 +330,11 @@
     }
 
     .dropdown-menu {
-        background-color: rgba(60, 0, 104, 0.8);
+        background-color: rgba(60, 0, 104, 0.9);
     }
 
     .dropdown-item:hover {
-        background-color: rgba(43, 0, 73, 0.9);
+        background-color: rgba(43, 0, 73, 0.95);
     }
 
     #followers {

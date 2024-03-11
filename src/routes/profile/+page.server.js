@@ -134,6 +134,15 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
         isFollowing = follow.length > 0;
     }
 
+    if (profile[0].followers !== null && profile[0].followers.length > 0 && profile[0].followers[0].follower_id !== null) {
+        // Remove duplicates from followers (if for some reasons there are any) TODO: Check this, maybe start using join instead of custom view.
+        profile[0].followers = profile[0].followers.filter((follower, index, self) =>
+            index === self.findIndex((t) => (
+                t.follower_id === follower.follower_id
+            ))
+        );
+    }
+
     return { session, profile, isOwner, isFollowing };
 }
 

@@ -19,5 +19,28 @@ export const load = async ({ fetch, data, depends }) => {
         data: { session },
     } = await supabase.auth.getSession()
 
-    return { supabase, session }
+    let notifications = []
+
+    if (session) {
+        const { data: notifs, error } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('recipient_id', session.user.id)
+            .order('created_at', { ascending: false })
+            .range(0, 10);
+
+        if (error) {
+            console.error(error)
+            return {
+                status: 500,
+                body: {
+                    message: error.message,
+                },
+            }
+        }
+
+        notifications = notifs;
+    }
+
+    return { supabase, session, notifications }
 }
