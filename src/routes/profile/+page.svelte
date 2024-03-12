@@ -44,6 +44,7 @@
         yearCreated = date.getFullYear();
         books = profile[0].books;
         followersArray = finalProfile.followers;
+        if (followersArray === null) followersArray = [];
         followers = followersArray.length;
         avatarUrl = finalProfile.avatar_url;
     }
