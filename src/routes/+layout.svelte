@@ -47,7 +47,7 @@
 
     const currentYear = new Date().getFullYear(); // Will use this in the footer to automatically update the year
     const owner = 'Roses In The Flames Official'
-    const designedBy = 'Contributors of RiTF';
+    const designedBy = 'ArchangelGCA';
     const designedByLink = 'https://archangelgca.eu';
     const tosLink = '/tos'
     const privacyPolicyLink = '/privacy-policy'
@@ -112,7 +112,7 @@
         {:else}
             <div class="row border border-light-subtle rounded-3 p-2 mb-2">
                 <div class="col">
-                    <p class="fs-6 text-center">No notifications found.</p>
+                    <p class="fs-6 text-center mb-auto">No notifications found.</p>
                 </div>
             </div>
         {/if}

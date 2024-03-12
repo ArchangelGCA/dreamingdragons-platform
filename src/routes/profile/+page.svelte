@@ -26,93 +26,26 @@
     export let data;
     let { session, supabase, profile, isOwner, isFollowing } = data;
 
-    // Each profile (profile is an array) has a structure like this:
-    /*
-    {
-        user_id: 'an_unique_user_id',
-        username: 'ArchangelGCA',
-        full_name: 'GCA',
-        avatar_url: '0.20207563595383804.png',
-        website: 'userWebsite',
-        can_upload: true,
-        user_created_at: 'timestampz',
-        book_id: 1,
-        book_title: 'Example Book',
-        book_description: "Example Book's Description",
-        book_cover_url: 'urlToCover',
-        is_liked: true
-    }
-     */
-
-    let username = '';
-    let website = '';
+    let finalProfile = null;
     let avatarUrl = '';
     let finalAvatarUrl = '';
     let avatarFound = true;
-    let createdAt = '';
     let yearCreated = '';
-    let hasBooks = true;
     let books = [];
     let followers = 0;
     let followersArray = [];
-    let likes = 0;
     let followActionActive = false;
 
-    if (profile !== null) {
-        try {
-            username = profile[0].username;
-        } catch (e2) {
-            username = '';
-        }
-        try {
-            website = profile[0].website;
-        } catch (e3) {
-            website = '';
-        }
-        try {
-            avatarUrl = profile[0].avatar_url;
-        } catch (e4) {
-            avatarUrl = '';
-        }
-        try {
-            createdAt = profile[0].user_created_at;
-        } catch (e5) {
-            createdAt = '';
-        }
-        try { // TODO: Dispatch event when user likes something on his profile
-            likes = profile[0].total_likes;
-        } catch (e7) {
-            likes = 0;
-        }
-        try {
-            followers = profile[0].total_followers;
-        } catch (e8) {
-            followers = 0;
-        }
-        try {
-            if (followers !== 0) {
-                followersArray = profile[0].followers;
-            }
-        } catch (e9) {
-            followersArray = [];
-        }
-        if (createdAt !== '') {
-            const date = new Date(createdAt);
-            const options = { year: 'numeric', month: 'long' };
-            createdAt = date.toLocaleDateString('en-US', options);
-            yearCreated = date.getFullYear();
-        }
-        try { // TODO: Fix redundancy in this block
-            hasBooks = profile[0].books.length !== 0;
-            if (hasBooks && profile[0].books[0].book_id === null) {
-                hasBooks = false;
-            }
-        } catch (e6) {
-            hasBooks = false;
-        }
-        if (hasBooks) { // TODO: Fix even more redundancy
-            books = profile[0].books;
-        }
+    if (profile && profile !== null && profile.length > 0) {
+        finalProfile = profile[0];
+        const date = new Date(finalProfile.created_at);
+        const options = { year: 'numeric', month: 'long' };
+        finalProfile.created_at = date.toLocaleDateString('en-US', options);
+        yearCreated = date.getFullYear();
+        books = profile[0].books;
+        followersArray = finalProfile.followers;
+        followers = followersArray.length;
+        avatarUrl = finalProfile.avatar_url;
     }
 
     async function downloadAvatar(path) {
@@ -147,7 +80,7 @@
         isFollowing = !isFollowing;
 
         const formData = new FormData();
-        formData.append('profileId', profile[0].user_id);
+        formData.append('profileId', finalProfile.id);
 
         const response = await fetch('?/follow', {
             method: 'POST',
@@ -161,7 +94,7 @@
                 if (result.data.body.follow){
                     followers += 1;
                     isFollowing = true;
-                    toast.push('➕ You\'re now following ' + username + "!", {
+                    toast.push('➕ You\'re now following ' + finalProfile.username + "!", {
                         theme: {
                             '--toastBackground': '#8b00b6',
                             '--toastColor': '#fff'
@@ -170,7 +103,7 @@
                 } else {
                     followers -= 1;
                     isFollowing = false;
-                    toast.push('➖ You\'ve unfollowed ' + username + "!", {
+                    toast.push('➖ You\'ve unfollowed ' + finalProfile.username + "!", {
                         theme: {
                             '--toastBackground': '#7b2eff',
                             '--toastColor': '#fff'
@@ -203,6 +136,14 @@
 </script>
 
 <div class="container-fluid px-0" style="min-height: 71vh">
+    {#if !profile || profile.length === 0}
+        <div class="row justify-content-center">
+            <div class="col-12 text-center">
+                <p class="h1 mt-4">Profile not found</p>
+                <i class="fa-solid fa-exclamation-triangle fa-5x text-warning" use:autoAnimate></i>
+            </div>
+        </div>
+    {:else}
     <div class="row justify-content-center">
         <div class="col-12">
             {#if avatarUrl === ''}
@@ -224,7 +165,7 @@
                 <div class="bg-image rounded-bottom-5 shadow-sm" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({finalAvatarUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                     <div class="row justify-content-center align-items-end" style="height: 100%;">
                         <div class="col-auto">
-                            <img src="{finalAvatarUrl}" alt="{username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon" on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
+                            <img src="{finalAvatarUrl}" alt="{finalProfile.username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon" on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
                         </div>
                     </div>
                 </div>
@@ -242,10 +183,10 @@
     </div>
     <div class="row justify-content-center mt-3">
         <div class="col text-center">
-            {#if username.startsWith(PUBLIC_DEFAULT_USERNAME)}
+            {#if finalProfile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                 <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
             {:else}
-                <span class="h1 mt-2 mb-1">{username}</span>
+                <span class="h1 mt-2 mb-1">{finalProfile.username}</span>
             {/if}
         </div>
     </div>
@@ -266,7 +207,7 @@
                             <span class="dropdown-item rounded-3">No followers yet</span>
                         {:else}
                             {#each followersArray as follower (follower)}
-                                <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none" href="/profile?id={follower.follower_user_id}" on:click={handleVisit}>{follower.follower_name}</a></span>
+                                <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none" href="/profile?id={follower.id}" on:click={handleVisit}>{follower.username}</a></span>
                             {/each}
                         {/if}
                     </div>
@@ -277,12 +218,12 @@
                             <i class="fas fa-heart"></i>
                         </div>
                         <div class="col-auto mt-1">
-                            <span class="">{likes}</span>
+                            <span class="">{finalProfile.total_likes}</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-4 col-md-3">
-                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Joined: {createdAt}">
+                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Joined: {finalProfile.created_at}">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
@@ -305,19 +246,20 @@
         </div>
     </div>
     <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-auto">
-        {#if !hasBooks}
+        {#if !books || books.length === 0}
             <div class="col mt-4 text-center">
                 <p class="h1">No content found, yet!</p>
                 <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
             </div>
         {:else}
-            {#each books as content (content.book_id)}
+            {#each books as content (content.book.id)}
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
                     <ContentCard content={content} />
                 </div>
             {/each}
         {/if}
     </div>
+    {/if}
 </div>
 
 <style>

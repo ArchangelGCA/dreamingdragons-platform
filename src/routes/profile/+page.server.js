@@ -17,17 +17,27 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
     let isOwner = false;
 
     if (id) {
-        let {data: profile} = await supabase
-            .from('user_books_followers')
+        let {data: profile, errorId} = await supabase
+            .from('experimental_books')
             .select('*')
-            .eq('user_id', id);
+            .eq('id', id);
+
+        if (errorId) {
+            console.error(errorId);
+            return {
+                status: 500,
+                body: {
+                    message: errorId.message
+                }
+            }
+        }
 
         if (!profile || profile.length === 0) {
             error(404, "Profile not found");
             return;
         }
 
-        isOwner = profile[0].user_id === session.user.id;
+        isOwner = profile[0].id === session.user.id;
 
         if (session) {
 
@@ -35,7 +45,7 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
                 const { data: follow, error } = await supabase
                     .from('followers')
                     .select('*')
-                    .eq('following_id', profile[0].user_id)
+                    .eq('following_id', profile[0].id)
                     .eq('follower_id', session.user.id);
 
                 if (error) {
@@ -63,9 +73,9 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
 
     // Check if a profile with the given id already exists
     let { data: profile } = await supabase
-        .from('user_books_followers')
+        .from('experimental_books')
         .select('*')
-        .eq('user_id', session.user.id);
+        .eq('id', session.user.id);
 
     // If the profile doesn't exist, insert/create a new one
     if (!profile || profile.length === 0) {
@@ -95,9 +105,9 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
 
         // Retrieve the user_books again after the insert operation
         const { data: updatedProfile, errorNew } = await supabase
-            .from('user_books_followers')
+            .from('experimental_books')
             .select('*')
-            .eq('user_id', session.user.id);
+            .eq('id', session.user.id);
 
         if (errorNew) {
             console.error('Error retrieving profile', errorNew);
@@ -112,13 +122,13 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
         profile = updatedProfile;
     }
 
-    isOwner = profile[0].user_id === session.user.id;
+    isOwner = profile[0].id === session.user.id;
 
     if (!isOwner) {
         const { data: follow, error } = await supabase
             .from('followers')
             .select('*')
-            .eq('following_id', profile[0].user_id)
+            .eq('following_id', profile[0].user.id)
             .eq('follower_id', session.user.id);
 
         if (error) {
@@ -132,15 +142,6 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
         }
 
         isFollowing = follow.length > 0;
-    }
-
-    if (profile[0].followers !== null && profile[0].followers.length > 0 && profile[0].followers[0].follower_id !== null) {
-        // Remove duplicates from followers (if for some reasons there are any) TODO: Check this, maybe start using join instead of custom view.
-        profile[0].followers = profile[0].followers.filter((follower, index, self) =>
-            index === self.findIndex((t) => (
-                t.follower_id === follower.follower_id
-            ))
-        );
     }
 
     return { session, profile, isOwner, isFollowing };

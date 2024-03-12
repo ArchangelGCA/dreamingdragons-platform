@@ -18,7 +18,7 @@
     export let content;
     let isLoading = true;
     let isLiked = content.is_liked;
-    let likes = content.total_likes;
+    let likes = content.likes_count;
     let likeActionActive = false;
 
     onMount(() => {
@@ -52,7 +52,7 @@
         likeActionActive = true;
 
         const data = new FormData();
-        data.append('contentId', content.book_id);
+        data.append('contentId', content.book.id);
 
         isLiked = !isLiked;
 
@@ -106,14 +106,14 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         {/if}
-        <img src={content.book_cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
+        <img src={content.book.cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
     </div>
-    <a href="/content/{content.book_id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+    <a href="/content/{content.book.id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 ps-3 pb-1 pt-3 mx-0">
                 <div class="col-9">
-                    <a class="link-light text-decoration-none" href="/content/{content.book_id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.book_title}</span></a>
-                    <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile?id={content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.username}</a></small></p>
+                    <a class="link-light text-decoration-none" href="/content/{content.book.id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.book.title}</span></a>
+                    <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile?id={content.book.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.owner_username}</a></small></p>
                 </div>
                 <div class="col-3 mb-1 text-end">
                     <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={isLiked ? 'Unlike' : 'Like'}>
@@ -126,22 +126,6 @@
             </div>
         </div>
     </a>
-    <!--<div class="card-body pb-2 rounded-bottom-4">
-        <div class="row justify-content-center">
-            <div class="col-9">
-                <a class="link-light text-decoration-none" href="/content/{content.book_id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.book_title}</span></a>
-                <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile?id={content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.username}</a></small></p>
-            </div>
-            <div class="col-3 mb-1 text-end">
-                <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click={handleHeartClick} use:tooltip={{...tooltipConfig}} title={isLiked ? 'Unlike' : 'Like'}>
-                    <span class="heart-icon {isLiked ? 'liked' : 'unliked'}">
-                        <i class="fas fa-heart fa-3x"></i>
-                        <span class="likes-counter">{likes}</span>
-                    </span>
-                </button>
-            </div>
-        </div>
-    </div>-->
 </div>
 
 <style>
