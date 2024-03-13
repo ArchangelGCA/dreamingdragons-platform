@@ -1,5 +1,4 @@
 <script>
-    import {onMount} from "svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
@@ -15,12 +14,9 @@
             backgroundColor: 'rgba(92,0,166,0.9)',
             padding: '10px',
             borderRadius: '5px'
-        }
+        },
+        theme: 'text-center w-auto'
     };
-
-    onMount(() => {
-        window.$('[data-bs-toggle="tooltip"]').tooltip();
-    });
 
     let chapterContent = data.chapterContent[0];
     let tags = data.tags;
@@ -176,7 +172,7 @@
     </div>
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 mb-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Total likes">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Total likes">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1" on:click={handleHeartClick}>
                         <i class="fas fa-heart {isLiked ? 'liked' : 'unliked'}"></i>
@@ -188,7 +184,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Views">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Views">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-eye"></i>
                 </div>
@@ -198,7 +194,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="tooltip" title="Comments">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Comments">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-comment"></i>
                 </div>

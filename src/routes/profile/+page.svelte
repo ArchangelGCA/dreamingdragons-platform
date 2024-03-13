@@ -1,5 +1,4 @@
 <script>
-    import {onMount} from "svelte";
     import ContentCard from "$lib/components/profile/ContentCard.svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import { PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
@@ -16,12 +15,9 @@
             backgroundColor: 'rgba(92,0,166,0.9)',
             padding: '10px',
             borderRadius: '5px'
-        }
+        },
+        theme: 'text-center w-auto'
     };
-
-    onMount(() => {
-        window.$('[data-bs-toggle="tooltip"]').tooltip();
-    });
 
     export let data;
     let { session, supabase, profile, isOwner, isFollowing } = data;

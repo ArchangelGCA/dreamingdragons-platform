@@ -5,6 +5,18 @@
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import autoAnimate from '@formkit/auto-animate';
     import Notification from "$lib/components/layout/Notification.svelte";
+    import { tooltip } from "@svelte-plugins/tooltips";
+    const tooltipConfig = {
+        animation: 'fade',
+        delay: 0,
+        style: {
+            color: 'white',
+            backgroundColor: 'rgba(92,0,166,0.9)',
+            padding: '10px',
+            borderRadius: '5px'
+        },
+        theme: 'text-center w-auto'
+    };
 
     export let data;
 
@@ -25,8 +37,6 @@
                 document.querySelector('.navbar-collapse').classList.remove('show');
             });
         });
-
-        window.$('[data-bs-toggle="tooltip"]').tooltip();
 
         return () => data.subscription.unsubscribe();
     });
@@ -65,7 +75,7 @@
 <div class="row border-bottom border-light-subtle py-2">
     <div class="col-2">
         <a href="/">
-            <img src={favicon} alt="Logo" width="40" height="40" data-bs-toggle="tooltip" data-bs-placement="right" title="Homepage" /> <!-- TODO: Use enhanced logo -->
+            <img src={favicon} alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
         </a>
     </div>
     <div class="col-10 text-end">
@@ -128,7 +138,7 @@
     <div class="col">
         <div class="row">
             <div class="col">
-                <p class="fs-6 text-center">Designed by: <a href="{designedByLink}" data-bs-toggle="tooltip" title="Visit Developer" target="_blank">{designedBy}</a></p>
+                <p class="fs-6 text-center">Designed by: <a href="{designedByLink}" use:tooltip={{...tooltipConfig}} title="Visit Developer" target="_blank">{designedBy}</a></p>
             </div>
         </div>
         <!-- Socials -->
@@ -137,7 +147,7 @@
                 <p class="fs-6 text-center mb-1">Follow us on:</p>
                 <p class="fs-4 text-center">
                     {#each socials as social}
-                        <a href="{social.link}" target="_blank" data-bs-toggle="tooltip" title="Open {social.name}" class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
+                        <a href="{social.link}" target="_blank" use:tooltip={{...tooltipConfig}} title="Open {social.name}" class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
                     {/each}
                 </p>
             </div>
@@ -145,7 +155,7 @@
         <!-- Links to TOS and Privacy Policy -->
         <div class="row">
             <div class="col">
-                <p class="fs-6 text-center">For Terms of Service and Privacy Policy, please visit: <a href="{tosLink}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="Terms Of Service" class="text-decoration-none text-light">TOS</a> and <a href="{privacyPolicyLink}" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="Privacy Policy" class="text-decoration-none text-light">Privacy Policy</a>.</p>
+                <p class="fs-6 text-center">For Terms of Service and Privacy Policy, please visit: <a href="{tosLink}" target="_blank" use:tooltip={{...tooltipConfig}} title="Terms Of Service" class="text-decoration-none text-light">TOS</a> and <a href="{privacyPolicyLink}" target="_blank" use:tooltip={{...tooltipConfig}} data-bs-placement="top" title="Privacy Policy" class="text-decoration-none text-light">Privacy Policy</a>.</p>
             </div>
         </div>
         <!-- Copyright -->

@@ -1,3 +1,8 @@
+<svelte:head>
+    <title>Roses In The Flames - Privacy Policy</title>
+    <meta name="description" content="Privacy Policy of Roses In The Flames (RiTF).">
+</svelte:head>
+
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 rounded-3">
     <h1 style="padding-top: 6pt;padding-left: 23pt;text-indent: 0pt;text-align: center;">ONLINE PRIVACY POLICY
         AGREEMENT</h1>

@@ -2,15 +2,21 @@
     import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES } from "$env/static/public";
     import {deserialize} from '$app/forms';
     import {toast} from "@zerodevx/svelte-toast";
-    import { tooltip } from "@svelte-plugins/tooltips";
-    import {onMount} from "svelte";
     import Editor from '@tinymce/tinymce-svelte';
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
-
-    onMount(() => {
-        window.$('[data-bs-toggle="tooltip"]').tooltip();
-    });
+    import { tooltip } from "@svelte-plugins/tooltips";
+    const tooltipConfig = {
+        animation: 'fade',
+        delay: 0,
+        style: {
+            color: 'white',
+            backgroundColor: 'rgba(92,0,166,0.9)',
+            padding: '10px',
+            borderRadius: '5px'
+        },
+        theme: 'text-center w-auto'
+    };
 
     let conf = {
         skin: 'oxide-dark',
@@ -64,16 +70,6 @@
 
     let { session, supabase, books } = data;
     $: ({ session, supabase } = data);
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        }
-    };
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = '';

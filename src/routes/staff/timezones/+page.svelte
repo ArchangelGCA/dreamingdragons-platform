@@ -27,7 +27,6 @@
     });
 
     onMount(() => {
-        window.$('[data-bs-toggle="tooltip"]').tooltip();
         const interval = setInterval(() => {
             time = new Date();
         }, 1000);

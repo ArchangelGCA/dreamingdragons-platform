@@ -1,10 +1,5 @@
 <script>
-    import {onMount} from "svelte";
     import autoAnimate from '@formkit/auto-animate';
-
-    onMount(() => {
-        window.$('[data-bs-toggle="tooltip"]').tooltip();
-    });
 </script>
 
 <div class="container-fluid my-3" style="min-height: 69vh">

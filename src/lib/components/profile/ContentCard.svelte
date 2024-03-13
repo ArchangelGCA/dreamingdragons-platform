@@ -12,7 +12,8 @@
             backgroundColor: 'rgba(92,0,166,0.9)',
             padding: '10px',
             borderRadius: '5px'
-        }
+        },
+        theme: 'text-center w-auto'
     };
 
     export let content;
@@ -22,7 +23,6 @@
     let likeActionActive = false;
 
     onMount(() => {
-        window.$('[data-bs-toggle="tooltip"]').tooltip();
         const imgElement = document.querySelector('.img-home img');
         if (imgElement && imgElement.complete) {
             handleImageLoad();
