@@ -1,13 +1,10 @@
 <script>
-
     export let notification;
-    let message = undefined;
-    let icon = undefined;
 
     let dateFormatted = new Date(notification.created_at).toLocaleDateString('en-GB');
 </script>
 
-<div class="row border border-light-subtle rounded-3 p-2 mb-2 bg-black bg-opacity-10 notification">
+<div class="row border border-light-subtle rounded-3 p-2 mb-2 bg-black bg-opacity-10 notification {notification.watched ? '' : 'not-read'}">
     <div class="col">
         <p class="fs-6 my-auto">
             {#if notification.type === 'like'}
@@ -32,6 +29,16 @@
 
     .notification:hover {
         background-color: #1a1a1a !important;
+        box-shadow: 0 0 10px 0 #a83fff;
+    }
+
+    /* subtle difference between read and not-read notifications */
+    .not-read {
+        /* box shadow */
+        box-shadow: 0 0 10px 0 #593fff;
+    }
+
+    .not-read:hover {
         box-shadow: 0 0 10px 0 #a83fff;
     }
 

@@ -49,8 +49,8 @@
     const owner = 'Roses In The Flames Official'
     const designedBy = 'ArchangelGCA';
     const designedByLink = 'https://archangelgca.eu';
-    const tosLink = '/tos'
-    const privacyPolicyLink = '/privacy-policy'
+    const tosLink = '/legal/tos'
+    const privacyPolicyLink = '/legal/privacy-policy'
     const copyright = `© ${currentYear} ${owner}. All rights reserved.`;
 
     let notificationsCount = 0;
