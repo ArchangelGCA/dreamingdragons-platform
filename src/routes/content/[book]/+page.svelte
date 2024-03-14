@@ -172,8 +172,8 @@
             </a>
         </div>
     </div>
-    <div class="row justify-content-center text-center bg-purple-opacity-10 pt-3 pb-2 mb-3 rounded-4">
-        <div class="col-12 mb-3">
+    <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
+        <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-3 text-end">
                     <a href="/profile?id={bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
@@ -188,11 +188,11 @@
                         {/if}
                     </a>
                 </div>
-                <div class="col-9 text-center">
+                <div class="col-9 text-center my-auto">
                     <p class="h2">{bookContent.book_title}</p>
-                    <p class="h6">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
+                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
                     {#if tags.length !== 0}
-                        <div class="row justify-content-center">
+                        <div class="row justify-content-center mt-1">
                             <div class="col-auto">
                                 {#each tags as tag (tag.id)}
                                     <a href="{tag.url}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>

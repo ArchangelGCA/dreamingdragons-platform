@@ -65,7 +65,9 @@
 
     let notificationsCount = 0;
     if (notifications !== null && notifications.length !== 0) {
-        notificationsCount = notifications.length;
+        // Count how many notifications have watched set to false
+        const notificationsNotWatched = notifications.filter(notification => notification.watched === false);
+        notificationsCount = notificationsNotWatched.length;
     }
 
 </script>
@@ -79,11 +81,13 @@
         </a>
     </div>
     <div class="col-10 text-end">
-        <div class="row align-items-center">
+        <div class="row align-items-center" use:autoAnimate>
             {#if notificationsCount !== 0}
                 <div class="col pe-3 mt-1">
                     <div class="position-relative">
-                        <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
+                        <button class="btn border border-0 p-0 bg-transparent" on:click={() => notificationsCount = 0} on:keydown={() => notificationsCount = 0}>
+                            <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
+                        </button>
                         <span class="position-absolute top-0 start-100 mt-1 ms-2 translate-middle badge rounded-pill bg-danger">{notificationsCount}</span>
                     </div>
                 </div>
@@ -117,7 +121,7 @@
     <div class="offcanvas-body">
         {#if notifications !== null && notifications.length !== 0}
             {#each notifications as notification}
-                <Notification {notification} />
+                <Notification {notification} {supabase} {session} />
             {/each}
         {:else}
             <div class="row border border-light-subtle rounded-3 p-2 mb-2">
@@ -183,7 +187,6 @@
     }
 
     #notificationBell {
-        cursor: pointer;
         font-size: 1.1rem;
     }
 
