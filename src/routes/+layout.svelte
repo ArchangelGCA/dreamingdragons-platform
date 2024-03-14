@@ -187,6 +187,7 @@
     }
 
     #notificationBell {
+        cursor: pointer;
         font-size: 1.1rem;
     }
 

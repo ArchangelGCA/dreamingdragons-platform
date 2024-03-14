@@ -86,6 +86,7 @@
     }
 
     .new {
+        cursor: pointer;
         box-shadow: 0 0 5px 0 #a83fff;
     }
 
