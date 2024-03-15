@@ -21,13 +21,14 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
         .eq('book_id', bookId);
 
     if (error) {
-        console.error(error);
+        errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
+        /*console.error(error);
         return {
             status: 500,
             body: {
                 message: error.message
             }
-        }
+        }*/
     }
 
     if (!bookContent || bookContent.length === 0) {

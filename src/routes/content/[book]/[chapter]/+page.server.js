@@ -24,13 +24,14 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
             .eq('chapter_id', chapterId);
 
     if (error) {
-        console.error(error);
+        errorx(500, 'Something went wrong, perhaps the IDs may be invalid...');
+        /*console.error(error);
         return {
             status: 500,
             body: {
                 message: error.message
             }
-        }
+        }*/
     }
 
     if (!chapterContent || chapterContent.length === 0) {
