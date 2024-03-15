@@ -30,12 +30,12 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
         }
     }
 
-    let tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
-
     if (!bookContent || bookContent.length === 0) {
         errorx(404, "Book not found");
         return;
     }
+
+    const tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
 
     if (!session) {
         isOwner = false;
@@ -54,7 +54,12 @@ export const actions = {
         const session = await getSession();
 
         if (!session) {
-            throw redirect(303, '/login');
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to like content"
+                }
+            }
         }
 
         const contentId = formData.contentId;
@@ -131,7 +136,12 @@ export const actions = {
         const session = await getSession();
 
         if (!session) {
-            throw redirect(303, '/login');
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to like content"
+                }
+            }
         }
 
         const chapterId = formData.chapterId;

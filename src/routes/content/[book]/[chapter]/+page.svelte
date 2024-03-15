@@ -100,7 +100,7 @@
                 }
             } else {
                 isLiked = !isLiked;
-                toast.push('Error during action: ' + result.data.body.message, {
+                toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
                         '--toastColor': '#fff',

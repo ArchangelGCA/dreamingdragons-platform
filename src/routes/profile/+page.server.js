@@ -37,9 +37,9 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
             return;
         }
 
-        isOwner = profile[0].id === session.user.id;
-
         if (session) {
+
+            isOwner = profile[0].id === session.user.id;
 
             if (!isOwner) {
                 const { data: follow, error } = await supabase
@@ -154,7 +154,12 @@ export const actions = {
         const session = await getSession();
 
         if (!session) {
-            throw redirect(303, '/login');
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to like content"
+                }
+            }
         }
 
         const contentId = formData.contentId;
@@ -231,7 +236,12 @@ export const actions = {
         const session = await getSession();
 
         if (!session) {
-            throw redirect(303, '/login');
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to follow someone"
+                }
+            }
         }
 
         const profileId = formData.profileId;
