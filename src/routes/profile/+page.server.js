@@ -103,7 +103,7 @@ export const load = async ( { url, locals: { supabase, getSession/*, s3*/ } }) =
             }
         }
 
-        // Retrieve the user_books again after the insert operation
+        // Retrieve the books
         const { data: updatedProfile, errorNew } = await supabase
             .from('experimental_books')
             .select('*')

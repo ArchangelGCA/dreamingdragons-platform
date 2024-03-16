@@ -44,6 +44,10 @@
         avatarUrl = bookContent.owner_avatar_url;
     }
 
+    if (bookContent.total_views){ // It once returned undefined for unknown reasons
+        viewsCount = bookContent.total_views;
+    }
+
     if (chapters !== undefined && chapters !== null) {
         if (chapters[0].chapter_id !== null) {
             chaptersFound = true;

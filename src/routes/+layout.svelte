@@ -6,6 +6,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import Notification from "$lib/components/layout/Notification.svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
+
     const tooltipConfig = {
         animation: 'fade',
         delay: 0,
@@ -69,7 +70,6 @@
         const notificationsNotWatched = notifications.filter(notification => notification.watched === false);
         notificationsCount = notificationsNotWatched.length;
     }
-
 </script>
 
 <SvelteToast />

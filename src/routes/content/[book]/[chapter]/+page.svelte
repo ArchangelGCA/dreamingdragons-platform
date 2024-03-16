@@ -45,6 +45,10 @@
         text = chapterContent.text;
     }
 
+    if (chapterContent.total_views) {
+        viewsCount = chapterContent.total_views;
+    }
+
     tags.forEach((item) => item.url = `/search?tag=${item.name}`);
 
     async function downloadAvatar(path) {
