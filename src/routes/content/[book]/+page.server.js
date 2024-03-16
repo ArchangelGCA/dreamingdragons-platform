@@ -1,6 +1,6 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 
-export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } }) => {
+export const load = async ({ params, locals: { supabase, ip_address, getSession } }) => {
     const session = await getSession();
     let isOwner = false;
 
@@ -22,13 +22,6 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
 
     if (error) {
         errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
-        /*console.error(error);
-        return {
-            status: 500,
-            body: {
-                message: error.message
-            }
-        }*/
     }
 
     if (!bookContent || bookContent.length === 0) {
@@ -37,6 +30,7 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     }
 
     const tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
+    const user_id = session ? session.user.id : null;
 
     if (!session) {
         isOwner = false;
@@ -46,7 +40,7 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
 
     bookContent[0].is_owner = isOwner;
 
-    return { bookContent, tags };
+    return { bookContent, tags, ip_address, user_id };
 }
 
 export const actions = {

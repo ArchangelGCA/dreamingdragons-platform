@@ -20,7 +20,16 @@ export const handle = async ({ event, resolve }) => {
         event,
     })
 
+    /**
+     * Add S3 client to local
+     * @type {S3Client}
+     */
     event.locals.s3 = s3;
+
+    /**
+     * Get the client's IP address
+     */
+    event.locals.ip_address = event.getClientAddress();
 
     /**
      * A convenience helper so we can just call await getSession() instead const { data: { session } } = await supabase.auth.getSession()

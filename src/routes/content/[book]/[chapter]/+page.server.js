@@ -1,6 +1,6 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 
-export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } }) => {
+export const load = async ({ params, locals: { supabase, ip_address, getSession/*, s3*/ } }) => {
     const session = await getSession();
     let isOwner = false;
 
@@ -40,6 +40,8 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     }
 
     const tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
+    const user_id = session ? session.user.id : null;
+
 
     if (!session) {
         isOwner = false;
@@ -51,7 +53,7 @@ export const load = async ({ params, locals: { supabase, getSession/*, s3*/ } })
     chapterContent[0].is_owner = isOwner;
 
     // return
-    return { chapterContent, tags };
+    return { chapterContent, tags, ip_address, user_id };
 }
 
 export const actions = {

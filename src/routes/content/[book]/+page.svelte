@@ -3,11 +3,11 @@
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
-
+    import {onMount} from "svelte";
 
     export let data;
     let avatarUrl;
-    let { supabase } = data;
+    let { supabase, ip_address, user_id } = data;
 
     const tooltipConfig = {
         animation: 'fade',
@@ -21,32 +21,9 @@
         theme: 'text-center w-auto'
     };
 
-    /* Example bookContent
-    [
-      {
-        book_id: 1,
-        book_title: 'Example Book',
-        book_description: "Example Book's Description",
-        book_cover_url: 'https://archangelgca.eu/img/logo.jpg',
-        likes_count: 0,
-        chapters: [ [Object] ],
-        owner_id: 'bfc1c4a7-f2af-494a-b7d9-35377f16d33e',
-        owner_username: 'ArchangelGCA',
-        owner_full_name: 'GCA',
-        owner_avatar_url: '0.20207563595383804.png',
-        owner_website: 'https://archangelgca.eu',
-        is_owner: true/false,
-        is_liked: true/false
-      }
-    ]
-
-     */
-
-    /* Example bookContent[0].chapters
-    [
-      { chapter_id: 1, chapter_title: 'Test', chapter_likes_count: 0 }
-    ]
-     */
+    onMount(() => {
+        handleView();
+    });
 
     let bookContent = data.bookContent[0];
     let chapters = bookContent.chapters;
@@ -90,6 +67,37 @@
             if (error instanceof Error) {
                 console.log('Error downloading image: ', error.message);
                 avatarFound = false;
+            }
+        }
+    }
+
+    async function handleView(){
+        // try to insert view in supabase
+        if (user_id){
+            const { error } = await supabase
+                .from('views')
+                .insert([{
+                    book_id: bookContent.book_id,
+                    ip_address: ip_address,
+                    user_id: user_id
+                }
+            ]);
+
+            if (!error) {
+                viewsCount++;
+            }
+        } else {
+            // Using only IP address
+            const { error } = await supabase
+                .from('views')
+                .insert([{
+                    book_id: bookContent.book_id,
+                    ip_address: ip_address
+                }
+            ]);
+
+            if (!error) {
+                viewsCount++;
             }
         }
     }

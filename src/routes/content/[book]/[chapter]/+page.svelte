@@ -2,9 +2,10 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
+    import {onMount} from "svelte";
 
     export let data;
-    let { supabase } = data;
+    let { supabase, ip_address, user_id } = data;
 
     const tooltipConfig = {
         animation: 'fade',
@@ -17,6 +18,10 @@
         },
         theme: 'text-center w-auto'
     };
+
+    onMount(() => {
+        handleView();
+    });
 
     let chapterContent = data.chapterContent[0];
     let tags = data.tags;
@@ -56,6 +61,37 @@
             if (error instanceof Error) {
                 console.log('Error downloading image: ', error.message);
                 avatarFound = false;
+            }
+        }
+    }
+
+    async function handleView(){
+        // try to insert view in supabase
+        if (user_id){
+            const { error } = await supabase
+                .from('views')
+                .insert([{
+                    chapter_id: chapterContent.chapter_id,
+                    ip_address: ip_address,
+                    user_id: user_id
+                }
+                ]);
+
+            if (!error) {
+                viewsCount++;
+            }
+        } else {
+            // Using only IP address
+            const { error } = await supabase
+                .from('views')
+                .insert([{
+                    chapter_id: chapterContent.chapter_id,
+                    ip_address: ip_address
+                }
+                ]);
+
+            if (!error) {
+                viewsCount++;
             }
         }
     }
