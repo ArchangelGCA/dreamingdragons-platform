@@ -1,0 +1,21 @@
+{
+  "name": "Roses In The Flames - Platform - Tales",
+  "short_name": "RiTF",
+  "description": "A place where you can share your stories and art.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#5c00a6",
+  "icons": [
+    {
+      "src": "/favicon.webp",
+      "sizes": "192x192",
+      "type": "image/webp"
+    },
+    {
+      "src": "/favicon.webp",
+      "sizes": "512x512",
+      "type": "image/webp"
+    }
+  ]
+}
