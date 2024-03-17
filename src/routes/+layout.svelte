@@ -92,12 +92,6 @@
 
             if (error) {
                 console.error(error)
-                return {
-                    status: 500,
-                    body: {
-                        message: error.message,
-                    },
-                }
             }
 
             if (notifs.length === 0) {
