@@ -3,6 +3,7 @@
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
+    import autoAnimate from '@formkit/auto-animate';
     import {onMount} from "svelte";
 
     export let data;
@@ -39,6 +40,9 @@
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(bookContent.created_at);
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
+    let isTextAreaFocused = false;
+    let commentText = '';
+
 
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
@@ -73,6 +77,11 @@
                 avatarFound = false;
             }
         }
+    }
+
+    function resetComment() {
+        commentText = '';
+        handleBlur();
     }
 
     async function handleView(){
@@ -164,6 +173,16 @@
         }
 
         likeActionActive = false;
+    }
+
+    function handleFocus() {
+        isTextAreaFocused = true;
+    }
+
+    function handleBlur() {
+        if (commentText === '') {
+            isTextAreaFocused = false;
+        }
     }
 
     $: if (avatarUrl) downloadAvatar(avatarUrl);
@@ -286,6 +305,45 @@
             </p>
         </div>
     </div>
+    <!-- Comments section -->
+    <div class="row justify-content-center">
+        <div class="col-12 px-0">
+            <p class="h3">Comments:</p>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 px-0">
+                    <div class="form-floating text-center">
+                        <textarea class="form-control form-control-lg py-5 {isTextAreaFocused ? 'bg-purple-opacity-10' : 'bg-purple-opacity-25'}" id="commentInput" placeholder="Write your comment here" on:focus={handleFocus} on:blur={handleBlur} bind:value={commentText}></textarea>
+                        <label for="commentInput">Write your comment here...</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 px-0" use:autoAnimate>
+                    {#if isTextAreaFocused}
+                        <div class="row gx-1 comment-buttons mt-2">
+                            <div class="col-6">
+                                <button class="btn btn-comment-cancel w-100" type="reset" on:click={resetComment}>Cancel</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-comment w-100 " type="submit">Comment</button>
+                            </div>
+                        </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {#if commentsCount === 0}
+            <div class="col-12 text-center mt-5 mb-4">
+                <p class="h5">No comments found!</p>
+            </div>
+        {:else}
+            <div class="col-12">
+
+            </div>
+        {/if}
+    </div>
 
 </div>
 
@@ -317,6 +375,31 @@
     .btn-shortcut:hover {
         background-color: #4a007f;
         border-color: #4a007f;
+    }
+
+    .btn-comment-cancel {
+        background-color: rgba(109, 47, 157, 0.25);
+    }
+
+    .btn-comment-cancel:hover {
+        background-color: #4a007f;
+    }
+
+    .btn-comment {
+        background-color: rgba(92, 0, 166, 0.3);
+    }
+
+    .btn-comment:hover {
+        background-color: #4a007f;
+    }
+
+    .form-control {
+        border-color: #5c00a6;
+    }
+
+    .form-control:focus {
+        border-color: #5c00a6;
+        box-shadow: 0 0 0 0.25rem rgba(92, 0, 166, 0.25);
     }
 
     .liked {
