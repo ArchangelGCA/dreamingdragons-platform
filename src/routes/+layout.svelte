@@ -63,12 +63,59 @@
     const tosLink = '/legal/tos'
     const privacyPolicyLink = '/legal/privacy-policy'
     const copyright = `© ${currentYear} ${owner}. All rights reserved.`;
+    const notificationsRangeStep = 20;
 
     let notificationsCount = 0;
+    let allNotificationsLoaded = false;
     if (notifications !== null && notifications.length !== 0) {
         // Count how many notifications have watched set to false
         const notificationsNotWatched = notifications.filter(notification => notification.watched === false);
         notificationsCount = notificationsNotWatched.length;
+    } else {
+        allNotificationsLoaded = true;
+    }
+
+    let loading = false;
+    let page = 1;
+    async function loadMoreNotifications() {
+        if (loading || allNotificationsLoaded) return;
+
+        loading = true;
+
+        if (session){
+            const { data: notifs, error } = await supabase
+                .from('notifications')
+                .select('*')
+                .eq('recipient_id', session.user.id)
+                .order('created_at', { ascending: false })
+                .range(notificationsRangeStep * page, notificationsRangeStep * (page + 1));
+
+            if (error) {
+                console.error(error)
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message,
+                    },
+                }
+            }
+
+            if (notifs.length === 0) {
+                allNotificationsLoaded = true;
+            } else {
+                notifications = [...notifications, ...notifs];
+                page++;
+            }
+        }
+
+        loading = false;
+    }
+
+    function handleScroll(event) {
+        const target = event.target;
+        if (target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 2)) {
+            loadMoreNotifications();
+        }
     }
 </script>
 
@@ -118,7 +165,7 @@
         <h5 class="offcanvas-title mt-1">Notifications</h5>
         <button type="button" class="btn-close me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="offcanvas-body">
+    <div class="offcanvas-body" on:scroll={handleScroll}>
         {#if notifications !== null && notifications.length !== 0}
             {#each notifications as notification}
                 <Notification {notification} {supabase} {session} />

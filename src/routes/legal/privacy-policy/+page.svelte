@@ -468,21 +468,6 @@
         potential
         liability your company may face in relation to any COPPA compliance issues.</p>
 </div>
-<!--
-<div class="container-fluid rounded-3 py-3 mb-3">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
-                <a href="/privacy-policy.pdf" download="Roses In The Flames Privacy Policy"
-                   class="btn btn-danger p-2">
-                    <i class="fas fa-file-pdf"></i>
-                    Download PDF
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
--->
 <style>
 
     .container-fluid {

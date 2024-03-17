@@ -27,7 +27,7 @@ export const load = async ({ fetch, data, depends }) => {
             .select('*')
             .eq('recipient_id', session.user.id)
             .order('created_at', { ascending: false })
-            .range(0, 10);
+            .range(0, 20);
 
         if (error) {
             console.error(error)

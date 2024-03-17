@@ -2,7 +2,7 @@
     <title>Roses In The Flames - TOS - Terms of Service</title>
     <meta name="description" content="Terms of Service of Roses In The Flames (RiTF).">
 </svelte:head>
-<div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 rounded-3">
+<div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 mx-auto rounded-3">
     <p style="padding-top: 3pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">Last Updated: 03/13/2024.</p>
     <p
             style="text-indent: 0pt;text-align: left;"><br></p>
@@ -966,21 +966,6 @@
         to
         indicate that all information on the Site or on any related Site has been modified or updated.</p>
 </div>
-<!--
-<div class="container-fluid rounded-3 py-3 mb-3">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-center">
-                <a href="/tos.pdf" download="Roses In The Flames Privacy Policy"
-                   class="btn btn-danger p-2">
-                    <i class="fas fa-file-pdf"></i>
-                    Download PDF
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
--->
 <style>
 
     .container-fluid {
