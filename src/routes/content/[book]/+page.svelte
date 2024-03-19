@@ -5,10 +5,11 @@
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
     import autoAnimate from '@formkit/auto-animate';
     import {onMount} from "svelte";
+    import Comment from "$lib/components/pages/Comment.svelte";
 
     export let data;
     let avatarUrl;
-    let { supabase, ip_address, user_id } = data;
+    let { supabase, comments, ip_address, user_id } = data;
 
     const tooltipConfig = {
         animation: 'fade',
@@ -34,7 +35,7 @@
     let avatarFound = true;
     let loadedAvatar = false;
     let viewsCount = 0;
-    let commentsCount = 0;
+    let commentsCount = comments.length;
     let isLiked = bookContent.is_liked;
     let likeActionActive = false;
     let currentYear = new Date().getFullYear();
@@ -173,6 +174,51 @@
         }
 
         likeActionActive = false;
+    }
+
+    async function handleCommentSubmit() {
+        if (commentText === '') {
+            return;
+        }
+
+        const data = new FormData();
+        data.append('bookId', bookContent.book_id);
+        data.append('content', commentText);
+
+        const response = await fetch('?/add_comment', {
+            method: 'POST',
+            body: data
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                commentText = '';
+                commentsCount++;
+                toast.push('Comment added! 📝', {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+
+                comments = [result.data.body.comment, ...comments];
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
     }
 
     function handleFocus() {
@@ -327,7 +373,7 @@
                                 <button class="btn btn-comment-cancel w-100" type="reset" on:click={resetComment}>Cancel</button>
                             </div>
                             <div class="col-6">
-                                <button class="btn btn-comment w-100 " type="submit">Comment</button>
+                                <button class="btn btn-comment w-100 " type="submit" on:click={handleCommentSubmit}>Comment</button>
                             </div>
                         </div>
                     {/if}
@@ -339,8 +385,10 @@
                 <p class="h5">No comments found!</p>
             </div>
         {:else}
-            <div class="col-12">
-
+            <div class="col-12 mt-3 pt-3 border-top border-light-subtle" use:autoAnimate>
+                {#each comments as comment (comment.id)}
+                    <Comment {comment} {supabase} />
+                {/each}
             </div>
         {/if}
     </div>

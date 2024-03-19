@@ -15,7 +15,7 @@ export const GET = async ({locals: {supabase, getSession}}) => {
 
     // Handle errors if any
     if (booksError || chaptersError || profilesError) {
-        // empty books array
+        // empty books array + profiles
         return await sitemap.response({
             origin: 'https://tales.rosesintheflames.com',
             paramValues: {

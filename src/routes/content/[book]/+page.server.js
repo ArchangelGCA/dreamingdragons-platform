@@ -29,6 +29,16 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         return;
     }
 
+    const {data: comments, error: commentsError} = await supabase
+        .from('comments')
+        .select('*, profiles(username, avatar_url)')
+        .eq('book_id', bookId)
+        .order('created_at', { ascending: true });
+
+    if (commentsError) {
+        errorx(500, 'Something went wrong, comments loading error...');
+    }
+
     const tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
     const user_id = session ? session.user.id : null;
 
@@ -40,7 +50,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
 
     bookContent[0].is_owner = isOwner;
 
-    return { bookContent, tags, ip_address, user_id };
+    return { bookContent, tags, comments, ip_address, user_id };
 }
 
 export const actions = {
@@ -205,6 +215,55 @@ export const actions = {
             status: 200,
             body: {
                 message: "Like " + action + " successfully"
+            }
+        }
+    },
+    add_comment: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to add a comment"
+                }
+            }
+        }
+
+        const bookId = formData.bookId;
+        const userId = session.user.id;
+        const content = formData.content;
+
+        if (bookId === null || content === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { data, error } = await supabase
+            .from('comments')
+            .insert([{ book_id: bookId, user_id: userId, content: content }])
+            .select('*, profiles(username, avatar_url)');
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Comment added successfully",
+                comment: data[0]
             }
         }
     }
