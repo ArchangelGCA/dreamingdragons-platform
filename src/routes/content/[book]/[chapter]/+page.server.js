@@ -56,6 +56,9 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession/
         isOwner = false;
     } else {
         isOwner = chapterContent[0].owner_id === session.user.id;
+        comments.forEach(comment => {
+            comment.is_owner = comment.user_id === session.user.id;
+        });
     }
 
     // add isOwner to chapterContent
@@ -188,6 +191,8 @@ export const actions = {
                 }
             }
         }
+
+        data[0].is_owner = true;
 
         return {
             status: 200,

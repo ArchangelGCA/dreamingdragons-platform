@@ -209,6 +209,12 @@
         }
     }
 
+    function handleCommentDelete(event) {
+        const id = event.detail;
+        comments = comments.filter((comment) => comment.id !== id);
+        commentsCount--;
+    }
+
     function resetComment() {
         commentText = '';
         handleBlur();
@@ -365,7 +371,7 @@
         {:else}
             <div class="col-12 mt-3 pt-3 border-top border-light-subtle" use:autoAnimate>
                 {#each comments as comment (comment.id)}
-                    <Comment {comment} {supabase} />
+                    <Comment {comment} {supabase} on:delete={handleCommentDelete} />
                 {/each}
             </div>
         {/if}

@@ -1,9 +1,13 @@
 <script>
-    import {onMount} from "svelte";
+    import {createEventDispatcher} from "svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import {toast} from "@zerodevx/svelte-toast";
+    import autoAnimate from '@formkit/auto-animate';
 
     export let comment;
     export let supabase;
+
+    const dispatch = createEventDispatcher();
 
     const tooltipConfig = {
         animation: 'fade',
@@ -21,6 +25,7 @@
     let loadedAvatar = false;
     let avatarFound = true;
     let avatarUrl = comment.profiles.avatar_url;
+    let isHovering = false;
 
     async function downloadAvatar(path) {
         try {
@@ -40,13 +45,50 @@
         }
     }
 
+    async function deleteComment() {
+        const { error } = await supabase
+            .from('comments')
+            .delete()
+            .eq('id', comment.id);
+
+        if (error) {
+            console.error('Error deleting comment: ', error.message);
+            toast.push('Error deleting comment!', {
+                theme: {
+                    '--toastBackground': 'rgba(92,0,166,0.9)',
+                    '--toastColor': 'white'
+                }
+            });
+        } else {
+            toast.push('Comment deleted!', {
+                theme: {
+                    '--toastBackground': 'rgba(92,0,166,0.9)',
+                    '--toastColor': 'white'
+                }
+            });
+            dispatch('delete', comment.id);
+        }
+    }
+
+    function handleMouseEnter() {
+        if (comment.is_owner){
+            isHovering = true;
+        }
+    }
+
+    function handleMouseLeave() {
+        if (comment.is_owner){
+            isHovering = false;
+        }
+    }
+
     const createdAt = new Date(comment.created_at);
     const createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
 
     $: if (avatarUrl) downloadAvatar(avatarUrl);
 </script>
 
-<div class="row mb-3">
+<div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
     <div class="col-auto">
         {#if loadedAvatar === false}
             <div class="spinner-border text-light" role="status">
@@ -54,7 +96,7 @@
             </div>
         {:else if avatarFound === true}
             <a href="/profile?id={comment.user_id}">
-                <img src="{finalAvatarUrl}" alt="{comment.profiles.username}" class="img-fluid rounded-circle" style="max-height: 50px" loading="lazy">
+                <img src="{finalAvatarUrl}" alt="{comment.profiles.username}" class="img-fluid rounded-circle" style="height: 50px; width: 50px;" loading="lazy">
             </a>
         {:else}
             <img class="img-fluid rounded-circle bg-purple py-3 py-lg-5" alt="Avatar Not Found!">
@@ -64,4 +106,32 @@
         <p class="mb-0"><a class="link-light text-decoration-none" href="/profile?id={comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
         <span class="text-secondary-emphasis">{comment.content}</span>
     </div>
+    <div class="col-2 col-md-1 my-auto">
+        {#if comment.is_owner}
+            <button type="button" class="btn btn-sm btn-danger btn-delete {isHovering ? 'show' : ''}" on:click={deleteComment} title="Delete Comment" use:tooltip={{...tooltipConfig}}>
+                <i class="fas fa-trash"></i>
+            </button>
+        {/if}
+    </div>
 </div>
+
+<style>
+    .btn-delete {
+        transition: opacity 0.2s ease-in-out;
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    .btn-delete.show {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .comment-element {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .comment-element:hover {
+        background-color: rgba(92, 0, 166, 0.3);
+    }
+</style>

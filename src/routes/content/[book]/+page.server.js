@@ -33,7 +33,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         .from('comments')
         .select('*, profiles(username, avatar_url)')
         .eq('book_id', bookId)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: false });
 
     if (commentsError) {
         errorx(500, 'Something went wrong, comments loading error...');
@@ -46,6 +46,9 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         isOwner = false;
     } else {
         isOwner = bookContent[0].owner_id === session.user.id;
+        comments.forEach(comment => {
+            comment.is_owner = comment.user_id === session.user.id;
+        });
     }
 
     bookContent[0].is_owner = isOwner;
@@ -258,6 +261,8 @@ export const actions = {
                 }
             }
         }
+
+        data[0].is_owner = true;
 
         return {
             status: 200,

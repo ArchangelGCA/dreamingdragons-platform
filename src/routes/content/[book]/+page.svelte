@@ -84,6 +84,12 @@
         handleBlur();
     }
 
+    function handleCommentDelete(event) {
+        const id = event.detail;
+        comments = comments.filter((comment) => comment.id !== id);
+        commentsCount--;
+    }
+
     async function handleView(){
         // try to insert view in supabase
         if (user_id){
@@ -386,7 +392,7 @@
         {:else}
             <div class="col-12 mt-3 pt-3 border-top border-light-subtle" use:autoAnimate>
                 {#each comments as comment (comment.id)}
-                    <Comment {comment} {supabase} />
+                    <Comment {comment} {supabase} on:delete={handleCommentDelete}/>
                 {/each}
             </div>
         {/if}
