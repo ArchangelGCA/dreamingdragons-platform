@@ -44,7 +44,6 @@
     let isTextAreaFocused = false;
     let commentText = '';
 
-
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
     }

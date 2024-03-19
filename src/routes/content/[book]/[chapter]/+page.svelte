@@ -3,9 +3,11 @@
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import {onMount} from "svelte";
+    import autoAnimate from '@formkit/auto-animate';
+    import Comment from "$lib/components/pages/Comment.svelte";
 
     export let data;
-    let { supabase, ip_address, user_id } = data;
+    let { supabase, comments, ip_address, user_id } = data;
 
     const tooltipConfig = {
         animation: 'fade',
@@ -31,12 +33,14 @@
     let avatarUrl;
     let isLiked = chapterContent.is_liked;
     let viewsCount = 0;
-    let commentsCount = 0;
+    let commentsCount = comments.length;
     let likeActionActive = false;
     let text = 'Text not found!';
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(chapterContent.created_at);
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
+    let isTextAreaFocused = false;
+    let commentText = '';
     if (chapterContent.owner_avatar_url) {
         avatarUrl = chapterContent.owner_avatar_url;
     }
@@ -160,6 +164,68 @@
         likeActionActive = false;
     }
 
+    async function handleCommentSubmit() {
+        if (commentText === '') {
+            return;
+        }
+
+        const data = new FormData();
+        data.append('chapterId', chapterContent.chapter_id);
+        data.append('content', commentText);
+
+        const response = await fetch('?/add_comment', {
+            method: 'POST',
+            body: data
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                commentText = '';
+                commentsCount++;
+                toast.push('Comment added! 📝', {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+
+                comments = [result.data.body.comment, ...comments];
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+    }
+
+    function resetComment() {
+        commentText = '';
+        handleBlur();
+    }
+
+    function handleFocus() {
+        isTextAreaFocused = true;
+    }
+
+    function handleBlur() {
+        if (commentText === '') {
+            isTextAreaFocused = false;
+        }
+    }
+
+    $: if (avatarUrl) downloadAvatar(avatarUrl);
+
     $: if (avatarUrl) downloadAvatar(avatarUrl);
 </script>
 
@@ -263,6 +329,47 @@
             </p>
         </div>
     </div>
+    <!-- Comments section -->
+    <div class="row justify-content-center">
+        <div class="col-12 px-0">
+            <p class="h3">Comments:</p>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 px-0">
+                    <div class="form-floating text-center">
+                        <textarea class="form-control form-control-lg py-5 {isTextAreaFocused ? 'bg-purple-opacity-10' : 'bg-purple-opacity-25'}" id="commentInput" placeholder="Write your comment here" on:focus={handleFocus} on:blur={handleBlur} bind:value={commentText}></textarea>
+                        <label for="commentInput">Write your comment here...</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 px-0" use:autoAnimate>
+                    {#if isTextAreaFocused}
+                        <div class="row gx-1 comment-buttons mt-2">
+                            <div class="col-6">
+                                <button class="btn btn-comment-cancel w-100" type="reset" on:click={resetComment}>Cancel</button>
+                            </div>
+                            <div class="col-6">
+                                <button class="btn btn-comment w-100 " type="submit" on:click={handleCommentSubmit}>Comment</button>
+                            </div>
+                        </div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        {#if commentsCount === 0}
+            <div class="col-12 text-center mt-5 mb-4">
+                <p class="h5">No comments found!</p>
+            </div>
+        {:else}
+            <div class="col-12 mt-3 pt-3 border-top border-light-subtle" use:autoAnimate>
+                {#each comments as comment (comment.id)}
+                    <Comment {comment} {supabase} />
+                {/each}
+            </div>
+        {/if}
+    </div>
 </div>
 
 <style>
@@ -297,6 +404,31 @@
     .btn-shortcut:hover {
         background-color: #4a007f;
         border-color: #4a007f;
+    }
+
+    .btn-comment-cancel {
+        background-color: rgba(109, 47, 157, 0.25);
+    }
+
+    .btn-comment-cancel:hover {
+        background-color: #4a007f;
+    }
+
+    .btn-comment {
+        background-color: rgba(92, 0, 166, 0.3);
+    }
+
+    .btn-comment:hover {
+        background-color: #4a007f;
+    }
+
+    .form-control {
+        border-color: #5c00a6;
+    }
+
+    .form-control:focus {
+        border-color: #5c00a6;
+        box-shadow: 0 0 0 0.25rem rgba(92, 0, 166, 0.25);
     }
 
     .liked {

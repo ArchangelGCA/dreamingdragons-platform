@@ -42,6 +42,15 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession/
     const tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
     const user_id = session ? session.user.id : null;
 
+    const {data: comments, error: commentsError} = await supabase
+        .from('comments')
+        .select('*, profiles(username, avatar_url)')
+        .eq('chapter_id', chapterId)
+        .order('created_at', { ascending: true });
+
+    if (commentsError) {
+        errorx(500, 'Something went wrong, comments loading error...');
+    }
 
     if (!session) {
         isOwner = false;
@@ -53,7 +62,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession/
     chapterContent[0].is_owner = isOwner;
 
     // return
-    return { chapterContent, tags, ip_address, user_id };
+    return { chapterContent, tags, comments, ip_address, user_id };
 }
 
 export const actions = {
@@ -136,6 +145,55 @@ export const actions = {
             status: 200,
             body: {
                 message: "Like " + action + " successfully"
+            }
+        }
+    },
+    add_comment: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to add a comment"
+                }
+            }
+        }
+
+        const chapterId = formData.chapterId;
+        const userId = session.user.id;
+        const content = formData.content;
+
+        if (chapterId === null || content === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { data, error } = await supabase
+            .from('comments')
+            .insert([{ chapter_id: chapterId, user_id: userId, content: content }])
+            .select('*, profiles(username, avatar_url)');
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Comment added successfully",
+                comment: data[0]
             }
         }
     }
