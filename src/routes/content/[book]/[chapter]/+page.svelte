@@ -274,20 +274,20 @@
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <div class="col-3 text-end">
+                <div class="col-3 col-md-2 text-end">
                     <a href="/profile?id={chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
                         {#if loadedAvatar === false}
                             <div class="spinner-border text-light" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         {:else if avatarFound === true}
-                            <img src="{finalAvatarUrl}" alt="{chapterContent.owner_username}" class="img-fluid rounded-circle" style="max-height: 100px" loading="lazy">
+                            <img src="{finalAvatarUrl}" alt="{chapterContent.owner_username}" class="img-fluid rounded-circle" style="height: 70px; width: 70px" loading="lazy">
                         {:else}
                             <img class="img-fluid rounded-circle bg-purple py-3 py-lg-5" alt="Avatar Not Found!">
                         {/if}
                     </a>
                 </div>
-                <div class="col-9 text-center my-auto">
+                <div class="col-9 col-md-10 text-center my-auto">
                     <h2><a class="link-light link-opacity-75 text-decoration-none" href="/content/{chapterContent.book_id}">{chapterContent.book_title}</a>: {chapterContent.title}</h2>
                     <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></h6>
                     {#if tags.length !== 0}
