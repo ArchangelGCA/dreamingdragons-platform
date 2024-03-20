@@ -25,6 +25,7 @@
 
     onMount(() => {
         handleView();
+        loadAvatarsComments();
     });
 
     let bookContent = data.bookContent[0];
@@ -43,6 +44,7 @@
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
     let isTextAreaFocused = false;
     let commentText = '';
+    let avatarsLoaded = false;
 
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
@@ -60,6 +62,26 @@
     }
 
     tags.forEach((item) => item.url = `/search?tag=${item.name}`);
+
+    async function loadAvatarsComments(){
+        let avatars = [];
+        for (const comment of comments) {
+            if (!avatars.some(avatar => avatar.name === comment.profiles.avatar_url)){
+                const { data, error } = await supabase.storage.from('avatars').download(comment.profiles.avatar_url);
+                if (error) {
+                    console.log('Error downloading image: ', error.message);
+                } else {
+                    const avatarURL = URL.createObjectURL(data);
+                    avatars.push({name: comment.profiles.avatar_url, url: avatarURL});
+                }
+            }
+        }
+        comments.forEach((comment) => {
+            comment.profiles.avatar_url = avatars.find(avatar => avatar.name === comment.profiles.avatar_url).url;
+        });
+        avatarsLoaded = true;
+    }
+
 
     async function downloadAvatar(path) {
         try {
@@ -390,10 +412,20 @@
                 <p class="h5">No comments found!</p>
             </div>
         {:else}
-            <div class="col-12 mt-3 pt-3 border-top border-light-subtle" use:autoAnimate>
-                {#each comments as comment (comment.id)}
-                    <Comment {comment} {supabase} on:delete={handleCommentDelete}/>
-                {/each}
+            <div class="col-12 mt-3 mb-1 pt-3 border-top border-light-subtle" use:autoAnimate>
+                {#if avatarsLoaded}
+                    {#each comments as comment (comment.id)}
+                        <Comment {comment} {supabase} on:delete={handleCommentDelete}/>
+                    {/each}
+                {:else}
+                    <div class="row justify-content-center">
+                        <div class="col-auto">
+                            <div class="spinner-border text-light" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                {/if}
             </div>
         {/if}
     </div>

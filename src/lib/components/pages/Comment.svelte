@@ -28,9 +28,13 @@
     let isHovering = false;
 
     async function downloadAvatar(path) {
+        if (path.startsWith('blob:')) {
+            finalAvatarUrl = path;
+            loadedAvatar = true;
+            return;
+        }
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path);
-
             if (error) {
                 throw error;
             }
