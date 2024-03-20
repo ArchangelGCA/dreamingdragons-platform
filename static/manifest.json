@@ -14,8 +14,19 @@
     },
     {
       "src": "/favicon.webp",
+      "sizes": "192x192",
+      "type": "image/webp",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.webp",
       "sizes": "512x512",
       "type": "image/webp"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
