@@ -2,6 +2,10 @@
     import autoAnimate from '@formkit/auto-animate';
 </script>
 
+<svelte:head>
+    <link rel="canonical" href="https://tales.rosesintheflames.com/">
+</svelte:head>
+
 <div class="container-fluid my-3" style="min-height: 69vh">
     <div class="row justify-content-center">
         <div class="col text-center">
