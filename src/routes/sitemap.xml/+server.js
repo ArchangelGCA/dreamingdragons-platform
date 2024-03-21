@@ -31,9 +31,7 @@ export const GET = async ({locals: {supabase, getSession}}) => {
         paramValues: {
             '/content/[book]': booksData.map((book) => book.id),
             '/content/[book]/[chapter]': chaptersData.map((chapter) => [chapter.book_id, chapter.id]),
+            '/profile/[profile]': profilesData.map((profile) => profile.id)
         },
-        additionalPaths: [
-            ...(profilesData.map((profile) => `/profile/${profile.id}`))
-        ]
     });
 };
