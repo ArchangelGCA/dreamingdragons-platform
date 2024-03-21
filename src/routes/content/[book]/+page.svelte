@@ -280,7 +280,7 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-3 col-md-2 text-end">
-                    <a href="/profile?id={bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
+                    <a href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
                         {#if loadedAvatar === false}
                             <div class="spinner-border text-light" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -294,7 +294,7 @@
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h2">{bookContent.book_title}</p>
-                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
+                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
                     {#if tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
@@ -373,7 +373,7 @@
         <div class="col-12 px-0">
             <p class="text-secondary text-center">
                 <small>
-                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile?id={bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{bookContent.owner_username}</a> - {bookContent.book_title}
+                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{bookContent.owner_username}</a> - {bookContent.book_title}
                 </small>
             </p>
         </div>

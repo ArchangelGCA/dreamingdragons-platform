@@ -275,7 +275,7 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-3 col-md-2 text-end">
-                    <a href="/profile?id={chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
+                    <a href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
                         {#if loadedAvatar === false}
                             <div class="spinner-border text-light" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -289,7 +289,7 @@
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <h2><a class="link-light link-opacity-75 text-decoration-none" href="/content/{chapterContent.book_id}">{chapterContent.book_title}</a>: {chapterContent.title}</h2>
-                    <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile?id={chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></h6>
+                    <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></h6>
                     {#if tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
@@ -351,7 +351,7 @@
         <div class="col-12 px-0">
             <p class="text-secondary text-center">
                 <small>
-                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile?id={chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{chapterContent.owner_username}</a> - {chapterContent.book_title} - {chapterContent.title}
+                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{chapterContent.owner_username}</a> - {chapterContent.book_title} - {chapterContent.title}
                 </small>
             </p>
         </div>

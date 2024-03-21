@@ -2,7 +2,6 @@
     import {createEventDispatcher} from "svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
-    import autoAnimate from '@formkit/auto-animate';
 
     export let comment;
     export let supabase;
@@ -99,7 +98,7 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         {:else if avatarFound === true}
-            <a href="/profile?id={comment.user_id}">
+            <a href="/profile/{comment.user_id}">
                 <img src="{finalAvatarUrl}" alt="{comment.profiles.username}" class="img-fluid rounded-circle" style="height: 50px; width: 50px;" loading="lazy">
             </a>
         {:else}
@@ -107,7 +106,7 @@
         {/if}
     </div>
     <div class="col align-middle pt-1">
-        <p class="mb-0"><a class="link-light text-decoration-none" href="/profile?id={comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
+        <p class="mb-0"><a class="link-light text-decoration-none" href="/profile/{comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
         <span class="text-secondary-emphasis">{comment.content}</span>
     </div>
     <div class="col-2 col-md-1 my-auto">

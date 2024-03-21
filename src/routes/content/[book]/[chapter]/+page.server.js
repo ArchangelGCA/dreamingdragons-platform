@@ -1,4 +1,4 @@
-import {error as errorx, redirect} from '@sveltejs/kit';
+import {error as errorx} from '@sveltejs/kit';
 
 export const load = async ({ params, locals: { supabase, ip_address, getSession/*, s3*/ } }) => {
     const session = await getSession();
