@@ -76,6 +76,7 @@
     let fileName = '';
     let editorContent = '';
     let selectedOption = 'book';
+    let suggestions = [];
     /* $: if (selectedOption) {
         toast.push(`Mode: ${selectedOption}`, {
             duration: 850,
@@ -87,14 +88,29 @@
     } */ // Disabled, it looks better without
 
     let tags = [];
-    function addTag(e) {
+    async function addTag(e) {
+        if (e.key === 'Tab' && suggestions.length > 0) {
+            e.preventDefault();
+            if (tags.includes(suggestions[0])) {
+                toast.push('Tag already added', {
+                    theme: {
+                        '--toastBackground': '#ffcc00',
+                        '--toastColor': '#000'
+                    }
+                });
+                return;
+            }
+            tags = [...tags, suggestions[0]];
+            e.target.value = '';
+            suggestions = [];
+            return;
+        }
         if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
             e.preventDefault();
             const tag = e.target.value.trim();
             if (tag) {
-                if (tags.includes(tag)){
+                if (tags.includes(tag)) {
                     toast.push('Tag already added', {
-                        // Warning yellow-ish dark themed colors
                         theme: {
                             '--toastBackground': '#ffcc00',
                             '--toastColor': '#000'
@@ -105,6 +121,39 @@
                 }
                 tags = [...tags, tag];
                 e.target.value = '';
+                return;
+            }
+        }
+
+        const tag = e.target.value.trim();
+        if (tag) {
+            const formData = new FormData();
+            formData.append('tag', tag);
+
+            const response = await fetch('?/tagsuggestions', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = deserialize(await response.text());
+            if (result.type === 'success') {
+                if (result.data.status === 200) {
+                    suggestions = result.data.body.map(tag => tag.name);
+                } else {
+                    toast.push('Error: ' + result.data.body.message, {
+                        theme: {
+                            '--toastBackground': '#ff4d4d',
+                            '--toastColor': '#fff'
+                        }
+                    });
+                }
+            } else {
+                toast.push('Error: Tag suggestions failed' , {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
             }
         }
     }
@@ -124,6 +173,12 @@
             reader.readAsDataURL(file);
             fileName = file.name;
         }
+    }
+
+    function addTagSuggestion(tag) {
+        tags = [...tags, tag];
+        suggestions = [];
+        document.getElementById('inputTag').value = '';
     }
 
     async function handleBookUpload(event) {
@@ -300,7 +355,10 @@
                                                             <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" placeholder="Add tags" on:keydown={addTag} />
+                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTag" placeholder="Add tags" on:keydown={addTag} />
+                                                    {#each suggestions as suggestion (suggestion)}
+                                                        <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestion(suggestion)}>{suggestion}</button>
+                                                    {/each}
                                                     <!-- Hidden input bind with tags -->
                                                     <input type="hidden" name="tags" value={tags} />
                                                 </div>

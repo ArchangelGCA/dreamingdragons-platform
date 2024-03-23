@@ -65,13 +65,13 @@
         <div class="col">
             <p class="fs-6 my-auto">
                 {#if notification.type === 'like'}
-                    <i class="fas fa-heart text-purple" ></i> Someone liked your activity: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>Visit</a>
+                    <i class="fas fa-heart text-purple" ></i> Someone liked your activity: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>Content</a>
                 {:else if notification.type === 'follow'}
-                    <i class="fas fa-user-plus text-purple" ></i> Someone started following you: <a class="link-purple text-decoration-none" href="/profile/{notification.content}" data-sveltekit-reload>Visit</a>
+                    <i class="fas fa-user-plus text-purple" ></i> Someone started following you: <a class="link-purple text-decoration-none" href="/profile/{notification.content}" data-sveltekit-reload>Profile</a>
                 {:else if notification.type === 'followed_activity'}
-                    <i class="fas fa-bell text-purple" ></i> Someone you follow shared something: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>Visit</a>
+                    <i class="fas fa-bell text-purple" ></i> Someone you follow shared something: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>View</a>
                 {:else if notification.type === 'comment'}
-                    <i class="fas fa-comment text-purple" ></i> Someone commented on your activity: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>Visit</a>
+                    <i class="fas fa-comment text-purple" ></i> Someone commented on your content: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>Visit</a>
                 {/if}
             </p>
             <p class="fs-6 text-start text-muted text-date my-auto">{dateFormatted}</p>

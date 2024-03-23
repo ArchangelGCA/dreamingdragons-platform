@@ -259,5 +259,45 @@ export const actions = {
                 chapter_id: chapter_id
             }
         }
+    },
+    tagsuggestions: async ({ request, locals: { supabase, getSession } }) => {
+        const session = await getSession();
+
+        if (!session) { // TODO: Transition all not logged user errors to unauthorized error
+            return {
+                status: 401,
+                body: {
+                    message: "Unauthorized"
+                }
+            }
+        }
+
+        const formData = Object.fromEntries(await request.formData());
+        const tag = formData.tag;
+
+        if (tag === null || tag === undefined || tag === "") {
+            return {
+                status: 200,
+                body: []
+            }
+        }
+
+        const { data, error } = await supabase.rpc('get_similar_tags', {
+            partial_tag: tag
+        });
+
+        if (error) {
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: data
+        }
     }
 }
