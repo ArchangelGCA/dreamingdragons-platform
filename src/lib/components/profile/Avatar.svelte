@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte'
+    import {deserialize} from "$app/forms";
 
     export let size = 10
     export let url;
@@ -37,13 +38,21 @@
             }
 
             const file = files[0];
-            const fileExt = file.name.split('.').pop();
+            const fileExt = 'webp'; // We're always converting to webp
             const filePath = `${Math.random()}.${fileExt}`;
 
-            const { error } = await supabase.storage.from('avatars').upload(filePath, file);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('filePath', filePath);
 
-            if (error) {
-                throw error;
+            const response = await fetch('?/profileicon', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = deserialize(await response.text());
+            if (result.type !== 'success' || result.status !== 200) {
+                throw new Error('Failed to compress image');
             }
 
             url = filePath;
