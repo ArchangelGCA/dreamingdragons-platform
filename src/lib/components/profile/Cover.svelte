@@ -1,17 +1,14 @@
 <script>
-    import { createEventDispatcher } from 'svelte'
     import {deserialize} from "$app/forms";
+    import {toast} from "@zerodevx/svelte-toast";
 
-    export let size = 10
     export let url;
     export let supabase;
     export let session;
 
-    let avatarUrl = '';
+    let coverUrl = '';
     let uploading = false;
     let files;
-
-    const dispatch = createEventDispatcher();
 
     const downloadImage = async (path) => {
         try {
@@ -22,7 +19,7 @@
             }
 
             const url = URL.createObjectURL(data);
-            avatarUrl = url;
+            coverUrl = url;
         } catch (error) {
             if (error instanceof Error) {
                 console.log('Error downloading image: ', error.message);
@@ -30,7 +27,7 @@
         }
     }
 
-    const uploadAvatar = async () => {
+    async function uploadCover() {
         try {
             uploading = true;
 
@@ -46,7 +43,7 @@
             formData.append('file', file);
             formData.append('filePath', filePath);
 
-            const response = await fetch('?/profileicon', {
+            const response = await fetch('?/profilecover', {
                 method: 'POST',
                 body: formData,
             });
@@ -57,9 +54,15 @@
             }
 
             url = session.user.id + '/' + filePath;
-            setTimeout(() => {
-                dispatch('upload');
-            }, 100)
+
+            toast.push('Cover updated successfully!', {
+                theme: {
+                    '--toastBackground': '#029fcc',
+                    '--toastProgressBackground': '#38d971',
+                    '--toastProgressText': '#ffffff',
+                    '--toastText': '#868686',
+                },
+            });
         } catch (error) {
             if (error instanceof Error) {
                 alert(error.message);
@@ -72,31 +75,28 @@
     $: if (url) downloadImage(url);
 </script>
 
-<div class="col-auto">
-    {#if avatarUrl}
-        <img
-                src={avatarUrl}
-                alt={avatarUrl ? 'Avatar' : 'No image'}
-                loading="lazy"
-                class="avatar image"
-                style="height: {size}em; width: {size}em;"
-        />
-    {:else}
-        <div class="img-thumbnail" style="height: {size}em; width: {size}em;" />
-    {/if}
-    <input type="hidden" name="avatarUrl" value={url} />
-
-    <div style="width: {size}em;">
-        <label class="btn btn-success w-100 mt-2" for="single">
+<div class="row">
+    <div class="col-12 text-center">
+        {#if coverUrl}
+            <img src={coverUrl} alt="Cover" class="img-fluid" style="max-height: 25vh" />
+        {:else}
+            <div class="alert alert-info">
+                <p class="mb-0">No custom cover uploaded yet.</p>
+            </div>
+        {/if}
+    </div>
+    <input type="hidden" name="coverUrl" value={url} />
+    <div class="col-12">
+        <label class="btn btn-success w-100 mt-2" for="cover">
             {uploading ? 'Uploading ...' : 'Upload'}
         </label>
         <input
                 style="visibility: hidden; position:absolute;"
                 type="file"
-                id="single"
+                id="cover"
                 accept="image/*"
                 bind:files
-                on:change={uploadAvatar}
+                on:change={uploadCover}
                 disabled={uploading}
         />
     </div>

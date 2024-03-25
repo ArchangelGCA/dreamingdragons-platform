@@ -24,7 +24,10 @@
 
     let finalProfile = null;
     let avatarUrl = '';
+    let coverUrl = '';
     let finalAvatarUrl = '';
+    let finalCoverUrl = '';
+    let hasCustomCover = false;
     let avatarFound = true;
     let yearCreated = '';
     let books = [];
@@ -43,6 +46,10 @@
         if (followersArray === null) followersArray = [];
         followers = followersArray.length;
         avatarUrl = finalProfile.avatar_url;
+        if (finalProfile.cover_url && finalProfile.cover_url !== null) {
+            coverUrl = finalProfile.cover_url;
+            hasCustomCover = true;
+        }
     }
 
     async function downloadAvatar(path) {
@@ -54,6 +61,23 @@
             }
 
             finalAvatarUrl = URL.createObjectURL(data);
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('Error downloading image: ', error.message);
+                avatarFound = false;
+            }
+        }
+    }
+
+    async function downloadCover(path) {
+        try {
+            const { data, error } = await supabase.storage.from('avatars').download(path);
+
+            if (error) {
+                throw error;
+            }
+
+            finalCoverUrl = URL.createObjectURL(data);
         } catch (error) {
             if (error instanceof Error) {
                 console.log('Error downloading image: ', error.message);
@@ -130,6 +154,7 @@
     }
 
     $: if (avatarUrl) downloadAvatar(avatarUrl);
+    $: if (coverUrl) downloadCover(coverUrl);
 </script>
 
 <div class="container-fluid px-0" style="min-height: 71vh">
@@ -159,7 +184,7 @@
                     </div>
                 </div>
             {:else}
-                <div class="bg-image rounded-bottom-5 shadow-sm" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({finalAvatarUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                <div class="bg-image rounded-bottom-5 shadow-sm" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({hasCustomCover ? finalCoverUrl : finalAvatarUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                     <div class="row justify-content-center align-items-end" style="height: 100%;">
                         <div class="col-auto">
                             <img src="{finalAvatarUrl}" alt="{finalProfile.username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon" on:load={() => avatarFound = true} on:error={() => avatarFound = false}>

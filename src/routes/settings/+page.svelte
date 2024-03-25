@@ -3,6 +3,7 @@
     import Avatar from '$lib/components/profile/Avatar.svelte';
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import Cover from "$lib/components/profile/Cover.svelte";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -26,8 +27,10 @@
     let username = '';
     let website = '';
     let avatarUrl = '';
+    let coverUrl = '';
     let loading = false;
     let isAccordionOpen = false;
+    let isCoverAccordionOpen = false;
     let isAvatarAccordionOpen = false;
 
     if (profile !== null) {
@@ -50,6 +53,11 @@
             avatarUrl = profile.avatar_url;
         } catch (e4) {
             avatarUrl = '';
+        }
+        try {
+            coverUrl = profile.cover_url;
+        } catch (e5) {
+            coverUrl = '';
         }
     }
 
@@ -91,9 +99,9 @@
             <h1 class="text-center">Profile Settings</h1>
         </div>
     </div>
-    <div class="row mx-1">
+    <div class="row mx-1 gy-2 pt-2 pb-2">
         <div class="col-12 col-md-6">
-            <div class="row justify-content-center pt-2 pb-0 pb-md-2">
+            <div class="row justify-content-center">
                 <!-- Avatar Accordion -->
                 <div class="col-12 px-1">
                     <div class="accordion" id="avatarAccordion">
@@ -121,7 +129,7 @@
             </div>
         </div>
         <div class="col-12 col-md-6">
-            <div class="row justify-content-center pt-2 pb-2">
+            <div class="row justify-content-center">
                 <div class="col-12 px-1">
                     <div class="accordion" id="profileAccordion">
                         <div class="accordion-item border-0">
@@ -167,6 +175,30 @@
                                             />
                                         </div>
                                     </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="row justify-content-center">
+                <!-- Cover Accordion -->
+                <div class="col-12 px-1">
+                    <div class="accordion" id="coverAccordion">
+                        <div class="accordion-item border-0">
+                            <h2 class="accordion-header" id="coverHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#coverCollapse" aria-expanded={isCoverAccordionOpen} aria-controls="avatarCollapse" on:click={() => isCoverAccordionOpen = !isCoverAccordionOpen} use:tooltip={{...tooltipConfig}} title="Cover Settings">
+                                    Profile Cover
+                                </button>
+                            </h2>
+                            <div id="coverCollapse" class="accordion-collapse collapse" aria-labelledby="coverHeading" data-bs-parent="#coverAccordion">
+                                <div class="accordion-body">
+                                    <div class="row justify-content-center">
+                                        <!-- TODO: Profile cover here -->
+                                        <Cover {session} {supabase} url={coverUrl} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

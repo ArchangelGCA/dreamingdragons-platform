@@ -18,7 +18,7 @@ export const load = async ( { params, locals: { supabase, getSession/*, s3*/ } }
 
     if (id) {
         let {data: profile, errorId} = await supabase
-            .from('experimental_books')
+            .from('experimental_books_new')
             .select('*')
             .eq('id', id);
 
@@ -73,7 +73,7 @@ export const load = async ( { params, locals: { supabase, getSession/*, s3*/ } }
 
     // Check if a profile with the given id already exists
     let { data: profile } = await supabase
-        .from('experimental_books')
+        .from('experimental_books_new')
         .select('*')
         .eq('id', session.user.id);
 
@@ -105,7 +105,7 @@ export const load = async ( { params, locals: { supabase, getSession/*, s3*/ } }
 
         // Retrieve the books
         const { data: updatedProfile, errorNew } = await supabase
-            .from('experimental_books')
+            .from('experimental_books_new')
             .select('*')
             .eq('id', session.user.id);
 
