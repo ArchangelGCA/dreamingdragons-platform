@@ -5,6 +5,7 @@
     export let size = 10
     export let url;
     export let supabase;
+    export let session;
 
     let avatarUrl = '';
     let uploading = false;
@@ -55,7 +56,7 @@
                 throw new Error('Failed to compress image');
             }
 
-            url = filePath;
+            url = session.user.id + '/' + filePath;
             setTimeout(() => {
                 dispatch('upload');
             }, 100)

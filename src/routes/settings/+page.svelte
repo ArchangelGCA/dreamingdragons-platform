@@ -110,7 +110,7 @@
                                         <input type="hidden" name="username" value={username} />
                                         <input type="hidden" name="website" value={website} />
                                         <div class="row justify-content-center">
-                                            <Avatar {supabase} bind:url={avatarUrl} size={10} on:upload={() => {profileForm.requestSubmit();}}/>
+                                            <Avatar {session} {supabase} bind:url={avatarUrl} size={10} on:upload={() => {profileForm.requestSubmit();}}/>
                                         </div>
                                     </form>
                                 </div>

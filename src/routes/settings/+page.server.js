@@ -74,7 +74,7 @@ export const actions = {
 
         const formData = Object.fromEntries(await request.formData());
         const file = formData.file;
-        const filePath = formData.filePath;
+        const filePath = session.user.id + '/' + formData.filePath;
 
         if (!file) {
             throw new Error('No file uploaded');
