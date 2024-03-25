@@ -74,7 +74,7 @@ export const actions = {
 
         const formData = Object.fromEntries(await request.formData());
         const file = formData.file;
-        const filePath = session.user.id + '/' + formData.filePath;
+        let filePath = formData.filePath;
 
         if (!file) {
             throw new Error('No file uploaded');
@@ -83,6 +83,8 @@ export const actions = {
         if (!filePath) {
             throw new Error('No file path provided');
         }
+
+        filePath = session.user.id + '/' + filePath;
 
         const imageSharp = sharp(await file.arrayBuffer());
 
