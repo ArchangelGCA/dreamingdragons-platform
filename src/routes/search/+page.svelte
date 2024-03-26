@@ -1,12 +1,25 @@
 <script>
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import BookSearch from "$lib/components/layout/BookSearch.svelte";
-
+    import autoAnimate from '@formkit/auto-animate';
+    import {deserialize} from "$app/forms";
+    import {onMount} from "svelte";
 
     export let data;
     let { supabase, searchResults } = data;
+
+    onMount(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    });
+
     let profiles = [];
     let books = [];
+    let allResultsLoaded = false;
+    let loading = false;
+    let page = 1;
 
     if (searchResults.length !== 0){
         searchResults.forEach(result => {
@@ -25,6 +38,61 @@
                 profiles.push(result);
             }
         });
+    } else {
+        allResultsLoaded = true;
+    }
+
+    async function loadMoreResults(){
+        if (allResultsLoaded || loading) return;
+
+        loading = true;
+
+        const formData = new FormData();
+        formData.append('page', page++);
+        const response = await fetch('?/loadmore', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === "success"){
+            const { searchResults } = result.data;
+
+            if (searchResults.length === 0){
+                allResultsLoaded = true;
+            } else {
+                searchResults.forEach(result => {
+                    if (result.book_id !== undefined){
+                        books.push(result);
+                        if (!profiles.some(profile => profile.owner_id === result.owner_id)){
+                            profiles.push({
+                                owner_id: result.owner_id,
+                                owner_username: result.owner_username,
+                                owner_full_name: result.owner_full_name,
+                                owner_avatar_url: result.owner_avatar_url,
+                                owner_website: result.owner_website
+                            });
+                        }
+                    } else {
+                        profiles.push(result);
+                    }
+                });
+                profiles = profiles;
+                books = books;
+            }
+        }
+
+        loading = false;
+    }
+
+    function handleScroll() {
+        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        let documentHeight = document.documentElement.scrollHeight;
+        let viewportHeight = window.innerHeight;
+
+        if (scrollTop + viewportHeight >= documentHeight - (viewportHeight / 2)) {
+            loadMoreResults();
+        }
     }
 </script>
 
@@ -35,7 +103,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col px-0">
+        <div class="col px-0" use:autoAnimate>
             {#if searchResults.length === 0}
                 <p class="h2 text-center text-danger-emphasis">Nothing found! Please try again...</p>
             {:else}
@@ -77,6 +145,13 @@
                         {/each}
                     </div>
                 {/if}
+                {#if allResultsLoaded}
+                    <div class="row border-top border-light-subtle pt-3 mt-3">
+                        <div class="col">
+                            <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All results loaded!⚠️</p>
+                        </div>
+                    </div>
+                {/if}
             {/if}
         </div>
     </div>
@@ -86,5 +161,17 @@
     .row-horizontal {
         overflow-x: auto;
         white-space: nowrap;
+    }
+
+    /* we make the element with class blink blink one time */
+    .blink {
+        animation: blinker 1s linear 2;
+    }
+
+    /** we change the background color of the element with class blink */
+    @keyframes blinker {
+        50% {
+            background-color: rgba(255, 0, 0, 0.5);
+        }
     }
 </style>
