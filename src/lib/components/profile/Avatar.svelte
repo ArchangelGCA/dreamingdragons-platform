@@ -90,8 +90,7 @@
         <label class="btn btn-success w-100 mt-2" for="single">
             {uploading ? 'Uploading ...' : 'Upload'}
         </label>
-        <input
-                style="visibility: hidden; position:absolute;"
+        <input class="d-none"
                 type="file"
                 id="single"
                 accept="image/*"

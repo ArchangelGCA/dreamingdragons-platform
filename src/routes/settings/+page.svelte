@@ -195,10 +195,7 @@
                             </h2>
                             <div id="coverCollapse" class="accordion-collapse collapse" aria-labelledby="coverHeading" data-bs-parent="#coverAccordion">
                                 <div class="accordion-body">
-                                    <div class="row justify-content-center">
-                                        <!-- TODO: Profile cover here -->
-                                        <Cover {session} {supabase} url={coverUrl} />
-                                    </div>
+                                    <Cover {session} {supabase} url={coverUrl} />
                                 </div>
                             </div>
                         </div>

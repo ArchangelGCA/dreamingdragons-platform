@@ -6,6 +6,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import Notification from "$lib/components/layout/Notification.svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import { page as pageStore } from '$app/stores';
 
     const tooltipConfig = {
         animation: 'fade',
@@ -23,6 +24,14 @@
 
     let { supabase, session, notifications } = data;
     $: ({ supabase, session } = data);
+
+    let searchTerm = '';
+
+    if ($pageStore.url.searchParams.has('q')) {
+        searchTerm = $pageStore.url.searchParams.get('q');
+    } else {
+        searchTerm = '';
+    }
 
     onMount(() => {
 
@@ -121,7 +130,15 @@
             <img src={favicon} alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
         </a>
     </div>
-    <div class="col-10 text-end">
+    <div class="col-6 col-md-8 my-auto">
+        <form action="/search" method="get" data-sveltekit-reload>
+            <div class="input-group">
+                <input type="text" class="form-control form-control-sm border-0 rounded-start-3" placeholder="Search" aria-label="Search" aria-describedby="searchButton" name="q" bind:value={searchTerm} />
+                <button class="btn btn-sm btn-outline-search" type="submit" id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="col-4 col-md-2 text-end">
         <div class="row align-items-center" use:autoAnimate>
             {#if notificationsCount !== 0}
                 <div class="col pe-3 mt-1">
@@ -225,6 +242,16 @@
 
     .animate-button:active {
         transform: scale(0.95);
+    }
+
+    .btn-outline-search {
+        border-color: #b200e8;
+        color: #b200e8;
+    }
+
+    .btn-outline-search:hover {
+        background-color: #5c00a6;
+        color: #c400ff;
     }
 
     #notificationBell {

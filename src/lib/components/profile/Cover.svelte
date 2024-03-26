@@ -75,10 +75,10 @@
     $: if (url) downloadImage(url);
 </script>
 
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-12 text-center">
         {#if coverUrl}
-            <img src={coverUrl} alt="Cover" class="img-fluid" style="max-height: 25vh" />
+            <img src={coverUrl} alt="Cover" class="img-fluid" style="max-height: 25vh;" />
         {:else}
             <div class="alert alert-info">
                 <p class="mb-0">No custom cover uploaded yet.</p>
@@ -90,8 +90,7 @@
         <label class="btn btn-success w-100 mt-2" for="cover">
             {uploading ? 'Uploading ...' : 'Upload'}
         </label>
-        <input
-                style="visibility: hidden; position:absolute;"
+        <input class="d-none"
                 type="file"
                 id="cover"
                 accept="image/*"
