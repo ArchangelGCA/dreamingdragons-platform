@@ -3,6 +3,7 @@
 </script>
 
 <svelte:head>
+    <title>Roses In The Flames | Home</title>
     <link rel="canonical" href="https://tales.rosesintheflames.com/">
 </svelte:head>
 

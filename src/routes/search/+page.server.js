@@ -25,7 +25,7 @@ export const load = async ( { params, url, locals: { supabase, /*getSession, s3*
         }
     }
 
-    return { searchResults }
+    return { searchResults, partialText: partial_text }
 }
 
 export const actions = {

@@ -161,6 +161,10 @@
     <title>{finalProfile ? finalProfile.username : 'Profile'} | Profile</title>
     <meta name="description" content="Profile page of {finalProfile ? finalProfile.username : 'Profile'}" />
     <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{finalProfile ? finalProfile.username : 'Profile'} | Profile" />
+    <meta name="twitter:description" content="Profile page of {finalProfile ? finalProfile.username : 'Profile'}" />
+    <meta name="twitter:image" content="https://tales.rosesintheflames.com/favicon.webp" />
+
     <meta name="og:title" content="{finalProfile ? finalProfile.username : 'Profile'} | Profile" />
     <meta name="og:description" content="Profile page of {finalProfile ? finalProfile.username : 'Profile'}" />
     <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />

@@ -6,7 +6,7 @@
     import {onMount} from "svelte";
 
     export let data;
-    let { supabase, searchResults } = data;
+    let { supabase, searchResults, partialText } = data;
 
     onMount(() => {
         window.addEventListener('scroll', handleScroll);
@@ -95,6 +95,19 @@
         }
     }
 </script>
+
+<svelte:head>
+    <title>{partialText} | Roses In The Flames</title>
+    <meta name="description" content="Search results for {partialText} on Roses In The Flames." />
+    <meta property="twitter:card" content="summary" />
+    <meta property="twitter:title" content="{partialText} | Roses In The Flames" />
+    <meta property="twitter:description" content="Search results for {partialText} on Roses In The Flames." />
+    <meta property="twitter:image" content="https://tales.rosesintheflames.com/favicon.webp" />
+
+    <meta property="og:title" content="{partialText} | Roses In The Flames" />
+    <meta property="og:description" content="Search results for {partialText} on Roses In The Flames." />
+    <meta property="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
+</svelte:head>
 
 <div class="container-fluid my-3" style="min-height: 69vh">
     <div class="row mb-2">

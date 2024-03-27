@@ -1,6 +1,15 @@
 <svelte:head>
-    <title>Roses In The Flames - TOS - Terms of Service</title>
+    <title>Roses In The Flames | Terms of Service</title>
     <meta name="description" content="Terms of Service of Roses In The Flames (RiTF).">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Terms of Service">
+    <meta name="twitter:description" content="Roses In The Flames Terms of Service">
+    <meta name="twitter:image" content="https://tales.rosesintheflames.com/favicon.webp" />
+
+    <meta property="og:title" content="Terms of Service" />
+    <meta property="og:description" content="Terms of Service of Roses In The Flames" />
+    <meta property="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 mx-auto rounded-3">
     <p style="padding-top: 3pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">Last Updated: 03/13/2024.</p>

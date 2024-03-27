@@ -1,6 +1,15 @@
 <svelte:head>
-    <title>Roses In The Flames - Privacy Policy</title>
+    <title>Roses In The Flames | Privacy Policy</title>
     <meta name="description" content="Privacy Policy of Roses In The Flames (RiTF).">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Privacy Policy">
+    <meta name="twitter:description" content="Roses In The Flames Privacy Policy">
+    <meta name="twitter:image" content="https://tales.rosesintheflames.com/favicon.webp" />
+
+    <meta property="og:title" content="Privacy Policy" />
+    <meta property="og:description" content="Privacy Policy of Roses In The Flames" />
+    <meta property="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
 
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 rounded-3">
