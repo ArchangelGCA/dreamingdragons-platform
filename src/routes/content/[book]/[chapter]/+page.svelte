@@ -256,6 +256,15 @@
     $: if (avatarUrl) downloadAvatar(avatarUrl);
 </script>
 
+<svelte:head>
+    <title>{chapterContent.book_title} - {chapterContent.title} | Roses In The Flames</title>
+    <meta name="description" content="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title} | Roses In The Flames">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{chapterContent.book_title} - {chapterContent.title} | Roses In The Flames">
+    <meta name="twitter:description" content="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title} | Roses In The Flames">
+    <meta name="twitter:image" content="{chapterContent.book_cover_url}">
+</svelte:head>
+
 <div class="container-xxl">
     <div class="row justify-content-center">
         <div class="col-12 text-center px-0">

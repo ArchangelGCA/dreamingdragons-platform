@@ -157,6 +157,15 @@
     $: if (coverUrl) downloadCover(coverUrl);
 </script>
 
+<svelte:head>
+    <title>{finalProfile ? finalProfile.username : 'Profile'} | Profile</title>
+    <meta name="description" content="Profile page of {finalProfile ? finalProfile.username : 'Profile'}" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="{finalProfile ? finalProfile.username : 'Profile'} | Profile" />
+    <meta name="twitter:description" content="Profile page of {finalProfile ? finalProfile.username : 'Profile'}" />
+    <meta name="twitter:image" content="{finalAvatarUrl}" />
+</svelte:head>
+
 <div class="container-fluid px-0" style="min-height: 71vh">
     {#if !profile || profile.length === 0}
         <div class="row justify-content-center">
