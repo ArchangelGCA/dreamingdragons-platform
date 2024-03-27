@@ -347,28 +347,30 @@
             <p class="fs-5 bg-purple-opacity-25 p-3 rounded-4">{bookContent.book_description}</p>
         </div>
     </div>
-    <div class="row justify-content-center text-center" id="chapters">
-        <div class="col-12 pb-2 text-center">
-            <p class="h1">Chapters:</p>
-        </div>
-        <div class="col-12 bg-purple-opacity-25 p-3 px-2 rounded-4 mb-3">
-            {#if !chaptersFound}
-                <div class="row justify-content-center">
-                    <div class="col-auto">
-                        <span class="h3">No chapters found!</span>
-                    </div>
-                </div>
-            {:else}
-                <div class="row justify-content-evely gy-3 mx-0">
-                    {#each chapters as chapter, index (chapter.chapter_id)}
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <ChapterCard content={chapter} index={index + 1} />
+    {#if !chaptersFound} <!-- Kind of redundant, but testing if it looks better TODO: maybe add an option for letting the user choose if the book is a book or just an image with no chapters -->
+        <div class="row justify-content-center text-center" id="chapters">
+            <div class="col-12 pb-2 text-center">
+                <p class="h1">Chapters:</p>
+            </div>
+            <div class="col-12 bg-purple-opacity-25 p-3 px-2 rounded-4 mb-3">
+                {#if !chaptersFound}
+                    <div class="row justify-content-center">
+                        <div class="col-auto">
+                            <span class="h3">No chapters found!</span>
                         </div>
-                    {/each}
-                </div>
-            {/if}
+                    </div>
+                {:else}
+                    <div class="row justify-content-evely gy-3 mx-0">
+                        {#each chapters as chapter, index (chapter.chapter_id)}
+                            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
+                                <ChapterCard content={chapter} index={index + 1} />
+                            </div>
+                        {/each}
+                    </div>
+                {/if}
+            </div>
         </div>
-    </div>
+    {/if}
     <div class="row justify-content-center text-start">
         <div class="col-12 px-0">
             <p class="text-secondary text-center">

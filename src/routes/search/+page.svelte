@@ -125,33 +125,35 @@
                             {/each}
                         {/if}
                 </div>
-                <div class="row mt-4">
+                <div class="row mt-4 mb-2">
                     <div class="col">
-                        <p class="h3 text-start">Content:</p>
+                        <p class="h3 text-center">Content:</p>
                     </div>
                 </div>
-                {#if books.length === 0}
-                    <div class="row">
-                        <div class="col">
-                            <p class="text-center">Books not found!</p>
-                        </div>
-                    </div>
-                {:else}
-                    <div class="row g-3">
-                        {#each books as book (book.book_id)}
-                            <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                                <BookSearch owner_username={book.owner_username} owner_id={book.owner_id} title={book.book_title} book_id={book.book_id} description={book.book_description} book_cover_url={book.book_cover_url} />
+                <div class="container-xxl">
+                    {#if books.length === 0}
+                        <div class="row">
+                            <div class="col">
+                                <p class="text-center">Books not found!</p>
                             </div>
-                        {/each}
-                    </div>
-                {/if}
-                {#if allResultsLoaded}
-                    <div class="row border-top border-light-subtle pt-3 mt-3">
-                        <div class="col">
-                            <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All results loaded!⚠️</p>
                         </div>
-                    </div>
-                {/if}
+                    {:else}
+                        <div class="row g-3 justify-content-center">
+                            {#each books as book (book.book_id)}
+                                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                                    <BookSearch owner_username={book.owner_username} owner_id={book.owner_id} title={book.book_title} book_id={book.book_id} description={book.book_description} book_cover_url={book.book_cover_url} />
+                                </div>
+                            {/each}
+                        </div>
+                    {/if}
+                    {#if allResultsLoaded}
+                        <div class="row pt-3 mt-3">
+                            <div class="col">
+                                <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All results loaded!⚠️</p>
+                            </div>
+                        </div>
+                    {/if}
+                </div>
             {/if}
         </div>
     </div>
