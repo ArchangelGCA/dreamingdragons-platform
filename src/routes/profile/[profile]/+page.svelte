@@ -6,7 +6,6 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
-    import favicon from "$lib/images/favicon.webp";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -164,7 +163,7 @@
     <meta name="twitter:card" content="summary" />
     <meta name="og:title" content="{finalProfile ? finalProfile.username : 'Profile'} | Profile" />
     <meta name="og:description" content="Profile page of {finalProfile ? finalProfile.username : 'Profile'}" />
-    <meta name="og:image" content="{favicon}" />
+    <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
 
 <div class="container-fluid px-0" style="min-height: 71vh">
