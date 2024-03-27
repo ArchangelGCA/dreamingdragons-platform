@@ -263,7 +263,7 @@ export const actions = {
     tagsuggestions: async ({ request, locals: { supabase, getSession } }) => {
         const session = await getSession();
 
-        if (!session) { // TODO: Transition all not logged user errors to unauthorized error
+        if (!session) {
             return {
                 status: 401,
                 body: {
