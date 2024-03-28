@@ -86,7 +86,7 @@
     }
 
     .notification:hover {
-        background-color: #1a1a1a !important;
+        background-color: rgba(26, 26, 26, 0.5) !important;
         box-shadow: 0 0 10px 0 #a83fff;
     }
 

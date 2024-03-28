@@ -99,7 +99,7 @@
     }
 </script>
 
-<div class="card border-0 bg-placeholder img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}}
+<div class="card border-0 bg-black bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}}
      title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">

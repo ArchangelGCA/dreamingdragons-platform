@@ -20,7 +20,7 @@
     export let book_cover_url;
 </script>
 
-<div class="card border-0 bg-placeholder img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
+<div class="card border-0 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
         <img src={book_cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
@@ -55,4 +55,14 @@
     .to-scale {
         transition: transform 0.12s ease-in;
     }
+
+    .card {
+        box-shadow: 0 0 0 0 rgba(92, 0, 166, 0.75);
+        transition: 0.1s all ease-in-out;
+    }
+
+    .card:hover {
+        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+    }
+
 </style>

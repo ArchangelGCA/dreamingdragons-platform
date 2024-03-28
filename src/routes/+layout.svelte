@@ -162,7 +162,7 @@
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
                         <li><a class="dropdown-item" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
-                        <li><a class="dropdown-item animate-button rounded-3 py-2" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
+                        <li><a class="dropdown-item upload-button rounded-3 py-2" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
                         <li><a class="dropdown-item mt-1" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
                     </ul>
                 </div>
@@ -172,7 +172,7 @@
 </div>
 
 <div class="offcanvas offcanvas-end rounded-4 p-2 my-2 me-1" tabindex="-1" id="notifications" aria-labelledby="notifications">
-    <div class="offcanvas-header bg-light bg-opacity-10 rounded-4">
+    <div class="offcanvas-header bg-light bg-opacity-25 rounded-4">
         <h5 class="offcanvas-title mt-1">Notifications</h5>
         <button type="button" class="btn-close me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
@@ -244,6 +244,21 @@
         transform: scale(0.95);
     }
 
+    .upload-button {
+        background: linear-gradient(270deg, #3d34c7, #5c00a6);
+        background-size: 200% 200%;
+        animation: Gradient 5s ease infinite, tranform 1s ease-in-out;
+        transition: transform 0.12s ease-in-out;
+    }
+
+    .upload-button:hover {
+        background: linear-gradient(230deg, #3d34c7, #5c00a6);
+    }
+
+    .upload-button:active {
+        transform: scale(0.95);
+    }
+
     .btn-outline-search {
         border-color: #b200e8;
         color: #b200e8;
@@ -252,6 +267,32 @@
     .btn-outline-search:hover {
         background-color: #5c00a6;
         color: #c400ff;
+    }
+
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        background: linear-gradient(75deg, #0b0086, #410075);
+        background-size: 150% 150%;
+    }
+
+    .dropdown-item {
+        background-color: transparent;
+        transition: all 0.12s ease-in-out;
+    }
+
+    .dropdown-item:hover {
+        background-color: #5c00a6;
+        border-radius: 0.25rem;
+    }
+
+    .dropdown-item:active {
+        transform: scale(0.95);
+    }
+
+    .offcanvas {
+        background: linear-gradient(75deg, #0b0086, #410075);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
     }
 
     #notificationBell {

@@ -20,6 +20,7 @@
     export let size = '100px';
 
     let avatarUrl = '';
+    let isAvatarLoaded = false;
 
     if (!supabase) {
         throw new Error('supabase is not defined');
@@ -35,6 +36,7 @@
 
             const url = URL.createObjectURL(data);
             avatarUrl = url;
+            isAvatarLoaded = true;
         } catch (error) {
             if (error instanceof Error) {
                 console.log('Error downloading image: ', error.message);
@@ -48,6 +50,23 @@
 <!-- Circle avatar, using Bootstrap 5 classes -->
 <div class="d-flex justify-content-center">
     <a href={`/profile/${id}`} class="text-decoration-none" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
-        <img src={avatarUrl} alt={username} class="rounded-circle avatar-style" width={size} height={size}>
+        {#if !isAvatarLoaded}
+            <div class="spinner-border text-light mt-2 mb-1" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        {:else}
+            <img src={avatarUrl} alt={username} class="rounded-circle avatar-style" width={size} height={size}>
+        {/if}
     </a>
 </div>
+
+<style>
+    .avatar-style {
+        box-shadow: 0 0 0 0 rgba(92, 0, 166, 0.75);
+        transition: all 0.15s ease-in-out;
+    }
+
+    .avatar-style:hover {
+        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+    }
+</style>
