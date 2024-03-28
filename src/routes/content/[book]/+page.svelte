@@ -376,17 +376,11 @@
         </div>
     </div>
     <div class="row justify-content-center text-center" id="chapters">
-        <div class="col-12 pb-2 text-center">
-            <p class="h1">Chapters:</p>
-        </div>
-        <div class="col-12 bg-purple-opacity-25 p-3 px-2 rounded-4 mb-3">
-            {#if !chaptersFound}
-                <div class="row justify-content-center">
-                    <div class="col-auto">
-                        <span class="h3">No chapters found!</span>
-                    </div>
-                </div>
-            {:else}
+        {#if chaptersFound}
+            <div class="col-12 pb-2 text-center">
+                <p class="h1">Chapters:</p>
+            </div>
+            <div class="col-12 bg-purple-opacity-25 p-3 px-2 rounded-4 mb-3">
                 <div class="row justify-content-evely gy-3 mx-0">
                     {#each chapters as chapter, index (chapter.chapter_id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
@@ -394,8 +388,8 @@
                         </div>
                     {/each}
                 </div>
-            {/if}
-        </div>
+            </div>
+        {/if}
     </div>
     <div class="row justify-content-center text-start">
         <div class="col-12 px-0">
