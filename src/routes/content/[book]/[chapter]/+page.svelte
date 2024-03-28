@@ -23,6 +23,7 @@
 
     onMount(() => {
         handleView();
+        hasUserLikedChapter();
         loadAvatarsComments();
     });
 
@@ -56,6 +57,21 @@
     }
 
     tags.forEach((item) => item.url = `/search?tag=${item.name}`);
+
+    async function hasUserLikedChapter() {
+        if (!user_id) return;
+        likeActionActive = true; // Prevents the user from adding a like while it hasn't loaded the previous like status
+        const { data: likes, error } = await supabase
+            .from('chapter_likes')
+            .select('*')
+            .eq('chapter_id', chapterContent.chapter_id)
+            .eq('user_id', user_id);
+
+        if (!error) {
+            likes.length > 0 ? isLiked = true : isLiked = false;
+        }
+        likeActionActive = false;
+    }
 
     async function loadAvatarsComments(){
         let avatars = [];

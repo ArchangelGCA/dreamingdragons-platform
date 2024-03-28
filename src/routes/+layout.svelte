@@ -125,12 +125,12 @@
 <SvelteToast />
 
 <div class="row border-bottom border-light-subtle py-2">
-    <div class="col-2">
+    <div class="col-2 col-md-3 col-xxl-4">
         <a href="/">
             <img src={favicon} alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
         </a>
     </div>
-    <div class="col-6 col-md-8 my-auto">
+    <div class="col-6 col-xxl-4 my-auto pe-0">
         <form action="/search" method="get" data-sveltekit-reload>
             <div class="input-group">
                 <input type="text" class="form-control form-control-sm border-0 rounded-start-3" placeholder="Search" aria-label="Search" aria-describedby="searchButton" name="q" bind:value={searchTerm} />
@@ -138,7 +138,7 @@
             </div>
         </form>
     </div>
-    <div class="col-4 col-md-2 text-end">
+    <div class="col-4 col-md-3 col-xxl-4 text-end ps-0">
         <div class="row align-items-center" use:autoAnimate>
             {#if notificationsCount !== 0}
                 <div class="col pe-3 mt-1">

@@ -25,6 +25,7 @@
 
     onMount(() => {
         handleView();
+        hasUserLikedBook();
         loadAvatarsComments();
     });
 
@@ -50,7 +51,7 @@
         avatarUrl = bookContent.owner_avatar_url;
     }
 
-    if (bookContent.total_views){ // It once returned undefined for unknown reasons
+    if (bookContent.total_views){
         viewsCount = bookContent.total_views;
     }
 
@@ -62,6 +63,21 @@
     }
 
     tags.forEach((item) => item.url = `/search?tag=${item.name}`);
+
+    async function hasUserLikedBook() {
+        if (!user_id) return;
+        likeActionActive = true; // Prevents the user from adding a like while it hasn't loaded the previous like status
+        const { data: likes, error } = await supabase
+            .from('book_likes')
+            .select('*')
+            .eq('book_id', bookContent.book_id)
+            .eq('user_id', user_id);
+
+        if (!error) {
+            likes.length > 0 ? isLiked = true : isLiked = false;
+        }
+        likeActionActive = false;
+    }
 
     async function loadAvatarsComments(){
         let avatars = [];
@@ -113,7 +129,6 @@
     }
 
     async function handleView(){
-        // try to insert view in supabase
         if (user_id){
             const { error } = await supabase
                 .from('views')

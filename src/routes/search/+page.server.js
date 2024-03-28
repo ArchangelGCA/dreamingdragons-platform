@@ -5,7 +5,8 @@ export const load = async ( { params, url, locals: { supabase, /*getSession, s3*
 
     if (!query && !tags) {
         return {
-            searchResults: empty
+            searchResults: empty,
+            partialText: ''
         }
     }
 

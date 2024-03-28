@@ -7,9 +7,9 @@
     <meta name="twitter:description" content="Roses In The Flames Privacy Policy">
     <meta name="twitter:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 
-    <meta property="og:title" content="Privacy Policy" />
-    <meta property="og:description" content="Privacy Policy of Roses In The Flames" />
-    <meta property="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
+    <meta name="og:title" content="Privacy Policy" />
+    <meta name="og:description" content="Privacy Policy of Roses In The Flames" />
+    <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
 
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 rounded-3">
