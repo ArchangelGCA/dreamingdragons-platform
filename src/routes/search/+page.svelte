@@ -106,7 +106,7 @@
 
     <meta name="og:title" content="{partialText} | Roses In The Flames" />
     <meta name="og:description" content="Search results for {partialText} on Roses In The Flames." />
-    <meta nameru="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
+    <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
 
 <div class="container-fluid my-3" style="min-height: 69vh">

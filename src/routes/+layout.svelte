@@ -177,7 +177,7 @@
         <button type="button" class="btn-close me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body" on:scroll={handleScroll}>
-        {#if notifications !== null && notifications.length !== 0}
+        {#if notifications && notifications !== null && notifications.length !== 0}
             {#each notifications as notification}
                 <Notification {notification} {supabase} {session} />
             {/each}

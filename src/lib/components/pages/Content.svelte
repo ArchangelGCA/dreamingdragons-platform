@@ -15,12 +15,22 @@
 
     export let owner_username;
     export let owner_id;
-    export let title;
+    export let book_title;
     export let book_id;
     export let book_cover_url;
+    export let likes_count;
+    export let book_description;
+    export let owner_avatar_url;
+    export let created_at;
 </script>
 
-<div class="card border-0 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
+<div class="card border-0 img-home w-100 rounded-4">
+    <div class="d-none"> <!-- Added this as a workaround for warning but also to add more context for SEO -->
+        <p>{book_description}</p>
+        <p>Posted on {created_at}</p>
+        <p>Avatar {owner_avatar_url}</p>
+        <p>Likes {likes_count}</p>
+    </div>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
         <img src={book_cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
@@ -29,7 +39,7 @@
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">
                 <div class="col-12">
-                    <a class="link-light text-decoration-none text-wrap" href="/content/{book_id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{title}</span></a>
+                    <a class="link-light text-decoration-none text-wrap" href="/content/{book_id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{book_title}</span></a>
                     <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
                 </div>
             </div>
@@ -64,5 +74,4 @@
     .card:hover {
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
     }
-
 </style>
