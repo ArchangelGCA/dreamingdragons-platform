@@ -278,7 +278,6 @@
 
     .dropdown-item {
         background-color: transparent;
-        transition: all 0.12s ease-in-out;
     }
 
     .dropdown-item:hover {
@@ -287,6 +286,7 @@
     }
 
     .dropdown-item:active {
+        transition: all 0.12s ease-in-out;
         transform: scale(0.95);
     }
 
