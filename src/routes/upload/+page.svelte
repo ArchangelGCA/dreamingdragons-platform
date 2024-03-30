@@ -292,6 +292,15 @@
 </script>
 
 <div class="container-md px-0">
+    <!-- Warning, temporary, that says that all uploads are suspended until we find a new host for the images -->
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="alert alert-warning alert-dismissible fade show mb-0 mt-3" role="alert">
+                <strong>Warning!</strong> All uploads are suspended until we find a new images host. Sorry for the inconvenience.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
     <div class="row justify-content-center">
         <div class="col">
             <div class="row justify-content-center">
@@ -304,8 +313,8 @@
                 <div class="col-12 text-center">
                     <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
                     <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
-                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create book">
-                            <i class="fas fa-book"></i> Book
+                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create Tale">
+                            <i class="fas fa-book"></i> Tale
                         </button>
                         <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter">
                             <i class="fas fa-file-alt"></i> Chapter
@@ -315,7 +324,7 @@
                         {#if selectedOption === 'book'}
                             <div class="row justify-content-center text-center mt-4 rounded-3">
                                 <div class="col-12">
-                                    <p class="h2 pt-2">Create Book:</p>
+                                    <p class="h2 pt-2">Create Tale:</p>
                                 </div>
                             </div>
                             <div class="row mt-3 mx-0 justify-content-center">
@@ -323,7 +332,7 @@
                                     <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
                                         <div class="row mx-auto mt-1">
                                             <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center" style="min-height: 30vh">
-                                                <label for="file" class="form-label" title="Book's cover image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
+                                                <label for="file" class="form-label" title="Tale image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
                                                 <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required/>
                                                 <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                                 {#if previewUrl}
@@ -335,24 +344,24 @@
                                             </div>
                                             <div class="col-12 px-0">
                                                 <p class="fs-5 text-start mb-1 mt-3 ms-1"><i class="fas fa-book"></i> Title:</p>
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Book's public title">
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Tale title">
                                                     <input type="text" class="form-control form-control-custom" name="title" id="title" placeholder="Title" required>
                                                     <label for="title"><i class="fas fa-heading"></i> Title</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Book's description">
+                                            <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Tale description">
                                                 <textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" required></textarea>
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
                                                 <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
-                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate>
+                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate use:tooltip={{...tooltipConfig}} title="Tip: use a , or press space/enter to add tag">
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
                                                             <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTagBook" placeholder="Add tags" on:keydown={addTag} />
+                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTagBook" placeholder="Add tags" on:keydown={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
                                                         <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestionBook(suggestion)}>{suggestion}</button>
                                                     {/each}
@@ -382,18 +391,18 @@
                                     <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleChapterUpload}>
                                         <div class="row">
                                             <div class="col-12 rounded-3 mt-1 px-0">
-                                                <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Book</p>
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Target's book">
+                                                <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Tale</p>
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Target Tale">
                                                     <select class="form-select form-select-lg form-select-custom" name="book" id="book" required>
                                                         {#each books as book (book.id)}
                                                             <option class="option-custom" value={book.id}>{book.title}</option>
                                                         {/each}
                                                     </select>
-                                                    <label for="book"><i class="fas fa-book"></i> Book</label>
+                                                    <label for="book"><i class="fas fa-book"></i> Tale</label>
                                                 </div>
                                             </div>
                                             <div class="col-12 rounded-3 mb-2 px-0 mt-2">
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Chapter's title">
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Chapter title">
                                                     <input type="text" class="form-control form-control-lg form-control-custom" name="title" id="title" placeholder="Title" required>
                                                     <label for="title" class="form-label"><i class="fas fa-heading"></i> Title</label>
                                                 </div>
@@ -406,7 +415,7 @@
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
                                                 <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
-                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate>
+                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate use:tooltip={{...tooltipConfig}} title="Tip: use a , or press space/enter to add tag">
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>

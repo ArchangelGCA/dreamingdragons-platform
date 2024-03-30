@@ -18,9 +18,13 @@
     export let title;
     export let book_id;
     export let book_cover_url;
+    export let description;
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
+    <div class="d-none">
+        {description}
+    </div>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
         <img src={book_cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
