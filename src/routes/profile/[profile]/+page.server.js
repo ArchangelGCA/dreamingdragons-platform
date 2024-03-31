@@ -1,16 +1,8 @@
 import { PUBLIC_DEFAULT_NAME, PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
 import {error as errorx} from '@sveltejs/kit';
 
-export const load = async ( { params, locals: { supabase, getSession/*, s3*/ } }) => {
+export const load = async ( { params, locals: { supabase, getSession } }) => {
     const session = await getSession();
-
-    /*const command = new ListBucketsCommand({});
-    try {
-        const response = await s3.send(command);
-        console.log(response.Buckets);
-    } catch (err) {
-        console.log(err);
-    }*/
 
     const id = params.profile;
     let isFollowing = false;

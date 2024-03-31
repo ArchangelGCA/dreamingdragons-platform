@@ -1,30 +1,12 @@
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
-import { STORJ_ACCESS_KEY, STORJ_ENDPOINT, STORJ_SECRET_KEY } from "$env/static/private";
 import { createSupabaseServerClient } from "@supabase/auth-helpers-sveltekit";
-import { S3Client } from "@aws-sdk/client-s3";
-
-// Create an S3 client
-const s3 = new S3Client({
-    region: "us-east-1",
-    credentials: {
-        accessKeyId: STORJ_ACCESS_KEY,
-        secretAccessKey: STORJ_SECRET_KEY
-    },
-    endpoint: STORJ_ENDPOINT,
-});
 
 export const handle = async ({ event, resolve }) => {
     event.locals.supabase = createSupabaseServerClient({
         supabaseUrl: PUBLIC_SUPABASE_URL,
         supabaseKey: PUBLIC_SUPABASE_ANON_KEY,
         event,
-    })
-
-    /**
-     * Add S3 client to local
-     * @type {S3Client}
-     */
-    event.locals.s3 = s3;
+    });
 
     /**
      * Get the client's IP address

@@ -1,6 +1,6 @@
 import {redirect} from "@sveltejs/kit";
 
-export const load = async ( { params, locals: { getSession/*, s3*/ } }) => {
+export const load = async ( { params, locals: { getSession } }) => {
     const session = await getSession();
 
     if (session) {

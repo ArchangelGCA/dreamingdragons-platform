@@ -1,6 +1,6 @@
 import {error as errorx} from '@sveltejs/kit';
 
-export const load = async ({ params, locals: { supabase, ip_address, getSession/*, s3*/ } }) => {
+export const load = async ({ params, locals: { supabase, ip_address, getSession } }) => {
     const session = await getSession();
     let isOwner = false;
 

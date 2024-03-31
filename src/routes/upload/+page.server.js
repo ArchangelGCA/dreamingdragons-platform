@@ -1,10 +1,10 @@
 import {redirect} from '@sveltejs/kit'
-import {PutObjectCommand} from "@aws-sdk/client-s3";
-import {STORJ_BUCKET_NAME, STORJ_SHARE_LINK} from '$env/static/private';
-import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_COVER_MAX_RESIZE } from "$env/static/public";
+import PocketBase from 'pocketbase';
+import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
+import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_COVER_MAX_RESIZE, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import sharp from 'sharp';
 
-const uploadImage = async (image, s3) => {
+const uploadImage = async (image) => {
 
     const imageSharp = sharp(await image.arrayBuffer());
     const metadata = await imageSharp.metadata();
@@ -37,33 +37,22 @@ const uploadImage = async (image, s3) => {
     const random = Math.random().toString(36).substring(2, 15);
     const newImageName = `${random}.webp`;
 
-    // Make a compatible body format for S3
-    const coverUrl = `covers/${newImageName}`;
-    const coverParams = {
-        Bucket: STORJ_BUCKET_NAME,
-        Key: coverUrl,
-        Body: buffer,
-        ACL: 'public-read',
-        ContentType: 'image/webp'
-    };
+    const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
+    await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
 
-    try {
-        const putObjectCommand = new PutObjectCommand(coverParams);
-        await s3.send(putObjectCommand);
-    } catch (error) {
-        return {
-            status: 500,
-            body: {
-                message: error.message
-            }
-        }
-    }
+    const file = new File([buffer], newImageName, { type: 'image/webp', lastModified: Date.now() });
 
-    // Hacky way of building the final public URL
-    return `${STORJ_SHARE_LINK}/${STORJ_BUCKET_NAME}/${coverUrl}?wrap=0`;
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const createdRecord = await pb.collection('media').create(formData);
+
+    pb.authStore.clear();
+
+    return PUBLIC_POCKETBASE_URL + '/api/files/' + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
 }
 
-export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
+export const load = async ({ locals: { supabase, getSession} }) => {
     const session = await getSession();
 
     if (!session) {
@@ -85,7 +74,7 @@ export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
 }
 
 export const actions = {
-    postbook: async ({ request, locals: { supabase, getSession, s3 } }) => {
+    postbook: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
         const session = await getSession();
 
@@ -126,7 +115,7 @@ export const actions = {
             }
         }
 
-        const finalURL = await uploadImage(image, s3);
+        const finalURL = await uploadImage(image);
 
         // If error or object, return it
         if (typeof finalURL === 'object') {
@@ -140,10 +129,6 @@ export const actions = {
             book_cover_url: finalURL,
             owner_id: session.user.id
         });
-
-        /*const { error } = await supabase.from('book').insert([
-            { title, description, cover_url: finalURL, owner_id: session.user.id }
-        ]);*/
 
         if (error) {
             return {

@@ -2,7 +2,7 @@ import { fail, redirect } from '@sveltejs/kit'
 import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH, PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} from "$env/static/public";
 import sharp from 'sharp';
 
-export const load = async ({ locals: { supabase, getSession/*, s3*/ } }) => {
+export const load = async ({ locals: { supabase, getSession } }) => {
     const session = await getSession();
 
     if (!session) {

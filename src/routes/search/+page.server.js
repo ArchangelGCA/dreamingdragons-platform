@@ -1,4 +1,4 @@
-export const load = async ( { params, url, locals: { supabase, /*getSession, s3*/ } }) => {
+export const load = async ( { params, url, locals: { supabase, /*getSession,*/ } }) => {
     const query = url.searchParams.get('q');
     const tags = url.searchParams.get('tag');
     let empty = [];

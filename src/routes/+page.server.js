@@ -1,6 +1,6 @@
 import {error as errorx} from '@sveltejs/kit';
 
-export const load = async ( { locals: { supabase, getSession/*, s3*/ } }) => {
+export const load = async ( { locals: { supabase, getSession } }) => {
     const session = await getSession();
 
     /****************************************************/
@@ -21,7 +21,6 @@ export const load = async ( { locals: { supabase, getSession/*, s3*/ } }) => {
 
     let books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter;
 
-
     try {
         [books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter] = await Promise.all([
             fetchBooks('books_ordered_by_likes'),
@@ -34,7 +33,7 @@ export const load = async ( { locals: { supabase, getSession/*, s3*/ } }) => {
     }
 
     /****************************************************/
-    // END GLOBAL CODE EXECUTED FOR EVERY VISITOR //
+    //    END GLOBAL CODE EXECUTED FOR EVERY VISITOR    //
     /****************************************************/
 
     if (!session) { // GUESTS

@@ -292,15 +292,6 @@
 </script>
 
 <div class="container-md px-0">
-    <!-- Warning, temporary, that says that all uploads are suspended until we find a new host for the images -->
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <div class="alert alert-warning alert-dismissible fade show mb-0 mt-3" role="alert">
-                <strong>Warning!</strong> All uploads are suspended until we find a new images host. Sorry for the inconvenience.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
     <div class="row justify-content-center">
         <div class="col">
             <div class="row justify-content-center">
