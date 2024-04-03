@@ -39,15 +39,15 @@
     <div class="row justify-content-center text-center my-3 pt-2 bg-animated bg-opacity-25 rounded-4">
         <div class="col-12">
             <span class="h1">Timezones</span>
-            <p class="mb-2">Current time for different users:</p>
+            <p class="mb-2">Current time of our users:</p>
         </div>
     </div>
-    <div class="row justify-content-center text-center my-3">
+    <div class="row justify-content-center text-center mt-3">
         <div class="col-12 px-0">
             <p class="fw-bold bg-primary bg-opacity-25 rounded-3 py-2">Your time is: {date}</p>
         </div>
     </div>
-    <div class="row justify-content-around mb-3">
+    <div class="row justify-content-around">
         {#each timedata as member (member.username)}
             <div class="col-12 col-xl-4 px-0 px-xl-2">
                 <StaffTime {...member}/>

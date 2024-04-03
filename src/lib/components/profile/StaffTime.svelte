@@ -33,14 +33,14 @@
             <i class="fas fa-user"></i> {username}
         </h5>
         <p class="card-text pt-2">
-            <i class="fas fa-clock"></i> Timezone: {timezone}
+            <i class="fas fa-clock"></i> Timezone: <b>{timezone}</b>
         </p>
         <p class="card-text">
             <i class="fas fa-calendar-alt"></i> Local Time: <br><span class="fs-3">{time}</span>
         </p>
         {#if country}
             <p class="card-text">
-                <i class="fas fa-globe"></i> Country: {country}
+                <i class="fas fa-globe"></i> Country: <b>{country}</b>
             </p>
         {/if}
     </div>
@@ -48,12 +48,13 @@
 
 <style>
     .staff-card {
-        background: linear-gradient(45deg, #120339, #4B0082, #120339);
-        transition: all 0.15s ease-in-out;
+        background: linear-gradient(10deg, #120339, #8f00d7);
+        transition: all 0.1s ease-in-out;
     }
 
     .staff-card:hover {
         transform: scale(1.03);
+        background: linear-gradient(10deg, #120339, #aa00ff);
     }
 
     span.fs-3 {

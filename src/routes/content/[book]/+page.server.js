@@ -1,4 +1,7 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
+import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
+import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
+import PocketBase from "pocketbase";
 
 export const load = async ({ params, locals: { supabase, ip_address, getSession } }) => {
     const session = await getSession();
@@ -27,6 +30,14 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     if (!bookContent || bookContent.length === 0) {
         errorx(404, "Book not found");
         return;
+    }
+
+    if (bookContent && bookContent.length > 0) {
+        bookContent.forEach(book => {
+            if (book.chapters) {
+                book.chapters.sort((a, b) => a.chapter_id - b.chapter_id);
+            }
+        });
     }
 
     const {data: comments, error: commentsError} = await supabase
@@ -269,6 +280,88 @@ export const actions = {
             body: {
                 message: "Comment added successfully",
                 comment: data[0]
+            }
+        }
+    },
+    delete_book: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to delete your book"
+                }
+            }
+        }
+
+        const bookId = formData.bookId;
+        const userId = session.user.id;
+
+        if (bookId === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        // Select book by ID and owner ID
+        const { data: book, error: bookError } = await supabase
+            .from('book')
+            .select('*')
+            .eq('id', bookId)
+            .eq('owner_id', userId);
+
+        if (bookError) {
+            console.error(bookError);
+            return {
+                status: 500,
+                body: {
+                    message: bookError.message
+                }
+            }
+        }
+
+        if (!book || book.length === 0) {
+            return {
+                status: 404,
+                body: {
+                    message: "Book not found"
+                }
+            }
+        }
+
+        const cover_url = book[0].cover_url;
+        const cover_url_path = cover_url.substring(PUBLIC_POCKETBASE_URL_IMG_API.length);
+        const cover_id = cover_url_path.split('/')[1];
+
+        const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
+        await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
+        await pb.collection('media').delete(cover_id);
+
+        const { error } = await supabase
+            .from('book')
+            .delete()
+            .eq('id', bookId)
+            .eq('owner_id', userId);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Book [ " + bookId + " ] " + book[0].title + " deleted successfully"
             }
         }
     }

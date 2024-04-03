@@ -201,5 +201,53 @@ export const actions = {
                 comment: data[0]
             }
         }
+    },
+    delete_chapter: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to delete a chapter"
+                }
+            }
+        }
+
+        const chapterId = formData.chapterId;
+        const userId = session.user.id;
+
+        if (chapterId === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { error: deleteError } = await supabase
+            .from('chapters')
+            .delete()
+            .eq('id', chapterId)
+            .eq('owner_id', userId);
+
+        if (deleteError) {
+            console.error(deleteError);
+            return {
+                status: 500,
+                body: {
+                    message: deleteError.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Chapter [" + chapterId + "] deleted successfully"
+            }
+        }
     }
 }
