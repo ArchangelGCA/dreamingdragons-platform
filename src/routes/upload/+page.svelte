@@ -78,6 +78,7 @@
     let selectedOption = 'book';
     let suggestions = [];
     let hasDoneTagAction = false;
+    let activeUpload = false;
 
     let tags = [];
     async function addTag(e) {
@@ -198,6 +199,10 @@
     async function handleBookUpload(event) {
         event.preventDefault();
 
+        if (activeUpload) return;
+
+        activeUpload = true;
+
         const formData = new FormData(event.target);
 
         const toastId = toast.push('Uploading...', {
@@ -248,10 +253,16 @@
                 }
             });
         }
+
+        activeUpload = false;
     }
 
     async function handleChapterUpload(event) {
         event.preventDefault();
+
+        if (activeUpload) return;
+
+        activeUpload = true;
 
         const formData = new FormData(event.target);
         formData.append('content', editorContent);
@@ -278,9 +289,9 @@
 
                 const bookId = result.data.body.book_id;
                 const chapterId = result.data.body.chapter_id;
-                const bookUrl = '/content/' + bookId + "/" + chapterId;
+                const chapterUrl = '/content/' + bookId + "/" + chapterId;
 
-                toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + bookUrl + '" target="_blank">here</a>.', {
+                toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + chapterUrl + '" target="_blank">here</a>.', {
                     theme: {
                         '--toastBackground': '#4caf50',
                         '--toastColor': '#fff'
@@ -305,6 +316,8 @@
                 }
             });
         }
+
+        activeUpload = false;
     }
 </script>
 

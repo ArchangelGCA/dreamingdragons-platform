@@ -89,7 +89,16 @@ export const actions = {
             throw redirect(303, '/login');
         }
 
-        const bookId = formData.book_id;
+        const bookId = formData.bookId;
+
+        if (!bookId) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
 
         const {data: bookSearch, error} = await supabase
             .from('book')
@@ -113,7 +122,6 @@ export const actions = {
                     message: "You are not the owner of this book"
                 }
             }
-            return;
         }
 
         // Get formdata, not all data is required
@@ -152,13 +160,16 @@ export const actions = {
             }
         }
 
+        let updateData = {};
+
+        if (title !== null) updateData.title = title;
+        if (description !== null) updateData.description = description;
+        if (finalURL !== null) updateData.cover_url = finalURL;
+        updateData.updated_at = new Date();
+
         const { error: error2 } = await supabase
             .from('book')
-            .update({
-                title: title,
-                description: description,
-                cover_url: finalURL ? finalURL : cover_url
-            })
+            .update(updateData)
             .eq('id', bookId)
             .eq('owner_id', session.user.id);
 

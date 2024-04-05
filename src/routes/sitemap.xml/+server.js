@@ -35,6 +35,9 @@ export const GET = async ({locals: {supabase, getSession}}) => {
             '/content/[book]/[chapter]': chaptersData.map((chapter) => [chapter.book_id, chapter.id]),
             '/profile/[profile]': profilesData.map((profile) => profile.id)
         },
-        additionalPaths: tagsData.map((tag) => `/search?q=${tag.name}`)
+        additionalPaths: tagsData.map((tag) => `/search?q=${tag.name}`),
+        excludePatterns: [
+            '^/edit.*'
+        ]
     });
 };

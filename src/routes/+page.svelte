@@ -73,7 +73,7 @@
         </div>
 
         <div class="col-12 mt-5 mb-2">
-            <p class="h4">Content with Newest Chapters</p>
+            <p class="h4">Recently Updated</p>
         </div>
         <div class="col-12">
             {#if !books_ordered_by_latest_chapter || books_ordered_by_latest_chapter.length === 0}

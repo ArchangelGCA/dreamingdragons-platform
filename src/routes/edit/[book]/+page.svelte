@@ -32,10 +32,14 @@
     let suggestions = [];
     let files;
     let hasDoneTagAction = false;
+    let editActive = false;
 
     async function handleEdit(event){
         event.preventDefault();
 
+        if (editActive) return;
+
+        editActive = true;
         const formData = new FormData(event.target);
 
         const toastId = toast.push('Uploading...', {
@@ -82,6 +86,7 @@
                 }
             });
         }
+        editActive = false;
     }
 
     async function addTag(e) {
@@ -118,6 +123,7 @@
                 }
                 tags = [...tags, tag];
                 e.target.value = '';
+                suggestions = [];
                 hasDoneTagAction = true;
                 return;
             }
@@ -128,13 +134,10 @@
 
     async function fetchTags(e) {
 
-        if (hasDoneTagAction) {
-            return;
-        }
+        if (hasDoneTagAction) return;
 
         const tag = e.target.value.trim();
-        // if tag is empty, don't fetch suggestions and reset suggestions
-        if (!tag) {
+        if (!tag || tag === '') {
             suggestions = [];
             return;
         }
@@ -188,9 +191,18 @@
     }
 
     function addTagSuggestion(tag) {
+        if (tags.includes(tag)) {
+            toast.push('Tag already added', {
+                theme: {
+                    '--toastBackground': '#ffcc00',
+                    '--toastColor': '#000'
+                }
+            });
+            return;
+        }
         tags = [...tags, tag];
         suggestions = [];
-        document.getElementById('inputTagBook').value = '';
+        document.getElementById('inputTag').value = '';
     }
 
 </script>
@@ -235,13 +247,13 @@
                                     <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
                                 </div>
                             {/each}
-                            <input class="input-tags my-auto ms-1" type="text" id="inputTagBook" placeholder="Add tags" on:keydown={addTag} on:keyup={fetchTags}/>
+                            <input class="input-tags my-auto ms-1" type="text" id="inputTag" placeholder="Add tags" on:keydown={addTag} on:keyup={fetchTags}/>
                             {#each suggestions as suggestion (suggestion)}
                                 <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestion(suggestion)}>{suggestion}</button>
                             {/each}
                             <!-- Hidden inputs -->
                             <input type="hidden" name="tags" value={tags} />
-                            <input type="hidden" name="book_id" value={book.id} />
+                            <input type="hidden" name="bookId" value={book.id} />
                         </div>
                     </div>
                     <div class="col-12 mb-1 mt-2 px-0">
