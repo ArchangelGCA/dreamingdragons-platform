@@ -4,6 +4,7 @@
     import {deserialize} from "$app/forms";
     import { tooltip } from "@svelte-plugins/tooltips";
     import autoAnimate from '@formkit/auto-animate';
+    import {invalidateAll} from "$app/navigation";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -32,9 +33,55 @@
     let files;
     let hasDoneTagAction = false;
 
-    async function handleEdit(e){
-        alert('TODO! Work-In-Progress!');
-        console.log('event', e);
+    async function handleEdit(event){
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+
+        const toastId = toast.push('Uploading...', {
+            duration: 600000,
+            theme: {
+                '--toastBackground': '#ffcc00',
+                '--toastColor': '#000'
+            }
+        });
+
+        const response = await fetch('?/editbook', {
+            method: 'POST',
+            body: formData,
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        await invalidateAll();
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
+
+                const bookUrl = '/content/' + book.id;
+
+                toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + bookUrl + '" target="_blank">here</a>.', {
+                    theme: {
+                        '--toastBackground': '#4caf50',
+                        '--toastColor': '#fff'
+                    }
+                });
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+            }
+        } else {
+            toast.push('Error: Upload failed' , {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        }
     }
 
     async function addTag(e) {
@@ -151,7 +198,7 @@
 <div class="container-md mt-4 mb-3 px-0">
     <div class="row text-center">
         <div class="col">
-            <p class="h1 rounded-4 animate-background py-2">Edit Tale (Work-In-Progress)</p>
+            <p class="h1 rounded-4 animate-background py-2">Edit Tale (Alpha)</p>
         </div>
     </div>
     <div class="row mt-3 mx-0 justify-content-center text-center">
@@ -192,12 +239,13 @@
                             {#each suggestions as suggestion (suggestion)}
                                 <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestion(suggestion)}>{suggestion}</button>
                             {/each}
-                            <!-- Hidden input bind with tags -->
+                            <!-- Hidden inputs -->
                             <input type="hidden" name="tags" value={tags} />
+                            <input type="hidden" name="book_id" value={book.id} />
                         </div>
                     </div>
                     <div class="col-12 mb-1 mt-2 px-0">
-                        <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                        <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Save Changes</button>
                     </div>
                     <div class="col-12 mt-3 px-0 rounded-3">
                         <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>

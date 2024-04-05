@@ -168,7 +168,7 @@ export const actions = {
         return {
             status: 200,
             body: {
-                message: "Book added successfully",
+                message: "Tale added successfully",
                 book_id: book_id
             }
         }
