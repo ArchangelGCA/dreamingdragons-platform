@@ -437,12 +437,12 @@
     {#if chapterContent.is_owner}
         <div class="row justify-content-center text-center bg-danger bg-opacity-10 border border-danger rounded-3 mb-3">
             <div class="col-12 px-0 mt-2">
-                <span class="h4 text-danger-emphasis">Danger zone:</span>
+                <span class="h4 text-danger-emphasis">Danger Zone:</span>
             </div>
             <div class="col-12 px-0">
                 <div class="row justify-content-center pt-1">
                     <div class="col-auto">
-                        <a href="/edit/{chapterContent.chapter_id}" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Edit Chapter">
+                        <a href="/edit/{chapterContent.book_id}/{chapterContent.chapter_id}" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Edit Chapter">
                             <i class="fas fa-edit"></i>
                             <span class="fs-6">Edit</span>
                         </a>

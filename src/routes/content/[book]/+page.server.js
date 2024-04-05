@@ -8,12 +8,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     let isOwner = false;
 
     if (!params.book) {
-        return {
-            status: 400,
-            body: {
-                message: "Missing required fields"
-            }
-        }
+        errorx(400, 'Missing required fields');
     }
 
     const bookId = params.book;

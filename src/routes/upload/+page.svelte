@@ -77,6 +77,7 @@
     let editorContent = '';
     let selectedOption = 'book';
     let suggestions = [];
+    let hasDoneTagAction = false;
 
     let tags = [];
     async function addTag(e) {
@@ -94,6 +95,7 @@
             tags = [...tags, suggestions[0]];
             e.target.value = '';
             suggestions = [];
+            hasDoneTagAction = true;
             return;
         }
         if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
@@ -112,11 +114,26 @@
                 }
                 tags = [...tags, tag];
                 e.target.value = '';
+                hasDoneTagAction = true;
                 return;
             }
         }
 
+        hasDoneTagAction = false;
+    }
+
+    async function fetchTags(e) {
+
+        if (hasDoneTagAction) {
+            return;
+        }
+
         const tag = e.target.value.trim();
+        // if tag is empty, don't fetch suggestions and reset suggestions
+        if (!tag) {
+            suggestions = [];
+            return;
+        }
         if (tag) {
             const formData = new FormData();
             formData.append('tag', tag);
@@ -352,7 +369,7 @@
                                                             <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTagBook" placeholder="Add tags" on:keydown={addTag}/>
+                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTagBook" placeholder="Add tags" on:keydown={addTag} on:keyup={fetchTags}/>
                                                     {#each suggestions as suggestion (suggestion)}
                                                         <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestionBook(suggestion)}>{suggestion}</button>
                                                     {/each}
@@ -413,7 +430,7 @@
                                                             <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTagChapter" placeholder="Add tags" on:keydown={addTag} />
+                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTagChapter" placeholder="Add tags" on:keydown={addTag} on:keyup={fetchTags}/>
                                                     {#each suggestions as suggestion (suggestion)}
                                                         <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestionChapter(suggestion)}>{suggestion}</button>
                                                     {/each}

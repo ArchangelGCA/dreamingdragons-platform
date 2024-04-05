@@ -269,7 +269,7 @@
         if (deleteBookActionActive) return;
         if (!bookContent.is_owner) return;
 
-        if (!confirm('Are you sure you want to delete this Content?')) return;
+        if (!confirm('Are you sure you want to delete this Tale?')) return;
 
         deleteBookActionActive = true;
 
@@ -449,18 +449,18 @@
     {#if bookContent.is_owner}
         <div class="row justify-content-center text-center bg-danger bg-opacity-10 border border-danger rounded-3 mb-3">
             <div class="col-12 px-0 mt-2">
-                <span class="h4 text-danger-emphasis">Danger zone:</span>
+                <span class="h4 text-danger-emphasis">Danger Zone:</span>
             </div>
             <div class="col-12 px-0">
                 <div class="row justify-content-center pt-1">
                     <div class="col-auto">
-                        <a href="/edit/{bookContent.book_id}" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Edit Content">
+                        <a href="/edit/{bookContent.book_id}" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Edit Tale">
                             <i class="fas fa-edit"></i>
                             <span class="fs-6">Edit</span>
                         </a>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Delete Content" on:click={handleBookDelete}>
+                        <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Delete Tale" on:click={handleBookDelete}>
                             <i class="fas fa-trash-alt"></i>
                             <span class="fs-6">Delete</span>
                         </button>
