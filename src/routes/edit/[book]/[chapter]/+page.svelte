@@ -321,23 +321,10 @@
         animation: Gradient 1.5s ease infinite;
     }
 
-    .btn.active {
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient 4s ease infinite;
-        color: #dcd6f7;
-    }
-
     .animate-background {
         background: linear-gradient(270deg, #0b0086, #5c00a6);
         background-size: 200% 200%;
         animation: Gradient 10s ease infinite, tranform 1s ease-in-out;
-    }
-
-    .form-animated-background {
-        background-size: 200% 200%;
-        background-image: linear-gradient(270deg, #000, #3d006c, #000);
-        animation: ColorShift 4s ease infinite;
     }
 
     .form-control-custom {

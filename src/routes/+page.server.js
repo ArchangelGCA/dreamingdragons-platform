@@ -36,17 +36,27 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     //    END GLOBAL CODE EXECUTED FOR EVERY VISITOR    //
     /****************************************************/
 
+    const results = {
+        books_ordered_by_likes,
+        books_ordered_by_created_at,
+        books_ordered_by_latest_chapter
+    }
+
     if (!session) { // GUESTS
-        return {
-            books_ordered_by_likes,
-            books_ordered_by_created_at,
-            books_ordered_by_latest_chapter
-        }
+        results.is_logged = false;
+        results.followed = [];
     } else { // LOGGED USERS
-        return {
-            books_ordered_by_likes,
-            books_ordered_by_created_at,
-            books_ordered_by_latest_chapter
+        results.is_logged = true;
+
+        const { data: followed, error: followedError } = await supabase
+            .rpc('get_followed_users', { user_id: session.user.id });
+
+        if (followedError) {
+            results.followed = [];
+        } else {
+            results.followed = followed;
         }
     }
+
+    return results;
 }

@@ -1,6 +1,7 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -15,7 +16,7 @@
     };
 
     export let data;
-    let { books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter } = data;
+    let { supabase, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed } = data;
 </script>
 
 <svelte:head>
@@ -32,11 +33,28 @@
     <meta property="og:description" content="A place to share your stories and art, featured by Roses In The Flames and built with love by its community." />
 </svelte:head>
 
-<div class="container-fluid my-3" style="min-height: 69vh">
+<div class="container-fluid mb-3 mt-2" style="min-height: 69vh">
     <div class="row justify-content-center">
-        <div class="col-12 bg-purple-opacity-50 py-2 rounded-3">
+        <div class="col-12 bg-purple-opacity-75 py-2 rounded-3">
             <span class="h2 text-start fw-bolder" use:tooltip={{...tooltipConfig}} title="Home 🏠">Home</span>
         </div>
+
+        {#if is_logged && followed && followed.length > 0}
+            <div class="col-12 border border-top border-start-0 border-end-0 pb-3 pt-1 mt-2">
+                <div class="row justify-content-center bg-purple-opacity-50 rounded-3 pt-1 pb-0 mb-3" use:tooltip={{...tooltipConfig}} title="Following Users">
+                    <div class="col-12 text-center">
+                        <p class="fs-5 mb-0">Following</p>
+                    </div>
+                </div>
+                <div class="row row-horizontal flex-nowrap justify-content-center ps-1 pe-1 gx-4 gx-md-5">
+                    {#each followed as follow (follow.id)}
+                        <div class="col-auto">
+                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {supabase} size="45px" />
+                        </div>
+                    {/each}
+                </div>
+            </div>
+        {/if}
 
         <div class="col-12 mt-3 mb-2">
             <p class="h4">Newest Content</p>
@@ -121,13 +139,18 @@
         background-color: #5c00a6;
     }
 
+    .bg-purple-opacity-10 {
+        background-color: rgba(92, 0, 166, 0.1);
+    }
+
     .bg-purple-opacity-25 {
         background-color: rgba(92, 0, 166, 0.25);
     }
+    */
 
-    .bg-purple-opacity-10 {
-        background-color: rgba(92, 0, 166, 0.1);
-    }*/
+    .bg-purple-opacity-75 {
+        background-color: rgba(92, 0, 166, 0.75);
+    }
 
     .row-horizontal::-webkit-scrollbar {
         height: 15px;
