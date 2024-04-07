@@ -7,6 +7,8 @@
     import Notification from "$lib/components/layout/Notification.svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import { page as pageStore } from '$app/stores';
+    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
+    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -48,6 +50,8 @@
             });
         });
 
+        getAvatarUrl();
+
         return () => data.subscription.unsubscribe();
     });
 
@@ -74,6 +78,7 @@
     const copyright = `© ${currentYear} ${owner}. All rights reserved.`;
     const notificationsRangeStep = 20;
 
+    let userData = null;
     let notificationsCount = 0;
     let allNotificationsLoaded = false;
     if (notifications !== null && notifications.length !== 0) {
@@ -112,6 +117,24 @@
         }
 
         loading = false;
+    }
+
+    async function getAvatarUrl() {
+        if (session) {
+            const { data: data, error } = await supabase
+                .from('profiles')
+                .select('id, username, avatar_url')
+                .eq('id', session.user.id)
+                .single();
+
+            if (error) {
+                console.error(error);
+            }
+
+            if (data && data.length !== 0 && data.avatar_url !== null) {
+                userData = data;
+            }
+        }
     }
 
     function handleScroll(event) {
@@ -156,11 +179,21 @@
             {/if}
             <div class="col-auto">
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle animate-button" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-user pe-1"></i>
-                    </button>
+                    {#if !userData || userData === null || userData.avatar_url === null}
+                        <button class="btn btn-secondary dropdown-toggle animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user pe-1"></i>
+                        </button>
+                    {:else}
+                        <button class="btn btn-secondary dropdown-toggle ps-1 py-0 animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <UserAvatarNavbar classes="mb-2 mt-1" {supabase} url={userData.avatar_url} username={userData.username} size="25px"/>
+                        </button>
+                    {/if}
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                        <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                        {#if !userData || userData === null || userData.avatar_url === null}
+                            <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                        {:else}
+                            <li><a class="dropdown-item ps-1 mb-2" data-sveltekit-reload href="/profile"><UserAvatarNavbar classes="me-1" {supabase} url={userData.avatar_url} username={userData.username} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a></li>
+                        {/if}
                         <li><a class="dropdown-item" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
                         <li><a class="dropdown-item upload-button rounded-3 py-2" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
                         <li><a class="dropdown-item mt-1" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
