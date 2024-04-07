@@ -29,7 +29,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         ]);
     } catch (error) {
         console.error(error);
-        errorx(500, "Error fetching content")
+        return errorx(500, "Error fetching content")
     }
 
     /****************************************************/

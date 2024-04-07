@@ -1,12 +1,23 @@
 import { PUBLIC_DEFAULT_NAME, PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
-import {error as errorx} from '@sveltejs/kit';
+import {error as errorx, redirect} from '@sveltejs/kit';
 
 export const load = async ( { params, locals: { supabase, getSession } }) => {
     const session = await getSession();
-
     const id = params.profile;
-    let isFollowing = false;
-    let isOwner = false;
+
+    const results = {
+        isFollowing: false,
+        isOwner: false,
+    }
+
+    // If there's no id and the user isn't logged in, send to login page
+    if (!id && !session) {
+        throw redirect(303, '/login');
+    }
+
+    /*************************************************/
+    //    BEGINNING ACTIONS IF AN ID IS SPECIFIED    //
+    /*************************************************/
 
     if (id) {
         let {data: profile, errorId} = await supabase
@@ -24,16 +35,29 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
             }
         }
 
+        // Profile not found
         if (!profile || profile.length === 0) {
-            errorx(404, "Profile not found");
-            return;
+
+            // If user is logged in but no profile was found, even if this isn't expected to happen, but this is a solution
+            // neverthless, we send back the user to the /profile page, that will create the profile if it doesn't exist
+            // and then send it back here.
+            if (session && id === session.user.id) {
+                // redirect to /profile
+                return redirect(302, '/profile');
+            }
+
+            return errorx(404, "Profile not found");
         }
 
+        results.profile = profile;
+
+        // If there's a session
         if (session) {
 
-            isOwner = profile[0].id === session.user.id;
+            results.session = session;
+            results.isOwner = profile[0].id === session.user.id;
 
-            if (!isOwner) {
+            if (!results.isOwner) {
                 const { data: follow, error } = await supabase
                     .from('followers')
                     .select('*')
@@ -50,93 +74,24 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
                     }
                 }
 
-                isFollowing = follow.length > 0;
-            }
-
-            return {session, profile, isOwner, isFollowing};
-        }
-
-        return { profile, isOwner, isFollowing };
-    }
-
-    if (!session) {
-        throw redirect(303, '/login');
-    }
-
-    // Check if a profile with the given id already exists
-    let { data: profile } = await supabase
-        .from('experimental_books_new')
-        .select('*')
-        .eq('id', session.user.id);
-
-    // If the profile doesn't exist, insert/create a new one
-    if (!profile || profile.length === 0) {
-
-        const randomIdUsernameShort = Math.random().toString(36).substring(2, 6);
-
-        const { error } = await supabase
-            .from('profiles')
-            .insert([{
-                id: session.user.id,
-                full_name: PUBLIC_DEFAULT_NAME,
-                username: PUBLIC_DEFAULT_USERNAME + "-" + randomIdUsernameShort,
-                website: '',
-                avatar_url: '',
-                updated_at: new Date(),
-            }]);
-
-        if (error) {
-            console.error('Error creating profile', error);
-            return {
-                status: 500,
-                body: {
-                    message: "Error creating profile"
-                }
+                results.isFollowing = follow.length > 0;
             }
         }
 
-        // Retrieve the books
-        const { data: updatedProfile, errorNew } = await supabase
-            .from('experimental_books_new')
-            .select('*')
-            .eq('id', session.user.id);
+        return results;
+    } else { // ID IS NOT SPECIFIED
 
-        if (errorNew) {
-            console.error('Error retrieving profile', errorNew);
-            return {
-                status: 500,
-                body: {
-                    message: "Error retrieving profile"
-                }
-            }
+        // Hacky way, a user not specifying an id will be redirected to their profile to their own profile if they're logged in
+        // by /profile page, otherwise they'll go to the login page.
+        // This also helps keeping only one profile creation login in one place ( /profile ).
+        if (session) {
+            return redirect(302, '/profile');
         }
-
-        profile = updatedProfile;
     }
 
-    isOwner = profile[0].id === session.user.id;
-
-    if (!isOwner) {
-        const { data: follow, error } = await supabase
-            .from('followers')
-            .select('*')
-            .eq('following_id', profile[0].user.id)
-            .eq('follower_id', session.user.id);
-
-        if (error) {
-            console.error(error);
-            return {
-                status: 500,
-                body: {
-                    message: error.message
-                }
-            }
-        }
-
-        isFollowing = follow.length > 0;
-    }
-
-    return { session, profile, isOwner, isFollowing };
+    /***********************************************/
+    //      END ACTIONS IF AN ID IS SPECIFIED      //
+    /***********************************************/
 }
 
 

@@ -3,11 +3,13 @@ export const load = async ( { params, url, locals: { supabase, /*getSession,*/ }
     const tags = url.searchParams.get('tag');
     let empty = [];
 
+    const results = {
+        searchResults: empty,
+        partialText: ''
+    }
+
     if (!query && !tags) {
-        return {
-            searchResults: empty,
-            partialText: ''
-        }
+        return results;
     }
 
     const partial_text = queryBuilder(tags, query);
@@ -26,7 +28,10 @@ export const load = async ( { params, url, locals: { supabase, /*getSession,*/ }
         }
     }
 
-    return { searchResults, partialText: partial_text }
+    results.searchResults = searchResults;
+    results.partialText = partial_text;
+
+    return results;
 }
 
 export const actions = {
