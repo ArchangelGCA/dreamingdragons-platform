@@ -7,7 +7,6 @@
     import Notification from "$lib/components/layout/Notification.svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import { page as pageStore } from '$app/stores';
-    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
     const tooltipConfig = {

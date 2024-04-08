@@ -94,8 +94,8 @@
 <div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
     <div class="col-auto">
         {#if loadedAvatar === false}
-            <div class="spinner-border text-light" role="status">
-                <span class="visually-hidden">Loading...</span>
+            <div class="placeholder-glow" style="height: 50px; width: 50px;">
+                <div class="placeholder rounded-circle w-100 h-100"></div>
             </div>
         {:else if avatarFound === true}
             <a href="/profile/{comment.user_id}">

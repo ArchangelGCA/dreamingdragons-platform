@@ -353,11 +353,11 @@
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <div class="col-3 col-md-2 text-end">
-                    <a href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
+                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
+                    <a class="w-auto" href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
                         {#if loadedAvatar === false}
-                            <div class="spinner-border text-light" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                            <div class="placeholder-glow" style="height: 70px; width: 70px;">
+                                <div class="placeholder rounded-circle w-100 h-100"></div>
                             </div>
                         {:else if avatarFound === true}
                             <img src="{finalAvatarUrl}" alt="{bookContent.owner_username}" class="img-fluid rounded-circle" style="height: 70px; width: 70px;" loading="lazy">
@@ -513,12 +513,8 @@
                         <Comment {comment} {supabase} on:delete={handleCommentDelete}/>
                     {/each}
                 {:else}
-                    <div class="row justify-content-center">
-                        <div class="col-auto">
-                            <div class="spinner-border text-light" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                        </div>
+                    <div class="row justify-content-center placeholder-glow mb-2">
+                        <div class="col-12 placeholder py-4 rounded-3"></div>
                     </div>
                 {/if}
             </div>

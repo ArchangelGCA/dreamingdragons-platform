@@ -51,8 +51,8 @@
 <div class="d-flex justify-content-center">
     <a href={`/profile/${id}`} class="text-decoration-none" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
         {#if !isAvatarLoaded}
-            <div class="spinner-border text-light mt-2 mb-1" role="status">
-                <span class="visually-hidden">Loading...</span>
+            <div class="placeholder-glow" style="width: {size}; height: {size};">
+                <div class="placeholder rounded-circle w-100 h-100"></div>
             </div>
         {:else}
             <img src={avatarUrl} alt={username} class="rounded-circle avatar-style" width={size} height={size}>
