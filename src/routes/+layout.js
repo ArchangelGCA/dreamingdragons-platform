@@ -22,11 +22,11 @@ export const load = async ({ fetch, data, depends }) => {
     let notifications = []
 
     if (session) {
-        const { data: notifs, error } = await supabase
+        const {data: notifs, error} = await supabase
             .from('notifications')
             .select('*')
             .eq('recipient_id', session.user.id)
-            .order('created_at', { ascending: false })
+            .order('created_at', {ascending: false})
             .range(0, 20);
 
         if (error) {

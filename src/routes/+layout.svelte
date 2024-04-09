@@ -1,6 +1,6 @@
 <script>
     import { invalidate } from '$app/navigation'
-    import {onMount} from "svelte";
+    import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import autoAnimate from '@formkit/auto-animate';
@@ -26,7 +26,9 @@
     let { supabase, session, notifications } = data;
     $: ({ supabase, session } = data);
 
+    let intervalId;
     let searchTerm = '';
+    const notifsUpdateInterval = 30000;
 
     if ($pageStore.url.searchParams.has('q')) {
         searchTerm = $pageStore.url.searchParams.get('q');
@@ -51,7 +53,17 @@
 
         getAvatarUrl();
 
+        intervalId = setInterval(async () => {
+            await tick();
+            await invalidate('supabase:auth');
+        }, notifsUpdateInterval); // THIS NEEDS TO BE TESTED!
+
         return () => data.subscription.unsubscribe();
+    });
+
+    onDestroy(() => {
+        // Clear the interval when the component is destroyed
+        clearInterval(intervalId);
     });
 
     // Socials
