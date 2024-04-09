@@ -417,8 +417,8 @@
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-12 px-0">
-            <p class="fs-5 bg-purple-opacity-25 p-3 rounded-4">{bookContent.book_description}</p>
+        <div class="col-12 fs-5 bg-purple-opacity-25 p-3 pb-0 mb-3 rounded-4 ">
+            {@html bookContent.book_description}
         </div>
     </div>
     <div class="row justify-content-center text-center" id="chapters">

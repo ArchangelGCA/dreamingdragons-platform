@@ -79,6 +79,7 @@
     let suggestions = [];
     let hasDoneTagAction = false;
     let activeUpload = false;
+    let editorContentTale = '';
 
     let tags = [];
     async function addTag(e) {
@@ -204,6 +205,7 @@
         activeUpload = true;
 
         const formData = new FormData(event.target);
+        formData.append('description', editorContentTale);
 
         const toastId = toast.push('Uploading...', {
             duration: 600000,
@@ -371,7 +373,14 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Tale description">
-                                                <textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" required></textarea>
+                                                <!--<textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" required></textarea>
+                                                -->
+                                                <div class="col-12 px-0">
+                                                    <Editor {conf}
+                                                            scriptSrc="tinymce/tinymce.min.js"
+                                                            bind:value={editorContentTale}
+                                                    />
+                                                </div>
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
                                                 <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>

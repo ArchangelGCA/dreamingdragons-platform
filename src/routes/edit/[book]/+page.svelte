@@ -5,6 +5,7 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
+    import Editor from "@tinymce/tinymce-svelte";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -16,6 +17,54 @@
             borderRadius: '5px'
         },
         theme: 'text-center w-auto'
+    };
+
+    let conf = {
+        skin: 'oxide-dark',
+        content_css: 'dark',
+        block_unsupported_drop: true,
+        branding: false,
+        plugins: 'link autolink wordcount charmap code fullscreen',
+        default_link_target: '_blank',
+        images_upload_handler: () => Promise.reject({
+            remove: true,
+            message: 'You can\'t upload images in the description.',
+        }),
+        toolbar_mode: 'sliding',
+        toolbar: [
+            {
+                name: 'history',
+                items: ['undo', 'redo']
+            },
+            {
+                name: 'links',
+                items: ['link']
+            },
+            {
+                name: 'formatting',
+                items: ['bold', 'italic']
+            },
+            {
+                name: 'alignment',
+                items: ['alignleft', 'aligncenter', 'alignright', 'alignjustify']
+            },
+            {
+                name: 'indentation',
+                items: ['outdent', 'indent']
+            },
+            {
+                name: 'tools',
+                items: ['wordcount', 'charmap', 'code', 'fullscreen']
+            }
+        ],
+        setup: function (editor) {
+            editor.on('init', function () {
+                const promotionLink = document.querySelector('.tox-promotion-link');
+                if (promotionLink) {
+                    promotionLink.remove();
+                }
+            });
+        },
     };
 
     export let data;
@@ -41,6 +90,7 @@
 
         editActive = true;
         const formData = new FormData(event.target);
+        formData.append('description', description);
 
         const toastId = toast.push('Uploading...', {
             duration: 600000,
@@ -236,7 +286,15 @@
                         </div>
                     </div>
                     <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Tale description">
+                        <!--
                         <textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" bind:value={description} required></textarea>
+                        -->
+                        <div class="col-12 px-0">
+                            <Editor {conf}
+                                    scriptSrc="../tinymce/tinymce.min.js"
+                                    bind:value={description}
+                            />
+                        </div>
                     </div>
                     <div class="col-12 mt-2 px-0 rounded-3">
                         <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
