@@ -110,7 +110,7 @@
 <div class="container-fluid my-3" style="min-height: 69vh">
     <div class="row mb-2">
         <div class="col">
-            <p class="h2 text-center">Search Results:</p>
+            <p class="h2 text-center">Search Results</p>
         </div>
     </div>
     <div class="row">
@@ -120,10 +120,10 @@
             {:else}
                 <div class="row">
                     <div class="col">
-                        <p class="h3 text-start">Profiles:</p>
+                        <p class="h3 text-start">Profiles</p>
                     </div>
                 </div>
-                <div class="row row-horizontal flex-nowrap border border-top border-start-0 border-end-0 py-2 ps-1 pe-1 ps-md-5 pe-md-5 gx-5">
+                <div class="row row-horizontal flex-nowrap border-bottom border-top py-2 ps-1 pe-1 ps-xl-5 pe-xl-5">
                         {#if profiles.length === 0 && books.length !== 0}
                             <div class="col-12">
                                 <p class="text-center">Profiles not found!</p>
@@ -138,7 +138,7 @@
                 </div>
                 <div class="row mt-4 mb-2">
                     <div class="col">
-                        <p class="h3 text-center">Content:</p>
+                        <p class="h3 text-center">Content</p>
                     </div>
                 </div>
                 <div class="container-xxl">
