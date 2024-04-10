@@ -326,25 +326,10 @@
         title: bookContent.book_title + ' by ' + bookContent.owner_username + ' | Roses In The Flames',
         description: bookContent.book_description,
         siteName: 'Roses In The Flames | Tales',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        imageURL: bookContent.book_cover_url,
         author: 'ArchangelGCA'
     }
 </script>
-
-<!--
-<svelte:head>
-    <title>{bookContent.book_title} by {bookContent.owner_username} | Roses In The Flames</title>
-    <meta name="description" content="{bookContent.book_description}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{bookContent.book_title} by {bookContent.owner_username} - Roses In The Flames">
-    <meta name="twitter:description" content="{bookContent.book_description}">
-    <meta name="twitter:image" content="{bookContent.book_cover_url}">
-
-    <meta name="og:title" content="{bookContent.book_title} by {bookContent.owner_username} - Roses In The Flames">
-    <meta name="og:description" content="{bookContent.book_description}">
-    <meta name="og:image" content="{bookContent.book_cover_url}">
-</svelte:head>
--->
 
 <Seo {...seo} />
 

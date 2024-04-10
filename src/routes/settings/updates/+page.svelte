@@ -44,20 +44,6 @@
         activeEvent = false;
     }
 </script>
-<!--
-<svelte:head>
-    <title>Roses In The Flames | Home</title>
-
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Roses In The Flames | Subscribe Mailing List" />
-    <meta name="twitter:description" content="Subscribe to the official Roses In The Flames mailing list." />
-    <meta name="twitter:image" content="https://tales.rosesintheflames.com/favicon.webp" />
-
-    <meta property="og:title" content="Roses In The Flames | Subscribe Mailing List" />
-    <meta property="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
-    <meta property="og:description" content="Subscribe to the official Roses In The Flames mailing list." />
-</svelte:head>
--->
 
 <Seo {...seo} />
 

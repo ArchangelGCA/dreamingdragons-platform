@@ -29,19 +29,7 @@
 </script>
 
 <svelte:head>
-    <!--<title>Roses In The Flames | Home</title>-->
     <link rel="canonical" href="https://tales.rosesintheflames.com/">
-
-    <!--
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="Roses In The Flames | Tales" />
-    <meta name="twitter:description" content="A place to share your stories and art, featured by Roses In The Flames and built with love by its community." />
-    <meta name="twitter:image" content="https://tales.rosesintheflames.com/favicon.webp" />
-
-    <meta property="og:title" content="Roses In The Flames | Tales" />
-    <meta property="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
-    <meta property="og:description" content="A place to share your stories and art, featured by Roses In The Flames and built with love by its community." />
-    -->
 </svelte:head>
 
 <Seo {...seo} />

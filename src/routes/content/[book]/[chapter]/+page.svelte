@@ -323,25 +323,10 @@
         title: chapterContent.book_title + ' - ' + chapterContent.title + ' | Roses In The Flames',
         description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' +  chapterContent.book_title + ' | Roses In The Flames',
         siteName: 'Roses In The Flames | Tales',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        imageURL: chapterContent.book_cover_url,
         author: 'ArchangelGCA'
     }
 </script>
-
-<!--
-<svelte:head>
-    <title>{chapterContent.book_title} - {chapterContent.title} | Roses In The Flames</title>
-    <meta name="description" content="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title} | Roses In The Flames">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{chapterContent.book_title} - {chapterContent.title} | Roses In The Flames">
-    <meta name="twitter:description" content="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title} | Roses In The Flames">
-    <meta name="twitter:image" content="{chapterContent.book_cover_url}">
-
-    <meta name="og:title" content="{chapterContent.book_title} - {chapterContent.title} | Roses In The Flames">
-    <meta name="og:description" content="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title} | Roses In The Flames">
-    <meta name="og:image" content="{chapterContent.book_cover_url}">
-</svelte:head>
--->
 
 <Seo {...seo} />
 

@@ -10,22 +10,6 @@
     }
 </script>
 
-<!--
-<svelte:head>
-    <title>Roses In The Flames | Terms of Service</title>
-    <meta name="description" content="Terms of Service of Roses In The Flames (RiTF).">
-
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Terms of Service">
-    <meta name="twitter:description" content="Roses In The Flames Terms of Service">
-    <meta name="twitter:image" content="https://tales.rosesintheflames.com/favicon.webp" />
-
-    <meta name="og:title" content="Terms of Service" />
-    <meta name="og:description" content="Terms of Service of Roses In The Flames" />
-    <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
-</svelte:head>
--->
-
 <Seo {...seo} />
 
 

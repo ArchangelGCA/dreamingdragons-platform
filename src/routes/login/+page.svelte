@@ -14,12 +14,6 @@
     export let data;
 </script>
 
-<!--
-<svelte:head>
-    <title>User - Login</title>
-</svelte:head>
--->
-
 <Seo {...seo} />
 
 <div class="row justify-content-center pt-4 pb-3">
