@@ -4,9 +4,18 @@
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
     import {onMount} from "svelte";
+    import Seo from "sk-seo";
 
     export let data;
     let { supabase, searchResults, partialText } = data;
+
+    const seo = {
+        title: partialText + ' | Roses In The Flames',
+        description: 'Search results for ' + partialText + 'on Roses In The Flames.',
+        siteName: 'Roses In The Flames | Tales',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA'
+    };
 
     onMount(() => {
         window.addEventListener('scroll', handleScroll);
@@ -96,8 +105,10 @@
     }
 </script>
 
+<!--
 <svelte:head>
     <title>{partialText} | Roses In The Flames</title>
+
     <meta name="description" content="Search results for {partialText} on Roses In The Flames." />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="{partialText} | Roses In The Flames" />
@@ -108,6 +119,9 @@
     <meta name="og:description" content="Search results for {partialText} on Roses In The Flames." />
     <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
+-->
+
+<Seo {...seo} />
 
 <div class="container-fluid my-3" style="min-height: 69vh">
     <div class="row mb-2">

@@ -1,3 +1,16 @@
+<script>
+    import Seo from "sk-seo";
+
+    const seo = {
+        title: 'Roses In The Flames | Terms of Service',
+        description: 'Terms of Service of Roses In The Flames (RiTF).',
+        siteName: 'Roses In The Flames | Tales',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA'
+    }
+</script>
+
+<!--
 <svelte:head>
     <title>Roses In The Flames | Terms of Service</title>
     <meta name="description" content="Terms of Service of Roses In The Flames (RiTF).">
@@ -11,6 +24,11 @@
     <meta name="og:description" content="Terms of Service of Roses In The Flames" />
     <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
+-->
+
+<Seo {...seo} />
+
+
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 mx-auto rounded-3">
     <p style="padding-top: 3pt;padding-left: 5pt;text-indent: 0pt;text-align: left;">Last Updated: 03/13/2024.</p>
     <p

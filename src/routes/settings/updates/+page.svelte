@@ -1,6 +1,15 @@
 <script>
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
+    import Seo from "sk-seo";
+
+    const seo = {
+        title: "Roses In The Flames | Mailing List",
+        description: "Subscribe to the official Roses In The Flames mailing list.",
+        siteName: "Roses In The Flames | Tales",
+        imageURL: "https://tales.rosesintheflames.com/favicon.webp",
+        author: "ArchangelGCA"
+    }
 
     let email = '';
     let activeEvent = false;
@@ -35,6 +44,7 @@
         activeEvent = false;
     }
 </script>
+<!--
 <svelte:head>
     <title>Roses In The Flames | Home</title>
 
@@ -47,6 +57,9 @@
     <meta property="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
     <meta property="og:description" content="Subscribe to the official Roses In The Flames mailing list." />
 </svelte:head>
+-->
+
+<Seo {...seo} />
 
 <div class="container text-center">
     <div class="row d-flex align-items-center" style="min-height: 69.5vh">

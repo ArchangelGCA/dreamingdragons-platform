@@ -5,6 +5,7 @@
     import {onMount} from "svelte";
     import autoAnimate from '@formkit/auto-animate';
     import Comment from "$lib/components/pages/Comment.svelte";
+    import Seo from "sk-seo";
 
     export let data;
     let { supabase, comments, ip_address, user_id } = data;
@@ -318,9 +319,16 @@
 
     $: if (avatarUrl) downloadAvatar(avatarUrl);
 
-    $: if (avatarUrl) downloadAvatar(avatarUrl);
+    const seo = {
+        title: chapterContent.book_title + ' - ' + chapterContent.title + ' | Roses In The Flames',
+        description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' +  chapterContent.book_title + ' | Roses In The Flames',
+        siteName: 'Roses In The Flames | Tales',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA'
+    }
 </script>
 
+<!--
 <svelte:head>
     <title>{chapterContent.book_title} - {chapterContent.title} | Roses In The Flames</title>
     <meta name="description" content="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title} | Roses In The Flames">
@@ -333,6 +341,9 @@
     <meta name="og:description" content="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title} | Roses In The Flames">
     <meta name="og:image" content="{chapterContent.book_cover_url}">
 </svelte:head>
+-->
+
+<Seo {...seo} />
 
 <div class="container-xxl">
     <div class="row justify-content-center">

@@ -6,6 +6,7 @@
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
     import { tooltip } from "@svelte-plugins/tooltips";
+    import Seo from "sk-seo";
     const tooltipConfig = {
         animation: 'fade',
         delay: 0,
@@ -322,6 +323,8 @@
         activeUpload = false;
     }
 </script>
+
+<Seo index="false" />
 
 <div class="container-md px-0">
     <div class="row justify-content-center">

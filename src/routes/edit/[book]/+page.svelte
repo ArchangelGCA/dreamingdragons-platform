@@ -6,6 +6,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import Editor from "@tinymce/tinymce-svelte";
+    import Seo from "sk-seo";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -256,6 +257,8 @@
     }
 
 </script>
+
+<Seo index="false" />
 
 <div class="container-md mt-4 mb-3 px-0">
     <div class="row text-center">

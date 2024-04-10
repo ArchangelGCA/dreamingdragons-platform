@@ -1,13 +1,26 @@
 <script>
     import { Auth } from '@supabase/auth-ui-svelte'
     import { ThemeSupa } from '@supabase/auth-ui-shared'
+    import Seo from "sk-seo";
+
+    const seo = {
+        title: 'Roses In The Flames | Login',
+        description: 'Register or Login to Roses In The Flames from this page.',
+        siteName: 'Roses In The Flames | Tales',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA'
+    }
 
     export let data;
 </script>
 
+<!--
 <svelte:head>
     <title>User - Login</title>
 </svelte:head>
+-->
+
+<Seo {...seo} />
 
 <div class="row justify-content-center pt-4 pb-3">
     <div class="col">

@@ -6,6 +6,7 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
+    import Seo from "sk-seo";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -155,8 +156,17 @@
 
     $: if (avatarUrl) downloadAvatar(avatarUrl);
     $: if (coverUrl) downloadCover(coverUrl);
+
+    const seo = {
+        title: (finalProfile ? finalProfile.username : 'Profile') + ' | Profile',
+        description: 'Profile page of' +  (finalProfile ? finalProfile.username : 'Profile'),
+        siteName: 'Roses In The Flames | Tales',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA'
+    };
 </script>
 
+<!--
 <svelte:head>
     <title>{finalProfile ? finalProfile.username : 'Profile'} | Profile</title>
     <meta name="description" content="Profile page of {finalProfile ? finalProfile.username : 'Profile'}" />
@@ -169,6 +179,9 @@
     <meta name="og:description" content="Profile page of {finalProfile ? finalProfile.username : 'Profile'}" />
     <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
+-->
+
+<Seo {...seo} />
 
 <div class="container-fluid px-0" style="min-height: 71vh">
     {#if !profile || profile.length === 0}

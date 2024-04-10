@@ -1,3 +1,16 @@
+<script>
+    import Seo from "sk-seo";
+
+    const seo = {
+        title: 'Roses In The Flames | Privacy Policy',
+        description: 'Privacy Policy of Roses In The Flames (RiTF).',
+        siteName: 'Roses In The Flames | Tales',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA'
+    }
+</script>
+
+<!--
 <svelte:head>
     <title>Roses In The Flames | Privacy Policy</title>
     <meta name="description" content="Privacy Policy of Roses In The Flames (RiTF).">
@@ -11,6 +24,9 @@
     <meta name="og:description" content="Privacy Policy of Roses In The Flames" />
     <meta name="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
 </svelte:head>
+-->
+
+<Seo {...seo} />
 
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 rounded-3">
     <h1 style="padding-top: 6pt;padding-left: 23pt;text-indent: 0pt;text-align: center;">ONLINE PRIVACY POLICY

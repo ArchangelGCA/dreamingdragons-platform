@@ -1,5 +1,6 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
+    import Seo from 'sk-seo';
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
 
@@ -15,14 +16,23 @@
         theme: 'text-center w-auto'
     };
 
+    const seo = {
+        title: 'Roses In The Flames | Home',
+        description: 'A place to share your stories and art, featured by Roses In The Flames and built with love by its community.',
+        siteName: 'Roses In The Flames | Tales',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA'
+    }
+
     export let data;
     let { supabase, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed } = data;
 </script>
 
 <svelte:head>
-    <title>Roses In The Flames | Home</title>
+    <!--<title>Roses In The Flames | Home</title>-->
     <link rel="canonical" href="https://tales.rosesintheflames.com/">
 
+    <!--
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Roses In The Flames | Tales" />
     <meta name="twitter:description" content="A place to share your stories and art, featured by Roses In The Flames and built with love by its community." />
@@ -31,7 +41,10 @@
     <meta property="og:title" content="Roses In The Flames | Tales" />
     <meta property="og:image" content="https://tales.rosesintheflames.com/favicon.webp" />
     <meta property="og:description" content="A place to share your stories and art, featured by Roses In The Flames and built with love by its community." />
+    -->
 </svelte:head>
+
+<Seo {...seo} />
 
 <div class="container-fluid mb-3 mt-2" style="min-height: 69vh">
     <div class="row justify-content-center">
