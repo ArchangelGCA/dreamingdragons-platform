@@ -254,7 +254,7 @@
         if (deleteChapterActionActive) return;
         if (!chapterContent.is_owner) return;
 
-        if (!confirm('Are you sure you want to delete this Chapter?')) return;
+        if (!confirm('Are you sure that you want to delete this Chapter?')) return;
 
         deleteChapterActionActive = true;
 

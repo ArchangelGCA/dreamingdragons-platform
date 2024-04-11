@@ -39,7 +39,7 @@
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">
                 <div class="col-12">
-                    <a class="link-light text-decoration-none text-wrap" href="/content/{book_id}" target="_blank" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{book_title}</span></a>
+                    <a class="link-light text-decoration-none text-wrap" href="/content/{book_id}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{book_title}</span></a>
                     <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
                 </div>
             </div>

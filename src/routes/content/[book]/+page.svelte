@@ -270,7 +270,7 @@
         if (deleteBookActionActive) return;
         if (!bookContent.is_owner) return;
 
-        if (!confirm('Are you sure you want to delete this Tale?')) return;
+        if (!confirm('Are you sure that you want to delete this Tale?')) return;
 
         deleteBookActionActive = true;
 
