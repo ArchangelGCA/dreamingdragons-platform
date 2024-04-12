@@ -66,11 +66,20 @@ export const load = async ({ locals: { supabase, getSession} }) => {
         .eq('owner_id', session.user.id)
         .order('created_at', { ascending: true });
 
+    // get from profiles the user and check if can_upload
+    const { data: profiles, error2 } = await supabase
+        .from('profiles')
+        .select('can_upload')
+        .eq('id', session.user.id)
+        .single();
+
     if (error) {
         throw new Error(error.message);
     }
 
-    return { session, books };
+    const can_upload = profiles.can_upload;
+
+    return { session, books, can_upload };
 }
 
 export const actions = {
@@ -111,6 +120,31 @@ export const actions = {
                 status: 400,
                 body: {
                     message: `File size too big (max ${PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES} or about 10MB)`
+                }
+            }
+        }
+
+        // Fetch user and check if can_upload
+        const { data: profiles, error2 } = await supabase
+            .from('profiles')
+            .select('can_upload')
+            .eq('id', session.user.id)
+            .single();
+
+        if (error2) {
+            return {
+                status: 500,
+                body: {
+                    message: error2.message
+                }
+            }
+        }
+
+        if (!profiles.can_upload) {
+            return {
+                status: 403,
+                body: {
+                    message: "You can't upload Content!"
                 }
             }
         }
@@ -191,6 +225,31 @@ export const actions = {
                 status: 400,
                 body: {
                     message: "Missing required fields"
+                }
+            }
+        }
+
+        // Fetch user and check if can_upload
+        const { data: profiles, error2 } = await supabase
+            .from('profiles')
+            .select('can_upload')
+            .eq('id', session.user.id)
+            .single();
+
+        if (error2) {
+            return {
+                status: 500,
+                body: {
+                    message: error2.message
+                }
+            }
+        }
+
+        if (!profiles.can_upload) {
+            return {
+                status: 403,
+                body: {
+                    message: "You can't upload Chapters!"
                 }
             }
         }

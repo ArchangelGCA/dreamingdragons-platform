@@ -1,5 +1,5 @@
 <script>
-    import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES } from "$env/static/public";
+    import { PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES } from "$env/static/public";
     import {deserialize} from '$app/forms';
     import {toast} from "@zerodevx/svelte-toast";
     import Editor from '@tinymce/tinymce-svelte';
@@ -69,7 +69,7 @@
 
     export let data;
 
-    let { session, supabase, books } = data;
+    let { session, supabase, books, can_upload } = data;
     $: ({ session, supabase } = data);
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
@@ -403,7 +403,11 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-1 mt-2 px-0">
-                                                <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                {#if !can_upload}
+                                                    <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">Submit</button>
+                                                {:else}
+                                                    <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                {/if}
                                             </div>
                                             <div class="col-12 mt-3 px-0 rounded-3">
                                                 <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>
@@ -464,7 +468,11 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-1 mt-2 px-0">
-                                                <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                {#if !can_upload}
+                                                    <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">Submit</button>
+                                                {:else}
+                                                    <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                {/if}
                                             </div>
                                             <div class="col-12 mt-3 px-0 rounded-3">
                                                 <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a>.</p>
