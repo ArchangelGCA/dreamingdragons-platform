@@ -1,5 +1,5 @@
 <script>
-    import { invalidate } from '$app/navigation'
+    import {invalidate, invalidateAll} from '$app/navigation'
     import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";
     import { SvelteToast } from '@zerodevx/svelte-toast';
@@ -38,11 +38,10 @@
 
     onMount(() => {
 
-        const { data } = supabase.auth.onAuthStateChange((event, _session) => {
-            if (_session?.expires_at !== session?.expires_at) {
-                invalidate('supabase:auth');
-            }
-        })
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, _session) => {
+            invalidate('supabase:auth');
+            invalidateAll();
+        });
 
         // Close navbar when open another page, with animation
         document.querySelectorAll('.nav-link').forEach((element) => {
@@ -58,7 +57,7 @@
             await invalidate('supabase:auth');
         }, notifsUpdateInterval); // THIS NEEDS TO BE TESTED!
 
-        return () => data.subscription.unsubscribe();
+        return () => subscription.unsubscribe();
     });
 
     onDestroy(() => {

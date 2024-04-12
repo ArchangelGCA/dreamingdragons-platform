@@ -9,7 +9,6 @@
   },
   "devDependencies": {
     "@formkit/auto-animate": "^0.8.1",
-    "@supabase/auth-helpers-sveltekit": "^0.12.0",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/auth-ui-svelte": "^0.2.9",
     "@svelte-plugins/tooltips": "^3.0.0",
@@ -28,5 +27,8 @@
     "svelte": "^4.2.7",
     "vite": "^5.0.3"
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@supabase/ssr": "^0.3.0"
+  }
 }

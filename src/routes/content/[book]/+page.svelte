@@ -183,7 +183,7 @@
                 // isLiked = !isLiked;
                 if (isLiked) {
                     bookContent.likes_count++;
-                    toast.push('Book liked ❤️', {
+                    toast.push('Tale liked ❤️', {
                         theme: {
                             '--toastBackground': '#5c00a6',
                             '--toastColor': '#fff',
