@@ -143,6 +143,7 @@
 
             if (data && data.length !== 0 && data.avatar_url !== null) {
                 userData = data;
+                console.log(userData)
             }
         }
     }
@@ -189,7 +190,7 @@
             {/if}
             <div class="col-auto">
                 <div class="dropdown">
-                    {#if !userData || userData === null || userData.avatar_url === null}
+                    {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                         <button class="btn btn-secondary dropdown-toggle animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa-solid fa-user pe-1"></i>
                         </button>
