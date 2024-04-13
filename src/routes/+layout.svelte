@@ -200,7 +200,7 @@
                         </button>
                     {/if}
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                        {#if !userData || userData === null || userData.avatar_url === null}
+                        {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                             <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
                         {:else}
                             <li><a class="dropdown-item ps-1 mb-2" data-sveltekit-reload href="/profile"><UserAvatarNavbar classes="me-1" {supabase} url={userData.avatar_url} username={userData.username} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a></li>
