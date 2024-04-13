@@ -24,13 +24,16 @@
             </div>
         </div>
         <div class="row justify-content-center">
-            <div class="col-8 col-md-6 col-xxl-4 border border-light-subtle bg-dark-subtle bg-opacity125 rounded-4 my-4">
+            <div class="col-8 col-md-6 col-xxl-4 border border-light-subtle bg-dark-subtle bg-opacity125 rounded-4 my-4 pt-1">
                 <Auth
                         supabaseClient={data.supabase}
                         view="magic_link"
                         redirectTo={`${data.url}/auth/callback`}
                         showLinks={false}
                         appearance={{ theme: ThemeSupa, style: { input: 'color: #fff' } }}
+                        theme="dark"
+                        providers={['google', 'discord']}
+                        socialLayout="horizontal"
                 />
             </div>
         </div>
