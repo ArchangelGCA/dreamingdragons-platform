@@ -24,7 +24,11 @@ export const GET = async ({locals: {supabase, getSession}}) => {
                 '/content/[book]': [],
                 '/content/[book]/[chapter]': [],
             },
-            additionalPaths: []
+            additionalPaths: [],
+            excludePatterns: [
+                '^/edit.*',
+                '^/admin.*',
+            ]
         });
     }
 
@@ -37,7 +41,8 @@ export const GET = async ({locals: {supabase, getSession}}) => {
         },
         additionalPaths: tagsData.map((tag) => `/search?q=${encodeURIComponent(tag.name)}`),
         excludePatterns: [
-            '^/edit.*'
+            '^/edit.*',
+            '^/admin.*',
         ]
     });
 };

@@ -1,4 +1,5 @@
 User-agent: *
-Disallow:
+Disallow: /admin/*
+Disallow: /edit/*
 
 Sitemap: https://tales.rosesintheflames.com/sitemap.xml
