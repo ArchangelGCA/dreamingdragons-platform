@@ -3,6 +3,7 @@
     import Seo from 'sk-seo';
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
+    import autoAnimate from '@formkit/auto-animate';
 
     const tooltipConfig = {
         animation: 'fade',
@@ -26,6 +27,46 @@
 
     export let data;
     let { supabase, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed } = data;
+    let loading = false;
+    let allContentLoaded = false;
+    let page = 1;
+    let pageStep = 10;
+
+    if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
+        allContentLoaded = true;
+    }
+
+    async function loadMoreContentByCreatedAt() {
+        if (loading || allContentLoaded) return;
+
+        loading = true;
+
+        // fetch from books_ordered_by_created_at using range and append to books_ordered_by_created_at
+        let { data: newBooks, error } = await supabase
+            .from('books_ordered_by_created_at')
+            .select('*')
+            .range((pageStep * page) + 1, pageStep * (page + 1));
+
+        if (error) {
+            console.error(error);
+        }
+
+        if (newBooks.length === 0) {
+            allContentLoaded = true;
+        } else {
+            books_ordered_by_created_at = [...books_ordered_by_created_at, ...newBooks];
+            page++;
+        }
+
+        loading = false;
+    }
+
+    function handleScroll(event) {
+        const target = event.target;
+        if (target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 1.5)) {
+            loadMoreContentByCreatedAt();
+        }
+    }
 </script>
 
 <svelte:head>
@@ -64,12 +105,17 @@
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
+                <div class="row column-vertical pb-3 gy-3" on:scroll={handleScroll} use:autoAnimate>
                     {#each books_ordered_by_created_at as book}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                             <Content {...book} />
                         </div>
                     {/each}
+                    {#if allContentLoaded}
+                        <div class="col-12">
+                            <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All Content loaded!⚠️</p>
+                        </div>
+                    {/if}
                 </div>
             {/if}
         </div>
@@ -130,6 +176,29 @@
         white-space: nowrap;
     }
 
+    .column-vertical {
+        overflow-y: auto;
+        max-height: calc(100vh / 2.1);
+        white-space: normal;
+    }
+
+    .column-vertical::-webkit-scrollbar {
+        width: 15px;
+    }
+
+    .column-vertical::-webkit-scrollbar-track {
+        background: rgba(92, 0, 166, 0.25);
+    }
+
+    .column-vertical::-webkit-scrollbar-thumb {
+        background: rgba(92, 0, 166, 0.80);
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .column-vertical::-webkit-scrollbar-thumb:hover {
+        background: rgba(92, 0, 166, 1);
+    }
 
     .bg-purple-opacity-50 {
         background-color: rgba(92, 0, 166, 0.5);
@@ -169,5 +238,17 @@
 
     .row-horizontal::-webkit-scrollbar-thumb:hover {
         background: rgba(92, 0, 166, 1);
+    }
+
+    /* we make the element with class blink blink one time */
+    .blink {
+        animation: blinker 1s linear 2;
+    }
+
+    /** we change the background color of the element with class blink */
+    @keyframes blinker {
+        50% {
+            background-color: rgba(255, 0, 0, 0.5);
+        }
     }
 </style>

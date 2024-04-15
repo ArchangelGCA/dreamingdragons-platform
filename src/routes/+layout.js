@@ -25,13 +25,13 @@ export const load = async ({ fetch, data, depends }) => {
                 return cookie
             },
         },
-    })
+    });
 
     const {
         data: { session },
-    } = await supabase.auth.getSession()
+    } = await supabase.auth.getSession();
 
-    let notifications = []
+    let notifications = [];
 
     if (session) {
         const {data: notifs, error} = await supabase
