@@ -1,7 +1,25 @@
-<div class="container-fluid py-3">
-    <div class="row">
+<script>
+    import AdminUser from "$lib/components/admin/AdminUser.svelte";
+
+    export let data;
+    let { profiles, supabase } = data;
+
+
+</script>
+
+<div class="container-fluid py-3" style="height: 100vh">
+    <div class="row mb-2">
         <div class="col text-center">
-            <h2>Users (TODO)</h2>
+            <h2>Manage Users</h2>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col">
+            {#each profiles as profile (profile.id)}
+                <AdminUser {profile} {supabase} />
+            {/each}
+        </div>
+    </div>
+
 </div>

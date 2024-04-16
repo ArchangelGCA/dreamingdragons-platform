@@ -33,7 +33,7 @@
         </div>
     </nav>
 
-    <main class="col-12 col-lg-10" use:autoAnimate>
+    <div class="col-12 col-lg-10 overflow-auto" use:autoAnimate>
         <slot></slot>
-    </main>
+    </div>
 </div>

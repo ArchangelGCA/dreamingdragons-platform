@@ -23,22 +23,21 @@ export const handle = async ({ event, resolve }) => {
      * A convenience helper so we can just call await getSession() instead const { data: { session } } = await supabase.auth.getSession()
      */
     event.locals.getSession = async () => {
-        const { data: getUserData, error: err }  = await event.locals.supabase.auth.getUser()
+        const { data: getUserData, error: err }  = await event.locals.supabase.auth.getUser();
 
         let {
             data: { session },
-        } = await event.locals.supabase.auth.getSession()
+        } = await event.locals.supabase.auth.getSession();
 
         if (getUserData.user == null) {
-            session = null
+            session = null;
         }
 
-        return session
+        return session;
     }
-
     return resolve(event, {
         filterSerializedResponseHeaders(name) {
-            return name === 'content-range'
+            return name === 'content-range';
         },
     })
 }
