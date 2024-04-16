@@ -190,15 +190,13 @@
             {/if}
             <div class="col-auto">
                 <div class="dropdown">
-                    {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
-                        <button class="btn btn-secondary dropdown-toggle animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-user pe-1"></i>
-                        </button>
-                    {:else}
-                        <button class="btn btn-secondary dropdown-toggle ps-1 py-0 animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-secondary dropdown-toggle py-0 pt-1 ps-2 animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
+                            <i class="fa-solid fa-user py-2 pb-2 mb-1 px-1"></i>
+                        {:else}
                             <UserAvatarNavbar classes="mb-2 mt-1" {supabase} url={userData.avatar_url} username={userData.username} size="25px"/>
-                        </button>
-                    {/if}
+                        {/if}
+                    </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                             <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
