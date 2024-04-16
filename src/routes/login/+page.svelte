@@ -32,7 +32,7 @@
                         showLinks={false}
                         appearance={{ theme: ThemeSupa, style: { input: 'color: #fff' } }}
                         theme="dark"
-                        providers={['google', 'discord']}
+                        providers={['google', 'discord', 'twitter']}
                         socialLayout="horizontal"
                 />
             </div>
