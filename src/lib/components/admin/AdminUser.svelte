@@ -68,10 +68,6 @@
 </div>
 
 <style>
-    .magenta {
-        color: #bd135a;
-    }
-
     .border-magenta {
         border-color: #ef43cd !important;
     }
