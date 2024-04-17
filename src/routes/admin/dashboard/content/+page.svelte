@@ -33,7 +33,9 @@
         {#each content as item (item.id)}
             <div class="col-12 col-md-6 col-lg-4 mb-4">
                 <div class="card">
-                    <img src={item.cover_url} class="card-img-top" alt={item.title} />
+                    <a href="/content/{item.id}" target="_blank">
+                        <img src={item.cover_url} class="card-img-top" alt={item.title} />
+                    </a>
                     <div class="card-body">
                         <h5 class="card-title">{item.title}</h5>
                         <p class="card-text">By: <a href="/profile/{item.profiles.id}" target="_blank">{item.profiles.username}</a></p>
