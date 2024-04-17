@@ -29,6 +29,7 @@
     let intervalId;
     let searchTerm = '';
     const notifsUpdateInterval = 30000;
+    let maintenance = true;
 
     if ($pageStore.url.searchParams.has('q')) {
         searchTerm = $pageStore.url.searchParams.get('q');
@@ -233,7 +234,23 @@
     </div>
 </div>
 
+
+
 <div use:autoAnimate>
+    {#if maintenance}
+        <!-- Warning like row telling peoples that the website is in maintenance mode temporarely and there may be issues -->
+        <div class="row border-top border-light-subtle pt-3 pb-2">
+            <div class="col">
+                <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
+                    <strong>Warning!</strong> The website is currently in maintenance mode. There may be issues and some features may not work as expected. We're working on a solution. We apologize for the inconvenience.
+                    <!-- Little text with a few details about the maintenance -->
+                    <small class="text-muted d-block">Only images downloads and uploads are involved. Avatars, covers, chapter uploads and everything else works as normal.</small>
+                    <small class="text-muted d-block">Maintenance started on: 17-04-2024 12:30 UTC/GMT+2</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" on:click={() => {maintenance = false}}></button>
+                </div>
+            </div>
+        </div>
+    {/if}
     <slot></slot>
 </div>
 
