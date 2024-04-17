@@ -3,7 +3,7 @@
 
     export let data;
     let { profiles, supabase } = data;
-
+    $: ({profiles, supabase} = data);
 
 </script>
 

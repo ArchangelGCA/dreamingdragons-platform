@@ -60,7 +60,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     const { data: { users }, error: listUsersError } = await adminSupabase.auth.admin.listUsers({
         page: 1,
-        perPage: 1000000
+        perPage: maxUsers
     })
 
     if (listUsersError) {
