@@ -40,7 +40,7 @@
                         <p class="card-text">{@html item.description}</p>
                         <div class="row justify-content-center text-center">
                             <div class="col-12 col-md-6">
-                                <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#chapters-{item.id}">
+                                <button class="btn btn-link {item.chapters.length === 0 ? 'disabled' : ''}" type="button" data-bs-toggle="collapse" data-bs-target="#chapters-{item.id}">
                                     Show Chapters
                                 </button>
                             </div>

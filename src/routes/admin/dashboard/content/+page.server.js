@@ -44,7 +44,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     if (booksError) {
         console.error(booksError);
-        return errorx(500, "Error fetching books");
+        return errorx(500, "Error fetching content");
     }
 
     return { content }
