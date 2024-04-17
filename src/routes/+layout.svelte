@@ -29,7 +29,7 @@
     let intervalId;
     let searchTerm = '';
     const notifsUpdateInterval = 30000;
-    let maintenance = true;
+    let maintenance = false;
 
     if ($pageStore.url.searchParams.has('q')) {
         searchTerm = $pageStore.url.searchParams.get('q');
