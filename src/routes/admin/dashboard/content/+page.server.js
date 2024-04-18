@@ -1,4 +1,10 @@
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { SUPABASE_SERVICE_ROLE_SECRET_KEY } from '$env/static/private';
+import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
+import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import {error as errorx} from "@sveltejs/kit";
+import {createClient} from "@supabase/supabase-js";
+import PocketBase from "pocketbase";
 
 async function isAdmin(session, supabase) {
     if (!session) {
@@ -48,4 +54,111 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     }
 
     return { content }
+}
+
+export const actions = {
+    delete_book: async ({request, locals: {supabase, getSession}}) => {
+        const session = await getSession();
+        const formData = Object.fromEntries(await request.formData());
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        // Use supabase-js and make admin supabase client
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        const bookId = formData.bookId;
+        const cover_url = formData.bookCover;
+        const sendWarning = formData.sendWarning;
+        const warningMessage = formData.warningMessage;
+        const ownerId = formData.ownerId;
+        if (!bookId || bookId === "" || !cover_url || cover_url === "") {
+            return {
+                status: 400,
+                body: { message: "Invalid book ID" }
+            }
+        }
+
+        // Check if book exists
+        const { data: bookData, error: bookError } = await adminSupabase
+            .from('book')
+            .select('id')
+            .eq('id', bookId);
+
+        if (bookError) {
+            console.error(bookError);
+            return {
+                status: 500,
+                body: { message: "Error fetching book" }
+            }
+        }
+
+        if (!bookData || bookData.length === 0) {
+            return {
+                status: 404,
+                body: { message: "Book not found" }
+            }
+        }
+
+        // Delete book
+        const { error } = await adminSupabase
+            .from('book')
+            .delete()
+            .eq('id', bookId);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: { message: "Error deleting book" }
+            }
+        }
+
+        // Delete book cover
+        const cover_url_path = cover_url.substring(PUBLIC_POCKETBASE_URL_IMG_API.length);
+        const cover_id = cover_url_path.split('/')[1];
+
+        const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
+        await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
+        await pb.collection('media').delete(cover_id);
+
+        if (sendWarning === 'true') {
+            if (warningMessage === "" || !warningMessage) {
+                return {
+                    status: 400,
+                    body: { message: "Warning message required" }
+                }
+            }
+
+            // Add to notifications with type "warning" using admin supabase client
+            const { error: notificationError } = await adminSupabase
+                .from('notifications')
+                .insert({
+                    type: "warning",
+                    recipient_id: ownerId,
+                    source_user_id: session.user.id,
+                    content: warningMessage
+                    });
+
+            if (notificationError) {
+                console.error(notificationError);
+                return {
+                    status: 500,
+                    body: { message: "Error sending warning" }
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: { message: "Content deleted" }
+        }
+    }
 }

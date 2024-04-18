@@ -1,9 +1,15 @@
 <script>
     import autoAnimate from "@formkit/auto-animate";
+    import {deserialize} from "$app/forms";
+    import {toast} from "@zerodevx/svelte-toast";
+    import {createEventDispatcher} from "svelte";
     export let item;
+
+    const dispatch = createEventDispatcher();
 
     const maxChars = 100;
     let showFullDescription = false;
+    let deleteBookActionActive = false;
     let sendWarning = false;
     let warningMessage = '';
     let editItem = {
@@ -36,13 +42,58 @@
         // TODO: Logic for saving the changes
     }
 
-    function confirmDelete() {
-        // TODO: Logic for deleting
+    async function confirmDelete() {
+        if (deleteBookActionActive) return;
+
+        deleteBookActionActive = true;
+
+        const data = new FormData();
+        data.append('bookId', item.id);
+        data.append('bookCover', item.cover_url);
+        data.append('sendWarning', sendWarning);
+        data.append('warningMessage', warningMessage);
+        data.append('ownerId', item.owner_id);
+        const response = await fetch('?/delete_book', {
+            method: 'POST',
+            body: data
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push('Book ' + item.title +  ' deleted! 🗑️', {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+
+                dispatch('deleteBook', item.id);
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+
+        deleteBookActionActive = false;
     }
 
     function confirmDeleteChapter(chapter) {
         // TODO: Logic for deleting the chapter
     }
+
+    $: item.created_at = formatDate(item.created_at);
 </script>
 
 <div class="card">

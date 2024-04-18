@@ -1,5 +1,6 @@
 <script>
     import AdminContent from "$lib/components/admin/AdminContent.svelte";
+    import {invalidateAll} from "$app/navigation";
 
     export let data;
     let { content, supabase } = data;
@@ -22,6 +23,15 @@
         return item;
     });
 
+    async function handleDeleteBook() {
+        await invalidateAll();
+        // Delete modal-backdrop fade show elements
+        const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
+        if (modalBackdrop.length > 0) {
+            modalBackdrop[0].remove();
+        }
+    }
+
 </script>
 
 <div class="container py-3" style="height: 100vh">
@@ -34,7 +44,7 @@
     <div class="row">
         {#each content as item (item.id)}
             <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <AdminContent {item} />
+                <AdminContent {item} on:deleteBook={handleDeleteBook}/>
             </div>
         {/each}
     </div>
