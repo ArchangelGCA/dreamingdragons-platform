@@ -82,7 +82,7 @@ export const actions = {
         if (!bookId || bookId === "" || !cover_url || cover_url === "") {
             return {
                 status: 400,
-                body: { message: "Invalid book ID" }
+                body: { message: "Invalid Content ID" }
             }
         }
 
@@ -96,14 +96,14 @@ export const actions = {
             console.error(bookError);
             return {
                 status: 500,
-                body: { message: "Error fetching book" }
+                body: { message: "Error fetching Content" }
             }
         }
 
         if (!bookData || bookData.length === 0) {
             return {
                 status: 404,
-                body: { message: "Book not found" }
+                body: { message: "Content not found" }
             }
         }
 
@@ -117,7 +117,7 @@ export const actions = {
             console.error(error);
             return {
                 status: 500,
-                body: { message: "Error deleting book" }
+                body: { message: "Error deleting Content" }
             }
         }
 

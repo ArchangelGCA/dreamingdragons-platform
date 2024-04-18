@@ -47,6 +47,15 @@
 
         deleteBookActionActive = true;
 
+        // Make toast telling user that the book is being deleted
+        const toastId = toast.push('Deleting content ' + item.title + '...', {
+            duration: 100000,
+            theme: {
+                '--toastBackground': '#5c00a6',
+                '--toastColor': '#fff',
+            }
+        });
+
         const data = new FormData();
         data.append('bookId', item.id);
         data.append('bookCover', item.cover_url);
@@ -58,10 +67,12 @@
             body: data
         });
 
+        toast.pop(toastId);
+
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                toast.push('Book ' + item.title +  ' deleted! 🗑️', {
+                toast.push('Content ' + item.title +  ' deleted! 🗑️', {
                     theme: {
                         '--toastBackground': '#5c00a6',
                         '--toastColor': '#fff',
