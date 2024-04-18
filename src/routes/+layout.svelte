@@ -143,7 +143,6 @@
     }
 
     async function fetchNewNotifications() {
-        console.log('Fetching new notifications');
         if (session) {
             const { data: newNotifs, error } = await supabase
                 .from('notifications')
