@@ -159,11 +159,11 @@
             <p class="h2 text-center">Our Discord Servers:</p>
         </div>
         <div class="col-auto">
-            <p class="h3 text-center">DreamingDragons</p>
+            <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/5mVFmCBx5q" target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">DreamingDragons</a></p>
             <iframe class="rounded-3" title="Discord DreamingDragons" src="https://canary.discord.com/widget?id=1054013154822205450&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
         <div class="col-auto">
-            <p class="h3 text-center">RiTF</p>
+            <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/8v5WucBuRe" target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">RiTF</a></p>
             <iframe class="rounded-3" title="Discord RiTF" src="https://canary.discord.com/widget?id=1149939721980624986&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
     </div>
@@ -240,15 +240,36 @@
         background: rgba(92, 0, 166, 1);
     }
 
-    /* we make the element with class blink blink one time */
+    .btn-purple {
+        background-color: #5c00a6;
+        color: white;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .btn-purple:hover {
+        background-color: #7d00dd;
+        color: white;
+    }
+
     .blink {
         animation: blinker 1s linear 2;
     }
 
-    /** we change the background color of the element with class blink */
     @keyframes blinker {
         50% {
             background-color: rgba(255, 0, 0, 0.5);
+        }
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgb(207, 0, 255);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(88, 101, 242, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(88, 101, 242, 0);
         }
     }
 </style>
