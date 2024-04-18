@@ -1,5 +1,5 @@
 <script>
-    import {invalidate, invalidateAll} from '$app/navigation'
+    import {invalidateAll} from '$app/navigation'
     import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";
     import { SvelteToast } from '@zerodevx/svelte-toast';
@@ -24,10 +24,11 @@
     export let data;
 
     let { supabase, session, notifications } = data;
-    $: ({ supabase, session } = data);
+    $: ({ supabase, session, notifications } = data);
 
     let intervalId;
     let searchTerm = '';
+    let latestNotificationTimestamp = notifications.length > 0 ? notifications[0].created_at : null;
     const notifsUpdateInterval = 30000;
     let maintenance = false;
 
@@ -40,7 +41,6 @@
     onMount(() => {
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, _session) => {
-            invalidate('supabase:auth');
             invalidateAll();
         });
 
@@ -55,14 +55,13 @@
 
         intervalId = setInterval(async () => {
             await tick();
-            await invalidate('supabase:auth');
-        }, notifsUpdateInterval); // THIS NEEDS TO BE TESTED!
+            await fetchNewNotifications();
+        }, notifsUpdateInterval);
 
         return () => subscription.unsubscribe();
     });
 
     onDestroy(() => {
-        // Clear the interval when the component is destroyed
         clearInterval(intervalId);
     });
 
@@ -93,11 +92,18 @@
     let notificationsCount = 0;
     let allNotificationsLoaded = false;
     if (notifications !== null && notifications.length !== 0) {
-        // Count how many notifications have watched set to false
-        const notificationsNotWatched = notifications.filter(notification => notification.watched === false);
-        notificationsCount = notificationsNotWatched.length;
+        notificationsCount = notifications.filter(notification => notification.watched === false).length;
     } else {
         allNotificationsLoaded = true;
+    }
+
+    // When session changes, run getAvatarUrl() again, and if null, set userData to null
+    $: {
+        if (session) {
+            getAvatarUrl();
+        } else {
+            userData = null;
+        }
     }
 
     let loading = false;
@@ -130,6 +136,34 @@
         loading = false;
     }
 
+    async function loadNewNotificationsCounter(){
+        if (notifications !== null && notifications.length !== 0) {
+            notificationsCount = notifications.filter(notification => notification.watched === false).length;
+        }
+    }
+
+    async function fetchNewNotifications() {
+        console.log('Fetching new notifications');
+        if (session) {
+            const { data: newNotifs, error } = await supabase
+                .from('notifications')
+                .select('*')
+                .gt('created_at', latestNotificationTimestamp)
+                .eq('recipient_id', session.user.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error(error);
+            }
+
+            if (newNotifs.length > 0) {
+                notifications = [...newNotifs, ...notifications];
+                latestNotificationTimestamp = newNotifs[0].created_at;
+                await loadNewNotificationsCounter();
+            }
+        }
+    }
+
     async function getAvatarUrl() {
         if (session) {
             const { data: data, error } = await supabase
@@ -144,7 +178,6 @@
 
             if (data && data.length !== 0 && data.avatar_url !== null) {
                 userData = data;
-                console.log(userData)
             }
         }
     }
