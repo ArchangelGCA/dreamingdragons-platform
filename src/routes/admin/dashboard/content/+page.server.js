@@ -160,5 +160,100 @@ export const actions = {
             status: 200,
             body: { message: "Content deleted" }
         }
+    },
+    delete_chapter: async ({request, locals: {supabase, getSession}}) => {
+        const session = await getSession();
+        const formData = Object.fromEntries(await request.formData());
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        // Use supabase-js and make admin supabase client
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        const chapterId = formData.chapterId;
+        const sendWarning = formData.sendWarning;
+        const warningMessage = formData.warningMessage;
+        const ownerId = formData.ownerId;
+        if (!chapterId || chapterId === "") {
+            return {
+                status: 400,
+                body: {message: "Invalid Chapter ID"}
+            }
+        }
+
+        // Check if chapter exists
+        const {data: chapterData, error: chapterError} = await adminSupabase
+            .from('chapters')
+            .select('id')
+            .eq('id', chapterId);
+
+        if (chapterError) {
+            console.error(chapterError);
+            return {
+                status: 500,
+                body: {message: "Error fetching Chapter"}
+            }
+        }
+
+        if (!chapterData || chapterData.length === 0) {
+            return {
+                status: 404,
+                body: {message: "Chapter not found"}
+            }
+        }
+
+        // Delete chapter
+        const {error} = await adminSupabase
+            .from('chapters')
+            .delete()
+            .eq('id', chapterId);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {message: "Error deleting Chapter"}
+            }
+        }
+
+        if (sendWarning === 'true') {
+            if (warningMessage === "" || !warningMessage) {
+                return {
+                    status: 400,
+                    body: {message: "Warning message required"}
+                }
+            }
+
+            // Add to notifications with type "warning" using admin supabase client
+            const {error: notificationError} = await adminSupabase
+                .from('notifications')
+                .insert({
+                    type: "warning",
+                    recipient_id: ownerId,
+                    source_user_id: session.user.id,
+                    content: warningMessage
+                });
+
+            if (notificationError) {
+                console.error(notificationError);
+                return {
+                    status: 500,
+                    body: {message: "Error sending warning"}
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {message: "Chapter deleted"}
+        }
     }
 }

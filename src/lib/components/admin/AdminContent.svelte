@@ -10,6 +10,7 @@
     const maxChars = 100;
     let showFullDescription = false;
     let deleteBookActionActive = false;
+    let deleteChapterActionActive = false;
     let sendWarning = false;
     let warningMessage = '';
     let editItem = {
@@ -47,7 +48,7 @@
 
         deleteBookActionActive = true;
 
-        // Make toast telling user that the book is being deleted
+        // Makes waiting toast
         const toastId = toast.push('Deleting content ' + item.title + '...', {
             duration: 100000,
             theme: {
@@ -79,7 +80,7 @@
                     }
                 });
 
-                dispatch('deleteBook', item.id);
+                dispatch('delete', item.id);
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -100,8 +101,61 @@
         deleteBookActionActive = false;
     }
 
-    function confirmDeleteChapter(chapter) {
-        // TODO: Logic for deleting the chapter
+    async function confirmDeleteChapter(chapter) {
+        if (deleteChapterActionActive) return;
+
+        deleteChapterActionActive = true;
+
+        // Makes waiting toast
+        const toastId = toast.push('Deleting chapter ' + chapter.title + '...', {
+            duration: 100000,
+            theme: {
+                '--toastBackground': '#5c00a6',
+                '--toastColor': '#fff',
+            }
+        });
+
+        const data = new FormData();
+        data.append('chapterId', chapter.id);
+        data.append('sendWarning', sendWarning);
+        data.append('warningMessage', warningMessage);
+        data.append('ownerId', chapter.owner_id);
+        const response = await fetch('?/delete_chapter', {
+            method: 'POST',
+            body: data
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push('Chapter ' + chapter.title +  ' deleted! 🗑️', {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+
+                dispatch('delete', chapter.id);
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+
+        deleteChapterActionActive = false;
     }
 
     $: item.created_at = formatDate(item.created_at);
