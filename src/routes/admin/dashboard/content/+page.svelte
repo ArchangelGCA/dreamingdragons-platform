@@ -1,5 +1,6 @@
 <script>
     import AdminContent from "$lib/components/admin/AdminContent.svelte";
+    import autoAnimate from "@formkit/auto-animate";
     import {invalidateAll} from "$app/navigation";
 
     export let data;
@@ -25,7 +26,14 @@
 
     async function handleDelete() {
         await invalidateAll();
-        // Delete modal-backdrop fade show elements
+        const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
+        if (modalBackdrop.length > 0) {
+            modalBackdrop[0].remove();
+        }
+    }
+
+    async function handleEditContent(){
+        await invalidateAll();
         const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
         if (modalBackdrop.length > 0) {
             modalBackdrop[0].remove();
@@ -41,10 +49,10 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row" use:autoAnimate>
         {#each content as item (item.id)}
             <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <AdminContent {item} on:delete={handleDelete}/>
+                <AdminContent {item} on:delete={handleDelete} on:editContent={handleEditContent}/>
             </div>
         {/each}
     </div>

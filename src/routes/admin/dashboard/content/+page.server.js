@@ -254,5 +254,84 @@ export const actions = {
             status: 200,
             body: {message: "Chapter deleted"}
         }
+    },
+    edit_book: async ({request, locals: {supabase, getSession}}) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        // Use supabase-js and make admin supabase client
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        const bookId = formData.bookId;
+
+        if (!bookId) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const {data: bookSearch, error} = await adminSupabase
+            .from('book')
+            .select('id, cover_url')
+            .eq('id', bookId);
+
+        if (error) {
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        if (bookSearch.length === 0) {
+            return {
+                status: 404,
+                body: {
+                    message: "Content not found"
+                }
+            }
+        }
+
+        const { title, description, coverUrl } = formData;
+
+        const { error: updateError } = await adminSupabase
+            .from('book')
+            .update({
+                title,
+                description,
+                cover_url: coverUrl,
+                updated_at: new Date()
+            })
+            .eq('id', bookId);
+
+        if (updateError) {
+            return {
+                status: 500,
+                body: {
+                    message: updateError.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Content updated successfully"
+            }
+        }
     }
 }

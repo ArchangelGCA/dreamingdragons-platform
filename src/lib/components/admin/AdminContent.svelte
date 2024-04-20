@@ -11,6 +11,7 @@
     let showFullDescription = false;
     let deleteBookActionActive = false;
     let deleteChapterActionActive = false;
+    let editBookActionActive = false;
     let sendWarning = false;
     let warningMessage = '';
     let editItem = {
@@ -39,8 +40,73 @@
         editItem = { ...item };
     }
 
-    function saveChanges() {
-        // TODO: Logic for saving the changes
+    async function saveBookChanges() {
+        if (editBookActionActive) return;
+        if (editItem.title === '' || editItem.description === '' || editItem.cover_url === '') {
+            toast.push('Please fill all fields', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+            return;
+        }
+
+        editBookActionActive = true;
+
+        const toastId = toast.push('Editing content ' + item.title + '...', {
+            duration: 100000,
+            theme: {
+                '--toastBackground': '#5c00a6',
+                '--toastColor': '#fff',
+            }
+        });
+
+        const data = new FormData();
+        data.append('bookId', item.id);
+        data.append('title', editItem.title);
+        data.append('description', editItem.description);
+        data.append('coverUrl', editItem.cover_url);
+
+        const response = await fetch('?/edit_book', {
+            method: 'POST',
+            body: data
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push('Content ' + item.title +  ' edited! 📝', {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+
+                document.getElementById('editModal-' + item.id).style.display = 'none';
+
+                dispatch('editContent', { id: item.id, ...editItem });
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+
+
+        editBookActionActive = false;
     }
 
     async function confirmDelete() {
@@ -106,7 +172,6 @@
 
         deleteChapterActionActive = true;
 
-        // Makes waiting toast
         const toastId = toast.push('Deleting chapter ' + chapter.title + '...', {
             duration: 100000,
             theme: {
@@ -325,7 +390,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" on:click={saveChanges}>Save changes</button>
+                <button type="button" class="btn btn-primary" on:click={saveBookChanges}>Save changes</button>
             </div>
         </div>
     </div>
