@@ -66,7 +66,6 @@ export const actions = {
             return result;
         }
 
-        // Use supabase-js and make admin supabase client
         const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
