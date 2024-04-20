@@ -50,7 +50,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     const {data: profiles, error} = await supabase
         .from('profiles')
-        .select('*')
+        .select('*, notifications!notifications_recipient_id_fkey(*)')
         .order('created_at', {ascending: false});
 
     if (error) {
@@ -73,10 +73,80 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         if (user) {
             profile.email = user.email;
         }
+        profile.notifications = profile.notifications.filter(notification => notification.type.includes("warning"));
     });
+
 
     return {
         profiles
+    }
+}
+
+export const actions = {
+    delete_warning: async ({request, locals: {supabase, getSession}}) => {
+        const session = await getSession();
+        const formData = Object.fromEntries(await request.formData());
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        // Use supabase-js and make admin supabase client
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        const warningId = formData.warningId;
+        if (!warningId || warningId === "") {
+            return {
+                status: 400,
+                body: {message: "Invalid Warning ID"}
+            }
+        }
+
+        // Check if warning exists
+        const {data: warningData, error: warningError} = await adminSupabase
+            .from('notifications')
+            .select('id')
+            .eq('id', warningId);
+
+        if (warningError) {
+            console.error(warningError);
+            return {
+                status: 500,
+                body: {message: "Error fetching Warning"}
+            }
+        }
+
+        if (!warningData || warningData.length === 0) {
+            return {
+                status: 404,
+                body: {message: "Warning not found"}
+            }
+        }
+
+        // Delete warning
+        const {error} = await adminSupabase
+            .from('notifications')
+            .delete()
+            .eq('id', warningId);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {message: "Error deleting Warning"}
+            }
+        }
+
+        return {
+            status: 200,
+            body: {message: "Warning deleted"}
+        }
     }
 }
 

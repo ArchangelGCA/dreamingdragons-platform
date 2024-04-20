@@ -1,8 +1,12 @@
 <script>
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
+    import {toast} from "@zerodevx/svelte-toast";
+    import autoAnimate from "@formkit/auto-animate";
+    import {deserialize} from "$app/forms";
 
     export let profile;
     export let supabase;
+    let isWarningActive = false;
 
     // Format the date by checking if it is a valid date, if not return the original value
     function formatDate(date) {
@@ -22,6 +26,79 @@
 
     if (profile.website === null || profile.website === "") {
         profile.website = "N/A";
+    }
+
+    async function deleteNotification(notificationId) {
+        if (isWarningActive) return;
+        if (!notificationId || notificationId === null || notificationId === "") {
+            toast.push("Error: Notification ID is missing", {
+                theme: {
+                    '--toastBackground': 'red',
+                    '--toastBody': 'white',
+                    '--toastIconFill': 'white',
+                    '--toastIconStroke': 'white'
+                }
+            });
+            return;
+        }
+        if (!confirm("Are you sure you want to delete this warning?")) return;
+
+        isWarningActive = true;
+
+        const formData = new FormData();
+        formData.append("warningId", notificationId);
+
+        const toastId = toast.push("Deleting warning...", {
+            duration: 10000,
+            theme: {
+                '--toastBackground': 'black',
+                '--toastBody': 'white',
+                '--toastIconFill': 'white',
+                '--toastIconStroke': 'white'
+            },
+        })
+
+        const response = await fetch(`?/delete_warning`, {
+            method: "POST",
+            body: formData
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': 'green',
+                        '--toastBody': 'white',
+                        '--toastIconFill': 'white',
+                        '--toastIconStroke': 'white'
+                    }
+                });
+                profile.notifications = profile.notifications.filter(notification => notification.id !== notificationId);
+            } else {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': 'red',
+                        '--toastBody': 'white',
+                        '--toastIconFill': 'white',
+                        '--toastIconStroke': 'white'
+                    }
+                });
+            }
+        } else {
+            toast.push(result.data.body.message, {
+                theme: {
+                    '--toastBackground': 'red',
+                    '--toastBody': 'white',
+                    '--toastIconFill': 'white',
+                    '--toastIconStroke': 'white'
+                }
+            });
+        }
+
+        isWarningActive = false;
     }
 
 </script>
@@ -62,6 +139,30 @@
                         </div>
                     </div>
                 </div>
+                {#if profile.notifications.length > 0}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingNotifications-{profile.id}">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNotifications-{profile.id}" aria-expanded="true" aria-controls="collapseNotifications-{profile.id}">
+                                Warnings
+                            </button>
+                        </h2>
+                        <div id="collapseNotifications-{profile.id}" class="accordion-collapse collapse" aria-labelledby="headingNotifications-{profile.id}" data-bs-parent="#profileAccordion-{profile.id}">
+                            <div class="accordion-body" use:autoAnimate>
+                                {#each profile.notifications as notification (notification.id)}
+                                    <div class="alert alert-warning d-flex justify-content-between align-items-center">
+                                        <div class="col">
+                                            <p class="mb-0">{notification.content}</p>
+                                            <small class="text-muted">{formatDate(notification.created_at)}</small>
+                                        </div>
+                                        <button class="btn btn-outline-danger btn-sm" on:click={() => deleteNotification(notification.id)}>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                {/each}
+                            </div>
+                        </div>
+                    </div>
+                {/if}
             </div>
         </div>
     </div>
