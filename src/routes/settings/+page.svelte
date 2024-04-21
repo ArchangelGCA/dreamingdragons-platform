@@ -94,6 +94,10 @@
     };
 </script>
 
+<svelte:head>
+    <title>{username} | Settings</title>
+</svelte:head>
+
 <Seo index="false" />
 
 <div class="container-xxl px-0" style="min-height: 70vh">

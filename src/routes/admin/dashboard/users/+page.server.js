@@ -74,6 +74,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
             profile.email = user.email;
         }
         profile.notifications = profile.notifications.filter(notification => notification.type.includes("warning"));
+        profile.notifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     });
 
 
@@ -146,6 +147,60 @@ export const actions = {
         return {
             status: 200,
             body: {message: "Warning deleted"}
+        }
+    },
+    send_warning: async ({request, locals: {supabase, getSession}}) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        const { recipientId, warningMessage } = formData;
+
+        if (!recipientId || !warningMessage) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { data, error } = await adminSupabase
+            .from('notifications')
+            .insert({
+                type: "warning",
+                recipient_id: recipientId,
+                source_user_id: session.user.id,
+                content: warningMessage
+            })
+            .select();
+
+        if (error) {
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Warning sent successfully",
+                notification: data[0]
+            }
         }
     }
 }

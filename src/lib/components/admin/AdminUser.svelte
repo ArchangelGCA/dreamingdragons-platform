@@ -7,6 +7,8 @@
     export let profile;
     export let supabase;
     let isWarningActive = false;
+    let isSendWarningActive = false;
+    let warningMessage = "";
 
     // Format the date by checking if it is a valid date, if not return the original value
     function formatDate(date) {
@@ -101,6 +103,87 @@
         isWarningActive = false;
     }
 
+    async function sendWarning(){
+        if (isSendWarningActive) return;
+
+        if (warningMessage === null || warningMessage === ""){
+            toast.push("Error: Warning message is missing", {
+                theme: {
+                    '--toastBackground': 'red',
+                    '--toastBody': 'white',
+                    '--toastIconFill': 'white',
+                    '--toastIconStroke': 'white'
+                }
+            });
+            return;
+        }
+
+        isSendWarningActive = true;
+
+        const formData = new FormData();
+        formData.append("recipientId", profile.id);
+        formData.append("warningMessage", warningMessage);
+
+        const toastId = toast.push("Sending warning...", {
+            duration: 10000,
+            theme: {
+                '--toastBackground': 'black',
+                '--toastBody': 'white',
+                '--toastIconFill': 'white',
+                '--toastIconStroke': 'white'
+            },
+        })
+
+        const response = await fetch(`?/send_warning`, {
+            method: "POST",
+            body: formData
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': 'green',
+                        '--toastBody': 'white',
+                        '--toastIconFill': 'white',
+                        '--toastIconStroke': 'white'
+                    }
+                });
+                profile.notifications = [result.data.body.notification, ...profile.notifications, ];
+                warningMessage = "";
+                document.getElementById("warningMessage").value = "";
+                document.getElementById("warningModal-" + profile.id).click();
+            } else {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': 'red',
+                        '--toastBody': 'white',
+                        '--toastIconFill': 'white',
+                        '--toastIconStroke': 'white'
+                    }
+                });
+            }
+        } else {
+            toast.push(result.data.body.message, {
+                theme: {
+                    '--toastBackground': 'red',
+                    '--toastBody': 'white',
+                    '--toastIconFill': 'white',
+                    '--toastIconStroke': 'white'
+                }
+            });
+        }
+
+        isSendWarningActive = false;
+    }
+
+    async function handleCanUploadToggle(){
+        alert("Coming soon (=")
+    }
+
 </script>
 
 <div class="container border {profile.can_upload ? 'border-magenta bg-black bg-opacity-25' : 'border-danger bg-danger bg-opacity-10'} rounded-4 mb-4 p-4 shadow-sm">
@@ -163,6 +246,40 @@
                         </div>
                     </div>
                 {/if}
+            </div>
+            <div class="row justify-content-center text-center mt-3">
+                <div class="col-12 col-md-6">
+                    <button type="button" class="btn btn-sm btn-warning w-100" data-bs-toggle="modal" data-bs-target="#warningModal-{profile.id}">
+                        <i class="fas fa-exclamation-triangle"></i> Send Warning
+                    </button>
+                </div>
+                <div class="col-12 col-md-6">
+                    <button type="button" class="btn btn-sm w-100 {profile.can_upload ? 'btn-danger' : 'btn-success'}" on:click={handleCanUploadToggle}>
+                        <i class="fas fa-ban"></i> {profile.can_upload ? 'Disable Upload' : 'Enable Upload'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="warningModal-{profile.id}" tabindex="-1" aria-labelledby="warningModalLabel-{profile.id}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="warningModalLabel-{profile.id}">Send Warning</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="warningForm">
+                        <div class="mb-3">
+                            <label for="warningMessage" class="form-label">Warning Message</label>
+                            <textarea class="form-control" id="warningMessage" placeholder="Enter warning message here..." rows="3" bind:value={warningMessage}></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-warning" on:click={sendWarning}>Send Warning</button>
+                </div>
             </div>
         </div>
     </div>

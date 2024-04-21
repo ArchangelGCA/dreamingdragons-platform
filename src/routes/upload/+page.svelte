@@ -324,6 +324,10 @@
     }
 </script>
 
+<svelte:head>
+    <title>Roses In The Flames | Upload</title>
+</svelte:head>
+
 <Seo index="false" />
 
 <div class="container-md px-0">
