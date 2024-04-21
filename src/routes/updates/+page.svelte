@@ -1,4 +1,6 @@
 <script>
+    import Seo from "sk-seo";
+
     export let data;
 
     let { updates } = data;
@@ -8,7 +10,17 @@
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return new Date(dateString).toLocaleDateString(undefined, options);
     }
+
+    const seo = {
+        title: 'Roses In The Flames | Updates',
+        description: 'Updates and changelogs of the Roses In The Flames website.',
+        siteName: 'Roses In The Flames | Tales',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA'
+    };
 </script>
+
+<Seo {...seo} />
 
 <div class="container mt-3">
     <div class="row">
