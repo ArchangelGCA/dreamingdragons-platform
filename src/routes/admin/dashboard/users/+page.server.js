@@ -254,6 +254,168 @@ export const actions = {
                 user
             }
         }
+    },
+    reset_avatar: async ({request, locals: {supabase, getSession}}) => {
+        const session = await getSession();
+        const formData = Object.fromEntries(await request.formData());
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        const { userId } = formData;
+
+        if (!userId) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { data: userAvatar, error: userAvatarError } = await supabase
+            .from('profiles')
+            .select('avatar_url')
+            .eq('id', userId)
+            .single();
+
+        if (userAvatarError) {
+            return {
+                status: 500,
+                body: {
+                    message: userAvatarError.message
+                }
+            }
+        }
+
+        if (userAvatar.avatar_url) {
+            const { error: avatarError } = await supabase.storage
+                .from('avatars')
+                .remove([userAvatar.avatar_url]);
+
+            if (avatarError) {
+                return {
+                    status: 500,
+                    body: {
+                        message: avatarError.message
+                    }
+                }
+            }
+        }
+
+        const { data: user, error: userError } = await adminSupabase
+            .from('profiles')
+            .update({
+                avatar_url: null
+            })
+            .eq('id', userId)
+            .single();
+
+        if (userError) {
+            return {
+                status: 500,
+                body: {
+                    message: userError.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Avatar reset successfully"
+            }
+        }
+    },
+    reset_cover: async ({request, locals: {supabase, getSession}}) => {
+        const session = await getSession();
+        const formData = Object.fromEntries(await request.formData());
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        const {userId} = formData;
+
+        if (!userId) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const {data: userCover, error: userCoverError} = await supabase
+            .from('profiles')
+            .select('cover_url')
+            .eq('id', userId)
+            .single();
+
+        if (userCoverError) {
+            return {
+                status: 500,
+                body: {
+                    message: userCoverError.message
+                }
+            }
+        }
+
+        if (userCover.cover_url) {
+            const {error: coverError} = await supabase.storage
+                .from('avatars')
+                .remove([userCover.cover_url]);
+
+            if (coverError) {
+                return {
+                    status: 500,
+                    body: {
+                        message: coverError.message
+                    }
+                }
+            }
+        }
+
+        const {data: user, error: userError} = await adminSupabase
+            .from('profiles')
+            .update({
+                cover_url: null
+            })
+            .eq('id', userId)
+            .single();
+
+        if (userError) {
+            return {
+                status: 500,
+                body: {
+                    message: userError.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Cover reset successfully"
+            }
+        }
     }
 }
 

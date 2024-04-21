@@ -224,7 +224,7 @@ export const actions = {
         }
 
         if (sendWarning === 'true') {
-            if (warningMessage === "" || !warningMessage) {
+            if (warningMessage === '' || !warningMessage) {
                 return {
                     status: 400,
                     body: {message: "Warning message required"}

@@ -89,7 +89,6 @@
 
     async function handleVisit(e) {
         e.preventDefault();
-        console.log('Visiting profile: ' + e.target.href);
         window.location.href = e.target.href;
     }
 
