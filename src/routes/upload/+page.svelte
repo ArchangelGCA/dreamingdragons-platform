@@ -81,6 +81,7 @@
     let hasDoneTagAction = false;
     let activeUpload = false;
     let editorContentTale = '';
+    let discordLink = 'https://discord.gg/hrrD3KPdTe';
 
     let tags = [];
     async function addTag(e) {
@@ -331,6 +332,17 @@
 <Seo index="false" />
 
 <div class="container-md px-0">
+    <!-- Alert if users can't upload -->
+    {#if !can_upload}
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="alert alert-danger text-center mt-3 mb-0" role="alert">
+                    <p class="h4">You aren't allowed to upload!</p>
+                    <p class="h5">If you think this is an error, please contact us on <a href="{discordLink}">Discord</a>.</p>
+                </div>
+            </div>
+        </div>
+    {/if}
     <div class="row justify-content-center">
         <div class="col">
             <div class="row justify-content-center">
@@ -408,7 +420,7 @@
                                             </div>
                                             <div class="col-12 mb-1 mt-2 px-0">
                                                 {#if !can_upload}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">Submit</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">You can't upload!</button>
                                                 {:else}
                                                     <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                                 {/if}

@@ -465,7 +465,7 @@
             <div class="row">
                 <div class="col-12 px-0">
                     <div class="form-floating text-center">
-                        <textarea class="form-control form-control-lg py-5 {isTextAreaFocused ? 'bg-purple-opacity-10' : 'bg-purple-opacity-25'}" id="commentInput" placeholder="Write your comment here" on:focus={handleFocus} on:blur={handleBlur} bind:value={commentText}></textarea>
+                        <textarea class="form-control {isTextAreaFocused ? 'bg-purple-opacity-10' : 'bg-purple-opacity-25'}" id="commentInput" placeholder="Write your comment here" on:focus={handleFocus} on:blur={handleBlur} bind:value={commentText}></textarea>
                         <label for="commentInput">Write your comment here...</label>
                     </div>
                 </div>
@@ -506,6 +506,18 @@
 </div>
 
 <style>
+
+    #commentInput {
+        min-height: 100px;
+    }
+
+    .form-floating>.form-control:focus~label,
+    .form-floating>.form-control:not(:placeholder-shown)~label,
+    .form-floating>.form-select~label {
+        opacity: 0;
+        transform: scale(.85) translateY(-1.3rem) translateX(0.15rem);
+    }
+
     .fa-heart, .fa-eye, .fa-comment {
         font-size: 1.6rem;
     }
