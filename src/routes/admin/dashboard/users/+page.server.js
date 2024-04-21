@@ -202,6 +202,58 @@ export const actions = {
                 notification: data[0]
             }
         }
+    },
+    toggle_upload: async ({request, locals: {supabase, getSession}}) => {
+        const session = await getSession();
+        const formData = Object.fromEntries(await request.formData());
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+            auth: {
+                autoRefreshToken: false,
+                persistSession: false
+            }
+        });
+
+        const { userId, uploadStatus } = formData;
+
+        if (!userId || uploadStatus === null || uploadStatus === undefined) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { data: user, error: userError } = await adminSupabase
+            .from('profiles')
+            .update({
+                can_upload: uploadStatus
+            })
+            .eq('id', userId)
+            .single();
+
+        if (userError) {
+            return {
+                status: 500,
+                body: {
+                    message: userError.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Upload status updated",
+                user
+            }
+        }
     }
 }
 

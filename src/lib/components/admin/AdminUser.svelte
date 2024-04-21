@@ -8,6 +8,7 @@
     export let supabase;
     let isWarningActive = false;
     let isSendWarningActive = false;
+    let isCanUploadActive = false;
     let warningMessage = "";
 
     // Format the date by checking if it is a valid date, if not return the original value
@@ -180,8 +181,78 @@
         isSendWarningActive = false;
     }
 
+    async function handleCopyToClipboard(){
+        await navigator.clipboard.writeText(profile.id);
+        toast.push("User ID copied", {
+            theme: {
+                '--toastBackground': 'green',
+                '--toastBody': 'white',
+                '--toastIconFill': 'white',
+                '--toastIconStroke': 'white'
+            }
+        });
+    }
+
     async function handleCanUploadToggle(){
-        alert("Coming soon (=")
+        if (isCanUploadActive) return;
+
+        isCanUploadActive = true;
+
+        const formData = new FormData();
+        formData.append("userId", profile.id);
+        formData.append("uploadStatus", !profile.can_upload)
+
+        const toastId = toast.push("Updating user upload status...", {
+            duration: 10000,
+            theme: {
+                '--toastBackground': 'black',
+                '--toastBody': 'white',
+                '--toastIconFill': 'white',
+                '--toastIconStroke': 'white'
+            },
+        });
+
+        const response = await fetch(`?/toggle_upload`, {
+            method: "POST",
+            body: formData
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': 'green',
+                        '--toastBody': 'white',
+                        '--toastIconFill': 'white',
+                        '--toastIconStroke': 'white'
+                    }
+                });
+                profile.can_upload = !profile.can_upload;
+            } else {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': 'red',
+                        '--toastBody': 'white',
+                        '--toastIconFill': 'white',
+                        '--toastIconStroke': 'white'
+                    }
+                });
+            }
+        } else {
+            toast.push(result.data.body.message, {
+                theme: {
+                    '--toastBackground': 'red',
+                    '--toastBody': 'white',
+                    '--toastIconFill': 'white',
+                    '--toastIconStroke': 'white'
+                }
+            });
+        }
+
+        isCanUploadActive = false;
     }
 
 </script>
@@ -189,12 +260,21 @@
 <div class="container border {profile.can_upload ? 'border-magenta bg-black bg-opacity-25' : 'border-danger bg-danger bg-opacity-10'} rounded-4 mb-4 p-4 shadow-sm">
     <div class="row">
         <div class="col-12">
-            <div class="row justify-content-center mb-3">
+            <div class="row justify-content-center">
                 <div class="col-12 col-md-auto my-auto mb-3 mb-md-auto">
                     <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {supabase} size="100px" />
                 </div>
                 <div class="col-12 col-md-auto my-auto">
                     <h1 class="h1 text-center">{profile.username}</h1>
+                </div>
+                <div class="col-12 text-center mt-2">
+                    <p class="fs-6 mb-2">ID: {profile.id}
+                        <span class="ms-2">
+                            <button class="btn btn-sm btn-outline-secondary" on:click={handleCopyToClipboard}>
+                                <i class="fas fa-copy"></i> Copy ID
+                            </button>
+                        </span>
+                    </p>
                 </div>
             </div>
             <div class="accordion" id="profileAccordion-{profile.id}">
