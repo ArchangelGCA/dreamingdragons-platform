@@ -234,11 +234,11 @@
                         {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                             <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
                         {:else}
-                            <li><a class="dropdown-item ps-1 mb-2" data-sveltekit-reload href="/profile"><UserAvatarNavbar classes="me-1" {supabase} url={userData.avatar_url} username={userData.username} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a></li>
+                            <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" data-sveltekit-reload href="/profile"><UserAvatarNavbar classes="me-1" {supabase} url={userData.avatar_url} username={userData.username} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a></li>
                         {/if}
-                        <li><a class="dropdown-item" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
-                        <li><a class="dropdown-item upload-button rounded-3 py-2" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
-                        <li><a class="dropdown-item mt-1" href="/updates"><i class="fas fa-edit border-end border-light-subtle pe-2"></i> Updates</a></li>
+                        <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/settings') ? 'active' : ''}" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
+                        <li><a class="dropdown-item upload-button rounded-3 py-2 my-1 {$pageStore.url.pathname.startsWith('/upload') ? 'active' : ''}" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
+                        <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/updates') ? 'active' : ''}" href="/updates"><i class="fas fa-edit border-end border-light-subtle pe-2"></i> Updates</a></li>
                         <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
                     </ul>
                 </div>
@@ -266,8 +266,6 @@
         {/if}
     </div>
 </div>
-
-
 
 <div use:autoAnimate>
     {#if maintenance}
@@ -380,6 +378,11 @@
     .dropdown-item:active {
         transition: all 0.12s ease-in-out;
         transform: scale(0.95);
+    }
+
+    .dropdown-item.active {
+        background-color: #5c00a6;
+        border-radius: 0.25rem;
     }
 
     .offcanvas {
