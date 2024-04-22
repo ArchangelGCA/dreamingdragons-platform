@@ -253,6 +253,15 @@ export const actions = {
             }
         }
 
+        if (content.length > 1000) {
+            return {
+                status: 400,
+                body: {
+                    message: "Comment is too long"
+                }
+            }
+        }
+
         const { data, error } = await supabase
             .from('comments')
             .insert([{ book_id: bookId, user_id: userId, content: content }])
