@@ -11,6 +11,12 @@
         return new Date(dateString).toLocaleDateString(undefined, options);
     }
 
+    // Second variant of fomatdate with only hours and minutes
+    const formatTime = (dateString) => {
+        const options = { hour: 'numeric', minute: 'numeric'};
+        return new Date(dateString).toLocaleTimeString(undefined, options);
+    }
+
     const seo = {
         title: 'Roses In The Flames | Updates',
         description: 'Updates and changelogs of the Roses In The Flames website.',
@@ -30,7 +36,7 @@
             {#each updates as update}
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title"><i class="fas fa-pencil"></i> {formatDate(update.created_at)}</h5>
+                        <h5 class="card-title"><i class="fas fa-pencil"></i> {formatDate(update.created_at)} <span class="text-muted text-sm">{formatTime(update.created_at)}</span></h5>
                         <p class="card-text text-secondary-emphasis">{@html update.content}</p>
                     </div>
                 </div>
@@ -54,6 +60,10 @@
 
     .fa-pencil {
         color: #bd135a;
+    }
+
+    .text-sm {
+        font-size: 0.8rem;
     }
 
     @keyframes Gradient {
