@@ -41,6 +41,7 @@
     let commentsCount = comments.length;
     let isLiked = bookContent.is_liked;
     let likeActionActive = false;
+    let reportActionActive = false;
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(bookContent.created_at);
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
@@ -48,6 +49,7 @@
     let commentText = '';
     let avatarsLoaded = false;
     let deleteBookActionActive = false;
+    let reportText = '';
 
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
@@ -310,6 +312,55 @@
         }
     }
 
+    async function handleReport(){
+        if (reportActionActive) return;
+
+        reportActionActive = true;
+
+        const formData = new FormData();
+        formData.append('book_id', bookContent.book_id);
+        formData.append('report_description', reportText);
+
+        const response = await fetch('?/report', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push('Report submitted! 🚩', {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+                reportText = '';
+                document.getElementById('reportModal').style.display = 'none';
+                const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
+                if (modalBackdrop.length > 0) {
+                    modalBackdrop[0].remove();
+                }
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+
+        reportActionActive = false;
+    }
+
     function handleFocus() {
         isTextAreaFocused = true;
     }
@@ -320,7 +371,9 @@
         }
     }
 
-    $: if (avatarUrl) downloadAvatar(avatarUrl);
+
+
+    $: if (avatarUrl && finalAvatarUrl === '') downloadAvatar(avatarUrl);
 
     const seo = {
         title: bookContent.book_title + ' by ' + bookContent.owner_username + ' | Roses In The Flames',
@@ -365,7 +418,7 @@
                     </a>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
-                    <p class="h2">{bookContent.book_title}</p>
+                    <p class="h3">{bookContent.book_title}</p>
                     <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
                     {#if tags.length !== 0}
                         <div class="row justify-content-center mt-1">
@@ -380,7 +433,7 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-between px-lg-5 py-2 py-lg-3 mb-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
+    <div class="row justify-content-between px-lg-5 py-2 py-lg-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Total likes">
                 <div class="col-auto d-flex align-items-center pe-0">
@@ -414,8 +467,8 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-center text-center">
-        <div class="col-12 fs-5 bg-purple-opacity-25 p-3 pb-0 mb-3 rounded-4 ">
+    <div class="row justify-content-center text-center mt-3">
+        <div class="col-12 fs-5 bg-purple-opacity-25 p-3 pb-0 mb-2 rounded-4 ">
             {@html bookContent.book_description}
         </div>
     </div>
@@ -436,12 +489,17 @@
         {/if}
     </div>
     <div class="row justify-content-center text-start">
-        <div class="col-12 px-0">
+        <div class="col-10 col-md-9 pt-2 px-0">
             <p class="text-secondary text-center">
                 <small>
                     &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{bookContent.owner_username}</a> - {bookContent.book_title}
                 </small>
             </p>
+        </div>
+        <div class="col-auto text-center my-auto mt-md-1 px-0">
+            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report" data-bs-toggle="modal" data-bs-target="#reportModal">
+                <i class="fas fa-flag"></i>
+            </button>
         </div>
     </div>
     {#if bookContent.is_owner}
@@ -519,6 +577,34 @@
         {/if}
     </div>
 
+    <!-- Modals section -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border border-black text-light bg-purple-dark">
+                <div class="modal-header border-bottom border-black">
+                    <h5 class="modal-title" id="reportModalLabel">Report Content</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pb-0">
+                    <div class="mb-3">
+                        <label for="reportText" class="form-label">Report Text</label>
+                        <textarea class="form-control bg-dark bg-opacity-10 text-light" id="reportText" rows="3" placeholder="Is this AI? Or NSFW/Mature Content? These are examples of content that can and should be reported ⚠️!" bind:value={reportText}></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <div class="row w-100">
+                        <div class="col ps-0 pe-1">
+                            <button type="button" class="btn btn-close-report w-100" data-bs-dismiss="modal">Close</button>
+                        </div>
+                        <div class="col ps-1 pe-0">
+                            <button type="button" class="btn btn-submit-report w-100" on:click={handleReport}>Submit Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <style>
@@ -554,6 +640,10 @@
         background-color: rgba(92, 0, 166, 0.1);
     }
 
+    .bg-purple-dark {
+        background-color: #280043;
+    }
+
     .btn-shortcut {
         background-color: transparent;
     }
@@ -576,6 +666,54 @@
     }
 
     .btn-comment:hover {
+        background-color: #4a007f;
+    }
+
+    .btn-link-secondary {
+        color: #dc3545;
+    }
+
+    .btn-link-secondary:hover {
+        color: #dc3545;
+    }
+
+    .btn-link-secondary:focus {
+        color: #dc3545;
+    }
+
+    .btn-link-secondary:active {
+        color: #dc3545;
+    }
+
+    .btn-submit-report {
+        background-color: #5c00a6;
+    }
+
+    .btn-submit-report:hover {
+        background-color: #4a007f;
+    }
+
+    .btn-submit-report:focus {
+        background-color: #4a007f;
+    }
+
+    .btn-submit-report:active {
+        background-color: #4a007f;
+    }
+
+    .btn-close-report {
+        background-color: rgba(109, 47, 157, 0.25);
+    }
+
+    .btn-close-report:hover {
+        background-color: #4a007f;
+    }
+
+    .btn-close-report:focus {
+        background-color: #4a007f;
+    }
+
+    .btn-close-report:active {
         background-color: #4a007f;
     }
 

@@ -244,5 +244,95 @@ export const actions = {
                 message: "Chapter [" + chapterId + "] deleted successfully"
             }
         }
-    }
+    },
+    report: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const session = await getSession();
+
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to report a book"
+                }
+            }
+        }
+
+        const report_type = "chapter";
+        const user_id = session.user.id;
+        let { report_description, chapter_id } = formData;
+
+        if (chapter_id === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const { data: existingReports, error: existingReportsError } = await supabase
+            .from('reports')
+            .select('*')
+            .eq('report_type', report_type)
+            .eq('user_id', user_id)
+            .eq('chapter_id', chapter_id);
+
+        if (existingReportsError) {
+            console.error(existingReportsError);
+            return {
+                status: 500,
+                body: {
+                    message: existingReportsError.message
+                }
+            }
+        }
+
+        if (existingReports.length > 0) {
+            return {
+                status: 400,
+                body: {
+                    message: "You have already reported this Chapter!"
+                }
+            }
+        }
+
+        if (report_description === null) report_description = '';
+
+        // Description limit
+        if (report_description.length > 1000) {
+            return {
+                status: 400,
+                body: {
+                    message: "Report description is too long"
+                }
+            }
+        }
+
+        const { error } = await supabase
+            .from('reports')
+            .insert({
+                report_type,
+                user_id,
+                report_description,
+                chapter_id
+            });
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Content reported successfully"
+            }
+        }
+    },
 }

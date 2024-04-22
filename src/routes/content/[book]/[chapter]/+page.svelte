@@ -38,6 +38,7 @@
     let viewsCount = 0;
     let commentsCount = comments.length;
     let likeActionActive = false;
+    let reportActionActive = false;
     let text = 'Text not found!';
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(chapterContent.created_at);
@@ -46,6 +47,7 @@
     let commentText = '';
     let avatarsLoaded = false;
     let deleteChapterActionActive = false;
+    let reportText = '';
 
     if (chapterContent.owner_avatar_url) {
         avatarUrl = chapterContent.owner_avatar_url;
@@ -294,6 +296,56 @@
             });
         }
 
+        deleteChapterActionActive = false;
+    }
+
+    async function handleReport(){
+        if (reportActionActive) return;
+
+        reportActionActive = true;
+
+        const formData = new FormData();
+        formData.append('chapter_id', chapterContent.chapter_id);
+        formData.append('report_description', reportText);
+
+        const response = await fetch('?/report', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push('Report submitted! 🚩', {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+                reportText = '';
+                document.getElementById('reportModal').style.display = 'none';
+                const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
+                if (modalBackdrop.length > 0) {
+                    modalBackdrop[0].remove();
+                }
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('Error during action (Please login)', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+
+        reportActionActive = false;
     }
 
     function handleCommentDelete(event) {
@@ -317,7 +369,7 @@
         }
     }
 
-    $: if (avatarUrl) downloadAvatar(avatarUrl);
+    $: if (avatarUrl && finalAvatarUrl === '') downloadAvatar(avatarUrl);
 
     const seo = {
         title: chapterContent.book_title + ' - ' + chapterContent.title + ' | Roses In The Flames',
@@ -421,13 +473,18 @@
             {@html text}
         </div>
     </div>
-    <div class="row justify-content-center text-start mt-3">
-        <div class="col-12 px-0">
+    <div class="row justify-content-center text-start">
+        <div class="col-10 col-md-9 pt-2 px-0">
             <p class="text-secondary text-center">
                 <small>
                     &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{chapterContent.owner_username}</a> - {chapterContent.book_title} - {chapterContent.title}
                 </small>
             </p>
+        </div>
+        <div class="col-auto text-center my-auto mt-md-1 px-0">
+            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report" data-bs-toggle="modal" data-bs-target="#reportModal">
+                <i class="fas fa-flag"></i>
+            </button>
         </div>
     </div>
     {#if chapterContent.is_owner}
@@ -503,6 +560,34 @@
             </div>
         {/if}
     </div>
+
+    <!-- Modals section -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border border-black text-light bg-purple-dark">
+                <div class="modal-header border-bottom border-black">
+                    <h5 class="modal-title" id="reportModalLabel">Report Content</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pb-0">
+                    <div class="mb-3">
+                        <label for="reportText" class="form-label">Report Text</label>
+                        <textarea class="form-control bg-dark bg-opacity-10 text-light" id="reportText" rows="3" placeholder="Is this AI? Or NSFW/Mature Content? These are examples of content that can and should be reported ⚠️!" bind:value={reportText}></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <div class="row w-100">
+                        <div class="col ps-0 pe-1">
+                            <button type="button" class="btn btn-close-report w-100" data-bs-dismiss="modal">Close</button>
+                        </div>
+                        <div class="col ps-1 pe-0">
+                            <button type="button" class="btn btn-submit-report w-100" on:click={handleReport}>Submit Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -542,6 +627,10 @@
         background-color: rgba(92, 0, 166, 0.1);
     }
 
+    .bg-purple-dark {
+        background-color: #280043;
+    }
+
     .btn-shortcut {
         background-color: transparent;
     }
@@ -564,6 +653,54 @@
     }
 
     .btn-comment:hover {
+        background-color: #4a007f;
+    }
+
+    .btn-link-secondary {
+        color: #dc3545;
+    }
+
+    .btn-link-secondary:hover {
+        color: #dc3545;
+    }
+
+    .btn-link-secondary:focus {
+        color: #dc3545;
+    }
+
+    .btn-link-secondary:active {
+        color: #dc3545;
+    }
+
+    .btn-submit-report {
+        background-color: #5c00a6;
+    }
+
+    .btn-submit-report:hover {
+        background-color: #4a007f;
+    }
+
+    .btn-submit-report:focus {
+        background-color: #4a007f;
+    }
+
+    .btn-submit-report:active {
+        background-color: #4a007f;
+    }
+
+    .btn-close-report {
+        background-color: rgba(109, 47, 157, 0.25);
+    }
+
+    .btn-close-report:hover {
+        background-color: #4a007f;
+    }
+
+    .btn-close-report:focus {
+        background-color: #4a007f;
+    }
+
+    .btn-close-report:active {
         background-color: #4a007f;
     }
 
