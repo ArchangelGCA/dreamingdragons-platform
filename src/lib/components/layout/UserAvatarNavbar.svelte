@@ -31,7 +31,12 @@
         }
     }
 
-    $: if (url) downloadImage(url);
+    $: if (url && url !== '' && !isAvatarLoaded) {
+        downloadImage(url)
+    } else if ((!url || url === '') && avatarUrl !== '') {
+        avatarUrl = '';
+        isAvatarLoaded = false;
+    }
 </script>
 
 <!-- Circle avatar, using Bootstrap 5 classes -->

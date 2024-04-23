@@ -29,6 +29,11 @@
                         <i class="fas fa-file-alt"></i> Content
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {$page.url.pathname === '/admin/dashboard/reports' ? 'active' : ''}" href="/admin/dashboard/reports">
+                        <i class="fas fa-flag"></i> Reports
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>

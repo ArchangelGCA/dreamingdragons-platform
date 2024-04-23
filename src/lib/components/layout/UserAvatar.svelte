@@ -44,7 +44,7 @@
         }
     }
 
-    $: if (url && url !== '') {
+    $: if (url && url !== '' && !isAvatarLoaded) {
         downloadImage(url)
     } else if ((!url || url === '') && avatarUrl !== '') {
         avatarUrl = '';

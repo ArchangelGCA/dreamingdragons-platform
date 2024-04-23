@@ -305,6 +305,7 @@
         reportActionActive = true;
 
         const formData = new FormData();
+        formData.append('book_id', chapterContent.book_id);
         formData.append('chapter_id', chapterContent.chapter_id);
         formData.append('report_description', reportText);
 

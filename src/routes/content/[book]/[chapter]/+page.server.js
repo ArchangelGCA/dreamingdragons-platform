@@ -269,7 +269,7 @@ export const actions = {
 
         const report_type = "chapter";
         const user_id = session.user.id;
-        let { report_description, chapter_id } = formData;
+        let { report_description, chapter_id, book_id } = formData;
 
         if (chapter_id === null) {
             return {
@@ -324,7 +324,8 @@ export const actions = {
                 report_type,
                 user_id,
                 report_description,
-                chapter_id
+                chapter_id,
+                book_id
             });
 
         if (error) {

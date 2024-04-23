@@ -7,7 +7,7 @@
 
 </script>
 
-<div class="container-fluid py-3" style="height: 100vh">
+<div class="container py-3" style="height: 100vh">
     <div class="row mb-2">
         <div class="col text-center">
             <h2>Manage Users</h2>

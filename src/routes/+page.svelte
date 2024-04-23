@@ -39,6 +39,8 @@
     async function loadMoreContentByCreatedAt() {
         if (loading || allContentLoaded) return;
 
+        console.log('loading more content');
+
         loading = true;
 
         // fetch from books_ordered_by_created_at using range and append to books_ordered_by_created_at
@@ -63,7 +65,7 @@
 
     function handleScroll(event) {
         const target = event.target;
-        if (target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 1.5)) {
+        if (target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.5)) {
             loadMoreContentByCreatedAt();
         }
     }

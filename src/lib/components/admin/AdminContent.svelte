@@ -97,7 +97,7 @@
                 });
             }
         } else {
-            toast.push('Error during action (Please login)', {
+            toast.push('Error during action', {
                 theme: {
                     '--toastBackground': '#f44336',
                     '--toastColor': '#fff',

@@ -231,7 +231,6 @@ export const actions = {
                 }
             }
 
-            // Add to notifications with type "warning" using admin supabase client
             const {error: notificationError} = await adminSupabase
                 .from('notifications')
                 .insert({
