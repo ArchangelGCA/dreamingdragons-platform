@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltip} from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
@@ -18,12 +18,12 @@
         theme: 'text-center w-auto'
     };
 
-    let { panic } = data;
+    let {panic} = data;
     $: ({panic} = data);
     let isPanicAction = false;
 
 
-    async function handlePanic(){
+    async function handlePanic() {
         if (isPanicAction) return;
         isPanicAction = true;
 
@@ -63,7 +63,7 @@
         toast.pop(toastId);
 
         const result = deserialize(await response.text());
-        if (result.type === 'success'){
+        if (result.type === 'success') {
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -89,47 +89,48 @@
             });
         }
 
-
         isPanicAction = false;
     }
 </script>
 
-<div class="container-fluid py-2">
-    <div class="row text-center mb-2 mt-1">
-        <div class="col-md-12">
-            <h2>Admin Dashboard (TODO)</h2>
-        </div>
+<div class="row text-center mb-2 mt-1">
+    <div class="col-md-12">
+        <h2>Admin Dashboard (ALPHA)</h2>
     </div>
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <div class="card bg-black bg-opacity-25 text-white border-purple">
-                <div class="card-body text-center">
-                    <i class="fas fa-exclamation-triangle fa-3x mb-3 purple"></i>
-                    <h5 class="card-title">Panic Mode: <span class="{panic[0].is_active ? 'text-danger' : 'text-warning'}">{panic[0].is_active ? 'Enabled' : 'Disabled'}</span></h5>
-                    <button class="btn btn-panic {isPanicAction ? 'disabled': ''}" on:click={handlePanic} use:tooltip={{...tooltipConfig}} title="Toggle panic mode">{panic[0].is_active ? 'Disable Panic Mode' : 'Enable Panic Mode'}</button>
-                </div>
+</div>
+<div class="row mb-3">
+    <div class="col-md-12">
+        <div class="card bg-black bg-opacity-25 text-white border-purple">
+            <div class="card-body text-center">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3 purple"></i>
+                <h5 class="card-title">Panic Mode: <span
+                        class="{panic[0].is_active ? 'text-danger' : 'text-warning'}">{panic[0].is_active ? 'Enabled' : 'Disabled'}</span>
+                </h5>
+                <button class="btn btn-panic {isPanicAction ? 'disabled': ''}" on:click={handlePanic}
+                        use:tooltip={{...tooltipConfig}}
+                        title="Toggle panic mode">{panic[0].is_active ? 'Disable Panic Mode' : 'Enable Panic Mode'}</button>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-lg-6 col-md-12 mb-3">
-            <div class="card bg-black bg-opacity-25 text-white border-purple">
-                <div class="card-body text-center">
-                    <i class="fas fa-users fa-3x mb-3 purple"></i>
-                    <h5 class="card-title">Manage Users</h5>
-                    <p class="card-text">Click here to manage users</p>
-                    <a href="/admin/dashboard/users" class="btn btn-users">Go to Users</a>
-                </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-md-12 mb-3">
+        <div class="card bg-black bg-opacity-25 text-white border-purple">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x mb-3 purple"></i>
+                <h5 class="card-title">Manage Users</h5>
+                <p class="card-text">Click here to manage users</p>
+                <a href="/admin/dashboard/users" class="btn btn-users">Go to Users</a>
             </div>
         </div>
-        <div class="col-lg-6 col-md-12 mb-3">
-            <div class="card bg-black bg-opacity-25 text-white border-purple-content">
-                <div class="card-body text-center">
-                    <i class="fas fa-file-alt fa-3x mb-3 purple-content"></i>
-                    <h5 class="card-title">Manage Content</h5>
-                    <p class="card-text">Click here to manage content</p>
-                    <a href="/admin/dashboard/content" class="btn btn-content">Go to Content</a>
-                </div>
+    </div>
+    <div class="col-lg-6 col-md-12 mb-3">
+        <div class="card bg-black bg-opacity-25 text-white border-purple-content">
+            <div class="card-body text-center">
+                <i class="fas fa-file-alt fa-3x mb-3 purple-content"></i>
+                <h5 class="card-title">Manage Content</h5>
+                <p class="card-text">Click here to manage content</p>
+                <a href="/admin/dashboard/content" class="btn btn-content">Go to Content</a>
             </div>
         </div>
     </div>

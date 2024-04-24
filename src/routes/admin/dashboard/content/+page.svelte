@@ -4,7 +4,7 @@
     import {invalidateAll} from "$app/navigation";
 
     export let data;
-    let { content, supabase } = data;
+    let {content, supabase} = data;
     $: ({content, chapters} = data)
 
     function formatDate(date) {
@@ -32,7 +32,7 @@
         }
     }
 
-    async function handleEditContent(){
+    async function handleEditContent() {
         await invalidateAll();
         const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
         if (modalBackdrop.length > 0) {
@@ -42,18 +42,16 @@
 
 </script>
 
-<div class="container py-3" style="height: 100vh">
-    <div class="row mb-2">
-        <div class="col text-center">
-            <h2>Manage Content</h2>
-        </div>
+<div class="row mb-2">
+    <div class="col text-center">
+        <h2>Manage Content</h2>
     </div>
+</div>
 
-    <div class="row" use:autoAnimate>
-        {#each content as item (item.id)}
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <AdminContent {item} on:delete={handleDelete} on:editContent={handleEditContent}/>
-            </div>
-        {/each}
-    </div>
+<div class="row" use:autoAnimate>
+    {#each content as item (item.id)}
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+            <AdminContent {item} on:delete={handleDelete} on:editContent={handleEditContent}/>
+        </div>
+    {/each}
 </div>

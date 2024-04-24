@@ -38,7 +38,9 @@
         </div>
     </nav>
 
-    <div class="col-12 col-lg-10 overflow-auto" use:autoAnimate>
-        <slot></slot>
+    <div class="col-12 col-lg-10 overflow-auto">
+        <div class="container py-3" style="height: 100vh" use:autoAnimate>
+            <slot></slot>
+        </div>
     </div>
 </div>
