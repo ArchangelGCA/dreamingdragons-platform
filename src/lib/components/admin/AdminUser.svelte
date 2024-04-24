@@ -433,7 +433,6 @@
     $: if (profile && profile.cover_url && finalCoverUrl === '') {
         downloadCover(profile.cover_url);
     }
-
 </script>
 
 <div class="container border {profile.can_upload ? 'border-magenta bg-black bg-opacity-25' : 'border-danger bg-danger bg-opacity-10'} rounded-4 mb-4 p-4 shadow-sm">

@@ -2,6 +2,9 @@
     import {createEventDispatcher} from "svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
+    import Comment from "$lib/components/pages/Comment.svelte";
+    import {deserialize} from "$app/forms";
+    import autoAnimate from '@formkit/auto-animate';
 
     export let comment;
     export let supabase;
@@ -25,6 +28,7 @@
     let avatarFound = true;
     let avatarUrl = comment.profiles.avatar_url;
     let isHovering = false;
+    let isReplyActionActive = false;
 
     async function downloadAvatar(path) {
         if (path.startsWith('blob:')) {
@@ -85,6 +89,63 @@
         }
     }
 
+    async function addReply(content) {
+        if (isReplyActionActive) return;
+        isReplyActionActive = true;
+
+        const toastId = toast.push('Sending reply...', {
+            theme: {
+                '--toastBackground': 'rgba(92,0,166,0.9)',
+                '--toastColor': 'white'
+            }
+        });
+
+        const data = new FormData();
+        data.append('parentCommentId', comment.id);
+        data.append('content', content);
+        if (comment.book_id) {
+            data.append('bookId', comment.book_id);
+        } else if (comment.chapter_id) {
+            data.append('chapterId', comment.chapter_id);
+        }
+
+        const response = await fetch('?/add_comment', {
+            method: 'POST',
+            body: data
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push('Reply sent!', {
+                    theme: {
+                        '--toastBackground': 'rgba(92,0,166,0.9)',
+                        '--toastColor': 'white'
+                    }
+                });
+                dispatch('reply', result.data.comment);
+            } else {
+                toast.push('Error sending reply!', {
+                    theme: {
+                        '--toastBackground': 'rgba(92,0,166,0.9)',
+                        '--toastColor': 'white'
+                    }
+                });
+            }
+        } else {
+            toast.push('Error sending reply!', {
+                theme: {
+                    '--toastBackground': 'rgba(92,0,166,0.9)',
+                    '--toastColor': 'white'
+                }
+            });
+        }
+
+        isReplyActionActive = false;
+    }
+
     const createdAt = new Date(comment.created_at);
     const createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
 
@@ -92,7 +153,7 @@
 </script>
 
 <div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
-    <div class="col-auto">
+    <div class="col-auto {comment.parent_comment_id && comment.parent_comment_id !== null ? 'border-start border-light-subtle ms-5' : ''}">
         {#if loadedAvatar === false}
             <div class="placeholder-glow" style="height: 50px; width: 50px;">
                 <div class="placeholder rounded-circle w-100 h-100"></div>
@@ -117,6 +178,15 @@
         {/if}
     </div>
 </div>
+{#if comment.children}
+    <div class="row">
+        <div class="col-12" use:autoAnimate>
+            {#each comment.children as child}
+                <Comment comment="{child}" {supabase} on:delete={dispatch('delete', comment.id)} />
+            {/each}
+        </div>
+    </div>
+{/if}
 
 <style>
     .btn-delete {

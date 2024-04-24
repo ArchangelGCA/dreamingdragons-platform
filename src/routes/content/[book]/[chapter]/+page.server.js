@@ -5,7 +5,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     let isOwner = false;
 
     if (!params.book || !params.chapter) {
-        errorx(400, "Missing required fields");
+        return errorx(400, "Missing required fields");
     }
 
     const bookId = params.book;
@@ -19,32 +19,24 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
             .eq('chapter_id', chapterId);
 
     if (error) {
-        errorx(500, 'Something went wrong, perhaps the IDs may be invalid...');
-        /*console.error(error);
-        return {
-            status: 500,
-            body: {
-                message: error.message
-            }
-        }*/
+        return errorx(500, 'Something went wrong, perhaps the IDs may be invalid...');
     }
 
     if (!chapterContent || chapterContent.length === 0) {
-        errorx(404, "Chapter and/or Book not found");
-        return;
+        return errorx(404, "Chapter and/or Book not found");
     }
 
     const tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
     const user_id = session ? session.user.id : null;
 
-    const {data: comments, error: commentsError} = await supabase
+    let {data: comments, error: commentsError} = await supabase
         .from('comments')
         .select('*, profiles(username, avatar_url)')
         .eq('chapter_id', chapterId)
         .order('created_at', { ascending: true });
 
     if (commentsError) {
-        errorx(500, 'Something went wrong, comments loading error...');
+        return errorx(500, 'Something went wrong, comments loading error...');
     }
 
     if (!session) {
@@ -54,6 +46,18 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         comments.forEach(comment => {
             comment.is_owner = comment.user_id === session.user.id;
         });
+    }
+
+    // Sorted comments parents + children
+    if (comments && comments.length > 0) {
+        const parentComments = comments.filter(comment => comment.parent_comment_id === null);
+        const childComments = comments.filter(comment => comment.parent_comment_id !== null);
+
+        parentComments.forEach(parentComment => {
+            parentComment.children = childComments.filter(childComment => childComment.parent_comment_id === parentComment.id);
+        });
+
+        comments = parentComments;
     }
 
     // add isOwner to chapterContent
@@ -160,6 +164,7 @@ export const actions = {
         }
 
         const chapterId = formData.chapterId;
+        const parentCommentId = formData.parentCommentId;
         const userId = session.user.id;
         const content = formData.content;
 
@@ -183,7 +188,7 @@ export const actions = {
 
         const { data, error } = await supabase
             .from('comments')
-            .insert([{ chapter_id: chapterId, user_id: userId, content: content }])
+            .insert([{ chapter_id: chapterId, user_id: userId, parent_comment_id: parentCommentId, content: content }])
             .select('*, profiles(username, avatar_url)');
 
         if (error) {

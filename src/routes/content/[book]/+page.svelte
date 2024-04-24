@@ -7,10 +7,12 @@
     import {onMount} from "svelte";
     import Comment from "$lib/components/pages/Comment.svelte";
     import Seo from "sk-seo";
+    import {invalidateAll} from "$app/navigation";
 
     export let data;
     let avatarUrl;
     let { supabase, comments, ip_address, user_id } = data;
+    $: ({ comments, user_id } = data)
 
     const tooltipConfig = {
         animation: 'fade',
@@ -50,6 +52,7 @@
     let avatarsLoaded = false;
     let deleteBookActionActive = false;
     let reportText = '';
+    let parentCommentId = null;
 
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
@@ -127,8 +130,9 @@
     }
 
     function handleCommentDelete(event) {
-        const id = event.detail;
-        comments = comments.filter((comment) => comment.id !== id);
+        /*const id = event.detail;
+        comments = comments.filter((comment) => comment.id !== id);*/
+        invalidateAll();
         commentsCount--;
     }
 
@@ -230,6 +234,9 @@
         const data = new FormData();
         data.append('bookId', bookContent.book_id);
         data.append('content', commentText);
+        if (parentCommentId && parentCommentId !== null && parentCommentId !== ''){
+            data.append('parentCommentId', parentCommentId);
+        }
 
         const response = await fetch('?/add_comment', {
             method: 'POST',

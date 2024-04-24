@@ -72,6 +72,8 @@
                     <i class="fas fa-bell text-purple" ></i> Someone you follow shared something: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>Open</a>
                 {:else if notification.type === 'comment'}
                     <i class="fas fa-comment text-purple" ></i> Someone commented on your content: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>Open</a>
+                {:else if notification.type === 'comment_reply'}
+                    <i class="fas fa-comment text-purple" ></i> Someone replied to your comment: <a class="link-purple text-decoration-none" href="/content/{notification.content}" data-sveltekit-reload>Open</a>
                 {:else if notification.type === 'warning'}
                     <i class="fas fa-exclamation-triangle text-purple" ></i> You have a warning: <b class="text-danger-emphasis">{notification.content}</b>
                 {/if}
