@@ -3,6 +3,28 @@ import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/pr
 import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import PocketBase from "pocketbase";
 
+function assignChildren(comments) {
+    const commentMap = {};
+
+    for (let comment of comments) {
+        comment.children = [];
+        commentMap[comment.id] = comment;
+    }
+
+    for (let comment of comments) {
+        if (comment.parent_comment_id !== null) {
+            const parent = commentMap[comment.parent_comment_id];
+            if (parent) {
+                parent.children.push(comment);
+            }
+        }
+    }
+
+    const topLevelComments = comments.filter(comment => comment.parent_comment_id === null);
+
+    return topLevelComments;
+}
+
 export const load = async ({ params, locals: { supabase, ip_address, getSession } }) => {
     const session = await getSession();
     let isOwner = false;
@@ -56,17 +78,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         });
     }
 
-    // Sorted comments parents + children
-    if (comments && comments.length > 0) {
-        const parentComments = comments.filter(comment => comment.parent_comment_id === null);
-        const childComments = comments.filter(comment => comment.parent_comment_id !== null);
-
-        parentComments.forEach(parentComment => {
-            parentComment.children = childComments.filter(childComment => childComment.parent_comment_id === parentComment.id);
-        });
-
-        comments = parentComments;
-    }
+    comments = assignChildren(comments);
 
     bookContent[0].is_owner = isOwner;
 

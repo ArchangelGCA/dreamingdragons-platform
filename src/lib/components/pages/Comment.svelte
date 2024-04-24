@@ -153,7 +153,7 @@
 </script>
 
 <div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
-    <div class="col-auto {comment.parent_comment_id && comment.parent_comment_id !== null ? 'border-start border-light-subtle ms-5' : ''}">
+    <div class="col-auto">
         {#if loadedAvatar === false}
             <div class="placeholder-glow" style="height: 50px; width: 50px;">
                 <div class="placeholder rounded-circle w-100 h-100"></div>
@@ -179,7 +179,7 @@
     </div>
 </div>
 {#if comment.children}
-    <div class="row">
+    <div class="row border-start border-light-subtle ms-5">
         <div class="col-12" use:autoAnimate>
             {#each comment.children as child}
                 <Comment comment="{child}" {supabase} on:delete={dispatch('delete', comment.id)} />
