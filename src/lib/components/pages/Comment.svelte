@@ -27,7 +27,9 @@
     let loadedAvatar = false;
     let avatarFound = true;
     let avatarUrl = comment.profiles.avatar_url;
+    let replyContent = '';
     let isHovering = false;
+    let isReplyVisible = false;
     let isReplyActionActive = false;
 
     async function downloadAvatar(path) {
@@ -81,16 +83,33 @@
         if (comment.is_owner){
             isHovering = true;
         }
+        toggleReplyVisibility();
     }
 
     function handleMouseLeave() {
         if (comment.is_owner){
             isHovering = false;
         }
+        toggleReplyVisibility();
     }
 
-    async function addReply(content) {
+    function toggleReplyVisibility() {
+        isReplyVisible = !isReplyVisible;
+    }
+
+    async function addReply() {
         if (isReplyActionActive) return;
+
+        if (!replyContent || replyContent.trim() === '') {
+            toast.push('Reply content cannot be empty!', {
+                theme: {
+                    '--toastBackground': 'rgba(92,0,166,0.9)',
+                    '--toastColor': 'white'
+                }
+            });
+            return;
+        }
+
         isReplyActionActive = true;
 
         const toastId = toast.push('Sending reply...', {
@@ -102,7 +121,7 @@
 
         const data = new FormData();
         data.append('parentCommentId', comment.id);
-        data.append('content', content);
+        data.append('content', replyContent);
         if (comment.book_id) {
             data.append('bookId', comment.book_id);
         } else if (comment.chapter_id) {
@@ -126,6 +145,7 @@
                     }
                 });
                 dispatch('reply', result.data.comment);
+                replyContent = '';
             } else {
                 toast.push('Error sending reply!', {
                     theme: {
@@ -170,19 +190,39 @@
         <p class="mb-0"><a class="link-light text-decoration-none" href="/profile/{comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
         <span class="text-secondary-emphasis">{comment.content}</span>
     </div>
-    <div class="col-2 col-md-1 my-auto">
-        {#if comment.is_owner}
-            <button type="button" class="btn btn-sm btn-danger btn-delete {isHovering ? 'show' : ''}" on:click={deleteComment} title="Delete Comment" use:tooltip={{...tooltipConfig}}>
-                <i class="fas fa-trash"></i>
+    {#if comment.is_owner}
+        <div class="col-2 col-md-auto pe-md-0 my-auto">
+                <button type="button" class="btn btn-sm btn-danger btn-delete {isHovering ? 'show' : ''}" on:click={deleteComment} title="Delete Comment" use:tooltip={{...tooltipConfig}}>
+                    <i class="fas fa-trash"></i>
+                </button>
+        </div>
+    {/if}
+    {#if isReplyVisible}
+        <div class="col-12 col-md-auto my-2 my-md-auto">
+            <button class="btn btn-sm btn-reply w-100" type="button" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}"  title="Reply to Comment" use:tooltip={{...tooltipConfig}}>
+                <i class="fas fa-reply"></i>
             </button>
-        {/if}
+        </div>
+    {/if}
+    <div class="collapse" id="commentReplyInput-{comment.id}">
+        <div class="col-12 my-2 mt-1 mt-md-3">
+            <div class="input-group">
+                <input type="text" bind:value={replyContent} placeholder="Reply to comment..." class="form-control form-control-reply">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}">
+                    <i class="fas fa-times px-2"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-reply" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}" on:click={addReply}>
+                    <i class="fas fa-paper-plane px-2"></i>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 {#if comment.children}
     <div class="row border-start border-light-subtle ms-5">
         <div class="col-12" use:autoAnimate>
             {#each comment.children as child}
-                <Comment comment="{child}" {supabase} on:delete={dispatch('delete', comment.id)} />
+                <Comment comment="{child}" {supabase} on:delete={dispatch('delete', child.id)} on:reply={dispatch('reply', child.id)}/>
             {/each}
         </div>
     </div>
@@ -198,6 +238,29 @@
     .btn-delete.show {
         visibility: visible;
         opacity: 1;
+    }
+
+    .btn-reply {
+        background-color: rgba(92, 0, 166, 0.9);
+        border-color: rgba(92, 0, 166, 0.9);
+    }
+
+    .btn-reply:hover {
+        background-color: rgba(92, 0, 166, 1);
+        border-color: rgba(92, 0, 166, 1);
+    }
+
+    .form-control-reply {
+        background-color: rgba(92, 0, 166, 0.3);
+        border-color: rgba(92, 0, 166, 0.3);
+        color: white;
+    }
+
+    .form-control-reply:focus {
+        background-color: rgba(92, 0, 166, 0.1);
+        border-color: rgb(92, 0, 166);
+        box-shadow: 0 0 0 0.25rem rgba(92, 0, 166, 0.2);
+        color: white;
     }
 
     .comment-element {

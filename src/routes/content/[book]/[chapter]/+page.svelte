@@ -6,9 +6,11 @@
     import autoAnimate from '@formkit/auto-animate';
     import Comment from "$lib/components/pages/Comment.svelte";
     import Seo from "sk-seo";
+    import {invalidateAll} from "$app/navigation";
 
     export let data;
     let { supabase, comments, ip_address, user_id } = data;
+    $: ({ comments, user_id } = data)
 
     const tooltipConfig = {
         animation: 'fade',
@@ -349,10 +351,16 @@
         reportActionActive = false;
     }
 
-    function handleCommentDelete(event) {
-        const id = event.detail;
-        comments = comments.filter((comment) => comment.id !== id);
+    async function handleCommentDelete() {
+        /*const id = event.detail;
+        comments = comments.filter((comment) => comment.id !== id);*/
+        await invalidateAll();
         commentsCount--;
+    }
+
+    async function handleCommentReply() {
+        await invalidateAll();
+        commentsCount++;
     }
 
     function resetComment() {
@@ -514,6 +522,7 @@
             </div>
         </div>
     {/if}
+
     <!-- Comments section -->
     <div class="row justify-content-center">
         <div class="col-12 px-0">
@@ -551,7 +560,7 @@
             <div class="col-12 mt-3 mb-1 pt-3 border-top border-light-subtle" use:autoAnimate>
                 {#if avatarsLoaded}
                     {#each comments as comment (comment.id)}
-                        <Comment {comment} {supabase} on:delete={handleCommentDelete} />
+                        <Comment {comment} {supabase} on:delete={handleCommentDelete} on:reply={handleCommentReply}/>
                     {/each}
                 {:else}
                     <div class="row justify-content-center placeholder-glow mb-2">

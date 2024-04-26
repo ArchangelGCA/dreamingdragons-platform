@@ -105,7 +105,6 @@
         avatarsLoaded = true;
     }
 
-
     async function downloadAvatar(path) {
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path);
@@ -129,11 +128,16 @@
         handleBlur();
     }
 
-    function handleCommentDelete(event) {
+    async function handleCommentDelete() {
         /*const id = event.detail;
         comments = comments.filter((comment) => comment.id !== id);*/
-        invalidateAll();
+        await invalidateAll();
         commentsCount--;
+    }
+
+    async function handleCommentReply() {
+        await invalidateAll();
+        commentsCount++;
     }
 
     async function handleView(){
@@ -576,7 +580,7 @@
             <div class="col-12 mt-3 mb-1 pt-3 border-top border-light-subtle" use:autoAnimate>
                 {#if avatarsLoaded}
                     {#each comments as comment (comment.id)}
-                        <Comment {comment} {supabase} on:delete={handleCommentDelete}/>
+                        <Comment {comment} {supabase} on:delete={handleCommentDelete} on:reply={handleCommentReply}/>
                     {/each}
                 {:else}
                     <div class="row justify-content-center placeholder-glow mb-2">
