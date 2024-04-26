@@ -11,13 +11,11 @@ async function loadComments(supabase, session, chapterId) {
         return Error('Something went wrong, comments loading error...');
     }
 
-    if (!session) {
-        return comments;
+    if (session) {
+        comments.forEach(comment => {
+            comment.is_owner = comment.user_id === session.user.id;
+        });
     }
-
-    comments.forEach(comment => {
-        comment.is_owner = comment.user_id === session.user.id;
-    });
 
     const commentMap = {};
 

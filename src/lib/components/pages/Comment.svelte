@@ -179,7 +179,7 @@
 
 <div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
     <div class="col-auto">
-        <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.profiles.id} {supabase} size="50px" />
+        <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.user_id} {supabase} size="50px" />
     </div>
     <div class="col align-middle pt-1">
         <p class="mb-0"><a class="link-light text-decoration-none" href="/profile/{comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
