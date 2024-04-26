@@ -5,6 +5,7 @@
     import Comment from "$lib/components/pages/Comment.svelte";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
+    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
 
     export let comment;
     export let supabase;
@@ -54,6 +55,10 @@
         }
     }
 
+    async function handleInvalidate(){
+        dispatch('invalidate');
+    }
+
     async function deleteComment() {
         const { error } = await supabase
             .from('comments')
@@ -75,7 +80,7 @@
                     '--toastColor': 'white'
                 }
             });
-            dispatch('delete', comment.id);
+            dispatch('invalidate', comment.id);
         }
     }
 
@@ -144,7 +149,7 @@
                         '--toastColor': 'white'
                     }
                 });
-                dispatch('reply', result.data.comment);
+                dispatch('invalidate', result.data.comment);
                 replyContent = '';
             } else {
                 toast.push('Error sending reply!', {
@@ -174,17 +179,7 @@
 
 <div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
     <div class="col-auto">
-        {#if loadedAvatar === false}
-            <div class="placeholder-glow" style="height: 50px; width: 50px;">
-                <div class="placeholder rounded-circle w-100 h-100"></div>
-            </div>
-        {:else if avatarFound === true}
-            <a href="/profile/{comment.user_id}">
-                <img src="{finalAvatarUrl}" alt="{comment.profiles.username}" class="img-fluid rounded-circle" style="height: 50px; width: 50px;" loading="lazy">
-            </a>
-        {:else}
-            <img class="img-fluid rounded-circle bg-purple py-3 py-lg-5" alt="Avatar Not Found!">
-        {/if}
+        <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.profiles.id} {supabase} size="50px" />
     </div>
     <div class="col align-middle pt-1">
         <p class="mb-0"><a class="link-light text-decoration-none" href="/profile/{comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
@@ -222,7 +217,7 @@
     <div class="row border-start border-light-subtle ms-5">
         <div class="col-12" use:autoAnimate>
             {#each comment.children as child}
-                <Comment comment="{child}" {supabase} on:delete={dispatch('delete', child.id)} on:reply={dispatch('reply', child.id)}/>
+                <Comment comment={child} {supabase} on:invalidate={handleInvalidate}/>
             {/each}
         </div>
     </div>

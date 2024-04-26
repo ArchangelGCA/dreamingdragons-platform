@@ -5,9 +5,9 @@
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
     import autoAnimate from '@formkit/auto-animate';
     import {onMount} from "svelte";
-    import Comment from "$lib/components/pages/Comment.svelte";
     import Seo from "sk-seo";
     import {invalidateAll} from "$app/navigation";
+    import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
 
     export let data;
     let avatarUrl;
@@ -29,7 +29,6 @@
     onMount(() => {
         handleView();
         hasUserLikedBook();
-        loadAvatarsComments();
     });
 
     let bookContent = data.bookContent[0];
@@ -44,16 +43,11 @@
     let isLiked = bookContent.is_liked;
     let likeActionActive = false;
     let reportActionActive = false;
-    let commentActionActive = false;
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(bookContent.created_at);
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
-    let isTextAreaFocused = false;
-    let commentText = '';
-    let avatarsLoaded = false;
     let deleteBookActionActive = false;
     let reportText = '';
-    let parentCommentId = null;
 
     if (bookContent.owner_avatar_url) {
         avatarUrl = bookContent.owner_avatar_url;
@@ -87,25 +81,6 @@
         likeActionActive = false;
     }
 
-    async function loadAvatarsComments(){
-        let avatars = [];
-        for (const comment of comments) {
-            if (!avatars.some(avatar => avatar.name === comment.profiles.avatar_url)){
-                const { data, error } = await supabase.storage.from('avatars').download(comment.profiles.avatar_url);
-                if (error) {
-                    console.log('Error downloading image: ', error.message);
-                } else {
-                    const avatarURL = URL.createObjectURL(data);
-                    avatars.push({name: comment.profiles.avatar_url, url: avatarURL});
-                }
-            }
-        }
-        comments.forEach((comment) => {
-            comment.profiles.avatar_url = avatars.find(avatar => avatar.name === comment.profiles.avatar_url).url;
-        });
-        avatarsLoaded = true;
-    }
-
     async function downloadAvatar(path) {
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path);
@@ -122,23 +97,6 @@
                 avatarFound = false;
             }
         }
-    }
-
-    function resetComment() {
-        commentText = '';
-        handleBlur();
-    }
-
-    async function handleCommentDelete() {
-        /*const id = event.detail;
-        comments = comments.filter((comment) => comment.id !== id);*/
-        await invalidateAll();
-        commentsCount--;
-    }
-
-    async function handleCommentReply() {
-        await invalidateAll();
-        commentsCount++;
     }
 
     async function handleView(){
@@ -231,58 +189,8 @@
         likeActionActive = false;
     }
 
-    async function handleCommentSubmit() {
-        if (commentActionActive) return;
-
-        if (commentText === '') {
-            return;
-        }
-
-        commentActionActive = true;
-
-        const data = new FormData();
-        data.append('bookId', bookContent.book_id);
-        data.append('content', commentText);
-        if (parentCommentId && parentCommentId !== null && parentCommentId !== ''){
-            data.append('parentCommentId', parentCommentId);
-        }
-
-        const response = await fetch('?/add_comment', {
-            method: 'POST',
-            body: data
-        });
-
-        const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
-                commentText = '';
-                commentsCount++;
-                toast.push('Comment added! 📝', {
-                    theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                    }
-                });
-
-                comments = [result.data.body.comment, ...comments];
-            } else {
-                toast.push('Error: ' + result.data.body.message, {
-                    theme: {
-                        '--toastBackground': '#f44336',
-                        '--toastColor': '#fff',
-                    }
-                });
-            }
-        } else {
-            toast.push('Error during action (Please login)', {
-                theme: {
-                    '--toastBackground': '#f44336',
-                    '--toastColor': '#fff',
-                }
-            });
-        }
-
-        commentActionActive = false;
+    async function handleCommentInvalidate(){
+        await invalidateAll();
     }
 
     async function handleBookDelete(){
@@ -377,16 +285,6 @@
         }
 
         reportActionActive = false;
-    }
-
-    function handleFocus() {
-        isTextAreaFocused = true;
-    }
-
-    function handleBlur() {
-        if (commentText === '') {
-            isTextAreaFocused = false;
-        }
     }
 
     $: if (avatarUrl && finalAvatarUrl === '') downloadAvatar(avatarUrl);
@@ -549,52 +447,7 @@
     {/if}
 
     <!-- Comments section -->
-    <div class="row justify-content-center">
-        <div class="col-12 px-0">
-            <p class="h3">Comments:</p>
-        </div>
-        <div class="col-12">
-            <div class="row">
-                <div class="col-12 px-0">
-                    <div class="form-floating text-center">
-                        <textarea class="form-control {isTextAreaFocused ? 'bg-purple-opacity-10' : 'bg-purple-opacity-25'}" id="commentInput" placeholder="Write your comment here" maxlength="1000" on:focus={handleFocus} on:blur={handleBlur} bind:value={commentText}></textarea>
-                        <label for="commentInput">Write your comment here...</label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12 px-0" use:autoAnimate>
-                    {#if isTextAreaFocused}
-                        <div class="row gx-1 comment-buttons mt-2">
-                            <div class="col-6">
-                                <button class="btn btn-comment-cancel w-100" type="reset" on:click={resetComment}>Cancel</button>
-                            </div>
-                            <div class="col-6">
-                                <button class="btn btn-comment w-100 " type="submit" on:click={handleCommentSubmit}>Comment</button>
-                            </div>
-                        </div>
-                    {/if}
-                </div>
-            </div>
-        </div>
-        {#if commentsCount === 0}
-            <div class="col-12 text-center mt-5 mb-4">
-                <p class="h5">No comments found!</p>
-            </div>
-        {:else}
-            <div class="col-12 mt-3 mb-1 pt-3 border-top border-light-subtle" use:autoAnimate>
-                {#if avatarsLoaded}
-                    {#each comments as comment (comment.id)}
-                        <Comment {comment} {supabase} on:delete={handleCommentDelete} on:reply={handleCommentReply}/>
-                    {/each}
-                {:else}
-                    <div class="row justify-content-center placeholder-glow mb-2">
-                        <div class="col-12 placeholder py-4 rounded-3"></div>
-                    </div>
-                {/if}
-            </div>
-        {/if}
-    </div>
+    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" on:invalidate={handleCommentInvalidate} />
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
