@@ -3,7 +3,25 @@ import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/pr
 import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import PocketBase from "pocketbase";
 
-function assignChildren(comments) {
+async function loadComments(supabase, session, bookId) {
+    let {data: comments, error: commentsError} = await supabase
+        .from('comments')
+        .select('*, profiles(username, avatar_url)')
+        .eq('book_id', bookId)
+        .order('created_at', { ascending: false });
+
+    if (commentsError) {
+        return Error('Something went wrong, comments loading error...');
+    }
+
+    if (!session) {
+        return comments;
+    }
+
+    comments.forEach(comment => {
+        comment.is_owner = comment.user_id === session.user.id;
+    });
+
     const commentMap = {};
 
     for (let comment of comments) {
@@ -20,9 +38,9 @@ function assignChildren(comments) {
         }
     }
 
-    const topLevelComments = comments.filter(comment => comment.parent_comment_id === null);
+    comments = comments.filter(comment => comment.parent_comment_id === null);
 
-    return topLevelComments;
+    return comments;
 }
 
 export const load = async ({ params, locals: { supabase, ip_address, getSession } }) => {
@@ -56,16 +74,6 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         });
     }
 
-    let {data: comments, error: commentsError} = await supabase
-        .from('comments')
-        .select('*, profiles(username, avatar_url)')
-        .eq('book_id', bookId)
-        .order('created_at', { ascending: false });
-
-    if (commentsError) {
-        return errorx(500, 'Something went wrong, comments loading error...');
-    }
-
     const tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
     const user_id = session ? session.user.id : null;
 
@@ -73,12 +81,9 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         isOwner = false;
     } else {
         isOwner = bookContent[0].owner_id === session.user.id;
-        comments.forEach(comment => {
-            comment.is_owner = comment.user_id === session.user.id;
-        });
     }
 
-    comments = assignChildren(comments);
+    const comments = await loadComments(supabase, session, bookId);
 
     bookContent[0].is_owner = isOwner;
 

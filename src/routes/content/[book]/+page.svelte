@@ -44,6 +44,7 @@
     let isLiked = bookContent.is_liked;
     let likeActionActive = false;
     let reportActionActive = false;
+    let commentActionActive = false;
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(bookContent.created_at);
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
@@ -231,9 +232,13 @@
     }
 
     async function handleCommentSubmit() {
+        if (commentActionActive) return;
+
         if (commentText === '') {
             return;
         }
+
+        commentActionActive = true;
 
         const data = new FormData();
         data.append('bookId', bookContent.book_id);
@@ -276,6 +281,8 @@
                 }
             });
         }
+
+        commentActionActive = false;
     }
 
     async function handleBookDelete(){
@@ -381,8 +388,6 @@
             isTextAreaFocused = false;
         }
     }
-
-
 
     $: if (avatarUrl && finalAvatarUrl === '') downloadAvatar(avatarUrl);
 

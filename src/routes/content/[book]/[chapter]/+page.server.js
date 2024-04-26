@@ -1,6 +1,24 @@
 import {error as errorx} from '@sveltejs/kit';
 
-function assignChildren(comments) {
+async function loadComments(supabase, session, chapterId) {
+    let {data: comments, error: commentsError} = await supabase
+        .from('comments')
+        .select('*, profiles(username, avatar_url)')
+        .eq('chapter_id', chapterId)
+        .order('created_at', { ascending: false });
+
+    if (commentsError) {
+        return Error('Something went wrong, comments loading error...');
+    }
+
+    if (!session) {
+        return comments;
+    }
+
+    comments.forEach(comment => {
+        comment.is_owner = comment.user_id === session.user.id;
+    });
+
     const commentMap = {};
 
     for (let comment of comments) {
@@ -17,9 +35,9 @@ function assignChildren(comments) {
         }
     }
 
-    const topLevelComments = comments.filter(comment => comment.parent_comment_id === null);
+    comments = comments.filter(comment => comment.parent_comment_id === null);
 
-    return topLevelComments;
+    return comments;
 }
 
 export const load = async ({ params, locals: { supabase, ip_address, getSession } }) => {
@@ -51,26 +69,17 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     const tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
     const user_id = session ? session.user.id : null;
 
-    let {data: comments, error: commentsError} = await supabase
-        .from('comments')
-        .select('*, profiles(username, avatar_url)')
-        .eq('chapter_id', chapterId)
-        .order('created_at', { ascending: true });
-
-    if (commentsError) {
-        return errorx(500, 'Something went wrong, comments loading error...');
-    }
-
     if (!session) {
         isOwner = false;
     } else {
         isOwner = chapterContent[0].owner_id === session.user.id;
-        comments.forEach(comment => {
-            comment.is_owner = comment.user_id === session.user.id;
-        });
     }
 
-    comments = assignChildren(comments);
+    const comments = await loadComments(supabase, session, chapterId);
+
+    if (comments instanceof Error) {
+        return errorx(500, comments.message);
+    }
 
     // add isOwner to chapterContent
     chapterContent[0].is_owner = isOwner;

@@ -41,6 +41,7 @@
     let commentsCount = comments.length;
     let likeActionActive = false;
     let reportActionActive = false;
+    let commentActionActive = false;
     let text = 'Text not found!';
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(chapterContent.created_at);
@@ -209,9 +210,13 @@
     }
 
     async function handleCommentSubmit() {
+        if (commentActionActive) return;
+
         if (commentText === '') {
             return;
         }
+
+        commentActionActive = true;
 
         const data = new FormData();
         data.append('chapterId', chapterContent.chapter_id);
@@ -251,6 +256,8 @@
                 }
             });
         }
+
+        commentActionActive = false;
     }
 
     async function handleChapterDelete(){
