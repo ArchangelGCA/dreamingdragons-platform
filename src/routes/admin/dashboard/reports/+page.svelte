@@ -7,10 +7,6 @@
 
     let {openReports, closedReports} = data;
     $: ({openReports, closedReports} = data);
-
-    async function handleCloseReport() {
-        invalidateAll();
-    }
 </script>
 
 <div class="row mb-2">
@@ -43,7 +39,7 @@
                         <div class="row gy-2" use:autoAnimate>
                             {#each openReports.filter(report => report.report_type === 'book') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} on:closeReport={handleCloseReport}/>
+                                    <ReportItem {report} on:closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -55,7 +51,7 @@
                         <div class="row gy-2" use:autoAnimate>
                             {#each openReports.filter(report => report.report_type === 'chapter') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} on:closeReport={handleCloseReport}/>
+                                    <ReportItem {report} on:closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -91,7 +87,7 @@
                             {/if}
                             {#each closedReports.filter(report => report.report_type === 'book') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} on:closeReport={handleCloseReport}/>
+                                    <ReportItem {report} on:closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -108,7 +104,7 @@
                             {/if}
                             {#each closedReports.filter(report => report.report_type === 'chapter') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} on:closeReport={handleCloseReport}/>
+                                    <ReportItem {report} on:closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>

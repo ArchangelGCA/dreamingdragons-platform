@@ -38,9 +38,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     const session = await getSession();
 
     const result = await isAdmin(session, supabase);
-    if (result !== true) {
-        return result;
-    }
+    if (result !== true) return result;
 
     // Get all books and chapters
     const {data: content, error: booksError} = await supabase

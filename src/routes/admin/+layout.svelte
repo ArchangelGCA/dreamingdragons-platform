@@ -34,6 +34,11 @@
                         <i class="fas fa-flag"></i> Reports
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {$page.url.pathname === '/admin/dashboard/migrations' ? 'active' : ''}" href="/admin/dashboard/migrations">
+                        <i class="fas fa-exchange"></i> Migrations
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
