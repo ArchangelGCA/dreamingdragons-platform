@@ -5,6 +5,7 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import Cover from "$lib/components/profile/Cover.svelte";
     import Seo from "sk-seo";
+    import {invalidateAll} from "$app/navigation";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -92,6 +93,14 @@
             update();
         };
     };
+
+    $: if (profile) {
+        fullName = profile.full_name;
+        username = profile.username;
+        website = profile.website;
+        avatarUrl = profile.avatar_url;
+        coverUrl = profile.cover_url;
+    }
 </script>
 
 <svelte:head>
@@ -120,12 +129,12 @@
                             </h2>
                             <div id="avatarCollapse" class="accordion-collapse collapse" aria-labelledby="avatarHeading" data-bs-parent="#avatarAccordion">
                                 <div class="accordion-body">
-                                    <form class="form" method="post" action="?/update" use:enhance={handleSubmit} bind:this={profileForm}>
+                                    <form class="form" method="post" action="?/update">
                                         <input type="hidden" name="fullName" value={fullName} />
                                         <input type="hidden" name="username" value={username} />
                                         <input type="hidden" name="website" value={website} />
                                         <div class="row justify-content-center">
-                                            <Avatar {session} {supabase} bind:url={avatarUrl} size={10} on:upload={() => {profileForm.requestSubmit();}}/>
+                                            <Avatar {supabase} url={avatarUrl} size={10} on:upload={() => {invalidateAll()}}/>
                                         </div>
                                     </form>
                                 </div>
@@ -202,7 +211,7 @@
                             </h2>
                             <div id="coverCollapse" class="accordion-collapse collapse" aria-labelledby="coverHeading" data-bs-parent="#coverAccordion">
                                 <div class="accordion-body">
-                                    <Cover {session} {supabase} url={coverUrl} />
+                                    <Cover {session} {supabase} url={coverUrl} on:upload={() => {invalidateAll()}} />
                                 </div>
                             </div>
                         </div>

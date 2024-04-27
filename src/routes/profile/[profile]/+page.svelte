@@ -54,6 +54,14 @@
     }
 
     async function downloadAvatar(path) {
+        if (!path || path === null || path === '') {
+            avatarFound = false
+            return;
+        }
+        if (path.startsWith('blob:') || path.startsWith('http')) {
+            finalAvatarUrl = path;
+            return;
+        }
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path);
 
@@ -71,6 +79,14 @@
     }
 
     async function downloadCover(path) {
+        if (!path || path === null || path === '') {
+            avatarFound = false
+            return;
+        }
+        if (path.startsWith('blob:') || path.startsWith('http')) {
+            finalCoverUrl = path;
+            return;
+        }
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path);
 

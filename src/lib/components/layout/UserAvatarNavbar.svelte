@@ -14,6 +14,12 @@
     }
 
     const downloadImage = async (path) => {
+        if (avatarUrl !== '' || isAvatarLoaded || !path || path === null || path === '') return;
+        if (path.startsWith('blob:') || path.startsWith('http')) {
+            avatarUrl = path;
+            isAvatarLoaded = true;
+            return;
+        }
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path);
 

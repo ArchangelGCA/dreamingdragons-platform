@@ -4,13 +4,17 @@
 
     export let url;
     export let supabase;
-    export let session;
 
     let coverUrl = '';
     let uploading = false;
     let files;
 
     const downloadImage = async (path) => {
+        if (!path || path === '' || (coverUrl || coverUrl !== '')) return;
+        if (path.startsWith('blob:') || path.startsWith('http')) {
+            coverUrl = path;
+            return;
+        }
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path);
 
@@ -53,8 +57,6 @@
                 throw new Error('Failed to compress image');
             }
 
-            url = session.user.id + '/' + filePath;
-
             toast.push('Cover updated successfully!', {
                 theme: {
                     '--toastBackground': '#029fcc',
@@ -63,6 +65,9 @@
                     '--toastText': '#868686',
                 },
             });
+            setTimeout(() => {
+                dispatch('upload');
+            }, 100)
         } catch (error) {
             if (error instanceof Error) {
                 alert(error.message);
@@ -87,7 +92,7 @@
     </div>
     <input type="hidden" name="coverUrl" value={url} />
     <div class="col-12">
-        <label class="btn btn-success w-100 mt-2" for="cover">
+        <label class="btn btn-purple w-100 mt-2" for="cover">
             {uploading ? 'Uploading ...' : 'Upload'}
         </label>
         <input class="d-none"
@@ -100,3 +105,14 @@
         />
     </div>
 </div>
+
+<style>
+    .btn-purple {
+        background-color: #5c00a6;
+        color: #fff;
+    }
+
+    .btn-purple:hover {
+        background-color: #4a0086;
+    }
+</style>

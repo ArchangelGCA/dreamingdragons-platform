@@ -3,11 +3,11 @@
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
-    import autoAnimate from '@formkit/auto-animate';
     import {onMount} from "svelte";
     import Seo from "sk-seo";
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
+    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
 
     export let data;
     let avatarUrl;
@@ -79,24 +79,6 @@
             likes.length > 0 ? isLiked = true : isLiked = false;
         }
         likeActionActive = false;
-    }
-
-    async function downloadAvatar(path) {
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path);
-
-            if (error) {
-                throw error;
-            }
-
-            finalAvatarUrl = URL.createObjectURL(data);
-            loadedAvatar = true;
-        } catch (error) {
-            if (error instanceof Error) {
-                console.log('Error downloading image: ', error.message);
-                avatarFound = false;
-            }
-        }
     }
 
     async function handleView(){
@@ -287,8 +269,6 @@
         reportActionActive = false;
     }
 
-    $: if (avatarUrl && finalAvatarUrl === '') downloadAvatar(avatarUrl);
-
     const seo = {
         title: bookContent.book_title + ' by ' + bookContent.owner_username + ' | Roses In The Flames',
         description: bookContent.book_description,
@@ -319,17 +299,7 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
-                    <a class="w-auto" href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
-                        {#if loadedAvatar === false}
-                            <div class="placeholder-glow" style="height: 70px; width: 70px;">
-                                <div class="placeholder rounded-circle w-100 h-100"></div>
-                            </div>
-                        {:else if avatarFound === true}
-                            <img src="{finalAvatarUrl}" alt="{bookContent.owner_username}" class="img-fluid rounded-circle" style="height: 70px; width: 70px;" loading="lazy">
-                        {:else}
-                            <img class="img-fluid rounded-circle bg-purple py-3 py-lg-5" alt="Avatar Not Found!">
-                        {/if}
-                    </a>
+                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} {supabase} size="80px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.book_title}</p>

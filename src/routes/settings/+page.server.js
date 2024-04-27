@@ -1,6 +1,37 @@
-import { fail, redirect } from '@sveltejs/kit'
-import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH, PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} from "$env/static/public";
+import { fail, redirect } from '@sveltejs/kit';
+import PocketBase from 'pocketbase';
+import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
+import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH, PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH, PUBLIC_POCKETBASE_URL} from "$env/static/public";
 import sharp from 'sharp';
+
+const uploadImage = async (image, user_id, old_url) => {
+
+    // Assign to image a random name
+    const random = Math.random().toString(36).substring(2, 15);
+    const newImageName = `${random}.webp`;
+
+    const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
+    await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
+
+    const file = new File([image], newImageName, { type: 'image/webp', lastModified: Date.now() });
+
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('user_id', user_id);
+
+    const createdRecord = await pb.collection('profiles_media').create(formData);
+
+    // If present, delete the old image
+    if (old_url && old_url !== '' && old_url.startsWith(PUBLIC_POCKETBASE_URL)) {
+        const old_url_parts = old_url.split('/');
+        const old_url_id = old_url_parts[old_url_parts.length - 2];
+        await pb.collection('profiles_media').delete(old_url_id);
+    }
+
+    pb.authStore.clear();
+
+    return PUBLIC_POCKETBASE_URL + '/api/files/' + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
+}
 
 export const load = async ({ locals: { supabase, getSession } }) => {
     const session = await getSession();
@@ -84,8 +115,6 @@ export const actions = {
             throw new Error('No file path provided');
         }
 
-        filePath = session.user.id + '/' + filePath;
-
         const imageSharp = sharp(await file.arrayBuffer());
 
         const optimizedImage = await imageSharp
@@ -93,15 +122,6 @@ export const actions = {
             .webp({ quality: 80 })
             .toBuffer();
 
-        const { error } = await supabase.storage.from('avatars').upload(filePath, optimizedImage, {
-            contentType: 'image/webp',
-        });
-
-        if (error) {
-            throw new Error('Error uploading image');
-        }
-
-        // Delete the old avatar that we can get from profiles table
         const { error2, data: profile } = await supabase
             .from('profiles')
             .select('avatar_url')
@@ -112,12 +132,34 @@ export const actions = {
             throw new Error('Error fetching profile');
         }
 
-        const oldAvatarUrl = profile.avatar_url;
+        let avatarUrl = await uploadImage(optimizedImage, session.user.id, profile.avatar_url);
 
+        /*const { error } = await supabase.storage.from('avatars').upload(filePath, optimizedImage, {
+            contentType: 'image/webp',
+        });
+
+        if (error) {
+            throw new Error('Error uploading image');
+        }*/
+
+        /*
         if (oldAvatarUrl) {
             await supabase.storage
                 .from('avatars')
                 .remove([oldAvatarUrl]);
+        }*/
+
+        // Update the avatar url in profiles table
+        const { error: error3 } = await supabase
+            .from('profiles')
+            .update({
+            avatar_url: avatarUrl,
+            updated_at: new Date(),
+            })
+            .eq('id', session.user.id);
+
+        if (error3) {
+            throw new Error('Error updating profile');
         }
 
         return {
@@ -181,20 +223,24 @@ export const actions = {
             throw new Error('Error fetching profile');
         }
 
-        const oldCoverUrl = profile.cover_url;
+        let coverUrl = await uploadImage(optimizedImage, session.user.id, profile.cover_url);
+
+        /*const oldCoverUrl = profile.cover_url;
 
         if (oldCoverUrl) {
             await supabase.storage
                 .from('avatars')
                 .remove([oldCoverUrl]);
-        }
+        }*/
 
         // Update the cover url in profiles table
-        const { error3 } = await supabase.from('profiles').upsert({
-            id: session.user.id,
-            cover_url: filePath,
+        const { error3 } = await supabase
+            .from('profiles')
+            .update({
+            cover_url: coverUrl,
             updated_at: new Date(),
-        });
+            })
+            .eq('id', session.user.id);
 
         if (error3) {
             throw new Error('Error updating profile');

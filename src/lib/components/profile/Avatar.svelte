@@ -1,11 +1,11 @@
 <script>
-    import { createEventDispatcher } from 'svelte'
+    import { createEventDispatcher } from 'svelte';
+    import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
 
     export let size = 10
     export let url;
     export let supabase;
-    export let session;
 
     let avatarUrl = '';
     let uploading = false;
@@ -14,6 +14,11 @@
     const dispatch = createEventDispatcher();
 
     const downloadImage = async (path) => {
+        if (!path || path === '' || (avatarUrl || avatarUrl !== '')) return;
+        if (path.startsWith('blob:') || path.startsWith('http')) {
+            avatarUrl = path;
+            return;
+        }
         try {
             const { data, error } = await supabase.storage.from('avatars').download(path);
 
@@ -56,7 +61,13 @@
                 throw new Error('Failed to compress image');
             }
 
-            url = session.user.id + '/' + filePath;
+            avatarUrl = '';
+            toast.push('Image uploaded successfully', {
+                theme: {
+                    '--toastBackground': '#5c00a6',
+                    '--toastColor': '#fff',
+                },
+            });
             setTimeout(() => {
                 dispatch('upload');
             }, 100)
@@ -87,7 +98,7 @@
     <input type="hidden" name="avatarUrl" value={url} />
 
     <div style="width: {size}em;">
-        <label class="btn btn-success w-100 mt-2" for="single">
+        <label class="btn btn-purple w-100 mt-2" for="single">
             {uploading ? 'Uploading ...' : 'Upload'}
         </label>
         <input class="d-none"
@@ -100,3 +111,13 @@
         />
     </div>
 </div>
+<style>
+    .btn-purple {
+        background-color: #5c00a6;
+        color: #fff;
+    }
+
+    .btn-purple:hover {
+        background-color: #4a0086;
+    }
+</style>
