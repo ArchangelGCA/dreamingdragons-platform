@@ -299,7 +299,7 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
-                    <a class="w-auto" href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Artist's profile">
+                    <a class="w-auto" href="/profile/{chapterContent.owner_id}">
                         <UserAvatar url={chapterContent.owner_avatar_url} username={chapterContent.owner_username} id={chapterContent.owner_id} size="80px"/>
                     </a>
                 </div>
