@@ -126,7 +126,7 @@
         title: (finalProfile ? finalProfile.username : 'Profile') + ' | Profile',
         description: 'Profile page of' +  (finalProfile ? finalProfile.username : 'Profile'),
         siteName: 'Roses In The Flames | Tales',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        imageURL: (avatarUrl ? avatarUrl : 'https://tales.rosesintheflames.com/favicon.webp'),
         author: 'ArchangelGCA'
     };
 </script>
