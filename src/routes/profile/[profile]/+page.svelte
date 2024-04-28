@@ -124,7 +124,7 @@
 
     const seo = {
         title: (finalProfile ? finalProfile.username : 'Profile') + ' | Profile',
-        description: 'Profile page of' +  (finalProfile ? finalProfile.username : 'Profile'),
+        description: 'Profile page of ' +  (finalProfile ? finalProfile.username : 'Profile'),
         siteName: 'Roses In The Flames | Tales',
         imageURL: (avatarUrl ? avatarUrl : 'https://tales.rosesintheflames.com/favicon.webp'),
         author: 'ArchangelGCA'
