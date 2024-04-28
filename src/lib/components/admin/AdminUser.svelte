@@ -412,26 +412,8 @@
         isResetCoverActive = false;
     }
 
-    async function downloadCover(path) {
-        if (finalCoverUrl !== '') return;
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path);
-
-            if (error) {
-                throw error;
-            }
-
-            finalCoverUrl = URL.createObjectURL(data);
-        } catch (error) {
-            if (error instanceof Error) {
-                console.log('Error downloading image: ', error.message);
-                finalCoverUrl = '';
-            }
-        }
-    }
-
     $: if (profile && profile.cover_url && finalCoverUrl === '') {
-        downloadCover(profile.cover_url);
+        finalCoverUrl = profile.cover_url;
     }
 </script>
 
@@ -440,7 +422,7 @@
         <div class="col-12">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-auto my-auto mb-3 mb-md-auto">
-                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {supabase} size="100px" />
+                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} size="100px" />
                 </div>
                 <div class="col-12 col-md-auto my-auto">
                     <h1 class="h1 text-center">{profile.username}</h1>
@@ -466,7 +448,7 @@
                         <div class="accordion-body">
                             <div class="row">
                                 <div class="col-12 col-md-6 mb-3 mb-md-auto my-auto">
-                                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {supabase} size="200px" />
+                                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} size="200px" />
                                 </div>
                                 <div class="col-12 col-md-6 my-auto">
                                     <p>Full Name: {profile.full_name}</p>
@@ -480,7 +462,7 @@
                                     <p class="h5 text-center">Profile cover: </p>
                                     {#if profile.cover_url && finalCoverUrl}
                                         <a href="{finalCoverUrl}" target="_blank">
-                                            <img src={finalCoverUrl} alt="Profile cover" class="img-fluid rounded-4" on:load={() => downloadCover(profile.cover_url)} use:tooltip={{...tooltipConfig}} title="View Cover" />
+                                            <img src={finalCoverUrl} alt="Profile cover" class="img-fluid rounded-4" use:tooltip={{...tooltipConfig}} title="View Cover" />
                                         </a>
                                     {:else}
                                         <p class="text-center text-warning">No cover image</p>

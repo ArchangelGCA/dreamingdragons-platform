@@ -185,7 +185,7 @@
                                         <div class="mb-3">
                                             <input
                                                     type="submit"
-                                                    class="btn btn-success w-100"
+                                                    class="btn btn-purple w-100"
                                                     value={loading ? 'Loading...' : 'Update'}
                                                     disabled={loading}
                                             />
@@ -236,6 +236,15 @@
         background: linear-gradient(270deg, #0b0086, #5c00a6);
         background-size: 200% 200%;
         animation: Gradient 10s ease infinite, tranform 1s ease-in-out;
+    }
+
+    .btn-purple {
+        background-color: #5c00a6;
+        color: #fff;
+    }
+
+    .btn-purple:hover {
+        background-color: #4a0086;
     }
 
     @keyframes Gradient {

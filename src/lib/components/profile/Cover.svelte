@@ -3,33 +3,10 @@
     import {toast} from "@zerodevx/svelte-toast";
 
     export let url;
-    export let supabase;
 
     let coverUrl = '';
     let uploading = false;
     let files;
-
-    const downloadImage = async (path) => {
-        if (!path || path === '' || (coverUrl || coverUrl !== '')) return;
-        if (path.startsWith('blob:') || path.startsWith('http')) {
-            coverUrl = path;
-            return;
-        }
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path);
-
-            if (error) {
-                throw error;
-            }
-
-            const url = URL.createObjectURL(data);
-            coverUrl = url;
-        } catch (error) {
-            if (error instanceof Error) {
-                console.log('Error downloading image: ', error.message);
-            }
-        }
-    }
 
     async function uploadCover() {
         try {
@@ -77,7 +54,9 @@
         }
     }
 
-    $: if (url) downloadImage(url);
+    $: if (url && url !== '') {
+        coverUrl = url;
+    }
 </script>
 
 <div class="row justify-content-center">

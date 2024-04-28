@@ -21,7 +21,7 @@
     };
 
     export let data;
-    let { session, supabase, profile, isOwner, isFollowing } = data;
+    let { session, profile, isOwner, isFollowing } = data;
 
     let finalProfile = null;
     let avatarUrl = '';
@@ -50,56 +50,6 @@
         if (finalProfile.cover_url && finalProfile.cover_url !== null) {
             coverUrl = finalProfile.cover_url;
             hasCustomCover = true;
-        }
-    }
-
-    async function downloadAvatar(path) {
-        if (!path || path === null || path === '') {
-            avatarFound = false
-            return;
-        }
-        if (path.startsWith('blob:') || path.startsWith('http')) {
-            finalAvatarUrl = path;
-            return;
-        }
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path);
-
-            if (error) {
-                throw error;
-            }
-
-            finalAvatarUrl = URL.createObjectURL(data);
-        } catch (error) {
-            if (error instanceof Error) {
-                console.log('Error downloading image: ', error.message);
-                avatarFound = false;
-            }
-        }
-    }
-
-    async function downloadCover(path) {
-        if (!path || path === null || path === '') {
-            avatarFound = false
-            return;
-        }
-        if (path.startsWith('blob:') || path.startsWith('http')) {
-            finalCoverUrl = path;
-            return;
-        }
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path);
-
-            if (error) {
-                throw error;
-            }
-
-            finalCoverUrl = URL.createObjectURL(data);
-        } catch (error) {
-            if (error instanceof Error) {
-                console.log('Error downloading image: ', error.message);
-                avatarFound = false;
-            }
         }
     }
 
@@ -169,8 +119,8 @@
         followActionActive = false;
     }
 
-    $: if (avatarUrl) downloadAvatar(avatarUrl);
-    $: if (coverUrl) downloadCover(coverUrl);
+    $: if (avatarUrl && avatarUrl !== null && avatarUrl !== '') {finalAvatarUrl = avatarUrl}
+    $: if (coverUrl && coverUrl !== null && coverUrl !== '') {finalCoverUrl = coverUrl}
 
     const seo = {
         title: (finalProfile ? finalProfile.username : 'Profile') + ' | Profile',

@@ -299,7 +299,7 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
-                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} {supabase} size="80px"/>
+                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} size="80px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.book_title}</p>

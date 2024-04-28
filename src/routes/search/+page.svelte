@@ -131,7 +131,7 @@
                         {:else}
                             {#each profiles as profile (profile.owner_id)}
                                 <div class="col-auto">
-                                    <UserAvatar url={profile.owner_avatar_url} username={profile.owner_username} id={profile.owner_id} {supabase} size="60px" />
+                                    <UserAvatar url={profile.owner_avatar_url} username={profile.owner_username} id={profile.owner_id} size="60px" />
                                 </div>
                             {/each}
                         {/if}

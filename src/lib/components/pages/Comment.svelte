@@ -23,37 +23,10 @@
         },
         theme: 'text-center w-auto'
     };
-
-    let finalAvatarUrl = '';
-    let loadedAvatar = false;
-    let avatarFound = true;
-    let avatarUrl = comment.profiles.avatar_url;
     let replyContent = '';
     let isHovering = false;
     let isReplyVisible = false;
     let isReplyActionActive = false;
-
-    async function downloadAvatar(path) {
-        if (path.startsWith('blob:')) {
-            finalAvatarUrl = path;
-            loadedAvatar = true;
-            return;
-        }
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path);
-            if (error) {
-                throw error;
-            }
-
-            finalAvatarUrl = URL.createObjectURL(data);
-            loadedAvatar = true;
-        } catch (error) {
-            if (error instanceof Error) {
-                console.log('Error downloading image: ', error.message);
-                avatarFound = false;
-            }
-        }
-    }
 
     async function handleInvalidate(){
         dispatch('invalidate');
@@ -173,13 +146,11 @@
 
     const createdAt = new Date(comment.created_at);
     const createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
-
-    $: if (avatarUrl) downloadAvatar(avatarUrl);
 </script>
 
 <div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
     <div class="col-auto">
-        <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.user_id} {supabase} size="50px" />
+        <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.user_id} size="50px" />
     </div>
     <div class="col align-middle pt-1">
         <p class="mb-0"><a class="link-light text-decoration-none" href="/profile/{comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>

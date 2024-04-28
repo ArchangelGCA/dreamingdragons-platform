@@ -5,35 +5,12 @@
 
     export let size = 10
     export let url;
-    export let supabase;
 
     let avatarUrl = '';
     let uploading = false;
     let files;
 
     const dispatch = createEventDispatcher();
-
-    const downloadImage = async (path) => {
-        if (!path || path === '' || (avatarUrl || avatarUrl !== '')) return;
-        if (path.startsWith('blob:') || path.startsWith('http')) {
-            avatarUrl = path;
-            return;
-        }
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path);
-
-            if (error) {
-                throw error;
-            }
-
-            const url = URL.createObjectURL(data);
-            avatarUrl = url;
-        } catch (error) {
-            if (error instanceof Error) {
-                console.log('Error downloading image: ', error.message);
-            }
-        }
-    }
 
     const uploadAvatar = async () => {
         try {
@@ -80,7 +57,7 @@
         }
     }
 
-    $: if (url) downloadImage(url);
+    $: if (url) avatarUrl = url;
 </script>
 
 <div class="col-auto">

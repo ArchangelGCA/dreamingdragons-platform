@@ -93,7 +93,7 @@
                 <div class="row row-horizontal flex-nowrap ps-1 pe-1 gx-4 gx-md-5">
                     {#each followed as follow (follow.id)}
                         <div class="col-auto py-2">
-                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {supabase} size="45px" />
+                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} size="45px" />
                         </div>
                     {/each}
                 </div>

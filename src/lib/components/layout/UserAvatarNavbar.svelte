@@ -1,7 +1,6 @@
 <script>
     export let url = '';
     export let username = '';
-    export let supabase;
     export let size = '100px';
 
     export let classes = '';
@@ -9,36 +8,9 @@
     let avatarUrl = '';
     let isAvatarLoaded = false;
 
-    if (!supabase) {
-        throw new Error('supabase is not defined');
-    }
-
-    const downloadImage = async (path) => {
-        if (avatarUrl !== '' || isAvatarLoaded || !path || path === null || path === '') return;
-        if (path.startsWith('blob:') || path.startsWith('http')) {
-            avatarUrl = path;
-            isAvatarLoaded = true;
-            return;
-        }
-        try {
-            const { data, error } = await supabase.storage.from('avatars').download(path);
-
-            if (error) {
-                throw error;
-            }
-
-            const url = URL.createObjectURL(data);
-            avatarUrl = url;
-            isAvatarLoaded = true;
-        } catch (error) {
-            if (error instanceof Error) {
-                console.log('Error downloading image: ', error.message);
-            }
-        }
-    }
-
     $: if (url && url !== '' && !isAvatarLoaded) {
-        downloadImage(url)
+        avatarUrl = url;
+        isAvatarLoaded = true;
     } else if ((!url || url === '') && avatarUrl !== '') {
         avatarUrl = '';
         isAvatarLoaded = false;
