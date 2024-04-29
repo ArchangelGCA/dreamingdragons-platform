@@ -39,7 +39,7 @@ const uploadImage = async (image, user_id, old_url) => {
 }
 
 export const load = async ({ locals: { supabase, getSession } }) => {
-    const session = await getSession();
+    const {session} = await getSession();
 
     if (!session) {
         throw redirect(303, '/login');
@@ -51,7 +51,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
         .eq('id', session.user.id)
         .single();
 
-    return { session, profile };
+    return { profile };
 }
 
 export const actions = {
@@ -63,7 +63,7 @@ export const actions = {
         const website = formData.get('website');
         const avatarUrl = formData.get('avatarUrl');
 
-        const session = await getSession();
+        const {session} = await getSession();
         if (!session) {
             throw redirect(303, '/login');
         }
@@ -95,14 +95,14 @@ export const actions = {
         }
     },
     signout: async ({ locals: { supabase, getSession } }) => {
-        const session = await getSession()
+        const {session} = await getSession()
         if (session) {
             await supabase.auth.signOut()
             throw redirect(303, '/')
         }
     },
     profileicon: async ({ request, locals: { supabase, getSession } }) => {
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             throw new Error('Unauthorized');
@@ -160,7 +160,7 @@ export const actions = {
         }
     },
     profilecover: async ({ request, locals: { supabase, getSession } }) => {
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             throw new Error('Unauthorized');
@@ -178,8 +178,6 @@ export const actions = {
         if (!filePath) {
             throw new Error('No file path provided');
         }
-
-        filePath = session.user.id + '/' + filePath;
 
         const imageSharp = sharp(await file.arrayBuffer());
 

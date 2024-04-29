@@ -1,7 +1,7 @@
 import {error as errorx} from '@sveltejs/kit';
 
 export const load = async ( { locals: { supabase, getSession } }) => {
-    const session = await getSession();
+    const { session } = await getSession();
 
     /****************************************************/
     // BEGINNING GLOBAL CODE EXECUTED FOR EVERY VISITOR //

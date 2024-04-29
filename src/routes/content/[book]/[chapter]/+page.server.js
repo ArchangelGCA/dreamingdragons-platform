@@ -39,7 +39,7 @@ async function loadComments(supabase, session, chapterId) {
 }
 
 export const load = async ({ params, locals: { supabase, ip_address, getSession } }) => {
-    const session = await getSession();
+    const {session} = await getSession();
     let isOwner = false;
 
     if (!params.book || !params.chapter) {
@@ -89,7 +89,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
 export const actions = {
     like: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {
@@ -171,7 +171,7 @@ export const actions = {
     },
     add_comment: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {
@@ -232,7 +232,7 @@ export const actions = {
     },
     delete_chapter: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {
@@ -280,7 +280,7 @@ export const actions = {
     },
     report: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {

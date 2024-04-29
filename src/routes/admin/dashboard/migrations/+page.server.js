@@ -36,7 +36,7 @@ async function isAdmin(session, supabase) {
 
 
 export const load = async ( { locals: { supabase, getSession } }) => {
-    const session = await getSession();
+    const {session} = await getSession();
 
     const result = await isAdmin(session, supabase);
     if (result !== true) return result;
@@ -44,7 +44,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
 export const actions = {
     migrate_avatars: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
 
         const result = await isAdmin(session, supabase);
         if (result !== true) {
@@ -138,7 +138,7 @@ export const actions = {
         }
     },
     migrate_covers: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
 
         const result = await isAdmin(session, supabase);
         if (result !== true) {

@@ -30,6 +30,6 @@
   "type": "module",
   "dependencies": {
     "@supabase/ssr": "^0.3.0",
-    "@supabase/supabase-js": "^2.42.5"
+    "@supabase/supabase-js": "^2.42.7"
   }
 }

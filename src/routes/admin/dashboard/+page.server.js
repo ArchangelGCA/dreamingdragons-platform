@@ -32,7 +32,7 @@ async function isAdmin(session, supabase) {
 }
 
 export const load = async ( { locals: { supabase, getSession } }) => {
-    const session = await getSession();
+    const {session} = await getSession();
     let maxUsers = 1000000;
 
     const result = await isAdmin(session, supabase);
@@ -80,7 +80,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
 export const actions = {
     enable_panic: async ({locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const result = await isAdmin(session, supabase);
         if (result !== true) {
             return result;
@@ -119,7 +119,7 @@ export const actions = {
         }
     },
     disable_panic: async ({locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const result = await isAdmin(session, supabase);
         if (result !== true) {
             return result;

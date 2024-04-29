@@ -33,7 +33,7 @@ async function isAdmin(session, supabase) {
 }
 
 export const load = async ( { locals: { supabase, getSession } }) => {
-    const session = await getSession();
+    const {session} = await getSession();
     let maxUsers = 1000000;
 
     const result = await isAdmin(session, supabase);
@@ -85,7 +85,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
 export const actions = {
     delete_warning: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const formData = Object.fromEntries(await request.formData());
 
         const result = await isAdmin(session, supabase);
@@ -151,7 +151,7 @@ export const actions = {
     },
     send_warning: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         const result = await isAdmin(session, supabase);
         if (result !== true) {
@@ -204,7 +204,7 @@ export const actions = {
         }
     },
     toggle_upload: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const formData = Object.fromEntries(await request.formData());
 
         const result = await isAdmin(session, supabase);
@@ -256,7 +256,7 @@ export const actions = {
         }
     },
     reset_avatar: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const formData = Object.fromEntries(await request.formData());
 
         const result = await isAdmin(session, supabase);
@@ -333,7 +333,7 @@ export const actions = {
         }
     },
     reset_cover: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const formData = Object.fromEntries(await request.formData());
 
         const result = await isAdmin(session, supabase);

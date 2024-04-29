@@ -53,7 +53,7 @@ const uploadImage = async (image) => {
 }
 
 export const load = async ({ locals: { supabase, getSession} }) => {
-    const session = await getSession();
+    const {session} = await getSession();
 
     if (!session) {
         throw redirect(303, '/login');
@@ -85,7 +85,7 @@ export const load = async ({ locals: { supabase, getSession} }) => {
 export const actions = {
     postbook: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             throw redirect(303, '/login');
@@ -209,7 +209,7 @@ export const actions = {
     },
     postchapter: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             throw redirect(303, '/login');
@@ -305,7 +305,7 @@ export const actions = {
         }
     },
     tagsuggestions: async ({ request, locals: { supabase, getSession } }) => {
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {

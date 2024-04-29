@@ -1,7 +1,7 @@
 import {error as errorx, redirect} from "@sveltejs/kit";
 
 export const load = async ({ params, locals: { supabase, getSession} }) => {
-    const session = await getSession();
+    const {session} = await getSession();
 
     if (!session) {
         throw redirect(303, '/login');
@@ -55,7 +55,7 @@ export const load = async ({ params, locals: { supabase, getSession} }) => {
 
 export const actions = {
     tagsuggestions: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {
@@ -96,7 +96,7 @@ export const actions = {
     },
     editchapter: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             throw redirect(303, '/login');

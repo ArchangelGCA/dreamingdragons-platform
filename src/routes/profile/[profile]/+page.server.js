@@ -1,7 +1,7 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 
 export const load = async ( { params, locals: { supabase, getSession } }) => {
-    const session = await getSession();
+    const {session} = await getSession();
     const id = params.profile;
 
     const results = {
@@ -97,7 +97,7 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
 export const actions = {
     like: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {
@@ -179,7 +179,7 @@ export const actions = {
     },
     follow: async ({ request, locals: { supabase, getSession } }) => { // TODO: Refactor to use rules directly on database.
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {

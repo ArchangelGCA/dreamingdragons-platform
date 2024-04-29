@@ -40,9 +40,11 @@
 
     onMount(() => {
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, _session) => {
-            invalidateAll();
-        });
+        const { data } = supabase.auth.onAuthStateChange((event, _session) => {
+            if (_session?.expires_at !== session?.expires_at) {
+                invalidateAll();
+            }
+        })
 
         // Close navbar when open another page, with animation
         document.querySelectorAll('.nav-link').forEach((element) => {
@@ -58,7 +60,7 @@
             await fetchNewNotifications();
         }, notifsUpdateInterval);
 
-        return () => subscription.unsubscribe();
+        return () => data.subscription.unsubscribe()
     });
 
     onDestroy(() => {

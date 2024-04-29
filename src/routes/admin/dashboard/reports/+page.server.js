@@ -29,7 +29,7 @@ async function isAdmin(session, supabase) {
 }
 
 export const load = async ( { locals: { supabase, getSession } }) => {
-    const session = await getSession();
+    const {session} = await getSession();
     let maxUsers = 1000000;
 
     const result = await isAdmin(session, supabase);
@@ -65,7 +65,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
 export const actions = {
     close_report: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const formData = Object.fromEntries(await request.formData());
 
         const result = await isAdmin(session, supabase);

@@ -5,7 +5,7 @@ import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/priv
 import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_COVER_MAX_RESIZE, PUBLIC_POCKETBASE_URL, PUBLIC_POCKETBASE_URL_IMG_API } from "$env/static/public";
 
 export const load = async ({ params, locals: { supabase, getSession} }) => {
-    const session = await getSession();
+    const {session} = await getSession();
 
     if (!session) {
         throw redirect(303, '/login');
@@ -42,7 +42,7 @@ export const load = async ({ params, locals: { supabase, getSession} }) => {
 
 export const actions = {
     tagsuggestions: async ({ request, locals: { supabase, getSession } }) => {
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             return {
@@ -83,7 +83,7 @@ export const actions = {
     },
     editbook: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         if (!session) {
             throw redirect(303, '/login');

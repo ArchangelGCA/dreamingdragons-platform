@@ -23,19 +23,23 @@ export const handle = async ({ event, resolve }) => {
      * A convenience helper so we can just call await getSession() instead const { data: { session } } = await supabase.auth.getSession()
      */
     event.locals.getSession = async () => {
-        const { data: getUserData, error: err }  = await event.locals.supabase.auth.getUser();
-        if (err) return null;
+        const {data: { session }} = await event.locals.supabase
+            .auth
+            .getSession()
+        if (!session) {
+            return { session: null, user: null }
+        }
 
-        if (getUserData.user == null) return null;
-        
-        return getUserData;
+        const {data: { user }, error} = await event.locals.supabase
+            .auth
+            .getUser()
+        if (error) {
+            return { session: null, user: null }
+        }
 
-        // TODO: Full test of this, maybe we don't need getSession at all. We are using user.id afterall.
-        /*const {
-            data: { session },
-        } = await event.locals.supabase.auth.getSession();
+        delete session.user;
 
-        return session;*/
+        return { session: Object.assign({}, session, { user }), user };
     }
     return resolve(event, {
         filterSerializedResponseHeaders(name) {

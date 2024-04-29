@@ -35,7 +35,7 @@ async function isAdmin(session, supabase) {
 }
 
 export const load = async ( { locals: { supabase, getSession } }) => {
-    const session = await getSession();
+    const {session} = await getSession();
 
     const result = await isAdmin(session, supabase);
     if (result !== true) return result;
@@ -56,7 +56,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
 export const actions = {
     delete_book: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const formData = Object.fromEntries(await request.formData());
 
         const result = await isAdmin(session, supabase);
@@ -159,7 +159,7 @@ export const actions = {
         }
     },
     delete_chapter: async ({request, locals: {supabase, getSession}}) => {
-        const session = await getSession();
+        const {session} = await getSession();
         const formData = Object.fromEntries(await request.formData());
 
         const result = await isAdmin(session, supabase);
@@ -254,7 +254,7 @@ export const actions = {
     },
     edit_book: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
-        const session = await getSession();
+        const {session} = await getSession();
 
         const result = await isAdmin(session, supabase);
         if (result !== true) {
