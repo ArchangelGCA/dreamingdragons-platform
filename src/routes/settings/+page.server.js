@@ -6,28 +6,33 @@ import sharp from 'sharp';
 
 const uploadImage = async (image, user_id, old_url) => {
 
-    // Assign to image a random name
+    // Random image name
     const random = Math.random().toString(36).substring(2, 15);
     const newImageName = `${random}.webp`;
 
+    // Admin Pocketbase client
     const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
     await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
 
+    // Create image file for FormData
     const file = new File([image], newImageName, { type: 'image/webp', lastModified: Date.now() });
 
+    // Create FormData
     const formData = new FormData();
     formData.append('image', file);
     formData.append('user_id', user_id);
 
+    // Upload image
     const createdRecord = await pb.collection('profiles_media').create(formData);
 
-    // If present, delete the old image
+    // If found, delete old image
     if (old_url && old_url !== '' && old_url.startsWith(PUBLIC_POCKETBASE_URL)) {
         const old_url_parts = old_url.split('/');
         const old_url_id = old_url_parts[old_url_parts.length - 2];
         await pb.collection('profiles_media').delete(old_url_id);
     }
 
+    // Close session
     pb.authStore.clear();
 
     return PUBLIC_POCKETBASE_URL + '/api/files/' + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
@@ -134,21 +139,6 @@ export const actions = {
 
         let avatarUrl = await uploadImage(optimizedImage, session.user.id, profile.avatar_url);
 
-        /*const { error } = await supabase.storage.from('avatars').upload(filePath, optimizedImage, {
-            contentType: 'image/webp',
-        });
-
-        if (error) {
-            throw new Error('Error uploading image');
-        }*/
-
-        /*
-        if (oldAvatarUrl) {
-            await supabase.storage
-                .from('avatars')
-                .remove([oldAvatarUrl]);
-        }*/
-
         // Update the avatar url in profiles table
         const { error: error3 } = await supabase
             .from('profiles')
@@ -204,16 +194,8 @@ export const actions = {
             .webp({ quality: 80 })
             .toBuffer();
 
-        const { error } = await supabase.storage.from('avatars').upload(filePath, optimizedImage, {
-            contentType: 'image/webp',
-        });
-
-        if (error) {
-            throw new Error('Error uploading Cover');
-        }
-
-        // Delete the old cover that we can get from profiles table
-        const { error2, data: profile } = await supabase
+        // Get old cover url
+        const { data: profile, error: error2 } = await supabase
             .from('profiles')
             .select('cover_url')
             .eq('id', session.user.id)
@@ -223,17 +205,10 @@ export const actions = {
             throw new Error('Error fetching profile');
         }
 
+        // Upload image to PocketBase
         let coverUrl = await uploadImage(optimizedImage, session.user.id, profile.cover_url);
 
-        /*const oldCoverUrl = profile.cover_url;
-
-        if (oldCoverUrl) {
-            await supabase.storage
-                .from('avatars')
-                .remove([oldCoverUrl]);
-        }*/
-
-        // Update the cover url in profiles table
+        // Update with new Cover url
         const { error3 } = await supabase
             .from('profiles')
             .update({

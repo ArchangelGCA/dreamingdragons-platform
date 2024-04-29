@@ -18,7 +18,6 @@
     };
 
     export let profile;
-    export let supabase;
     let isWarningActive = false;
     let isSendWarningActive = false;
     let isCanUploadActive = false;

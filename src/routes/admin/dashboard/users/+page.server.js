@@ -61,7 +61,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     const { data: { users }, error: listUsersError } = await adminSupabase.auth.admin.listUsers({
         page: 1,
         perPage: maxUsers
-    })
+    });
 
     if (listUsersError) {
         console.error(listUsersError);
@@ -76,7 +76,6 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         profile.notifications = profile.notifications.filter(notification => notification.type.includes("warning"));
         profile.notifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     });
-
 
     return {
         profiles
