@@ -1,7 +1,8 @@
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SUPABASE_SERVICE_ROLE_SECRET_KEY } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL, PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/public';
+import { SUPABASE_SERVICE_ROLE_SECRET_KEY, PUBLIC_POCKETBASE_URL } from '$env/static/private';
 import { createClient } from '@supabase/supabase-js';
 import {error as errorx} from '@sveltejs/kit';
+import PocketBase from "pocketbase";
 
 async function isAdmin(session, supabase) {
     if (!session) {
@@ -297,18 +298,14 @@ export const actions = {
         }
 
         if (userAvatar.avatar_url) {
-            const { error: avatarError } = await supabase.storage
-                .from('avatars')
-                .remove([userAvatar.avatar_url]);
+            const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
+            await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
 
-            if (avatarError) {
-                return {
-                    status: 500,
-                    body: {
-                        message: avatarError.message
-                    }
-                }
-            }
+            const old_url_parts = userAvatar.avatar_url.split('/');
+            const old_url_id = old_url_parts[old_url_parts.length - 2];
+            await pb.collection('profiles_media').delete(old_url_id);
+
+            pb.authStore.clear();
         }
 
         const { data: user, error: userError } = await adminSupabase
@@ -378,18 +375,14 @@ export const actions = {
         }
 
         if (userCover.cover_url) {
-            const {error: coverError} = await supabase.storage
-                .from('avatars')
-                .remove([userCover.cover_url]);
+            const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
+            await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
 
-            if (coverError) {
-                return {
-                    status: 500,
-                    body: {
-                        message: coverError.message
-                    }
-                }
-            }
+            const old_url_parts = userCover.cover_url.split('/');
+            const old_url_id = old_url_parts[old_url_parts.length - 2];
+            await pb.collection('profiles_media').delete(old_url_id);
+
+            pb.authStore.clear();
         }
 
         const {data: user, error: userError} = await adminSupabase
