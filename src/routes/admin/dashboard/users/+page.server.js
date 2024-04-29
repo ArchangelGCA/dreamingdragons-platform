@@ -1,5 +1,5 @@
-import { PUBLIC_SUPABASE_URL, PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/public';
-import { SUPABASE_SERVICE_ROLE_SECRET_KEY, PUBLIC_POCKETBASE_URL } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL, PUBLIC_POCKETBASE_URL } from '$env/static/public';
+import { SUPABASE_SERVICE_ROLE_SECRET_KEY, PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
 import { createClient } from '@supabase/supabase-js';
 import {error as errorx} from '@sveltejs/kit';
 import PocketBase from "pocketbase";
