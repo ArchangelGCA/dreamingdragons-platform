@@ -26,9 +26,7 @@
     async function handleCommentSubmit() {
         if (commentActionActive) return;
 
-        if (commentText === '') {
-            return;
-        }
+        if (commentText === '') return;
 
         commentActionActive = true;
 

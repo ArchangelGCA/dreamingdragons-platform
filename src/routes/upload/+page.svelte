@@ -209,6 +209,58 @@
         const formData = new FormData(event.target);
         formData.append('description', editorContentTale);
 
+        const file = formData.get('image');
+        if (!file) {
+            toast.push('Error: No image selected', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            activeUpload = false;
+            return;
+        }
+
+        if (!file.type.startsWith('image/')) {
+            toast.push('Error: File is not an image', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            activeUpload = false;
+            return;
+        }
+
+        if (file.size > PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES) {
+            toast.push('Error: File is too large', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            activeUpload = false;
+            return;
+        }
+
+        const image = new Image();
+
+        image.onload = () => {
+            if (image.width > PUBLIC_COVER_MAX_WIDTH || image.height > PUBLIC_COVER_MAX_HEIGHT) {
+                toast.push('Error: Image resolution is too high', {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+                activeUpload = false;
+            }
+        };
+
+        // Due to previous check.
+        if (!activeUpload) return;
+
+
         const toastId = toast.push('Uploading...', {
             duration: 600000,
             theme: {
