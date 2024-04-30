@@ -287,7 +287,6 @@
     <slot></slot>
 </div>
 
-
 <div class="row border-top border-light-subtle pt-3 pb-2">
     <div class="col">
         <div class="row">
