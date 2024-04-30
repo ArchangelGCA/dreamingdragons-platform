@@ -10,6 +10,7 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import { page as pageStore } from '$app/stores';
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import {browser} from "$app/environment";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -99,6 +100,7 @@
         });
 
         getAvatarUrl();
+        loadAnalytics();
 
         intervalId = setInterval(async () => {
             await tick();
@@ -138,6 +140,7 @@
     let userData = null;
     let notificationsCount = 0;
     let allNotificationsLoaded = false;
+    let enabledAnalytics = false;
     if (notifications !== null && notifications.length !== 0) {
         notificationsCount = notifications.filter(notification => notification.watched === false).length;
     } else {
@@ -228,13 +231,42 @@
         }
     }
 
+    async function initAnalytics() {
+        enabledAnalytics = true;
+    }
+
     function handleScroll(event) {
         const target = event.target;
         if (target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 2)) {
             loadMoreNotifications();
         }
     }
+
+    function loadAnalytics() {
+        if (enabledAnalytics) {
+            console.log('Analytics enabled');
+            if (browser) {
+                window.dataLayer = window.dataLayer || [];
+                window.gtag = function gtag(){
+                    window.dataLayer.push(arguments);
+                }
+                window.gtag('js', new Date());
+
+                window.gtag('config', 'G-LY2BR2K443');
+            }
+        }
+    }
+
+    $: if (enabledAnalytics) {
+        loadAnalytics();
+    }
 </script>
+
+<svelte:head>
+    {#if enabledAnalytics}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-LY2BR2K443"></script>
+    {/if}
+</svelte:head>
 
 <SvelteToast />
 
@@ -332,7 +364,7 @@
     <slot></slot>
 </div>
 
-<GdprBanner {...gdprConfig}/>
+<GdprBanner {...gdprConfig} on:analytics={initAnalytics}/>
 
 <div class="row border-top border-light-subtle pt-3 pb-2">
     <div class="col">
