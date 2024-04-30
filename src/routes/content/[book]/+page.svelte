@@ -451,10 +451,6 @@
 
 <style>
 
-    #commentInput {
-        min-height: 100px;
-    }
-
     .form-floating>.form-control:focus~label,
     .form-floating>.form-control:not(:placeholder-shown)~label,
     .form-floating>.form-select~label {
@@ -493,22 +489,6 @@
     .btn-shortcut:hover {
         background-color: #4a007f;
         border-color: #4a007f;
-    }
-
-    .btn-comment-cancel {
-        background-color: rgba(109, 47, 157, 0.25);
-    }
-
-    .btn-comment-cancel:hover {
-        background-color: #4a007f;
-    }
-
-    .btn-comment {
-        background-color: rgba(92, 0, 166, 0.3);
-    }
-
-    .btn-comment:hover {
-        background-color: #4a007f;
     }
 
     .btn-link-secondary {

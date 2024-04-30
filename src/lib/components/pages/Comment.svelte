@@ -148,7 +148,7 @@
     const createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
 </script>
 
-<div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+<div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave} role="none">
     <div class="col-auto">
         <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.user_id} size="50px" />
     </div>

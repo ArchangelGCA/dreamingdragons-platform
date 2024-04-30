@@ -281,17 +281,17 @@
 <Seo {...seo} />
 
 <div class="container-xxl">
-    <div class="row justify-content-center">
+    <div class="row justify-content-center my-2">
         <div class="col-12 text-center px-0">
-            <a href="#title" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3 mt-3" use:tooltip={{...tooltipConfig}} title="Go to Text">
+            <a href="#title" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2" use:tooltip={{...tooltipConfig}} title="Go to Text">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-auto mb-4 mt-3 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
+        <div class="col-auto mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
             <a href="/content/{chapterContent.book_id}">
-                <img src="{chapterContent.book_cover_url}" alt="{chapterContent.book_title + ' ' + chapterContent.title}" class="img-fluid rounded-4" style="max-height: 60vh" loading="lazy">
+                <img src="{chapterContent.book_cover_url}" alt="{chapterContent.book_title + ' ' + chapterContent.title}" class="img-fluid rounded-4" style="max-height: 82vh" loading="lazy">
             </a>
         </div>
     </div>
@@ -437,11 +437,6 @@
 </div>
 
 <style>
-
-    #commentInput {
-        min-height: 100px;
-    }
-
     .form-floating>.form-control:focus~label,
     .form-floating>.form-control:not(:placeholder-shown)~label,
     .form-floating>.form-select~label {
@@ -484,22 +479,6 @@
     .btn-shortcut:hover {
         background-color: #4a007f;
         border-color: #4a007f;
-    }
-
-    .btn-comment-cancel {
-        background-color: rgba(109, 47, 157, 0.25);
-    }
-
-    .btn-comment-cancel:hover {
-        background-color: #4a007f;
-    }
-
-    .btn-comment {
-        background-color: rgba(92, 0, 166, 0.3);
-    }
-
-    .btn-comment:hover {
-        background-color: #4a007f;
     }
 
     .btn-link-secondary {
