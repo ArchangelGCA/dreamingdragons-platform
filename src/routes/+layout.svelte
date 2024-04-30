@@ -2,6 +2,8 @@
     import {invalidateAll} from '$app/navigation'
     import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";
+    import '$lib/css/banner.css';
+    import GdprBanner from '@beyonk/gdpr-cookie-consent-banner';
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import autoAnimate from '@formkit/auto-animate';
     import Notification from "$lib/components/layout/Notification.svelte";
@@ -20,6 +22,49 @@
         },
         theme: 'text-center w-auto'
     };
+
+    const gdprConfig = {
+        cookieName: 'cookies_content',
+
+        visible: true,
+
+        cookieConfig: {
+            domain: 'tales.rosesintheflames.com',
+            path: '/'
+        },
+        heading: 'Cookies & Privacy',
+        description: 'We use cookies to offer a better browsing experience, analyze site traffic, personalize content, and serve targeted advertisements. Please review our <a href="/legal/privacy-policy">privacy policy page</a>. By clicking accept, you consent to our privacy policy & use of cookies.',
+
+        acceptLabel: 'Confirm all',
+        rejectLabel: 'Reject all',
+        settingsLabel: 'Preferences',
+        closeLabel: 'Close window',
+        editLabel: 'Edit settings',
+
+        choices: {
+            necessary: {
+                label: "Necessary cookies",
+                description: "Used for cookie control. Can't be turned off.",
+                value: true
+            },
+            tracking: {
+                label: "Tracking cookies",
+                description: "Used for advertising purposes.",
+                value: true
+            },
+            analytics: {
+                label: "Analytics cookies",
+                description: "Used to control Google Analytics, a 3rd party tool offered by Google to track user behavior.",
+                value: true
+            },
+            marketing: {
+                label: "Marketing cookies",
+                description: "Used for marketing data.",
+                value: true
+            }
+        },
+        showEditIcon: true
+    }
 
     export let data;
 
@@ -286,6 +331,8 @@
     {/if}
     <slot></slot>
 </div>
+
+<GdprBanner {...gdprConfig}/>
 
 <div class="row border-top border-light-subtle pt-3 pb-2">
     <div class="col">
