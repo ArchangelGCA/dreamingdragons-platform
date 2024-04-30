@@ -122,7 +122,7 @@
                         '--toastColor': 'white'
                     }
                 });
-                dispatch('invalidate', result.data.comment);
+                dispatch('invalidate');
                 replyContent = '';
             } else {
                 toast.push('Error sending reply!', {
@@ -187,7 +187,7 @@
 {#if comment.children}
     <div class="row border-start border-light-subtle ms-5">
         <div class="col-12" use:autoAnimate>
-            {#each comment.children as child}
+            {#each comment.children as child (child.id)}
                 <Comment comment={child} {supabase} on:invalidate={handleInvalidate}/>
             {/each}
         </div>
