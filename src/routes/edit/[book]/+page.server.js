@@ -240,7 +240,9 @@ const uploadImage = async (image, cover_id) => {
     const resize = parseInt(PUBLIC_COVER_MAX_RESIZE);
 
     // Resize the image
-    let resizedImageSharp = imageSharp.resize(resize, resize, {
+    let resizedImageSharp = imageSharp
+        .rotate()
+        .resize(resize, resize, {
         fit: sharp.fit.inside,
         withoutEnlargement: true
     });
