@@ -41,17 +41,20 @@ const uploadImage = async (image, user_id, old_url) => {
 export const load = async ({ locals: { supabase, getSession } }) => {
     const {session} = await getSession();
 
-    if (!session) {
-        throw redirect(303, '/login');
+    const results = {
+        profile: null,
     }
 
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select(`username, full_name, website, avatar_url, cover_url`)
-        .eq('id', session.user.id)
-        .single();
+    if (session) {
+        const { data: profileData } = await supabase
+            .from('profiles')
+            .select(`username, full_name, website, avatar_url, cover_url`)
+            .eq('id', session.user.id)
+            .single();
+        results.profile = profileData;
+    }
 
-    return { profile };
+    return results;
 }
 
 export const actions = {

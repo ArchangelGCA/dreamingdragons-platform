@@ -1,11 +1,13 @@
 <script>
-    import { enhance } from '$app/forms';
+    import {enhance} from '$app/forms';
     import Avatar from '$lib/components/profile/Avatar.svelte';
     import {toast} from "@zerodevx/svelte-toast";
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltip} from "@svelte-plugins/tooltips";
     import Cover from "$lib/components/profile/Cover.svelte";
     import Seo from "sk-seo";
     import {invalidateAll} from "$app/navigation";
+    import {onMount} from "svelte";
+    import {browser} from "$app/environment";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -19,10 +21,18 @@
         theme: 'text-center w-auto'
     };
 
+    let analyticsEnabled;
+
+    onMount(() => {
+        if (browser) {
+            analyticsEnabled = window.localStorage.getItem('analyticsEnabled') === 'true';
+        }
+    });
+
     export let data;
 
-    let { session, supabase, profile } = data;
-    $: ({ session, supabase, profile } = data);
+    let {session, supabase, profile} = data;
+    $: ({session, supabase, profile} = data);
 
     let profileForm;
     let fullName = '';
@@ -80,7 +90,7 @@
 
     const handleSignOut = () => {
         loading = true
-        return async ({ update }) => {
+        return async ({update}) => {
             loading = false;
             toast.push('You have been signed out!', {
                 theme: {
@@ -94,6 +104,13 @@
         };
     };
 
+    async function handleAnalytics() {
+        analyticsEnabled = !analyticsEnabled;
+        if (browser) {
+            window.localStorage.setItem('analyticsEnabled', analyticsEnabled);
+        }
+    }
+
     $: if (profile) {
         fullName = profile.full_name;
         username = profile.username;
@@ -104,10 +121,10 @@
 </script>
 
 <svelte:head>
-    <title>{username} | Settings</title>
+    <title>{username ? username : 'Guest'} | Settings</title>
 </svelte:head>
 
-<Seo index="false" />
+<Seo index="false"/>
 
 <div class="container-xxl px-0" style="min-height: 70vh">
     <div class="row mt-3 mb-2 mx-1">
@@ -115,103 +132,176 @@
             <h1 class="text-center">Profile Settings</h1>
         </div>
     </div>
+    {#if !session}
+        <div class="row mt-3 mb-2 mx-1">
+            <div class="col-12 bg-animated-gradient bg-opacity-0 rounded-4 pt-2 mx-auto">
+                <h2 class="text-center">Please login to access full settings.</h2>
+            </div>
+        </div>
+    {/if}
     <div class="row mx-1 gy-2 pt-2 pb-2">
-        <div class="col-12 col-md-6">
-            <div class="row justify-content-center">
-                <!-- Avatar Accordion -->
-                <div class="col-12 px-1">
-                    <div class="accordion" id="avatarAccordion">
-                        <div class="accordion-item border-0">
-                            <h2 class="accordion-header" id="avatarHeading">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#avatarCollapse" aria-expanded={isAvatarAccordionOpen} aria-controls="avatarCollapse" on:click={() => isAvatarAccordionOpen = !isAvatarAccordionOpen} use:tooltip={{...tooltipConfig}} title="Avatar Settings">
-                                    Avatar
-                                </button>
-                            </h2>
-                            <div id="avatarCollapse" class="accordion-collapse collapse" aria-labelledby="avatarHeading" data-bs-parent="#avatarAccordion">
-                                <div class="accordion-body">
-                                    <form class="form" method="post" action="?/update">
-                                        <input type="hidden" name="fullName" value={fullName} />
-                                        <input type="hidden" name="username" value={username} />
-                                        <input type="hidden" name="website" value={website} />
-                                        <div class="row justify-content-center">
-                                            <Avatar {supabase} url={avatarUrl} size={10} on:upload={() => {invalidateAll()}}/>
-                                        </div>
-                                    </form>
+        {#if session}
+            <div class="col-12 col-md-6">
+                <div class="row justify-content-center">
+                    <!-- Avatar Accordion -->
+                    <div class="col-12 px-1">
+                        <div class="accordion" id="avatarAccordion">
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header" id="avatarHeading">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#avatarCollapse" aria-expanded={isAvatarAccordionOpen}
+                                            aria-controls="avatarCollapse"
+                                            on:click={() => isAvatarAccordionOpen = !isAvatarAccordionOpen}
+                                            use:tooltip={{...tooltipConfig}} title="Avatar Settings">
+                                        Avatar
+                                    </button>
+                                </h2>
+                                <div id="avatarCollapse" class="accordion-collapse collapse"
+                                     aria-labelledby="avatarHeading" data-bs-parent="#avatarAccordion">
+                                    <div class="accordion-body">
+                                        <form class="form" method="post" action="?/update">
+                                            <input type="hidden" name="fullName" value={fullName}/>
+                                            <input type="hidden" name="username" value={username}/>
+                                            <input type="hidden" name="website" value={website}/>
+                                            <div class="row justify-content-center">
+                                                <Avatar {supabase} url={avatarUrl} size={10}
+                                                        on:upload={() => {invalidateAll()}}/>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-md-6">
-            <div class="row justify-content-center">
-                <div class="col-12 px-1">
-                    <div class="accordion" id="profileAccordion">
-                        <div class="accordion-item border-0">
-                            <h2 class="accordion-header" id="profileHeading">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#profileCollapse" aria-expanded={isAccordionOpen} aria-controls="profileCollapse" on:click={() => isAccordionOpen = !isAccordionOpen} use:tooltip={{...tooltipConfig}} title="Profile Settings">
-                                    Profile Details
-                                </button>
-                            </h2>
-                            <div id="profileCollapse" class="accordion-collapse collapse" aria-labelledby="profileHeading" data-bs-parent="#profileAccordion">
-                                <div class="accordion-body">
-                                    <form class="form" method="post" action="?/update" use:enhance={handleSubmit} bind:this={profileForm}>
-                                        <div class="row">
-                                            <div class="col-12 mb-3">
-                                                <label for="email" class="form-label">Email</label>
-                                                <input id="email" type="text" value={session.user.email} disabled class="form-control" />
+            <div class="col-12 col-md-6">
+                <div class="row justify-content-center">
+                    <div class="col-12 px-1">
+                        <div class="accordion" id="profileAccordion">
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header" id="profileHeading">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#profileCollapse" aria-expanded={isAccordionOpen}
+                                            aria-controls="profileCollapse"
+                                            on:click={() => isAccordionOpen = !isAccordionOpen}
+                                            use:tooltip={{...tooltipConfig}} title="Profile Settings">
+                                        Profile Details
+                                    </button>
+                                </h2>
+                                <div id="profileCollapse" class="accordion-collapse collapse"
+                                     aria-labelledby="profileHeading" data-bs-parent="#profileAccordion">
+                                    <div class="accordion-body">
+                                        <form class="form" method="post" action="?/update" use:enhance={handleSubmit}
+                                              bind:this={profileForm}>
+                                            <div class="row">
+                                                <div class="col-12 mb-3">
+                                                    <label for="email" class="form-label">Email</label>
+                                                    <input id="email" type="text" value={session.user.email} disabled
+                                                           class="form-control"/>
+                                                </div>
+
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label for="fullName" class="form-label">Full Name</label>
+                                                    <input id="fullName" name="fullName" type="text" value={fullName}
+                                                           class="form-control"/>
+                                                </div>
+
+                                                <div class="col-12 col-md-6 mb-3">
+                                                    <label for="username" class="form-label">Username</label>
+                                                    <input id="username" name="username" type="text" value={username}
+                                                           class="form-control"/>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="website" class="form-label">Website</label>
+                                                    <input id="website" name="website" type="url" value={website}
+                                                           class="form-control"/>
+                                                </div>
                                             </div>
 
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="fullName" class="form-label">Full Name</label>
-                                                <input id="fullName" name="fullName" type="text" value={fullName} class="form-control" />
-                                            </div>
-
-                                            <div class="col-12 col-md-6 mb-3">
-                                                <label for="username" class="form-label">Username</label>
-                                                <input id="username" name="username" type="text" value={username} class="form-control" />
-                                            </div>
+                                            <!-- Hidden input for avatar url -->
+                                            <input type="hidden" name="avatarUrl" value={avatarUrl}/>
 
                                             <div class="mb-3">
-                                                <label for="website" class="form-label">Website</label>
-                                                <input id="website" name="website" type="url" value={website} class="form-control" />
+                                                <input
+                                                        type="submit"
+                                                        class="btn btn-purple w-100"
+                                                        value={loading ? 'Loading...' : 'Update'}
+                                                        disabled={loading}
+                                                />
                                             </div>
-                                        </div>
-
-                                        <!-- Hidden input for avatar url -->
-                                        <input type="hidden" name="avatarUrl" value={avatarUrl} />
-
-                                        <div class="mb-3">
-                                            <input
-                                                    type="submit"
-                                                    class="btn btn-purple w-100"
-                                                    value={loading ? 'Loading...' : 'Update'}
-                                                    disabled={loading}
-                                            />
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6">
+                <div class="row justify-content-center">
+                    <!-- Cover Accordion -->
+                    <div class="col-12 px-1">
+                        <div class="accordion" id="coverAccordion">
+                            <div class="accordion-item border-0">
+                                <h2 class="accordion-header" id="coverHeading">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#coverCollapse" aria-expanded={isCoverAccordionOpen}
+                                            aria-controls="avatarCollapse"
+                                            on:click={() => isCoverAccordionOpen = !isCoverAccordionOpen}
+                                            use:tooltip={{...tooltipConfig}} title="Cover Settings">
+                                        Profile Cover
+                                    </button>
+                                </h2>
+                                <div id="coverCollapse" class="accordion-collapse collapse"
+                                     aria-labelledby="coverHeading" data-bs-parent="#coverAccordion">
+                                    <div class="accordion-body">
+                                        <Cover {session} {supabase} url={coverUrl} on:upload={() => {invalidateAll()}}/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {/if}
+        <div class="{session ? 'col-12 col-md-6' : 'col-12'}">
             <div class="row justify-content-center">
-                <!-- Cover Accordion -->
+                <!-- Privacy Settings Accordion -->
                 <div class="col-12 px-1">
-                    <div class="accordion" id="coverAccordion">
+                    <div class="accordion" id="privacyAccordion">
                         <div class="accordion-item border-0">
-                            <h2 class="accordion-header" id="coverHeading">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#coverCollapse" aria-expanded={isCoverAccordionOpen} aria-controls="avatarCollapse" on:click={() => isCoverAccordionOpen = !isCoverAccordionOpen} use:tooltip={{...tooltipConfig}} title="Cover Settings">
-                                    Profile Cover
+                            <h2 class="accordion-header" id="privacyHeading">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#privacyCollapse" aria-expanded="false"
+                                        aria-controls="privacyCollapse">
+                                    Privacy Settings
                                 </button>
                             </h2>
-                            <div id="coverCollapse" class="accordion-collapse collapse" aria-labelledby="coverHeading" data-bs-parent="#coverAccordion">
+                            <div id="privacyCollapse" class="accordion-collapse collapse"
+                                 aria-labelledby="privacyHeading" data-bs-parent="#privacyAccordion">
                                 <div class="accordion-body">
-                                    <Cover {session} {supabase} url={coverUrl} on:upload={() => {invalidateAll()}} />
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="necessaryCookiesSwitch"
+                                               checked disabled>
+                                        <label class="form-check-label" for="necessaryCookiesSwitch">
+                                            Necessary Cookies
+                                            <i class="fas fa-toggle-on ms-2" style="color: grey;"></i>
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="analyticsSwitch"
+                                               bind:checked={analyticsEnabled} on:click={handleAnalytics}>
+                                        <label class="form-check-label" for="analyticsSwitch">
+                                            Analytics
+                                            <i class={analyticsEnabled ? 'fas fa-toggle-on ms-2' : 'fas fa-toggle-off ms-2'}
+                                               style="color: {analyticsEnabled ? 'green' : 'red'};"></i>
+                                        </label>
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="fas fa-md fa-circle-info"></i> You can find more info about how we handle your data on our <a class="link-body-emphasis" href="/legal/privacy-policy">privacy policy</a>.
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -220,15 +310,20 @@
             </div>
         </div>
     </div>
-    <div class="row pt-2 mx-1">
-        <div class="col px-1">
-            <form method="post" action="?/signout" use:enhance={handleSignOut}>
-                <div class="mb-3">
-                    <button class="btn btn-outline-danger w-100" disabled={loading} use:tooltip={{...tooltipConfig}} title="Click to Logout">Sign Out</button>
-                </div>
-            </form>
+
+    {#if session}
+        <div class="row pt-2 mx-1">
+            <div class="col px-1">
+                <form method="post" action="?/signout" use:enhance={handleSignOut}>
+                    <div class="mb-3">
+                        <button class="btn btn-outline-danger w-100" disabled={loading} use:tooltip={{...tooltipConfig}}
+                                title="Click to Logout">Sign Out
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
+    {/if}
 </div>
 
 <style>
@@ -248,8 +343,14 @@
     }
 
     @keyframes Gradient {
-        0% {background-position: 0% 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0% 50%;}
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
     }
 </style>
