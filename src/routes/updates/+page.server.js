@@ -1,4 +1,4 @@
-export const load = async ( { locals: { supabase, getSession } }) => {
+export const load = async ( { locals: { supabase } }) => {
     const { data: updates, error } = await supabase
         .from('website_updates')
         .select('*')

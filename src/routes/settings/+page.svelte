@@ -135,7 +135,7 @@
     {#if !session}
         <div class="row mt-3 mb-2 mx-1">
             <div class="col-12 bg-animated-gradient bg-opacity-0 rounded-4 pt-2 mx-auto">
-                <h2 class="text-center">Please login to access full settings.</h2>
+                <h2 class="text-center">Please <a class="link-warning text-decoration-none" href="/login">login</a> to access full settings.</h2>
             </div>
         </div>
     {/if}

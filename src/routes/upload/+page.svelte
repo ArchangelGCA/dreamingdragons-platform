@@ -81,7 +81,14 @@
     let hasDoneTagAction = false;
     let activeUpload = false;
     let editorContentTale = '';
+    let activePreviousChapterTags = false;
+    let selectedBook = books ? books[0].id : null;
+    let chaptersNumber = 0;
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
+
+    $: if (selectedBook) {
+        chaptersNumber = books.find(book => book.id === selectedBook).chapters;
+    }
 
     let tags = [];
     async function addTag(e) {
@@ -197,6 +204,99 @@
         tags = [...tags, tag];
         suggestions = [];
         document.getElementById('inputTagChapter').value = '';
+    }
+
+    async function fetchPreviousChapterTags(){
+
+        if (activePreviousChapterTags) return;
+
+        activePreviousChapterTags = true;
+
+        const book = document.getElementById('book').value;
+
+        // IF no book is selected, return
+        if (!book) {
+            activePreviousChapterTags = false;
+            toast.push('You must select a Content!', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('book_id', book);
+
+        const toastId = toast.push('Fetching previous chapter tags... 🔗', {
+            duration: 600000,
+            theme: {
+                '--toastBackground': '#ffcc00',
+                '--toastColor': '#000'
+            }
+        });
+
+        const response = await fetch('?/previouschaptertags', {
+            method: 'POST',
+            body: formData,
+        });
+
+        toast.pop(toastId);
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
+                if (result.data.body.length <= 0){
+                    toast.push('No previous chapters or tags found... ☹️', {
+                        theme: {
+                            '--toastBackground': '#ff4d4d',
+                            '--toastColor': '#fff'
+                        }
+                    });
+                } else {
+                    // Add to tags array (but only those that are not already in the array) and also count how many tags were added
+                    let addedTags = 0;
+                    result.data.body.forEach(tag => {
+                        if (!tags.includes(tag)) {
+                            tags = [...tags, tag];
+                            addedTags++;
+                        }
+                    });
+                    if (addedTags > 0) {
+                        toast.push(addedTags + ' Tags added successfully! 🤩', {
+                            theme: {
+                                '--toastBackground': '#4caf50',
+                                '--toastColor': '#fff'
+                            }
+                        });
+                    } else {
+                        toast.push('No tags were added... 🤔', {
+                            theme: {
+                                '--toastBackground': '#ff4d4d',
+                                '--toastColor': '#fff'
+                            }
+                        });
+                    }
+                }
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+            }
+        } else {
+            toast.push('Error: Tag suggestions failed' , {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        }
+
+        activePreviousChapterTags = false;
     }
 
     async function handleBookUpload(event) {
@@ -494,11 +594,11 @@
                             <div class="row mx-auto mt-2 justify-content-center">
                                 <div class="col">
                                     <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleChapterUpload}>
-                                        <div class="row">
+                                        <div class="row" use:autoAnimate>
                                             <div class="col-12 rounded-3 mt-1 px-0">
                                                 <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Tale</p>
                                                 <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Target Tale">
-                                                    <select class="form-select form-select-lg form-select-custom" name="book" id="book" required>
+                                                    <select class="form-select form-select-lg form-select-custom" name="book" id="book" bind:value={selectedBook} required>
                                                         {#each books as book (book.id)}
                                                             <option class="option-custom" value={book.id}>{book.title}</option>
                                                         {/each}
@@ -535,6 +635,11 @@
                                                     <input type="hidden" name="tags" value={tags} />
                                                 </div>
                                             </div>
+                                            {#if chaptersNumber > 0}
+                                                <div class="col-12 px-0">
+                                                    <button class="btn btn-sm btn-dark mt-2 w-100" type="button" on:click={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
+                                                </div>
+                                            {/if}
                                             <div class="col-12 mb-1 mt-2 px-0">
                                                 {#if !can_upload}
                                                     <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">Submit</button>

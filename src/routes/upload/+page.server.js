@@ -62,7 +62,7 @@ export const load = async ({ locals: { supabase, getSession} }) => {
     // Fetch from supabase the list of books from the user and book table
     const { data: books, error } = await supabase
         .from('book')
-        .select('id, owner_id, title, cover_url, created_at')
+        .select('id, owner_id, title, cover_url, created_at, chapters(id)')
         .eq('owner_id', session.user.id)
         .order('created_at', { ascending: true });
 
@@ -73,8 +73,14 @@ export const load = async ({ locals: { supabase, getSession} }) => {
         .eq('id', session.user.id)
         .single();
 
-    if (error) {
+    if (error || error2) {
         throw new Error(error.message);
+    }
+
+    if (books && books.length !== 0) {
+        books.forEach(book => {
+            book.chapters = book.chapters.length;
+        });
     }
 
     const can_upload = profiles.can_upload;
@@ -342,6 +348,68 @@ export const actions = {
         return {
             status: 200,
             body: data
+        }
+    },
+    previouschaptertags: async ({ request, locals: { supabase, getSession } }) => {
+        const {session} = await getSession();
+
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "Unauthorized"
+                }
+            }
+        }
+
+        const formData = Object.fromEntries(await request.formData());
+        const book_id = formData.book_id;
+
+        if (!book_id || book_id === "") {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        // Get latest chapter of book_id if available, and get its tags names if available
+        const { data: chapter, error } = await supabase
+            .from('chapters')
+            .select('*, chapter_tags(tags(*))')
+            .eq('book_id', book_id)
+            .order('created_at', { ascending: false })
+            .limit(1);
+
+        if (error) {
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        if (!chapter) {
+            return {
+                status: 404,
+                body: []
+            }
+        }
+
+        if (!chapter[0].chapter_tags) {
+            return {
+                status: 200,
+                body: []
+            }
+        }
+
+        const tags = chapter[0].chapter_tags.map(tag => tag.tags.name);
+
+        return {
+            status: 200,
+            body: tags
         }
     }
 }
