@@ -637,7 +637,7 @@
                                             </div>
                                             {#if chaptersNumber > 0}
                                                 <div class="col-12 px-0">
-                                                    <button class="btn btn-sm btn-dark mt-2 w-100" type="button" on:click={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
+                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button" on:click={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
                                                 </div>
                                             {/if}
                                             <div class="col-12 mb-1 mt-2 px-0">
@@ -648,7 +648,7 @@
                                                 {/if}
                                             </div>
                                             <div class="col-12 mt-3 px-0 rounded-3">
-                                                <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a>.</p>
+                                                <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a>.</p>
                                             </div>
                                         </div>
                                     </form>
