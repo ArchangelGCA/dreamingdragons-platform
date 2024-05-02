@@ -126,6 +126,7 @@ export const actions = {
         const imageSharp = sharp(await file.arrayBuffer());
 
         const optimizedImage = await imageSharp
+            .rotate()
             .resize(parseInt(PUBLIC_PROFILE_ICON_RESIZE_WIDTH))
             .webp({ quality: 80 })
             .toBuffer();
@@ -188,10 +189,11 @@ export const actions = {
         const width = metadata.width;
 
         if (width > maxSize) {
-            imageSharp.resize(maxSize);
+            imageSharp.rotate().resize(maxSize);
         }
 
         const optimizedImage = await imageSharp
+            .rotate()
             .webp({ quality: 80 })
             .toBuffer();
 

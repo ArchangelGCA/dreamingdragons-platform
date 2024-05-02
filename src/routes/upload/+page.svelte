@@ -82,12 +82,15 @@
     let activeUpload = false;
     let editorContentTale = '';
     let activePreviousChapterTags = false;
-    let selectedBook = books ? books[0].id : null;
+    let selectedBook;
     let chaptersNumber = 0;
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
 
     $: if (selectedBook) {
-        chaptersNumber = books.find(book => book.id === selectedBook).chapters;
+        console.log(selectedBook);
+        if (books && books.length > 0) {
+            chaptersNumber = books.find(book => book.id === selectedBook).chapters;
+        }
     }
 
     let tags = [];

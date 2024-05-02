@@ -61,7 +61,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     }
 
     if (!bookContent || bookContent.length === 0) {
-        return errorx(404, "Book not found");
+        return errorx(404, "Content not found or removed by the original author.");
     }
 
     if (bookContent && bookContent.length > 0) {

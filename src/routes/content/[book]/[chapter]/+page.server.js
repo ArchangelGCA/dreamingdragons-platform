@@ -61,7 +61,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     }
 
     if (!chapterContent || chapterContent.length === 0) {
-        return errorx(404, "Chapter and/or Book not found");
+        return errorx(404, "Chapter and/or Content not found, or the owner has removed it...");
     }
 
     const tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
