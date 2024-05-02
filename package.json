@@ -12,7 +12,6 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/auth-ui-svelte": "^0.2.9",
     "@svelte-plugins/tooltips": "^3.0.0",
-    "@sveltejs/adapter-auto": "^3.1.1",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@tinymce/tinymce-svelte": "^2.0.1",
@@ -29,6 +28,7 @@
   "type": "module",
   "dependencies": {
     "@supabase/ssr": "^0.3.0",
-    "@supabase/supabase-js": "^2.42.7"
+    "@supabase/supabase-js": "^2.42.7",
+    "@sveltejs/adapter-node": "^5.0.1"
   }
 }
