@@ -20,7 +20,6 @@
     "bootstrap": "^5.3.3",
     "pocketbase": "^0.21.1",
     "resend": "^3.2.0",
-    "sharp": "^0.33.3",
     "sk-seo": "^0.1.9",
     "super-sitemap": "^0.14.14",
     "svelte": "^4.2.7",
@@ -29,6 +28,7 @@
   "type": "module",
   "dependencies": {
     "@supabase/ssr": "^0.3.0",
-    "@supabase/supabase-js": "^2.42.7"
+    "@supabase/supabase-js": "^2.42.7",
+    "sharp": "^0.33.3"
   }
 }
