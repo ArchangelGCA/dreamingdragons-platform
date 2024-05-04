@@ -31,7 +31,7 @@
     let searchTerm = '';
     let latestNotificationTimestamp = notifications.length > 0 ? notifications[0].created_at : null;
     const notifsUpdateInterval = 30000;
-    let maintenance = false;
+    let maintenance = true;
 
     if ($pageStore.url.searchParams.has('q')) {
         searchTerm = $pageStore.url.searchParams.get('q');
@@ -276,10 +276,10 @@
         <div class="row border-top border-light-subtle pt-3 pb-2">
             <div class="col">
                 <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
-                    <strong>Warning!</strong> Cover uploads from settings page is NOT working as expected. There may be issues and some features may not work as expected.
+                    <strong>Warning!</strong> We've just migrated!
                     <!-- Little text with a few details about the maintenance -->
-                    <small class="text-muted d-block">Only profile Covers uploads are affected.</small>
-                    <small class="text-muted d-block">Maintenance started on: 29/04/2024 06:21AM UTC/GMT+2</small>
+                    <small class="text-muted d-block">This may cause unexpected issues, if you found any, please report them to us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a>!</small>
+                    <small class="text-muted d-block">Migration was completed on: 04/05/2024 11:30AM UTC/GMT+2</small>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" on:click={() => {maintenance = false}}></button>
                 </div>
             </div>

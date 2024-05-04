@@ -164,7 +164,7 @@
                                             <input type="hidden" name="username" value={username}/>
                                             <input type="hidden" name="website" value={website}/>
                                             <div class="row justify-content-center">
-                                                <Avatar {supabase} url={avatarUrl} size={10}
+                                                <Avatar url={avatarUrl} size={10}
                                                         on:upload={() => {invalidateAll()}}/>
                                             </div>
                                         </form>
@@ -257,7 +257,7 @@
                                 <div id="coverCollapse" class="accordion-collapse collapse"
                                      aria-labelledby="coverHeading" data-bs-parent="#coverAccordion">
                                     <div class="accordion-body">
-                                        <Cover {session} {supabase} url={coverUrl} on:upload={() => {invalidateAll()}}/>
+                                        <Cover url={coverUrl} on:upload={() => {invalidateAll()}}/>
                                     </div>
                                 </div>
                             </div>

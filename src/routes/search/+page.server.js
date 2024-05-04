@@ -35,27 +35,25 @@ export const load = async ( { params, url, locals: { supabase, /*getSession,*/ }
 }
 
 export const actions = {
-    loadmore: async ({request, url, locals: {supabase, getSession}}) => {
-        const formData = await request.formData();
+    loadmore: async ({request, url, locals: {supabase}}) => {
+        const formData = Object.fromEntries(await request.formData());
 
-        const page = formData.get("page");
+        const page = formData.page ? parseInt(formData.page) : 0;
+        const query = formData.query;
         const step = 10;
 
-        const query = url.searchParams.get('q');
-        const tags = url.searchParams.get('tag');
-        let empty = [];
-
-        if (!query && !tags) {
+        if (!query || !page) {
             return {
-                searchResults: empty
+                searchResults: []
             }
         }
 
-        const partial_text = queryBuilder(tags, query);
+        const partial_text = queryBuilder(query);
+
 
         let {data: searchResults, error} = await supabase
             .rpc('search_content_sorted', {partial_text})
-            .range(page * step, page * (step + 1));
+            .range(page * step, (page + 1) * step);
 
         if (error) {
             console.error(error);

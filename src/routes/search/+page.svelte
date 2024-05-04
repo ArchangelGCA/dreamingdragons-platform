@@ -7,7 +7,7 @@
     import Seo from "sk-seo";
 
     export let data;
-    let { supabase, searchResults, partialText } = data;
+    let { searchResults, partialText } = data;
 
     const seo = {
         title: partialText + ' | Roses In The Flames',
@@ -58,6 +58,7 @@
 
         const formData = new FormData();
         formData.append('page', page++);
+        formData.append('query', partialText);
         const response = await fetch('?/loadmore', {
             method: 'POST',
             body: formData,
@@ -72,7 +73,7 @@
             } else {
                 searchResults.forEach(result => {
                     if (result.book_id !== undefined){
-                        books.push(result);
+                        if (!books.some(book => book.book_id === result.book_id)) books.push(result);
                         if (!profiles.some(profile => profile.owner_id === result.owner_id)){
                             profiles.push({
                                 owner_id: result.owner_id,
