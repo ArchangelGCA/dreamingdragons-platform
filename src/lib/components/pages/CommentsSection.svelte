@@ -7,8 +7,8 @@
 
     export let comments;
     export let supabase;
-    export let bookId;
-    export let chapterId;
+    export let bookId = null;
+    export let chapterId = null;
 
     const dispatch = createEventDispatcher();
 

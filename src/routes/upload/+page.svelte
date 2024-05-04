@@ -69,8 +69,7 @@
 
     export let data;
 
-    let { session, supabase, books, can_upload } = data;
-    $: ({ session, supabase } = data);
+    let { books, can_upload } = data;
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = '';
