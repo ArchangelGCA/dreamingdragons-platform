@@ -23,6 +23,7 @@
     let conf = {
         skin: 'oxide-dark',
         content_css: 'dark',
+        license_key: 'gpl',
         block_unsupported_drop: true,
         branding: false,
         plugins: 'link autolink wordcount charmap code fullscreen',
