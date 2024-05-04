@@ -153,7 +153,7 @@
                                             aria-controls="avatarCollapse"
                                             on:click={() => isAvatarAccordionOpen = !isAvatarAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Avatar Settings">
-                                        Avatar
+                                        <i class="fas fa-user me-2"></i>Avatar
                                     </button>
                                 </h2>
                                 <div id="avatarCollapse" class="accordion-collapse collapse"
@@ -186,7 +186,7 @@
                                             aria-controls="profileCollapse"
                                             on:click={() => isAccordionOpen = !isAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Profile Settings">
-                                        Profile Details
+                                        <i class="fas fa-id-card me-2"></i>Profile Details
                                     </button>
                                 </h2>
                                 <div id="profileCollapse" class="accordion-collapse collapse"
@@ -251,7 +251,7 @@
                                             aria-controls="avatarCollapse"
                                             on:click={() => isCoverAccordionOpen = !isCoverAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Cover Settings">
-                                        Profile Cover
+                                        <i class="fas fa-portrait me-2"></i> Profile Cover
                                     </button>
                                 </h2>
                                 <div id="coverCollapse" class="accordion-collapse collapse"
@@ -276,7 +276,7 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#privacyCollapse" aria-expanded="false"
                                         aria-controls="privacyCollapse">
-                                    Privacy Settings
+                                    <i class="fas fa-eye me-2"></i> Privacy Settings
                                 </button>
                             </h2>
                             <div id="privacyCollapse" class="accordion-collapse collapse"
