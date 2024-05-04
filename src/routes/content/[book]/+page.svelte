@@ -10,7 +10,6 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
 
     export let data;
-    let avatarUrl;
     let { supabase, comments, ip_address, user_id } = data;
     $: ({ comments, user_id } = data)
 
@@ -35,9 +34,6 @@
     let chapters = bookContent.chapters;
     let tags = data.tags;
     let chaptersFound = false;
-    let finalAvatarUrl = '';
-    let avatarFound = true;
-    let loadedAvatar = false;
     let viewsCount = 0;
     let commentsCount = comments.length;
     let isLiked = bookContent.is_liked;
@@ -48,10 +44,6 @@
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
     let deleteBookActionActive = false;
     let reportText = '';
-
-    if (bookContent.owner_avatar_url) {
-        avatarUrl = bookContent.owner_avatar_url;
-    }
 
     if (bookContent.total_views){
         viewsCount = bookContent.total_views;

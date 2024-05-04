@@ -31,10 +31,6 @@
 
     let chapterContent = data.chapterContent[0];
     let tags = data.tags;
-    let finalAvatarUrl = '';
-    let loadedAvatar = false;
-    let avatarFound = true;
-    let avatarUrl;
     let isLiked = chapterContent.is_liked;
     let viewsCount = 0;
     let commentsCount = comments.length;
@@ -46,10 +42,6 @@
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
     let deleteChapterActionActive = false;
     let reportText = '';
-
-    if (chapterContent.owner_avatar_url) {
-        avatarUrl = chapterContent.owner_avatar_url;
-    }
 
     if (chapterContent.text) {
         text = chapterContent.text;

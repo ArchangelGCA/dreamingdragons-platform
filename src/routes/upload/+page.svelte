@@ -87,7 +87,6 @@
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
 
     $: if (selectedBook) {
-        console.log(selectedBook);
         if (books && books.length > 0) {
             chaptersNumber = books.find(book => book.id === selectedBook).chapters;
         }
