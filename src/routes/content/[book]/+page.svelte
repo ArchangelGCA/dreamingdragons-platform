@@ -10,7 +10,7 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
 
     export let data;
-    let { supabase, comments, ip_address, user_id } = data;
+    let { supabase, image_proxy, comments, ip_address, user_id } = data;
     $: ({ comments, user_id } = data)
 
     const tooltipConfig = {
@@ -291,7 +291,7 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
-                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} size="80px"/>
+                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} {image_proxy} size="80px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.book_title}</p>
@@ -359,7 +359,7 @@
                 <div class="row justify-content-evely gy-3 mx-0">
                     {#each chapters as chapter, index (chapter.chapter_id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <ChapterCard content={chapter} index={index + 1} />
+                            <ChapterCard content={chapter} index={index + 1} {image_proxy} />
                         </div>
                     {/each}
                 </div>
@@ -409,7 +409,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" on:invalidate={handleCommentInvalidate} />
+    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" {image_proxy} on:invalidate={handleCommentInvalidate} />
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

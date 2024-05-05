@@ -21,7 +21,7 @@
     };
 
     export let data;
-    let { session, profile, isOwner, isFollowing } = data;
+    let { session, image_proxy, profile, isOwner, isFollowing } = data;
 
     let finalProfile = null;
     let avatarUrl = '';
@@ -252,7 +252,7 @@
         {:else}
             {#each books as content (content.book.id)}
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                    <ContentCard content={content} />
+                    <ContentCard {content} {image_proxy} />
                 </div>
             {/each}
         {/if}

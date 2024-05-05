@@ -2,7 +2,7 @@
     import AdminUser from "$lib/components/admin/AdminUser.svelte";
 
     export let data;
-    let {profiles, supabase} = data;
+    let {profiles, supabase, image_proxy} = data;
     $: ({profiles, supabase} = data);
 
 </script>
@@ -15,7 +15,7 @@
 <div class="row">
     <div class="col">
         {#each profiles as profile (profile.id)}
-            <AdminUser {profile} {supabase}/>
+            <AdminUser {profile} {image_proxy}/>
         {/each}
     </div>
 </div>

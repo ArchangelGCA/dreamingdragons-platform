@@ -4,12 +4,16 @@
     export let size = '100px';
 
     export let classes = '';
+    export let image_proxy = null;
 
     let avatarUrl = '';
     let isAvatarLoaded = false;
 
     $: if (url && url !== '' && !isAvatarLoaded) {
         avatarUrl = url;
+        if (image_proxy){
+            if (!avatarUrl.startsWith(image_proxy)) avatarUrl = image_proxy + avatarUrl + '?width=' + size.replace('px', '') + '&height=' + size.replace('px', '');
+        }
         isAvatarLoaded = true;
     } else if ((!url || url === '') && avatarUrl !== '') {
         avatarUrl = '';

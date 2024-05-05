@@ -93,7 +93,7 @@
                 <div class="row row-horizontal flex-nowrap ps-1 pe-1 gx-4 gx-md-5">
                     {#each followed as follow (follow.id)}
                         <div class="col-auto py-2">
-                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} size="45px" />
+                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {image_proxy} size="50px" />
                         </div>
                     {/each}
                 </div>
@@ -108,7 +108,7 @@
                 <p class="h5 text-center">No new content available.</p>
             {:else}
                 <div class="row column-vertical pb-3 gy-3" on:scroll={handleScroll} use:autoAnimate>
-                    {#each books_ordered_by_created_at as book}
+                    {#each books_ordered_by_created_at as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                             <Content {...book} {image_proxy} />
                         </div>
@@ -130,7 +130,7 @@
                 <p class="h5 text-center">No new content available.</p>
             {:else}
                 <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
-                    {#each books_ordered_by_likes as book}
+                    {#each books_ordered_by_likes as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                             <Content {...book} {image_proxy} />
                         </div>
@@ -147,7 +147,7 @@
                 <p class="h5 text-center">No new content available.</p>
             {:else}
                 <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
-                    {#each books_ordered_by_latest_chapter as book}
+                    {#each books_ordered_by_latest_chapter as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                             <Content {...book} {image_proxy} />
                         </div>

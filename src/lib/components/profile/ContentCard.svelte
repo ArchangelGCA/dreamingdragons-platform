@@ -1,5 +1,4 @@
 <script>
-    import {onMount} from "svelte";
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
@@ -17,22 +16,10 @@
     };
 
     export let content;
-    let isLoading = true;
+    export let image_proxy;
     let isLiked = content.is_liked;
     let likes = content.likes_count;
     let likeActionActive = false;
-
-    onMount(() => {
-        const imgElement = document.querySelector('.img-home img');
-        if (imgElement && imgElement.complete) {
-            handleImageLoad();
-        }
-    });
-
-    function handleImageLoad() {
-        if (!isLoading) return;
-        isLoading = false;
-    }
 
     function handleMouseEnter(e) {
         e.target.parentElement.querySelector('.to-scale').style.transform = 'scale(1.1)';
@@ -96,17 +83,18 @@
 
         likeActionActive = false;
     }
+
+    if (image_proxy) {
+        if (!content.book.cover_url.startsWith(image_proxy)) content.book.cover_url = image_proxy + content.book.cover_url + '?width=750&quality=80';
+    } else {
+        console.log('No image proxy');
+    }
 </script>
 
 <div class="card border-0 bg-dark bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
-        {#if isLoading}
-            <div class="spinner-border text-light" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        {/if}
-        <img src={content.book.cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
+        <img src={content.book.cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
     <a href="/content/{content.book.id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">

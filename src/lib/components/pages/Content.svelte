@@ -25,7 +25,7 @@
     export let image_proxy;
 
     if (image_proxy) {
-        book_cover_url = image_proxy + book_cover_url + '?width=750&quality=80';
+        if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url + '?width=750&quality=80';
     } else {
         console.log('No image proxy');
     }

@@ -9,6 +9,7 @@
     export let supabase;
     export let bookId = null;
     export let chapterId = null;
+    export let image_proxy = null;
 
     const dispatch = createEventDispatcher();
 
@@ -129,7 +130,7 @@
         <div class="col-12 mt-3 mb-1 pt-3 border-top border-light-subtle" use:autoAnimate>
             {#if avatarsLoaded}
                 {#each comments as comment (comment.id)}
-                    <Comment {comment} {supabase} on:invalidate={handleInvalidate}/>
+                    <Comment {comment} {supabase} on:invalidate={handleInvalidate} {image_proxy}/>
                 {/each}
             {:else}
                 <div class="row justify-content-center placeholder-glow mb-2">

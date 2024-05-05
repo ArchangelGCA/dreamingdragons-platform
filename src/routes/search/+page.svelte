@@ -7,7 +7,7 @@
     import Seo from "sk-seo";
 
     export let data;
-    let { searchResults, partialText } = data;
+    let { searchResults, partialText, image_proxy } = data;
 
     const seo = {
         title: partialText + ' | Roses In The Flames',
@@ -132,7 +132,7 @@
                         {:else}
                             {#each profiles as profile (profile.owner_id)}
                                 <div class="col-auto">
-                                    <UserAvatar url={profile.owner_avatar_url} username={profile.owner_username} id={profile.owner_id} size="60px" />
+                                    <UserAvatar url={profile.owner_avatar_url} username={profile.owner_username} id={profile.owner_id} {image_proxy} size="50px" />
                                 </div>
                             {/each}
                         {/if}

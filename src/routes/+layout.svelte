@@ -24,14 +24,14 @@
 
     export let data;
 
-    let { supabase, session, notifications } = data;
+    let { supabase, session, image_proxy, notifications } = data;
     $: ({ supabase, session, notifications } = data);
 
     let intervalId;
     let searchTerm = '';
     let latestNotificationTimestamp = notifications.length > 0 ? notifications[0].created_at : null;
     const notifsUpdateInterval = 30000;
-    let maintenance = true;
+    let maintenance = false;
 
     if ($pageStore.url.searchParams.has('q')) {
         searchTerm = $pageStore.url.searchParams.get('q');
@@ -230,14 +230,16 @@
                         {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                             <i class="fa-solid fa-user py-2 pb-2 mb-1 px-1"></i>
                         {:else}
-                            <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} size="25px"/>
+                            <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="25px"/>
                         {/if}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                             <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
                         {:else}
-                            <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" data-sveltekit-reload href="/profile"><UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a></li>
+                            <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" data-sveltekit-reload href="/profile">
+                                <UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a>
+                            </li>
                         {/if}
                         <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/settings') ? 'active' : ''}" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
                         <li><a class="dropdown-item upload-button rounded-3 py-2 my-1 {$pageStore.url.pathname.startsWith('/upload') ? 'active' : ''}" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
@@ -257,7 +259,7 @@
     </div>
     <div class="offcanvas-body" on:scroll={handleScroll}>
         {#if notifications && notifications !== null && notifications.length !== 0}
-            {#each notifications as notification}
+            {#each notifications as notification (notification.id)}
                 <Notification {notification} {supabase} {session} />
             {/each}
         {:else}

@@ -9,7 +9,7 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
 
     export let data;
-    let { supabase, comments, ip_address, user_id } = data;
+    let { supabase, comments, image_proxy, ip_address, user_id } = data;
     $: ({ comments, user_id } = data)
 
     const tooltipConfig = {
@@ -292,7 +292,7 @@
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
                     <a class="w-auto" href="/profile/{chapterContent.owner_id}">
-                        <UserAvatar url={chapterContent.owner_avatar_url} username={chapterContent.owner_username} id={chapterContent.owner_id} size="80px"/>
+                        <UserAvatar url={chapterContent.owner_avatar_url} username={chapterContent.owner_username} id={chapterContent.owner_id} {image_proxy} size="80px"/>
                     </a>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
@@ -397,7 +397,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} chapterId="{chapterContent.chapter_id}" on:invalidate={handleCommentInvalidate} />
+    <CommentsSection {comments} {supabase} chapterId="{chapterContent.chapter_id}" {image_proxy} on:invalidate={handleCommentInvalidate} />
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

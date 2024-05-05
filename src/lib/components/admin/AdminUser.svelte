@@ -18,6 +18,7 @@
     };
 
     export let profile;
+    export let image_proxy;
     let isWarningActive = false;
     let isSendWarningActive = false;
     let isCanUploadActive = false;
@@ -421,7 +422,7 @@
         <div class="col-12">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-auto my-auto mb-3 mb-md-auto">
-                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} size="100px" />
+                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {image_proxy} size="100px" />
                 </div>
                 <div class="col-12 col-md-auto my-auto">
                     <h1 class="h1 text-center">{profile.username}</h1>
@@ -447,7 +448,7 @@
                         <div class="accordion-body">
                             <div class="row">
                                 <div class="col-12 col-md-6 mb-3 mb-md-auto my-auto">
-                                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} size="200px" />
+                                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {image_proxy} size="100px" />
                                 </div>
                                 <div class="col-12 col-md-6 my-auto">
                                     <p>Full Name: {profile.full_name}</p>

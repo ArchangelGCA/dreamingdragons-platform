@@ -17,23 +17,11 @@
     };
 
     export let content;
+    export let image_proxy;
     export let index;
-    let isLoading = true;
     let likes = content.chapter_likes_count;
     let liked = content.is_liked;
     let likeActionActive = false;
-
-    onMount(() => {
-        const imgElement = document.querySelector('.img-home img');
-        if (imgElement && imgElement.complete) {
-            handleImageLoad();
-        }
-    });
-
-    function handleImageLoad() {
-        if (!isLoading) return;
-        isLoading = false;
-    }
 
     function handleMouseEnter(e) {
         e.target.parentElement.querySelector('.to-scale').style.transform = 'scale(1.1)';
@@ -97,21 +85,22 @@
 
         likeActionActive = false;
     }
+
+    if (image_proxy){
+        if (!content.chapter_image_url.startsWith(image_proxy)) content.chapter_image_url = image_proxy + content.chapter_image_url + '?width=750&quality=80';
+    } else {
+        console.log('No image proxy');
+    }
 </script>
 
 <div class="card border-0 bg-black bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}}
      title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
-        {#if isLoading}
-            <div class="spinner-border text-light" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        {/if}
         {#if content.chapter_image_url}
             <a href="/content/{content.book_id}/{content.chapter_id}">
                 <img src={content.chapter_image_url} alt="Chapter {content.chapter_title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy"
-                     style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
+                     style="object-fit: cover; position: absolute; top: 0; left: 0;">
                 <div class="chapter-number-over">{index}</div>
             </a>
         {:else}
