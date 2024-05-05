@@ -26,7 +26,7 @@
     }
 
     export let data;
-    let { supabase, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed } = data;
+    let { supabase, image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed } = data;
     let loading = false;
     let allContentLoaded = false;
     let page = 1;
@@ -110,7 +110,7 @@
                 <div class="row column-vertical pb-3 gy-3" on:scroll={handleScroll} use:autoAnimate>
                     {#each books_ordered_by_created_at as book}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content {...book} />
+                            <Content {...book} {image_proxy} />
                         </div>
                     {/each}
                     {#if allContentLoaded}
@@ -132,7 +132,7 @@
                 <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
                     {#each books_ordered_by_likes as book}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content {...book} />
+                            <Content {...book} {image_proxy} />
                         </div>
                     {/each}
                 </div>
@@ -149,7 +149,7 @@
                 <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
                     {#each books_ordered_by_latest_chapter as book}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content {...book} />
+                            <Content {...book} {image_proxy} />
                         </div>
                     {/each}
                 </div>

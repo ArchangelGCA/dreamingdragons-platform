@@ -1,4 +1,4 @@
-import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
+import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL, PUBLIC_IMAGE_PROXY_URL } from '$env/static/public'
 import { createBrowserClient, isBrowser, parse } from '@supabase/ssr'
 
 export const load = async ({ fetch, data, depends }) => {
@@ -24,6 +24,8 @@ export const load = async ({ fetch, data, depends }) => {
         data: { session },
     } = await supabase.auth.getSession();
 
+    const image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
+
     let notifications = [];
 
     if (session) {
@@ -47,5 +49,9 @@ export const load = async ({ fetch, data, depends }) => {
         notifications = notifs;
     }
 
-    return { supabase, session, notifications }
+    return {
+        supabase,
+        session,
+        notifications,
+        image_proxy }
 }

@@ -28,6 +28,7 @@ export const GET = async ({locals: {supabase, getSession}}) => {
             excludePatterns: [
                 '^/edit.*',
                 '^/admin.*',
+                '^/health.*'
             ]
         });
     }

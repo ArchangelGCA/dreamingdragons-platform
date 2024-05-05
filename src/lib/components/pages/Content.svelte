@@ -22,6 +22,13 @@
     export let book_description;
     export let owner_avatar_url;
     export let created_at;
+    export let image_proxy;
+
+    if (image_proxy) {
+        book_cover_url = image_proxy + book_cover_url + '?width=750&quality=80';
+    } else {
+        console.log('No image proxy');
+    }
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4">
