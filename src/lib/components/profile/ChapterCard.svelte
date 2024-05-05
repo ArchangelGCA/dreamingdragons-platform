@@ -86,7 +86,7 @@
         likeActionActive = false;
     }
 
-    if (image_proxy){
+    $: if (image_proxy){
         if (!content.chapter_image_url.startsWith(image_proxy)) content.chapter_image_url = image_proxy + content.chapter_image_url + '?width=750&quality=80';
     } else {
         console.log('No image proxy');

@@ -30,7 +30,7 @@
     let loading = false;
     let allContentLoaded = false;
     let page = 1;
-    let pageStep = 10;
+    let pageStep = 20;
 
     if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
         allContentLoaded = true;
@@ -107,9 +107,9 @@
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row column-vertical pb-3 gy-3" on:scroll={handleScroll} use:autoAnimate>
+                <div class="row column-vertical pb-3 gy-2" on:scroll={handleScroll} use:autoAnimate>
                     {#each books_ordered_by_created_at as book (book.book_id)}
-                        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                        <div class="col-12 col-sm-4 col-md-3 col-xl-2 px-1">
                             <Content {...book} {image_proxy} />
                         </div>
                     {/each}
@@ -180,7 +180,7 @@
 
     .column-vertical {
         overflow-y: auto;
-        max-height: calc(100vh / 2.1);
+        max-height: calc(100vh / 1.8);
         white-space: normal;
     }
 

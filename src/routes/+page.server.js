@@ -8,7 +8,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     /****************************************************/
 
     const startRange = 0;
-    const endRange = 10;
+    const endRange = 20;
 
     const fetchBooks = async (table) => {
         const { data, error } = await supabase
