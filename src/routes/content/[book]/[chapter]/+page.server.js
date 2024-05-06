@@ -49,14 +49,14 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     const bookId = params.book;
     const chapterId = params.chapter;
 
-
     const {data: chapterContent, error} = await supabase
             .from('chapter_content_views')
-            .select('*, chapter_tags(tags(id, name))')
+            .select('*, chapter_tags(tags(id, name)), chapter_likes!chapter_id(user_id)')
             .eq('book_id', bookId)
             .eq('chapter_id', chapterId);
 
     if (error) {
+        console.error(error);
         return errorx(500, 'Something went wrong, perhaps the IDs may be invalid...');
     }
 
@@ -66,6 +66,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
 
     const tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
     const user_id = session ? session.user.id : null;
+    let is_liked = false;
 
     if (!session) {
         isOwner = false;
@@ -79,11 +80,19 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         return errorx(500, comments.message);
     }
 
+    if (user_id) {
+        if (chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id)) {
+            is_liked = true;
+        } else {
+            is_liked = false;
+        }
+    }
+
     // add isOwner to chapterContent
     chapterContent[0].is_owner = isOwner;
 
     // return
-    return { chapterContent, tags, comments, ip_address, user_id };
+    return { chapterContent: chapterContent[0], tags, comments, ip_address, user_id, is_liked };
 }
 
 export const actions = {

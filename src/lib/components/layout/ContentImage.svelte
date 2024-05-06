@@ -9,9 +9,6 @@
         img.src = url;
         img.onload = () => {
             isImageLoaded = true;
-            console.log('Image loaded');
-            console.log('url', url);
-            console.log('alt', alt);
         }
     })
 

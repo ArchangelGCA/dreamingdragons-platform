@@ -2,64 +2,32 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
-    import {onMount} from "svelte";
     import Seo from "sk-seo";
+    import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
 
     export let data;
-    let { supabase, comments, image_proxy, ip_address, user_id, tooltipConfig } = data;
-    $: ({ comments, user_id } = data)
+    let { supabase, comments, image_proxy, ip_address, user_id, is_liked, tooltipConfig, chapterContent } = data;
+    $: ({ comments, chapterContent, user_id, is_liked } = data)
 
-    onMount(() => {
-        handleView();
-        hasUserLikedChapter();
-    });
-
-    let chapterContent = data.chapterContent[0];
     let tags = data.tags;
-    let isLiked = chapterContent.is_liked;
-    let viewsCount = 0;
-    let commentsCount = comments.length;
     let likeActionActive = false;
     let reportActionActive = false;
-    let text = 'Text not found!';
-    let currentYear = new Date().getFullYear();
-    let createdAt = new Date(chapterContent.created_at);
-    let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
-    let createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
+    let hasPreviousChapter = true;
+    let hasNextChapter = true;
+    let previousChapterId = 0;
+    let nextChapterId = 0;
+    let currentYear;
+    let createdAt;
+    let createdAtFormatted;
+    let createdAtDetailed;
     let deleteChapterActionActive = false;
     let reportText = '';
 
-    if (chapterContent.text) {
-        text = chapterContent.text;
-    }
-
-    if (chapterContent.total_views) {
-        viewsCount = chapterContent.total_views;
-    }
-
-    tags.forEach((item) => item.url = `/search?tag=${item.name}`);
-
-    async function hasUserLikedChapter() {
-        if (!user_id) return;
-        likeActionActive = true; // Prevents the user from adding a like while it hasn't loaded the previous like status
-        const { data: likes, error } = await supabase
-            .from('chapter_likes')
-            .select('*')
-            .eq('chapter_id', chapterContent.chapter_id)
-            .eq('user_id', user_id);
-
-        if (!error) {
-            likes.length > 0 ? isLiked = true : isLiked = false;
-        }
-        likeActionActive = false;
-    }
-
     async function handleView(){
-        // try to insert view in supabase
         if (user_id){
             const { error } = await supabase
                 .from('views')
@@ -89,6 +57,37 @@
         }
     }
 
+    async function handlePreviousAndNextChapters() {
+        hasPreviousChapter = true;
+        hasNextChapter = true;
+        const { data: chapters, error } = await supabase
+            .from('chapters')
+            .select('id, number_ordinal')
+            .eq('book_id', chapterContent.book_id)
+            .order('number_ordinal');
+
+        if (!error && chapters.length > 0) {
+            const currentIndex = chapters.findIndex(chapter => chapter.number_ordinal === chapterContent.number_ordinal);
+
+            if (currentIndex > 0) {
+                hasPreviousChapter = true;
+                previousChapterId = chapters[currentIndex - 1].id;
+            } else {
+                hasPreviousChapter = false;
+            }
+
+            if (currentIndex < chapters.length - 1) {
+                hasNextChapter = true;
+                nextChapterId = chapters[currentIndex + 1].id;
+            } else {
+                hasNextChapter = false;
+            }
+        } else {
+            hasPreviousChapter = false;
+            hasNextChapter = false;
+        }
+    }
+
     async function handleHeartClick() {
 
         if (likeActionActive) {
@@ -99,7 +98,7 @@
         const data = new FormData();
         data.append('chapterId', chapterContent.chapter_id);
 
-        isLiked = !isLiked;
+        is_liked = !is_liked;
 
         const response = await fetch('?/like', {
             method: 'POST',
@@ -109,9 +108,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                // isLiked = !isLiked;
-                if (isLiked) {
-                    chapterContent.likes_count++;
+                if (is_liked) {
                     toast.push('Chapter liked ❤️', {
                         theme: {
                             '--toastBackground': '#5c00a6',
@@ -119,7 +116,6 @@
                         }
                     });
                 } else {
-                    chapterContent.likes_count--;
                     toast.push('Chapter unliked 💔', {
                         theme: {
                             '--toastBackground': '#5c00a6',
@@ -127,8 +123,9 @@
                         }
                     });
                 }
+                invalidateAll();
             } else {
-                isLiked = !isLiked;
+                is_liked = !is_liked;
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
@@ -137,7 +134,7 @@
                 });
             }
         } else {
-            isLiked = !isLiked;
+            is_liked = !is_liked;
             toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
@@ -251,6 +248,17 @@
         await invalidateAll();
     }
 
+    $: if (chapterContent) {
+        handleView();
+        handlePreviousAndNextChapters();
+        currentYear = new Date().getFullYear();
+        createdAt = new Date(chapterContent.created_at);
+        createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
+        createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
+        tags = data.tags;
+        tags.forEach((item) => item.url = `/search?tag=${item.name}`);
+    }
+
     const seo = {
         title: chapterContent.book_title + ' - ' + chapterContent.title + ' | Roses In The Flames',
         description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' +  chapterContent.book_title + ' | Roses In The Flames',
@@ -263,6 +271,7 @@
 <Seo {...seo} />
 
 <div class="container-xxl">
+    <!-- Shortcut button -->
     <div class="row justify-content-center my-2">
         <div class="col-12 text-center px-0">
             <a href="#title" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2" use:tooltip={{...tooltipConfig}} title="Go to Text">
@@ -270,6 +279,7 @@
             </a>
         </div>
     </div>
+    <!-- Chapter and Book cover -->
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
             <a href="/content/{chapterContent.book_id}">
@@ -277,6 +287,7 @@
             </a>
         </div>
     </div>
+    <!-- Owner, Title, Tags -->
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
@@ -301,12 +312,13 @@
             </div>
         </div>
     </div>
+    <!-- Stats -->
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 mb-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Total likes">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1" on:click={handleHeartClick}>
-                        <i class="fas fa-heart {isLiked ? 'liked' : 'unliked'}"></i>
+                        <i class="fas fa-heart {is_liked ? 'liked' : 'unliked'}"></i>
                     </button>
                 </div>
                 <div class="col-auto">
@@ -320,7 +332,7 @@
                     <i class="fas fa-eye"></i>
                 </div>
                 <div class="col-auto mt-1">
-                    <span class="">{viewsCount}</span>
+                    <span>{chapterContent.total_views}</span>
                 </div>
             </div>
         </div>
@@ -330,21 +342,59 @@
                     <i class="fas fa-comment"></i>
                 </div>
                 <div class="col-auto mt-1">
-                    <span class="">{commentsCount}</span>
+                    <span class="">{comments.length}</span>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Chapter title -->
     <div class="row justify-content-center text-center" id="title">
         <div class="col-12 px-0">
             <p class="fs-5 bg-purple-opacity-25 p-3 rounded-4">{chapterContent.title}</p>
         </div>
     </div>
+    <!-- Previous and Next Chapters buttons -->
+    {#if hasPreviousChapter || hasNextChapter}
+        <div class="row justify-content-center text-center mb-3">
+            <div class="col-12 col-md-6 col-lg-5">
+                <div class="row justify-content-center text-center">
+                    <div class="col-6 px-1" use:autoAnimate>
+                        {#if hasPreviousChapter}
+                            <a href="/content/{chapterContent.book_id}/{previousChapterId}" class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Previous Chapter" data-sveltekit-noscroll>
+                                <i class="fas fa-chevron-left"></i>
+                                <span class="fs-6">Previous</span>
+                            </a>
+                        {:else if hasNextChapter}
+                            <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled" use:tooltip={{...tooltipConfig}} title="No previous chapters">
+                                <i class="fas fa-chevron-left"></i>
+                                <span class="fs-6">You're here! 😅</span>
+                            </span>
+                        {/if}
+                    </div>
+                    <div class="col-6 px-1" use:autoAnimate>
+                        {#if hasNextChapter}
+                            <a href="/content/{chapterContent.book_id}/{nextChapterId}" class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Next Chapter" data-sveltekit-noscroll>
+                                <span class="fs-6">Next</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        {:else if hasPreviousChapter}
+                            <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled" use:tooltip={{...tooltipConfig}} title="No more chapters">
+                                <span class="fs-6">You're here! 😅</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </span>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {/if}
+    <!-- Chapter text -->
     <div class="row justify-content-center bg-text-opacity-10 rounded-3 py-3 px-2 px-md-auto">
         <div class="col-12 col-lg-10 bg-black bg-opacity-25 shadow-lg mx-auto px-2 px-md-5 pt-3 pb-2 rounded-3">
-            {@html text}
+            {@html chapterContent.text}
         </div>
     </div>
+    <!-- Copyright and Report -->
     <div class="row justify-content-center text-start">
         <div class="col-10 col-md-9 pt-2 px-0">
             <p class="text-secondary text-center">
@@ -459,6 +509,20 @@
     }
 
     .btn-shortcut:hover {
+        background-color: #4a007f;
+        border-color: #4a007f;
+    }
+
+    .btn-chapters {
+        background-color: #5c00a6;
+    }
+
+    .btn-chapters:hover {
+        background-color: #4a007f;
+        border-color: #4a007f;
+    }
+
+    .btn-chapters:active {
         background-color: #4a007f;
         border-color: #4a007f;
     }

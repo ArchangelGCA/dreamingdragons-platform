@@ -448,7 +448,7 @@
                         <div class="accordion-body">
                             <div class="row">
                                 <div class="col-12 col-md-6 mb-3 mb-md-auto my-auto">
-                                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {image_proxy} size="100px" />
+                                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {image_proxy} size="200px" />
                                 </div>
                                 <div class="col-12 col-md-6 my-auto">
                                     <p>Full Name: {profile.full_name}</p>
@@ -458,8 +458,8 @@
                                     <p>Created At: {profile.created_at}</p>
                                     <p>Updated At: {profile.updated_at}</p>
                                 </div>
-                                <div class="col-12 border-top border-primary pt-3">
-                                    <p class="h5 text-center">Profile cover: </p>
+                                <div class="col-12 border-top border-primary pt-3 text-center">
+                                    <p class="h5">Profile cover: </p>
                                     {#if profile.cover_url && finalCoverUrl}
                                         <a href="{finalCoverUrl}" target="_blank">
                                             <img src={finalCoverUrl} alt="Profile cover" class="img-fluid rounded-4" use:tooltip={{...tooltipConfig}} title="View Cover" />
