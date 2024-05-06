@@ -25,6 +25,17 @@ export const load = async ({ fetch, data, depends }) => {
     } = await supabase.auth.getSession();
 
     const image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
+    const tooltipConfig = {
+        animation: 'fade',
+        delay: 0,
+        style: {
+            color: 'white',
+            backgroundColor: 'rgba(92,0,166,0.9)',
+            padding: '10px',
+            borderRadius: '5px'
+        },
+        theme: 'text-center w-auto'
+    };
 
     let notifications = [];
 
@@ -53,5 +64,7 @@ export const load = async ({ fetch, data, depends }) => {
         supabase,
         session,
         notifications,
-        image_proxy }
+        image_proxy,
+        tooltipConfig,
+    }
 }

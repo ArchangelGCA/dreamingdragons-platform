@@ -7,22 +7,11 @@
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
+    import ContentImage from "$lib/components/layout/ContentImage.svelte";
 
     export let data;
-    let { supabase, comments, image_proxy, ip_address, user_id } = data;
+    let { supabase, comments, image_proxy, ip_address, user_id, tooltipConfig } = data;
     $: ({ comments, user_id } = data)
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
 
     onMount(() => {
         handleView();
@@ -40,6 +29,7 @@
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(chapterContent.created_at);
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
+    let createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
     let deleteChapterActionActive = false;
     let reportText = '';
 
@@ -281,23 +271,23 @@
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-auto mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
+        <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
             <a href="/content/{chapterContent.book_id}">
-                <img src="{chapterContent.book_cover_url}" alt="{chapterContent.book_title + ' ' + chapterContent.title}" class="img-fluid rounded-4" style="max-height: 82vh" loading="lazy">
+                <ContentImage url={chapterContent.book_cover_url} alt={chapterContent.book_title} />
             </a>
         </div>
     </div>
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
+                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
                     <a class="w-auto" href="/profile/{chapterContent.owner_id}">
-                        <UserAvatar url={chapterContent.owner_avatar_url} username={chapterContent.owner_username} id={chapterContent.owner_id} {image_proxy} size="80px"/>
+                        <UserAvatar url={chapterContent.owner_avatar_url} username={chapterContent.owner_username} id={chapterContent.owner_id} {image_proxy} size="75px"/>
                     </a>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <h2><a class="link-light link-opacity-75 text-decoration-none" href="/content/{chapterContent.book_id}">{chapterContent.book_title}</a>: {chapterContent.title}</h2>
-                    <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></h6>
+                    <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted" use:tooltip={{...tooltipConfig}} title="{createdAtDetailed}">{createdAtFormatted}</span></h6>
                     {#if tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">

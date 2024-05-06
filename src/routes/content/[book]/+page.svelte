@@ -8,22 +8,12 @@
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
+    import autoAnimate from '@formkit/auto-animate';
+    import ContentImage from "$lib/components/layout/ContentImage.svelte";
 
     export let data;
-    let { supabase, image_proxy, comments, ip_address, user_id } = data;
+    let { supabase, image_proxy, comments, ip_address, user_id, tooltipConfig } = data;
     $: ({ comments, user_id } = data)
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px',
-        },
-        theme: 'text-center w-auto'
-    };
 
     onMount(() => {
         handleView();
@@ -37,11 +27,13 @@
     let viewsCount = 0;
     let commentsCount = comments.length;
     let isLiked = bookContent.is_liked;
+    let isImageLoaded = false;
     let likeActionActive = false;
     let reportActionActive = false;
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(bookContent.created_at);
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
+    let createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
     let deleteBookActionActive = false;
     let reportText = '';
 
@@ -281,21 +273,21 @@
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-auto mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
-            <a href="{bookContent.book_cover_url}" target="_blank">
-                <img src="{bookContent.book_cover_url}" alt="{bookContent.book_title}" class="img-fluid rounded-4" style="max-height: 82vh" loading="lazy">
+        <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
+            <a href="{bookContent.book_cover_url}" target="_blank" use:autoAnimate>
+                <ContentImage url="{bookContent.book_cover_url}" alt="{bookContent.book_title}" />
             </a>
         </div>
     </div>
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
-                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} {image_proxy} size="80px"/>
+                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
+                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} {image_proxy} size="75px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.book_title}</p>
-                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
+                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted" use:tooltip={{...tooltipConfig}} title="{createdAtDetailed}">{createdAtFormatted}</span></p>
                     {#if tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">

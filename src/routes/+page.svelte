@@ -5,18 +5,6 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import autoAnimate from '@formkit/auto-animate';
 
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
-
     const seo = {
         title: 'Roses In The Flames | Home',
         description: 'A place to share your stories and art, featured by Roses In The Flames and built with love by its community.',
@@ -26,7 +14,7 @@
     }
 
     export let data;
-    let { supabase, image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed } = data;
+    let { supabase, image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed, tooltipConfig } = data;
     let loading = false;
     let allContentLoaded = false;
     let page = 1;

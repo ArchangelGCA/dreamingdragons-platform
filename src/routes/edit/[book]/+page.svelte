@@ -8,18 +8,6 @@
     import Editor from "@tinymce/tinymce-svelte";
     import Seo from "sk-seo";
 
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
-
     let conf = {
         skin: 'oxide-dark',
         content_css: 'dark',
@@ -71,7 +59,7 @@
 
     export let data;
 
-    let { book, supabase } = data;
+    let { book, supabase, tooltipConfig } = data;
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = book.cover_url;

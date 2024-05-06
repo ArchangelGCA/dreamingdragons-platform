@@ -10,22 +10,10 @@
     import { page as pageStore } from '$app/stores';
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
-
     export let data;
 
-    let { supabase, session, image_proxy, notifications } = data;
-    $: ({ supabase, session, notifications } = data);
+    let { supabase, session, image_proxy, notifications, tooltipConfig } = data;
+    $: ({ supabase, session, notifications, tooltipConfig } = data);
 
     let intervalId;
     let searchTerm = '';
