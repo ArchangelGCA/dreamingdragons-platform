@@ -12,7 +12,7 @@
     $: if (url && url !== '' && !isAvatarLoaded) {
         avatarUrl = url;
         if (image_proxy){
-            if (!avatarUrl.startsWith(image_proxy)) avatarUrl = image_proxy + avatarUrl + '?width=' + size.replace('px', '') + '&height=' + size.replace('px', '');
+            if (!avatarUrl.startsWith(image_proxy)) avatarUrl = image_proxy + avatarUrl + '?width=250';
         }
         isAvatarLoaded = true;
     } else if ((!url || url === '') && avatarUrl !== '') {

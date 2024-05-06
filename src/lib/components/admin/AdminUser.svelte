@@ -517,13 +517,13 @@
                         </button>
                         <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
                             {#if profile.avatar_url}
-                                <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetAvatarModal-{profile.id}"><i class="fas fa-refresh text-warning"></i> <i class="fas fa-user text-primary-emphasis"></i> Reset Avatar</a></li>
+                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetAvatarModal-{profile.id}"><i class="fas fa-refresh text-warning"></i> <i class="fas fa-user text-primary-emphasis"></i> Reset Avatar</button></li>
                             {/if}
                             {#if profile.cover_url}
-                                <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetCoverModal-{profile.id}"><i class="fas fa-refresh text-warning"></i> <i class="fas fa-image text-secondary-emphasis"></i> Reset Cover</a></li>
+                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetCoverModal-{profile.id}"><i class="fas fa-refresh text-warning"></i> <i class="fas fa-image text-secondary-emphasis"></i> Reset Cover</button></li>
                             {/if}
                             {#if !profile.avatar_url && !profile.cover_url}
-                                <li><a href="#" class="dropdown-item disabled"><i class="fas fa-exclamation-triangle text-danger"></i> No actions available, the user doesn't have neither avatar or cover</a></li>
+                                <li><button class="dropdown-item disabled"><i class="fas fa-exclamation-triangle text-danger"></i> No actions available, the user doesn't have neither avatar or cover</button></li>
                             {/if}
                         </ul>
                     </div>

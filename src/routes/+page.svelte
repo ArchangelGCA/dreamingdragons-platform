@@ -109,7 +109,7 @@
             {:else}
                 <div class="row column-vertical pb-3 gy-2" on:scroll={handleScroll} use:autoAnimate>
                     {#each books_ordered_by_created_at as book (book.book_id)}
-                        <div class="col-12 col-sm-4 col-md-3 col-xl-2 px-1">
+                        <div class="col-6 col-sm-4 col-md-3 col-xl-2 px-1">
                             <Content {...book} {image_proxy} />
                         </div>
                     {/each}
