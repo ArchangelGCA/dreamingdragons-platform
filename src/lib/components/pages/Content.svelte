@@ -25,11 +25,10 @@
     export let image_proxy;
 
     $: if (image_proxy) {
-        if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url + '?width=500&quality=80';
+        if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url;
     } else {
         console.log('No image proxy');
     }
-
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4">
@@ -41,7 +40,14 @@
     </div>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 25vh; overflow: hidden;">
-        <img src={book_cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
+        <img
+                srcset="{book_cover_url + '?width=350&quality=80'} 2x,
+                        {book_cover_url + '?width=500&quality=80'} 1x"
+                src={book_cover_url + '?width=500&quality=80'}
+                alt="Book cover"
+                class="w-100 h-100 to-scale"
+                loading="lazy"
+                style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
     <a href="/content/{book_id}">
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
