@@ -223,16 +223,25 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
-                            <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                            {#if session}
+                                <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                            {/if}
                         {:else}
                             <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" data-sveltekit-reload href="/profile">
                                 <UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a>
                             </li>
                         {/if}
                         <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/settings') ? 'active' : ''}" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
-                        <li><a class="dropdown-item upload-button rounded-3 py-2 my-1 {$pageStore.url.pathname.startsWith('/upload') ? 'active' : ''}" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
+                        {#if session}
+                            <li><a class="dropdown-item upload-button rounded-3 py-2 my-1 {$pageStore.url.pathname.startsWith('/upload') ? 'active' : ''}" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
+                        {/if}
                         <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/updates') ? 'active' : ''}" href="/updates"><i class="fas fa-newspaper border-end border-light-subtle pe-2"></i> Updates</a></li>
-                        <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
+                        {#if session}
+                            <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
+                        {:else}
+                            <li><a class="dropdown-item register-button rounded-3 py-2" href="/login"><i class="fa-solid fa-user-plus border-end border-light-subtle pe-1"></i> Register</a></li>
+                            <li><a class="dropdown-item" href="/login"><i class="fa-solid fa-sign-in border-end border-light-subtle pe-2"></i> Login</a></li>
+                        {/if}
                     </ul>
                 </div>
             </div>
@@ -341,6 +350,21 @@
         transform: scale(0.95);
     }
 
+    .register-button {
+        background: linear-gradient(270deg, #830054, #5c00a6);
+        background-size: 200% 200%;
+        animation: Gradient-Register 5s ease infinite, tranform 1s ease-in-out;
+        transition: transform 0.12s ease-in-out;
+    }
+
+    .register-button:hover {
+        box-shadow: 0 0 0.6rem 0.25rem rgba(255, 0, 250, 0.75);
+    }
+
+    .register-button:active {
+        transform: scale(0.95);
+    }
+
     .btn-outline-search {
         border-color: #b200e8;
         color: #b200e8;
@@ -385,6 +409,12 @@
     #notificationBell {
         cursor: pointer;
         font-size: 1.1rem;
+    }
+
+    @keyframes Gradient-Register {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
     }
 
     @keyframes Gradient {
