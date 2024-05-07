@@ -39,7 +39,7 @@
                 ]);
 
             if (!error) {
-                viewsCount++;
+                chapterContent.total_views++;
             }
         } else {
             // Using only IP address
@@ -52,7 +52,7 @@
                 ]);
 
             if (!error) {
-                viewsCount++;
+                chapterContent.total_views++;
             }
         }
     }
