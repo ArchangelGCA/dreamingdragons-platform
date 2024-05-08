@@ -116,6 +116,7 @@
                 }
                 tags = [...tags, tag];
                 e.target.value = '';
+                suggestions = [];
                 hasDoneTagAction = true;
                 return;
             }
@@ -148,7 +149,7 @@
             const result = deserialize(await response.text());
             if (result.type === 'success') {
                 if (result.data.status === 200) {
-                    suggestions = result.data.body.map(tag => tag.name);
+                    suggestions = result.data.body.map(tag => tag.name).filter(suggestion => !tags.includes(suggestion));
                 } else {
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {

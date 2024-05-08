@@ -65,7 +65,7 @@ export const actions = {
 
         const { data, error } = await supabase.rpc('get_similar_tags', {
             partial_tag: tag
-        });
+        }).limit(10);
 
         if (error) {
             return {
