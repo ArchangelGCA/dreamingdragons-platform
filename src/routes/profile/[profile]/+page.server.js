@@ -48,7 +48,7 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
             return errorx(404, "Profile not found");
         }
 
-        results.profile = profile;
+        results.profile = profile[0];
 
         // If there's a session
         if (session) {
@@ -80,9 +80,9 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
         return results;
     } else { // ID IS NOT SPECIFIED
 
-        // Hacky way, a user not specifying an id will be redirected to their profile to their own profile if they're logged in
+        // Hacky way, a user not specifying an id will be redirected to their own profile if they're logged in
         // by /profile page, otherwise they'll go to the login page.
-        // This also helps keeping only one profile creation login in one place ( /profile ).
+        // This also helps keeping only one profile creation logic in one place ( /profile ).
         if (session) {
             return redirect(302, '/profile');
         }

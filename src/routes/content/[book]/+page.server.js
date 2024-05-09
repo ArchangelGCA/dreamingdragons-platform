@@ -57,6 +57,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
         .eq('book_id', bookId);
 
     if (error) {
+        console.error(error);
         return errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
     }
 
@@ -85,7 +86,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
 
     bookContent[0].is_owner = isOwner;
 
-    return { bookContent, tags, comments, ip_address, user_id };
+    return { bookContent: bookContent[0], tags, comments, ip_address, user_id };
 }
 
 export const actions = {

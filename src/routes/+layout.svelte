@@ -227,7 +227,7 @@
                                 <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
                             {/if}
                         {:else}
-                            <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" data-sveltekit-reload href="/profile">
+                            <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" href="/profile">
                                 <UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a>
                             </li>
                         {/if}

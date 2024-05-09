@@ -2,6 +2,7 @@
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import {createEventDispatcher} from "svelte";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -15,10 +16,10 @@
         theme: 'text-center w-auto'
     };
 
+    const dispatch = createEventDispatcher();
+
     export let content;
     export let image_proxy;
-    let isLiked = content.is_liked;
-    let likes = content.likes_count;
     let likeActionActive = false;
 
     function handleMouseEnter(e) {
@@ -41,12 +42,12 @@
         const data = new FormData();
         data.append('contentId', content.book.id);
 
-        isLiked = !isLiked;
+        content.is_liked = !content.is_liked;
 
-        if (isLiked) {
-            likes++;
+        if (content.is_liked) {
+            content.likes_count++;
         } else {
-            likes--;
+            content.likes_count--;
         }
 
         const response = await fetch('?/like', {
@@ -57,10 +58,10 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                // isLiked = !isLiked;
+                dispatch('invalidate');
             } else {
-                isLiked = !isLiked;
-                likes--;
+                content.is_liked = !content.is_liked;
+                content.likes_count--;
 
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -70,8 +71,8 @@
                 });
             }
         } else {
-            isLiked = !isLiked;
-            likes--;
+            content.is_liked = !content.is_liked;
+            content.likes_count--;
 
             toast.push('Error during action (Please login)', {
                 theme: {
@@ -104,10 +105,10 @@
                     <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{content.book.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.owner_username}</a></small></p>
                 </div>
                 <div class="col-3 mb-1 text-end">
-                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={isLiked ? 'Unlike' : 'Like'}>
-                        <span class="heart-icon {isLiked ? 'liked' : 'unliked'}">
+                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
+                        <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
-                            <span class="likes-counter">{likes}</span>
+                            <span class="likes-counter">{content.likes_count}</span>
                         </span>
                     </button>
                 </div>

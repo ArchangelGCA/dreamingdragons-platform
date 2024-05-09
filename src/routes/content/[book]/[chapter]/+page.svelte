@@ -10,16 +10,16 @@
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
 
     export let data;
-    let { supabase, comments, image_proxy, ip_address, user_id, is_liked, tooltipConfig, chapterContent } = data;
-    $: ({ comments, chapterContent, user_id, is_liked } = data)
+    let { supabase, comments, image_proxy, ip_address, user_id, is_liked, tooltipConfig, chapterContent, tags } = data;
+    $: ({ comments, chapterContent, user_id, is_liked, tags } = data)
 
-    let tags = data.tags;
     let likeActionActive = false;
     let reportActionActive = false;
     let hasPreviousChapter = true;
     let hasNextChapter = true;
     let previousChapterId = 0;
     let nextChapterId = 0;
+    let likes_count;
     let currentYear;
     let createdAt;
     let createdAtFormatted;
@@ -115,6 +115,7 @@
                             '--toastColor': '#fff',
                         }
                     });
+                    likes_count++;
                 } else {
                     toast.push('Chapter unliked 💔', {
                         theme: {
@@ -122,8 +123,8 @@
                             '--toastColor': '#fff',
                         }
                     });
+                    likes_count--;
                 }
-                invalidateAll();
             } else {
                 is_liked = !is_liked;
                 toast.push('Error: ' + result.data.body.message, {
@@ -252,10 +253,10 @@
         handleView();
         handlePreviousAndNextChapters();
         currentYear = new Date().getFullYear();
+        likes_count = chapterContent.likes_count;
         createdAt = new Date(chapterContent.created_at);
         createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
         createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
-        tags = data.tags;
         tags.forEach((item) => item.url = `/search?tag=${item.name}`);
     }
 
@@ -322,7 +323,7 @@
                     </button>
                 </div>
                 <div class="col-auto">
-                    <span class="mt-1">{chapterContent.likes_count}</span>
+                    <span class="mt-1">{likes_count}</span>
                 </div>
             </div>
         </div>
