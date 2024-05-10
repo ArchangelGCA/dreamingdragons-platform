@@ -112,6 +112,7 @@
     <div class="row mb-2">
         <div class="col">
             <p class="h2 text-center">Search Results</p>
+            <p class="h6 text-center text-muted">Results for: {partialText}</p>
         </div>
     </div>
     <div class="row">
