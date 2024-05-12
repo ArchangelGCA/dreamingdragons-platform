@@ -3,7 +3,8 @@
     import Seo from 'sk-seo';
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import autoAnimate from '@formkit/auto-animate';
+    import Masonry from "$lib/components/layout/Masonry.svelte";
+    import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
 
     const seo = {
         title: 'Roses In The Flames | Home',
@@ -88,6 +89,7 @@
             </div>
         {/if}
 
+        <!-- Old version
         <div class="col-12 mt-3 mb-2">
             <p class="h4">Newest Content</p>
         </div>
@@ -101,6 +103,31 @@
                             <Content {...book} {image_proxy} />
                         </div>
                     {/each}
+                    {#if allContentLoaded}
+                        <div class="col-12">
+                            <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All Content loaded!⚠️</p>
+                        </div>
+                    {/if}
+                </div>
+            {/if}
+        </div>
+        -->
+
+        <div class="col-12 mt-3 mb-2">
+            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1</span></p>
+        </div>
+        <div class="col-12">
+            {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
+                <p class="h5 text-center">No new content available.</p>
+            {:else}
+                <div class="row column-vertical" on:scroll={handleScroll}>
+                    <div class="col-12 px-0">
+                        <Masonry items={books_ordered_by_created_at}>
+                            {#each books_ordered_by_created_at as book (book.book_id)}
+                                <ContentMasonry {...book} {image_proxy} />
+                            {/each}
+                        </Masonry>
+                    </div>
                     {#if allContentLoaded}
                         <div class="col-12">
                             <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All Content loaded!⚠️</p>
@@ -167,6 +194,7 @@
     }
 
     .column-vertical {
+        flex-wrap: wrap;
         overflow-y: auto;
         max-height: calc(100vh / 1.8);
         white-space: normal;
@@ -243,6 +271,10 @@
 
     .blink {
         animation: blinker 1s linear 2;
+    }
+
+    .small-text {
+        font-size: 0.8rem;
     }
 
     @keyframes blinker {
