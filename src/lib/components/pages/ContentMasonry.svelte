@@ -1,6 +1,5 @@
 <script>
     import {tooltip} from "@svelte-plugins/tooltips";
-    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
     const tooltipConfig = {
@@ -57,7 +56,7 @@
                 >
             </div>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
-            <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-3 mx-0">
+            <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                 <div class="col-12 px-0 px-md-2">
                     <a class="link-light link-custom text-decoration-none text-wrap" href="/content/{book_id}"
                        use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{book_title}</span></a>
@@ -117,6 +116,10 @@
     @media (max-width: 768px) {
         .text-description {
             font-size: 0.8rem;
+        }
+
+        .text-title {
+            font-size: 0.9rem;
         }
     }
 </style>
