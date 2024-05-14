@@ -93,11 +93,13 @@
     }
 
     const seo = {
-        title: (profile ? profile.username : 'Profile') + ' | Profile',
-        description: 'Profile page of ' +  (profile ? profile.username : 'Profile'),
-        siteName: 'Roses In The Flames | Tales',
+        title: (profile ? profile.username : 'Profile') + ' - Profile',
+        description: 'Profile page of ' + (profile ? profile.username : 'Profile'),
+        siteName: 'Roses in The Flames - Platform',
         imageURL: (profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'),
-        author: 'ArchangelGCA'
+        author: 'ArchangelGCA',
+        name: profile.username,
+        schemaOrg: true
     };
 </script>
 

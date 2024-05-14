@@ -5,9 +5,9 @@
     import Seo from "sk-seo";
 
     const seo = {
-        title: 'Roses In The Flames | Staff Timezones',
+        title: 'Roses In The Flames - Staff Timezones',
         description: 'Roses In The Flames Staff Timezones page. Check the current time of our staff members.',
-        siteName: 'Roses In The Flames | Tales',
+        siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA'
     }

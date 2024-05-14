@@ -4,9 +4,9 @@
     import Seo from "sk-seo";
 
     const seo = {
-        title: 'Roses In The Flames | Login',
-        description: 'Register or Login to Roses In The Flames from this page.',
-        siteName: 'Roses In The Flames | Tales',
+        title: 'Roses In The Flames - Login',
+        description: 'Register or Login to Roses In The Flames.',
+        siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA'
     }

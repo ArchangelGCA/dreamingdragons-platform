@@ -7,11 +7,11 @@
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
 
     const seo = {
-        title: 'Roses In The Flames | Home',
-        description: 'A place to share your stories and art, featured by Roses In The Flames and built with love by its community.',
-        siteName: 'Roses In The Flames | Tales',
+        title: 'Roses In The Flames - Home',
+        description: 'The official platform of Roses in The Flames game. By CringleDragons, ArchangelGCA, and the community. Read, write, and share stories and art.',
+        siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
+        author: 'ArchangelGCA',
     }
 
     export let data;

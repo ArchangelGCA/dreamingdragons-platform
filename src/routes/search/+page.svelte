@@ -11,8 +11,8 @@
 
     const seo = {
         title: partialText + ' | Roses In The Flames',
-        description: 'Search results for ' + partialText + 'on Roses In The Flames.',
-        siteName: 'Roses In The Flames | Tales',
+        description: 'Search results for ' + partialText + ' on Roses In The Flames.',
+        siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA'
     };
@@ -49,6 +49,8 @@
         });
     } else {
         allResultsLoaded = true;
+        // index to false in seo
+        seo.index = false;
     }
 
     async function loadMoreResults(){

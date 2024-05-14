@@ -4,9 +4,9 @@
     import Seo from "sk-seo";
 
     const seo = {
-        title: "Roses In The Flames | Mailing List",
+        title: "Roses In The Flames - Mailing List",
         description: "Subscribe to the official Roses In The Flames mailing list.",
-        siteName: "Roses In The Flames | Tales",
+        siteName: "Roses In The Flames - Platform",
         imageURL: "https://tales.rosesintheflames.com/favicon.webp",
         author: "ArchangelGCA"
     }

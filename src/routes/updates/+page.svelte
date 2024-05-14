@@ -18,9 +18,9 @@
     }
 
     const seo = {
-        title: 'Roses In The Flames | Updates',
-        description: 'Updates and changelogs of the Roses In The Flames website.',
-        siteName: 'Roses In The Flames | Tales',
+        title: 'Roses In The Flames - Updates',
+        description: 'Updates and changelogs of the Roses In The Flames.',
+        siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA'
     };

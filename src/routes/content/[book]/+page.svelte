@@ -253,11 +253,13 @@
     }
 
     const seo = {
-        title: bookContent.book_title + ' by ' + bookContent.owner_username + ' | Roses In The Flames',
+        title: bookContent.book_title + ' by ' + bookContent.owner_username,
         description: bookContent.book_description,
-        siteName: 'Roses In The Flames | Tales',
+        siteName: 'Roses in The Flames - Platform',
         imageURL: bookContent.book_cover_url,
-        author: 'ArchangelGCA'
+        author: 'ArchangelGCA',
+        name: bookContent.owner_username,
+        schemaOrg: true
     }
 </script>
 

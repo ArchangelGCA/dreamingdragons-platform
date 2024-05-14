@@ -2,9 +2,9 @@
     import Seo from "sk-seo";
 
     const seo = {
-        title: 'Roses In The Flames | Privacy Policy',
+        title: 'Roses In The Flames - Privacy Policy',
         description: 'Privacy Policy of Roses In The Flames (RiTF).',
-        siteName: 'Roses In The Flames | Tales',
+        siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA'
     }
