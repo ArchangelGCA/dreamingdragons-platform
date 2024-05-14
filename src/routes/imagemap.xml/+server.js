@@ -37,7 +37,7 @@ export const GET = async ({locals: {supabase}}) => {
                 <url>
                     <loc>https://tales.rosesintheflames.com/content/${book.id}</loc>
                     <image:image>
-                        <image:loc>${book.cover_url}</image:loc>
+                        <image:loc>https://images.rosesintheflames.com/image/${book.cover_url}</image:loc>
                     </image:image>
                 </url>
             `).join('')}
@@ -45,10 +45,10 @@ export const GET = async ({locals: {supabase}}) => {
                 <url>
                     <loc>https://tales.rosesintheflames.com/profile/${profile.id}</loc>
                     <image:image>
-                        <image:loc>${profile.avatar_url}</image:loc>
+                        <image:loc>https://images.rosesintheflames.com/image/${profile.avatar_url}</image:loc>
                     </image:image>
                     <image:image>
-                        <image:loc>${profile.cover_url}</image:loc>
+                        <image:loc>https://images.rosesintheflames.com/image/${profile.cover_url}</image:loc>
                     </image:image>
                 </url>
             `).join('')}
