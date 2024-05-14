@@ -1,6 +1,6 @@
 {
   "name": "ritf-svelte-new",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -13,7 +13,7 @@
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@zerodevx/svelte-toast": "^0.9.5",
     "bootstrap": "^5.3.3",
-    "sk-seo": "^0.1.9",
+    "sk-seo": "^0.2.6",
     "super-sitemap": "^0.14.14",
     "svelte": "^4.2.7",
     "vite": "^5.0.3"
