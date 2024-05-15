@@ -2,6 +2,7 @@
     import AdminContent from "$lib/components/admin/AdminContent.svelte";
     import autoAnimate from "@formkit/auto-animate";
     import {invalidateAll} from "$app/navigation";
+    import Seo from "sk-seo";
 
     export let data;
     let {content, supabase} = data;
@@ -40,7 +41,18 @@
         }
     }
 
+    const seo = {
+        title: 'Admin - Content',
+        description: 'Admin Content dashboard for Roses in The Flames platform.',
+        siteName: 'Roses in The Flames - Platform',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA',
+        index: false
+    };
+
 </script>
+
+<Seo {...seo} />
 
 <div class="row mb-2">
     <div class="col text-center">

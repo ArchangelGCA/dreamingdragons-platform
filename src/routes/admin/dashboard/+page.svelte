@@ -3,6 +3,7 @@
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
+    import Seo from "sk-seo";
 
     export let data;
 
@@ -79,7 +80,18 @@
 
         isPanicAction = false;
     }
+
+    const seo = {
+        title: 'Admin - Dashboard',
+        description: 'Admin dashboard for Roses in The Flames platform.',
+        siteName: 'Roses in The Flames - Platform',
+        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        author: 'ArchangelGCA',
+        index: false
+    };
 </script>
+
+<Seo {...seo} />
 
 <div class="row text-center mb-2 mt-1">
     <div class="col-md-12">
