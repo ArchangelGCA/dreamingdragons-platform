@@ -124,7 +124,7 @@
     }
 </script>
 
-<Seo title="{profile.username ? profile.username : 'Guest'} | Settings"
+<Seo title="{(profile && profile.username) ? profile.username : 'Guest'} | Settings"
         index="false"/>
 
 <div class="container-xxl px-0" style="min-height: 70vh">
