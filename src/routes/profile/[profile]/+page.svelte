@@ -53,7 +53,6 @@
         if (result.type === 'success') {
             if (result.data.status === 200){
                 if (result.data.body.follow){
-                    followers += 1;
                     isFollowing = true;
                     toast.push('➕ You\'re now following ' + profile.username + "!", {
                         theme: {
@@ -62,7 +61,6 @@
                         }
                     });
                 } else {
-                    followers -= 1;
                     isFollowing = false;
                     toast.push('➖ You\'ve unfollowed ' + profile.username + "!", {
                         theme: {
