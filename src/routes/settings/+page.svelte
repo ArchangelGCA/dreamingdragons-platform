@@ -29,6 +29,15 @@
     let isCoverAccordionOpen = false;
     let isAvatarAccordionOpen = false;
     let isActiveUpdate = false;
+    if (!profile) {
+        profile = {
+            full_name: '',
+            username: '',
+            website: '',
+            avatar_url: '',
+            cover_url: ''
+        };
+    }
 
     const handleSubmit = () => {
         loading = true;
