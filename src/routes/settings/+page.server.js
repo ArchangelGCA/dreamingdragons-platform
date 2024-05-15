@@ -1,4 +1,4 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { redirect } from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
 import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
 import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH, PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH, PUBLIC_POCKETBASE_URL} from "$env/static/public";
@@ -46,12 +46,17 @@ export const load = async ({ locals: { supabase, getSession } }) => {
     }
 
     if (session) {
-        const { data: profileData } = await supabase
+        const { data: profileData, error } = await supabase
             .from('profiles')
             .select(`username, full_name, website, avatar_url, cover_url`)
             .eq('id', session.user.id)
             .single();
         results.profile = profileData;
+
+        if (error) {
+            // Redirect to /profile if profile not found
+            return redirect(303, '/profile');
+        }
     }
 
     return results;
@@ -59,16 +64,24 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 
 export const actions = {
     update: async ({ request, locals: { supabase, getSession } }) => {
-        const formData = await request.formData();
+        const formData = Object.fromEntries(await request.formData());
 
-        const fullName = formData.get('fullName');
-        const username = formData.get('username');
-        const website = formData.get('website');
-        const avatarUrl = formData.get('avatarUrl');
+        const fullName = formData.fullName;
+        const username = formData.username;
+        const website = formData.website;
 
         const {session} = await getSession();
         if (!session) {
             throw redirect(303, '/login');
+        }
+
+        if (!username) {
+            return {
+                status: 400,
+                body: {
+                    message: 'Username is required'
+                }
+            }
         }
 
         const { error } = await supabase.from('profiles').upsert({
@@ -76,25 +89,33 @@ export const actions = {
             full_name: fullName,
             username,
             website,
-            avatar_url: avatarUrl,
             updated_at: new Date(),
         });
 
         if (error) {
-            console.error('Error updating profile', error);
-            return fail(500, {
-                fullName,
-                username,
-                website,
-                avatarUrl,
-            });
+            if (error.message.includes('duplicate key value violates unique constraint')) {
+                return {
+                    status: 400,
+                    body: {
+                        message: 'Username is already taken'
+                    }
+                }
+            } else {
+                console.error('Error updating profile', error);
+                return {
+                    status: 500,
+                    body: {
+                        message: 'Error updating profile'
+                    }
+                }
+            }
         }
 
         return {
-            fullName,
-            username,
-            website,
-            avatarUrl,
+            status: 200,
+            body: {
+                message: 'Profile updated successfully'
+            }
         }
     },
     signout: async ({ locals: { supabase, getSession } }) => {
