@@ -99,7 +99,8 @@
         imageURL: (profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'),
         author: 'ArchangelGCA',
         name: profile.username,
-        schemaOrg: true
+        schemaOrg: true,
+        index: true
     };
 </script>
 

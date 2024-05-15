@@ -14,7 +14,8 @@
         description: 'Search results for ' + partialText + ' on Roses In The Flames.',
         siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
+        author: 'ArchangelGCA',
+        index: true
     };
 
     onMount(() => {

@@ -12,6 +12,8 @@
         siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA',
+        canonical: 'https://tales.rosesintheflames.com',
+        index: true
     }
 
     export let data;
@@ -60,10 +62,6 @@
         }
     }
 </script>
-
-<svelte:head>
-    <link rel="canonical" href="https://tales.rosesintheflames.com/">
-</svelte:head>
 
 <Seo {...seo} />
 

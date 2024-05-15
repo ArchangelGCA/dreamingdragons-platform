@@ -8,7 +8,8 @@
         description: 'Register or Login to Roses In The Flames.',
         siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
+        author: 'ArchangelGCA',
+        index: true,
     }
 
     // For convenience, I'll keep this list of theme variables here: https://github.com/supabase-community/auth-ui/blob/main/packages/shared/src/theming/Themes.ts

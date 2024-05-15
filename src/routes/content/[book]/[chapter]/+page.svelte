@@ -260,14 +260,25 @@
         tags.forEach((item) => item.url = `/search?tag=${item.name}`);
     }
 
-    const seo = {
+    let seo = {
         title: chapterContent.book_title + ' - ' + chapterContent.title + ' - ' + chapterContent.owner_username,
-        description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' +  chapterContent.book_title + ' | Roses In The Flames',
+        description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' +  chapterContent.book_title,
         siteName: 'Roses in The Flames - Platform',
         imageURL: chapterContent.book_cover_url,
         author: 'ArchangelGCA',
         name: chapterContent.owner_username,
-        schemaOrg: true
+        schemaOrg: true,
+        index: true
+    }
+
+    $: if (chapterContent) {
+        seo = {
+            ...seo,
+            title: chapterContent.book_title + ' - ' + chapterContent.title + ' - ' + chapterContent.owner_username,
+            description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' + chapterContent.book_title,
+            imageURL: chapterContent.book_cover_url,
+            name: chapterContent.owner_username
+        }
     }
 </script>
 
