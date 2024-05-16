@@ -7,8 +7,8 @@
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
 
     const seo = {
-        title: 'Roses In The Flames - Home',
-        description: 'The official platform of Roses in The Flames game. By CringleDragons, ArchangelGCA, and the community. Read, write, and share stories and art.',
+        title: 'Roses In The Flames - Platform',
+        description: 'The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature.',
         siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA',

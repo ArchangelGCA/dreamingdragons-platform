@@ -31,8 +31,8 @@
         console.log('No image proxy');
     }
 
-    $: if (book_title.length > 20) book_title = book_title.substring(0, 18) + '...';
-    $: if (owner_username.length > 16) owner_username = owner_username.substring(0, 15) + '...';
+    $: if (book_title.length > 45) book_title = book_title.substring(0, 40) + '...';
+    $: if (owner_username.length > 30) owner_username = owner_username.substring(0, 35) + '...';
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4">
