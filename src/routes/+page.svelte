@@ -5,6 +5,8 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import Masonry from "$lib/components/layout/Masonry.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
+    import {tick} from "svelte";
+    import {browser} from "$app/environment";
 
     const seo = {
         title: 'Roses In The Flames - Platform',
@@ -55,9 +57,29 @@
         loading = false;
     }
 
+    let reset = false;
+    let heightScroll = 0;
+    let target;
+    let counterImg = 0;
+
+    async function handleLoadedImage() {
+        counterImg++;
+        if (counterImg === 4) {
+            reset = true;
+            counterImg = 0;
+            await tick();
+            reset = false;
+            if (browser) {
+                target.scrollTo(0, heightScroll + (target.clientHeight * 0.05));
+                //console.log('scroll position restored', heightScroll);
+            }
+        }
+    }
+
     function handleScroll(event) {
-        const target = event.target;
+        target = event.target;
         if (target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.5)) {
+            heightScroll = target.scrollHeight;
             loadMoreContentByCreatedAt();
         }
     }
@@ -113,7 +135,7 @@
         -->
 
         <div class="col-12 mt-3 mb-2">
-            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1</span></p>
+            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1.1</span></p>
         </div>
         <div class="col-12">
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
@@ -121,9 +143,9 @@
             {:else}
                 <div class="row column-vertical" on:scroll={handleScroll}>
                     <div class="col-12 px-0">
-                        <Masonry items={books_ordered_by_created_at}>
+                        <Masonry items={books_ordered_by_created_at} {reset}>
                             {#each books_ordered_by_created_at as book (book.book_id)}
-                                <ContentMasonry {...book} {image_proxy} />
+                                <ContentMasonry {...book} {image_proxy} on:loaded={handleLoadedImage}/>
                             {/each}
                         </Masonry>
                     </div>

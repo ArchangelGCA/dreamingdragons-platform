@@ -1,4 +1,5 @@
 <script>
+    import {createEventDispatcher} from "svelte";
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
@@ -25,6 +26,8 @@
     export let created_at;
     export let image_proxy;
 
+    const dispatch = createEventDispatcher();
+
     $: if (image_proxy) {
         if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url;
     } else {
@@ -33,7 +36,6 @@
 
     $: if (book_title.length > 20) book_title = book_title.substring(0, 18) + '...';
     $: if (owner_username.length > 16) owner_username = owner_username.substring(0, 15) + '...';
-
 </script>
 
 <div>
@@ -53,6 +55,7 @@
                         alt="Book cover"
                         loading="lazy"
                         class="img-fluid rounded-3"
+                        on:load={() => {dispatch('loaded')}}
                 >
             </div>
             <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">

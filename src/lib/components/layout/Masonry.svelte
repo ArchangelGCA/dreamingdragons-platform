@@ -1,13 +1,7 @@
-<div bind:this={masonryElement}
-     class={`__grid--masonry ${stretchFirst ? '__stretch-first' : ''}`}
-     style={`--grid-gap: ${gridGap}; --col-width: ${colWidth}; --col-width-mobile: ${colWidthMobile};`}
-     use:autoAnimate>
-    <slot></slot>
-</div>
-
 <script>
     import {onMount, onDestroy, tick} from 'svelte';
     import autoAnimate from '@formkit/auto-animate';
+    import {browser} from "$app/environment";
 
     export let stretchFirst = false,
         gridGap = '0.5em',
@@ -15,6 +9,8 @@
         colWidthMobile = 'minmax(Min(10em, 100%), 1fr)',
         items = [];
     let grids = [], masonryElement;
+
+    if (masonryElement) masonryElement = masonryElement;
 
     export let reset = null;
     $: if (reset) {
@@ -27,7 +23,7 @@
             grid.items.forEach(c => {
                 let new_h = c.getBoundingClientRect().height;
                 if (new_h !== +c.dataset.h) {
-                    c.dataset.h = new_h
+                    c.dataset.h = new_h.toString();
                     grid.mod++
                 }
             });
@@ -48,7 +44,7 @@
     }
 
     const calcGrid = async (_masonryArr) => {
-        await tick()
+        await tick();
         if (_masonryArr.length && getComputedStyle(_masonryArr[0]).gridTemplateRows !== 'masonry') {
             grids = _masonryArr.map(grid => {
                 return {
@@ -63,19 +59,19 @@
         }
     }
 
-    let _window;
     onMount(() => {
-        _window = window;
-        _window.addEventListener('resize', refreshLayout, false);
-    })
-    onDestroy(() => {
-        if (_window) {
-            _window.removeEventListener('resize', refreshLayout, false);
+        if (browser) {
+            window.addEventListener('resize', refreshLayout);
         }
-    })
+    });
+    onDestroy(() => {
+        if (browser && window) {
+            window.removeEventListener('resize', refreshLayout);
+        }
+    });
 
     $: if (masonryElement) {
-        calcGrid([masonryElement])
+        calcGrid([masonryElement]);
     }
 
     $: if (items) {
@@ -83,11 +79,18 @@
     }
 </script>
 
+<div bind:this={masonryElement}
+     class={`__grid--masonry ${stretchFirst ? '__stretch-first' : ''}`}
+     style={`--grid-gap: ${gridGap}; --col-width: ${colWidth}; --col-width-mobile: ${colWidthMobile};`}
+     use:autoAnimate>
+    <slot></slot>
+</div>
+
 <style>
     :global(.__grid--masonry) {
         display: grid;
         grid-template-columns: repeat(auto-fit, var(--col-width));
-        /* grid-template-rows: masonry; */ /* NOT SUPPORTED YET */
+        /* grid-template-rows: masonry; */ /* NOT SUPPORTED */
         grid-template-rows: auto;
         justify-content: center;
         grid-gap: var(--grid-gap);
@@ -95,7 +98,7 @@
     }
 
     :global(.__grid--masonry > *) {
-        align-self: start
+        align-self: start;
     }
 
     :global(.__grid--masonry.__stretch-first > *:first-child) {
