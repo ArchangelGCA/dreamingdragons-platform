@@ -1,5 +1,6 @@
 <script>
     import { tooltip } from "@svelte-plugins/tooltips";
+    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -29,6 +30,9 @@
     } else {
         console.log('No image proxy');
     }
+
+    $: if (book_title.length > 20) book_title = book_title.substring(0, 18) + '...';
+    $: if (owner_username.length > 16) owner_username = owner_username.substring(0, 15) + '...';
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4">
@@ -39,7 +43,7 @@
         <p>Likes {likes_count}</p>
     </div>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
-         style="height: 25vh; overflow: hidden;">
+         style="height: 35vh; overflow: hidden;">
         <img
                 srcset="{book_cover_url + '?width=350&quality=80'} 2x,
                         {book_cover_url + '?width=500&quality=80'} 1x"
@@ -51,10 +55,13 @@
     </div>
     <a href="/content/{book_id}">
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
-            <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">
-                <div class="col-12">
-                    <a class="link-light text-decoration-none text-wrap" href="/content/{book_id}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{book_title}</span></a>
-                    <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
+            <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
+                <div class="col-12 px-0 px-md-2">
+                    <a class="link-light link-custom text-decoration-none text-wrap" href="/content/{book_id}"
+                       use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{book_title}</span></a>
+                    <p class="card-text"><small class="text-description"><span><UserAvatarNavbar url={owner_avatar_url} username={owner_username} {image_proxy} size="25px"/></span> <a
+                            class="link-light link-custom text-decoration-none" href="/profile/{owner_id}"
+                            use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
                 </div>
             </div>
         </div>
@@ -87,5 +94,34 @@
 
     .card:hover {
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+    }
+
+    .link-custom {
+        color: rgba(248, 249, 250) !important;
+    }
+
+    .link-custom:hover {
+        color: rgb(211, 26, 103) !important;
+    }
+
+    .text-title {
+        font-size: 1.2rem;
+        font-weight: 400;
+    }
+
+    .text-description {
+        font-size: 0.9rem;
+        color: rgba(248, 249, 250, 0.8) !important;
+    }
+
+    /* On mobile, text-description should be even smaller */
+    @media (max-width: 768px) {
+        .text-description {
+            font-size: 0.8rem;
+        }
+
+        .text-title {
+            font-size: 0.9rem;
+        }
     }
 </style>
