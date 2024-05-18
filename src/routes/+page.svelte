@@ -22,7 +22,7 @@
     let loading = false;
     let allContentLoaded = false;
     let page = 1;
-    let pageStep = 20;
+    let pageStep = 40;
 
     if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
         allContentLoaded = true;
@@ -124,7 +124,7 @@
         -->
 
         <div class="col-12 mt-3 mb-2">
-            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1.2</span></p>
+            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1.3</span></p>
         </div>
         <div class="col-12">
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
