@@ -8,7 +8,7 @@
 
     let {openReports, closedReports} = data;
     $: ({openReports, closedReports} = data);
-    const seo = {
+    $: seo = {
         title: 'Admin - Reports',
         description: 'Admin Reports dashboard for Roses in The Flames platform.',
         siteName: 'Roses in The Flames - Platform',

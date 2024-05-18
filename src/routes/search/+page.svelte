@@ -9,7 +9,7 @@
     export let data;
     let { searchResults, partialText, image_proxy } = data;
 
-    const seo = {
+    $: seo = {
         title: partialText + ' | Roses In The Flames',
         description: 'Search results for ' + partialText + ' on Roses In The Flames.',
         siteName: 'Roses in The Flames - Platform',

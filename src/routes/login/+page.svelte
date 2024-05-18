@@ -3,7 +3,7 @@
     import { ThemeSupa } from '@supabase/auth-ui-shared'
     import Seo from "sk-seo";
 
-    const seo = {
+    $: seo = {
         title: 'Roses In The Flames - Login',
         description: 'Register or Login to Roses In The Flames.',
         siteName: 'Roses in The Flames - Platform',

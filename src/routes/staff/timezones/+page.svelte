@@ -4,7 +4,7 @@
     import {browser} from "$app/environment";
     import Seo from "sk-seo";
 
-    const seo = {
+    $: seo = {
         title: 'Roses In The Flames - Staff Timezones',
         description: 'Roses In The Flames Staff Timezones page. Check the current time of our staff members.',
         siteName: 'Roses in The Flames - Platform',

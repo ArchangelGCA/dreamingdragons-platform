@@ -252,7 +252,7 @@
         reportActionActive = false;
     }
 
-    let seo = {
+    $: seo = {
         title: bookContent.book_title + ' by ' + bookContent.owner_username,
         description: 'Content by ' + bookContent.owner_username + ' - ' + bookContent.book_title,
         siteName: 'Roses in The Flames - Platform',

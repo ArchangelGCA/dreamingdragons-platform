@@ -260,7 +260,7 @@
         tags.forEach((item) => item.url = `/search?tag=${item.name}`);
     }
 
-    let seo = {
+    $: seo = {
         title: chapterContent.book_title + ' - ' + chapterContent.title + ' - ' + chapterContent.owner_username,
         description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' +  chapterContent.book_title,
         siteName: 'Roses in The Flames - Platform',

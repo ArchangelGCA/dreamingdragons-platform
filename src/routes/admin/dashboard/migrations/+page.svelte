@@ -117,7 +117,7 @@
         isMigrating = false;
     }
 
-    const seo = {
+    $: seo = {
         title: 'Admin - Migrations',
         description: 'Admin Migrations dashboard for Roses in The Flames platform.',
         siteName: 'Roses in The Flames - Platform',

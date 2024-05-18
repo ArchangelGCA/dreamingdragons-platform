@@ -90,7 +90,7 @@
         followActionActive = false;
     }
 
-    const seo = {
+    $: seo = {
         title: (profile ? profile.username : 'Profile') + ' - Profile',
         description: 'Profile page of ' + (profile ? profile.username : 'Profile'),
         siteName: 'Roses in The Flames - Platform',

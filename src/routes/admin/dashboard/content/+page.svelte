@@ -41,7 +41,7 @@
         }
     }
 
-    const seo = {
+    $: seo = {
         title: 'Admin - Content',
         description: 'Admin Content dashboard for Roses in The Flames platform.',
         siteName: 'Roses in The Flames - Platform',

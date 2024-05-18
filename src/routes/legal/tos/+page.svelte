@@ -1,7 +1,7 @@
 <script>
     import Seo from "sk-seo";
 
-    const seo = {
+    $: seo = {
         title: 'Roses In The Flames - Terms of Service',
         description: 'Terms of Service of Roses In The Flames (RiTF).',
         siteName: 'Roses in The Flames - Platform',

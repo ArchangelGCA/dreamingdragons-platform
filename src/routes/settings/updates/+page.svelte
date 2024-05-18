@@ -3,7 +3,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import Seo from "sk-seo";
 
-    const seo = {
+    $: seo = {
         title: "Roses In The Flames - Mailing List",
         description: "Subscribe to the official Roses In The Flames mailing list.",
         siteName: "Roses In The Flames - Platform",

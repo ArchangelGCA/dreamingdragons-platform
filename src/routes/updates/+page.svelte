@@ -17,7 +17,7 @@
         return new Date(dateString).toLocaleTimeString(undefined, options);
     }
 
-    const seo = {
+    $: seo = {
         title: 'Roses In The Flames - Updates',
         description: 'Updates and changelogs of the Roses In The Flames.',
         siteName: 'Roses in The Flames - Platform',

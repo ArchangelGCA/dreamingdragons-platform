@@ -6,7 +6,7 @@
     import Masonry from "$lib/components/layout/Masonry.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
 
-    const seo = {
+    $: seo = {
         title: 'Roses In The Flames - Platform',
         description: 'The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature.',
         siteName: 'Roses in The Flames - Platform',

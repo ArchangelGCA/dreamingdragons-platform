@@ -6,7 +6,7 @@
     let {profiles, supabase, image_proxy} = data;
     $: ({profiles, supabase} = data);
 
-    const seo = {
+    $: seo = {
         title: 'Admin - Users',
         description: 'Admin Users dashboard for Roses in The Flames platform.',
         siteName: 'Roses in The Flames - Platform',

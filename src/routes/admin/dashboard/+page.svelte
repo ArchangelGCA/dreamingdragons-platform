@@ -81,7 +81,7 @@
         isPanicAction = false;
     }
 
-    const seo = {
+    $: seo = {
         title: 'Admin - Dashboard',
         description: 'Admin dashboard for Roses in The Flames platform.',
         siteName: 'Roses in The Flames - Platform',
