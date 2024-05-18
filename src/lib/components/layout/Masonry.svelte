@@ -13,7 +13,8 @@
     if (masonryElement) masonryElement = masonryElement;
 
     export let reset = null;
-    $: if (reset) {
+    $: if (reset || !reset) {
+        // console.log('Resetting masonry layout, reset:', reset);
         masonryElement = masonryElement;
     }
 

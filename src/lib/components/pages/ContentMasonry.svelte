@@ -1,5 +1,5 @@
 <script>
-    import {createEventDispatcher} from "svelte";
+    import {createEventDispatcher, onMount} from "svelte";
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
@@ -25,6 +25,8 @@
     export let owner_avatar_url;
     export let created_at;
     export let image_proxy;
+    //export let width;
+    //export let height;
 
     const dispatch = createEventDispatcher();
 
@@ -36,6 +38,62 @@
 
     $: if (book_title.length > 20) book_title = book_title.substring(0, 18) + '...';
     $: if (owner_username.length > 16) owner_username = owner_username.substring(0, 15) + '...';
+
+    onMount(() => {
+        const img = new Image();
+        img.src = book_cover_url + '?width=500&quality=80';
+        /*img.onload = () => {
+            if (img.width === 0 && img.height === 0) {
+                dispatch('notfound');
+            } else {
+                dispatch('loaded');
+            }
+        };*/
+        img.onerror = () => {
+            console.error('Error loading image:', book_cover_url);
+            dispatch('notfound');
+        };
+    });
+
+    /*onMount(() => {
+        // Preload image and get its dimensions, and set the div's width and height to match
+        const img = new Image();
+        // use url as src with also ?width=500&quality=80
+        img.src = book_cover_url + '?width=500&quality=80';
+        img.onload = () => {
+            divWidth = img.width + 'px';
+            divHeight = img.height + 'px';
+            console.log("Image loaded, title: " + book_title + ", width: " + divWidth + ", height: " + divHeight);
+        };
+
+        // Add a fallback for when the image fails to load
+        img.onerror = () => {
+            divWidth = 'auto';
+            divHeight = 'auto';
+        };
+    });*/
+
+    /*$: if (book_cover_url) {
+        console.log('Loading image', book_cover_url);
+        getImageDimensions(book_cover_url)
+            .then(dimensions => {
+                width = dimensions.width;
+                height = dimensions.height;
+                console.log('Image loaded, title: ' + book_title + ', width: ' + width + ', height: ' + height);
+            })
+            .catch(error => {
+                console.error('Error loading image:', error);
+            });
+    }
+
+    function getImageDimensions(url) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve({ width: img.width, height: img.height });;
+            img.onerror = reject;
+            img.src = url;
+        });
+    }*/
 </script>
 
 <div>
@@ -57,6 +115,21 @@
                         class="img-fluid rounded-3"
                         on:load={() => {dispatch('loaded')}}
                 >
+                <!--<img
+                        src={book_cover_url + '?width=500&quality=80'}
+                        alt="Book cover"
+                        loading="lazy"
+                        class="img-fluid rounded-3"
+                        on:load={() => {dispatch('loaded')}}
+                        style="width: {divWidth}; height: {divHeight};"
+                >-->
+                <!--<img
+                        src={book_cover_url + '?width=500&quality=80'}
+                        alt="Book cover"
+                        loading="lazy"
+                        class="img-fluid rounded-3"
+                        on:load={() => {dispatch('loaded')}}
+                >-->
             </div>
             <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
                 <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
