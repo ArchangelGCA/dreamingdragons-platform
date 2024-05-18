@@ -95,9 +95,11 @@
         description: 'Profile page of ' + (profile ? profile.username : 'Profile'),
         siteName: 'Roses in The Flames - Platform',
         imageURL: (profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'),
+        logo: (profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'),
         author: 'ArchangelGCA',
         name: profile.username,
         schemaOrg: true,
+        twitter: true,
         index: true
     };
 </script>

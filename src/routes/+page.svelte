@@ -11,8 +11,11 @@
         description: 'The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature.',
         siteName: 'Roses in The Flames - Platform',
         imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
+        logo: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA',
         canonical: 'https://tales.rosesintheflames.com',
+        twitter: true,
+        schemaOrg: true,
         index: true
     }
 

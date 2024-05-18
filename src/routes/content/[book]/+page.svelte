@@ -257,9 +257,11 @@
         description: 'Content by ' + bookContent.owner_username + ' - ' + bookContent.book_title,
         siteName: 'Roses in The Flames - Platform',
         imageURL: bookContent.book_cover_url,
+        logo: 'https://tales.rosesintheflames.com/favicon.webp',
         author: 'ArchangelGCA',
         name: bookContent.owner_username,
         schemaOrg: true,
+        twitter: true,
         index: true
     }
 
