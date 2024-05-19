@@ -72,7 +72,7 @@
     function handleScroll(event) {
         const target = event.target;
         if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2)) && !allContentLoaded) {
-            console.log((target.scrollHeight - target.scrollTop) + ' <= ' + (target.clientHeight + (target.clientHeight / 0.2)));
+            // console.log((target.scrollHeight - target.scrollTop) + ' <= ' + (target.clientHeight + (target.clientHeight / 0.2)));
             loadMoreContentByCreatedAt();
         }
     }
@@ -128,7 +128,7 @@
         -->
 
         <div class="col-12 mt-3 mb-2">
-            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1.3</span></p>
+            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1.4</span></p>
         </div>
         <div class="col-12">
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}

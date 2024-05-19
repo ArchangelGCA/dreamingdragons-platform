@@ -25,9 +25,8 @@
     export let owner_avatar_url;
     export let created_at;
     export let image_proxy;
-    //export let width;
-    //export let height;
 
+    let width = 500;
     const dispatch = createEventDispatcher();
 
     $: if (image_proxy) {
@@ -41,59 +40,12 @@
 
     onMount(() => {
         const img = new Image();
-        img.src = book_cover_url + '?width=500&quality=80';
-        /*img.onload = () => {
-            if (img.width === 0 && img.height === 0) {
-                dispatch('notfound');
-            } else {
-                dispatch('loaded');
-            }
-        };*/
+        img.src = book_cover_url + `?width=${width}&quality=80`;
         img.onerror = () => {
-            console.error('Error loading image:', book_cover_url);
+            console.error('Error loading image:', book_cover_url + `?width=${width}&quality=80`);
             dispatch('notfound');
         };
     });
-
-    /*onMount(() => {
-        // Preload image and get its dimensions, and set the div's width and height to match
-        const img = new Image();
-        // use url as src with also ?width=500&quality=80
-        img.src = book_cover_url + '?width=500&quality=80';
-        img.onload = () => {
-            divWidth = img.width + 'px';
-            divHeight = img.height + 'px';
-            console.log("Image loaded, title: " + book_title + ", width: " + divWidth + ", height: " + divHeight);
-        };
-
-        // Add a fallback for when the image fails to load
-        img.onerror = () => {
-            divWidth = 'auto';
-            divHeight = 'auto';
-        };
-    });*/
-
-    /*$: if (book_cover_url) {
-        console.log('Loading image', book_cover_url);
-        getImageDimensions(book_cover_url)
-            .then(dimensions => {
-                width = dimensions.width;
-                height = dimensions.height;
-                console.log('Image loaded, title: ' + book_title + ', width: ' + width + ', height: ' + height);
-            })
-            .catch(error => {
-                console.error('Error loading image:', error);
-            });
-    }
-
-    function getImageDimensions(url) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve({ width: img.width, height: img.height });;
-            img.onerror = reject;
-            img.src = url;
-        });
-    }*/
 </script>
 
 <div>
@@ -106,37 +58,25 @@
         </div>
         <a href="/content/{book_id}">
             <div class="card-img">
+                <!-- 1x is for desktop, 2x is for mobile -->
                 <img
-                        srcset="{book_cover_url + '?width=350&quality=80'} 2x,
-                        {book_cover_url + '?width=500&quality=80'} 1x"
-                        src={book_cover_url + '?width=500&quality=80'}
+                        srcset="{book_cover_url + `?width=${width}&quality=80`} 2x,
+                        {book_cover_url + `?width=${width}&quality=80`} 1x"
+                        src={book_cover_url + `?width=${width}&quality=80`}
                         alt="Book cover"
-                        loading="lazy"
                         class="img-fluid rounded-3"
                         on:load={() => {dispatch('loaded')}}
+                        width={width}
                 >
-                <!--<img
-                        src={book_cover_url + '?width=500&quality=80'}
-                        alt="Book cover"
-                        loading="lazy"
-                        class="img-fluid rounded-3"
-                        on:load={() => {dispatch('loaded')}}
-                        style="width: {divWidth}; height: {divHeight};"
-                >-->
-                <!--<img
-                        src={book_cover_url + '?width=500&quality=80'}
-                        alt="Book cover"
-                        loading="lazy"
-                        class="img-fluid rounded-3"
-                        on:load={() => {dispatch('loaded')}}
-                >-->
             </div>
             <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
                 <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                     <div class="col-12 px-0 px-md-2">
                         <a class="link-light link-custom text-decoration-none text-wrap" href="/content/{book_id}"
                            use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{book_title}</span></a>
-                        <p class="card-text"><small class="text-description"><span><UserAvatarNavbar url={owner_avatar_url} username={owner_username} {image_proxy} size="25px"/></span> <a
+                        <p class="card-text"><small class="text-description"><span>
+                            <UserAvatarNavbar url={owner_avatar_url} username={owner_username} {image_proxy} size="25px"/>
+                        </span> <a
                                 class="link-light link-custom text-decoration-none" href="/profile/{owner_id}"
                                 use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
                     </div>

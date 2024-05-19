@@ -27,5 +27,5 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 {:else}
-    <img src={avatarUrl} alt={username} class="rounded-circle {classes}" width={size} height={size}>
+    <img src={avatarUrl} alt='{username} avatar' class="rounded-circle {classes}" width={size} height={size}>
 {/if}

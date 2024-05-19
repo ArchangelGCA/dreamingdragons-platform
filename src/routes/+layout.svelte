@@ -192,7 +192,7 @@
         <form action="/search" method="get" data-sveltekit-reload>
             <div class="input-group">
                 <input type="text" class="form-control form-control-sm border-0 rounded-start-3" placeholder="Search" aria-label="Search" aria-describedby="searchButton" name="q" bind:value={searchTerm} />
-                <button class="btn btn-sm btn-outline-search" type="submit" id="searchButton"><i class="fas fa-search"></i></button>
+                <button class="btn btn-sm btn-outline-search" type="submit" id="searchButton" aria-label="Search"><i class="fas fa-search"></i></button>
             </div>
         </form>
     </div>
@@ -300,7 +300,7 @@
                 <p class="fs-6 text-center mb-1">Follow us on:</p>
                 <p class="fs-4 text-center">
                     {#each socials as social}
-                        <a href="{social.link}" target="_blank" use:tooltip={{...tooltipConfig}} title="Open {social.name}" class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
+                        <a href="{social.link}" target="_blank" aria-label="Find us on {social.name}" use:tooltip={{...tooltipConfig}} title="Open {social.name}" class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
                     {/each}
                 </p>
             </div>
