@@ -5,6 +5,7 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import Masonry from "$lib/components/layout/Masonry.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
+    import {toast} from "@zerodevx/svelte-toast";
 
     $: seo = {
         title: 'Roses In The Flames - Platform',
@@ -60,12 +61,24 @@
 
     let reset = false;
     let counterImg = 0;
+    let areLoading = false;
+    let areLoadingCounter = 0;
 
     async function handleLoadedImage() {
+        let maxLoad = books_ordered_by_created_at.length; // - (pageStep + 1)
+        if (areLoadingCounter > 1) maxLoad -= (pageStep + 1);
         counterImg++;
-        // console.log('Image loaded', counterImg, books_ordered_by_created_at.length - (pageStep + 1));
-        if (counterImg >= books_ordered_by_created_at.length - (pageStep + 1)) {
+        console.log('Image loaded', counterImg, maxLoad);
+        if (counterImg >= maxLoad) {
+            areLoading = false;
+            areLoadingCounter = 0;
             reset = !reset;
+            toast.push('Masonry updated ✨!', {
+                theme: {
+                    '--toastBackground': 'rgba(92,0,166,1)',
+                    '--toastColor': '#fff',
+                }
+            });
         }
     }
 
@@ -74,6 +87,8 @@
         if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2)) && !allContentLoaded) {
             // console.log((target.scrollHeight - target.scrollTop) + ' <= ' + (target.clientHeight + (target.clientHeight / 0.2)));
             loadMoreContentByCreatedAt();
+            areLoading = true;
+            areLoadingCounter++;
         }
     }
 </script>
