@@ -275,10 +275,10 @@
         <div class="row border-top border-light-subtle pt-3 pb-2">
             <div class="col">
                 <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
-                    <strong>Warning!</strong> We've just migrated!
+                    <strong>Maintenance!</strong> System outage!
                     <!-- Little text with a few details about the maintenance -->
-                    <small class="text-muted d-block">This may cause unexpected issues, if you found any, please report them to us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a>!</small>
-                    <small class="text-muted d-block">Migration was completed on: 04/05/2024 11:30AM UTC/GMT+2</small>
+                    <small class="text-muted d-block">We're currently experiencing a system outage involving images uploads/edits and downloads (Content, Profile Covers and Avatars), all other functionalities are operational! For any question please reach us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a></small>
+                    <small class="text-muted d-block">System outage started around: 19/05/2024 11:30AM UTC/GMT+2</small>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" on:click={() => {maintenance = false}}></button>
                 </div>
             </div>

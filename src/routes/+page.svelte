@@ -61,18 +61,17 @@
 
     let reset = false;
     let counterImg = 0;
-    let areLoading = false;
     let areLoadingCounter = 0;
 
     async function handleLoadedImage() {
         let maxLoad = books_ordered_by_created_at.length; // - (pageStep + 1)
         if (areLoadingCounter > 1) maxLoad -= (pageStep + 1);
         counterImg++;
-        console.log('Image loaded', counterImg, maxLoad);
+        // console.log('Image loaded', counterImg, maxLoad);
         if (counterImg >= maxLoad) {
-            areLoading = false;
             areLoadingCounter = 0;
             reset = !reset;
+            toast.pop(0);
             toast.push('Masonry updated ✨!', {
                 theme: {
                     '--toastBackground': 'rgba(92,0,166,1)',
