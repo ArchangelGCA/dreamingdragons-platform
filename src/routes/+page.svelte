@@ -86,7 +86,6 @@
         if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2)) && !allContentLoaded) {
             // console.log((target.scrollHeight - target.scrollTop) + ' <= ' + (target.clientHeight + (target.clientHeight / 0.2)));
             loadMoreContentByCreatedAt();
-            areLoading = true;
             areLoadingCounter++;
         }
     }
