@@ -124,7 +124,7 @@
                     });
                 } else {
                     bookContent.likes_count--;
-                    toast.push('Book unliked 💔', {
+                    toast.push('Tale unliked 💔', {
                         theme: {
                             '--toastBackground': '#5c00a6',
                             '--toastColor': '#fff',
@@ -178,7 +178,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                toast.push('Book ' + bookContent.book_title +  ' deleted! 🗑️', {
+                toast.push('Tale ' + bookContent.book_title +  ' deleted! 🗑️', {
                     theme: {
                         '--toastBackground': '#5c00a6',
                         '--toastColor': '#fff',

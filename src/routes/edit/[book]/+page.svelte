@@ -60,6 +60,7 @@
     export let data;
 
     let { book, supabase, tooltipConfig } = data;
+    $: ({book} = data)
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = book.cover_url;
