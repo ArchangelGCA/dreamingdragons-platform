@@ -219,7 +219,7 @@
     <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-auto">
         {#if !books || books.length === 0}
             <div class="col mt-4 text-center">
-                <p class="h1">No content found, yet!</p>
+                <p class="h1">Looks a bit empty here... 😶‍🌫️!</p>
                 <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
             </div>
         {:else}
