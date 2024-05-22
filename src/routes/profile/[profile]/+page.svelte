@@ -157,7 +157,7 @@
             {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                 <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
             {:else}
-                <span class="h1 mt-2 mb-1">{profile.username}</span>
+                <span class="h1 mt-2 mb-1">{profile.username} <a class="link-purple" href="{profile.website ? profile.website : ''}" target="_blank" use:tooltip={{...tooltipConfig}} title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Your profile'}"><i class="fa-solid fa-external-link fa-2xs"></i></a></span>
             {/if}
         </div>
     </div>
@@ -248,6 +248,15 @@
 
     .dropdown-item:hover {
         background-color: rgba(43, 0, 73, 0.95);
+    }
+
+    .link-purple {
+        color: #7d00dd;
+        transition: color 0.3s;
+    }
+
+    .link-purple:hover {
+        color: #9100ff;
     }
 
     #followers {
