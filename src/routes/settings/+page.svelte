@@ -312,7 +312,7 @@
             <div class="col px-1">
                 <form method="post" action="?/signout" use:enhance={handleSignOut}>
                     <div class="mb-3">
-                        <button class="btn btn-outline-danger w-100" disabled={loading} use:tooltip={{...tooltipConfig}}
+                        <button class="btn btn-logout w-100" disabled={loading} use:tooltip={{...tooltipConfig}}
                                 title="Click to Logout">Logout
                         </button>
                     </div>
@@ -336,6 +336,86 @@
 
     .btn-purple:hover {
         background-color: #4a0086;
+    }
+
+    .accordion-button {
+        background-color: rgba(92, 0, 166, 0.6);
+        border: 1px solid rgb(125, 0, 221);
+        color: #fff;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(92, 0, 166, 0.8) !important;
+    }
+
+    .accordion-button:focus {
+        box-shadow: 0 0 0 0.25rem rgba(92, 0, 166, 0.5);
+    }
+
+    .accordion-collapse {
+        background-color: rgba(92, 0, 166, 0.3);
+    }
+
+    .form-control {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221, 0.5);
+        color: #f6e6ff;
+    }
+
+    .form-control:focus {
+        background-color: rgba(92, 0, 166, 0.5);
+        border: 1px solid rgba(125, 0, 221, 0.7);
+        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
+        color: #f6e6ff;
+    }
+
+    .form-control:disabled {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221, 0.5);
+        color: #6c757d;
+    }
+
+    .form-check-input {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221);
+        color: #f6e6ff;
+    }
+
+    .form-check-input:focus {
+        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
+    }
+
+    /** Difference between checked and not should be more visible */
+    .form-check-input:checked {
+        background-color: rgba(92, 0, 166, 0.5);
+        border: 1px solid rgba(125, 0, 221, 0.7);
+        color: #f6e6ff;
+    }
+
+    .form-check-input:disabled {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221, 0.5);
+        color: #6c757d;
+    }
+
+    .form-check-label {
+        color: #f6e6ff;
+    }
+
+    .btn-logout {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221, 0.5);
+        color: #f6e6ff;
+    }
+
+    .btn-logout:hover {
+        background-color: rgba(92, 0, 166, 0.5);
+        border: 1px solid rgba(125, 0, 221, 0.7);
+        color: #f6e6ff;
+    }
+
+    .btn-logout:focus {
+        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
     }
 
     @keyframes Gradient {
