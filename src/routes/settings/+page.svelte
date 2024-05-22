@@ -385,7 +385,6 @@
         box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
     }
 
-    /** Difference between checked and not should be more visible */
     .form-check-input:checked {
         background-color: rgba(92, 0, 166, 0.5);
         border: 1px solid rgba(125, 0, 221, 0.7);
@@ -405,13 +404,12 @@
     .btn-logout {
         background-color: rgba(92, 0, 166, 0.3);
         border: 1px solid rgba(125, 0, 221, 0.5);
-        color: #f6e6ff;
     }
 
     .btn-logout:hover {
         background-color: rgba(92, 0, 166, 0.5);
         border: 1px solid rgba(125, 0, 221, 0.7);
-        color: #f6e6ff;
+        color: #ffffff;
     }
 
     .btn-logout:focus {
