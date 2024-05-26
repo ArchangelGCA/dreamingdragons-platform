@@ -40,19 +40,16 @@
             modalBackdrop[0].remove();
         }
     }
-
-    $: seo = {
-        title: 'Admin - Content',
-        description: 'Admin Content dashboard for Roses in The Flames platform.',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA',
-        index: false
-    };
-
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Admin - Content"
+    description="Admin Content dashboard for Roses in The Flames platform."
+    siteName="Roses in The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    index="false"
+/>
 
 <div class="row mb-2">
     <div class="col text-center">

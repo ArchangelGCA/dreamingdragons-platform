@@ -251,32 +251,20 @@
 
         reportActionActive = false;
     }
-
-    $: seo = {
-        title: bookContent.book_title + ' by ' + bookContent.owner_username,
-        description: 'Content by ' + bookContent.owner_username + ' - ' + bookContent.book_title,
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: bookContent.book_cover_url,
-        logo: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA',
-        name: bookContent.owner_username,
-        schemaOrg: true,
-        twitter: true,
-        index: true
-    }
-
-    $: if (bookContent) {
-        seo = {
-            ...seo,
-            title: bookContent.book_title + ' by ' + bookContent.owner_username,
-            description: 'Content by ' + bookContent.owner_username + ' - ' + bookContent.book_title,
-            imageURL: bookContent.book_cover_url,
-            name: bookContent.owner_username,
-        }
-    }
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="{bookContent.book_title} by {bookContent.owner_username}"
+    description="Content by {bookContent.owner_username} - {bookContent.book_title}"
+    siteName="Roses in The Flames - Platform"
+    imageURL="{bookContent.book_cover_url}"
+    logo="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    name="{bookContent.owner_username}"
+    schemaOrg="true"
+    twitter="true"
+    index="true"
+/>
 
 <div class="container-xxl">
     <div class="row justify-content-center my-2">

@@ -1,16 +1,15 @@
 <script>
     import Seo from "sk-seo";
-
-    $: seo = {
-        title: 'Roses In The Flames - Terms of Service',
-        description: 'Terms of Service of Roses In The Flames (RiTF).',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
-    }
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Roses In The Flames - Terms of Service"
+    description="Terms of Service of Roses In The Flames (RiTF)."
+    siteName="Roses in The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    index="true"
+/>
 
 
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 mx-auto rounded-3">

@@ -259,32 +259,20 @@
         createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
         tags.forEach((item) => item.url = `/search?tag=${item.name}`);
     }
-
-    $: seo = {
-        title: chapterContent.book_title + ' - ' + chapterContent.title + ' - ' + chapterContent.owner_username,
-        description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' +  chapterContent.book_title,
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: chapterContent.book_cover_url,
-        logo: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA',
-        name: chapterContent.owner_username,
-        schemaOrg: true,
-        twitter: true,
-        index: true
-    }
-
-    $: if (chapterContent) {
-        seo = {
-            ...seo,
-            title: chapterContent.book_title + ' - ' + chapterContent.title + ' - ' + chapterContent.owner_username,
-            description: chapterContent.title + ' by ' + chapterContent.owner_username + ' - ' + chapterContent.book_title,
-            imageURL: chapterContent.book_cover_url,
-            name: chapterContent.owner_username
-        }
-    }
 </script>
 
-<Seo {...seo} />
+<Seo
+        title="{chapterContent.book_title} - {chapterContent.title} - {chapterContent.owner_username}"
+        description="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title}"
+        siteName="Roses in The Flames - Platform"
+        imageURL="{chapterContent.book_cover_url}"
+        logo="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        name="{chapterContent.owner_username}"
+        schemaOrg="true"
+        twitter="true"
+        index="true"
+/>
 
 <div class="container-xxl">
     <!-- Shortcut button -->

@@ -3,21 +3,19 @@
     import { ThemeSupa } from '@supabase/auth-ui-shared'
     import Seo from "sk-seo";
 
-    $: seo = {
-        title: 'Roses In The Flames - Login',
-        description: 'Register or Login to Roses In The Flames.',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA',
-        index: true,
-    }
-
     // For convenience, I'll keep this list of theme variables here: https://github.com/supabase-community/auth-ui/blob/main/packages/shared/src/theming/Themes.ts
 
     export let data;
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Roses In The Flames - Login"
+    description="Register or Login to Roses In The Flames."
+    siteName="Roses in The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    index="true"
+/>
 
 <div class="row justify-content-center pt-4 pb-3">
     <div class="col">

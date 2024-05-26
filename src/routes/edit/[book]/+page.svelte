@@ -248,7 +248,11 @@
 
 </script>
 
-<Seo index="false" />
+<Seo
+    title="Roses In The Flames - Edit Tale"
+    description="Edit your tale."
+    index="false"
+/>
 
 <div class="container-md mt-4 mb-3 px-0">
     <div class="row text-center">

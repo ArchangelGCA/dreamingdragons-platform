@@ -1,16 +1,15 @@
 <script>
     import Seo from "sk-seo";
-
-    $: seo = {
-        title: 'Roses In The Flames - Privacy Policy',
-        description: 'Privacy Policy of Roses In The Flames (RiTF).',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
-    }
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Roses In The Flames - Privacy Policy"
+    description="Privacy Policy of Roses In The Flames (RiTF)."
+    siteName="Roses in The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    index="true"
+/>
 
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 rounded-3">
     <h1 style="padding-top: 6pt;padding-left: 23pt;text-indent: 0pt;text-align: center;">ONLINE PRIVACY POLICY

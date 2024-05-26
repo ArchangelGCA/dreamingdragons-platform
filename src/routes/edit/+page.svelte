@@ -9,4 +9,8 @@ import Seo from "sk-seo";
     </div>
 </div>
 
-<Seo index="false" />
+<Seo
+        title="Roses In The Flames - Book Error"
+        description="Book error."
+        index="false"
+/>

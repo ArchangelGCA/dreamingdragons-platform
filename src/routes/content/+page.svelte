@@ -9,4 +9,8 @@
     </div>
 </div>
 
-<Seo index="false" />
+<Seo
+        title="Roses In The Flames - Content Error"
+        description="Content error."
+        index="false"
+/>

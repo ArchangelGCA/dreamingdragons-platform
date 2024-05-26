@@ -229,7 +229,11 @@
     }
 </script>
 
-<Seo index="false" />
+<Seo
+    title="Roses In The Flames - Edit Chapter"
+    description="Edit a chapter."
+    index="false"
+/>
 
 <div class="container-md mt-4 mb-3">
     <div class="row text-center">

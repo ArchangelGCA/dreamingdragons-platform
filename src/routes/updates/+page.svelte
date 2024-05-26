@@ -16,17 +16,15 @@
         const options = { hour: 'numeric', minute: 'numeric'};
         return new Date(dateString).toLocaleTimeString(undefined, options);
     }
-
-    $: seo = {
-        title: 'Roses In The Flames - Updates',
-        description: 'Updates and changelogs of the Roses In The Flames.',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
-    };
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Roses In The Flames - Updates"
+    description="Updates and changelogs of the Roses In The Flames."
+    siteName="Roses in The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+/>
 
 <div class="container mt-3">
     <div class="row">

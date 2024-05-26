@@ -7,19 +7,6 @@
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import {toast} from "@zerodevx/svelte-toast";
 
-    $: seo = {
-        title: 'Roses In The Flames - Platform',
-        description: 'The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature.',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        logo: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA',
-        canonical: 'https://tales.rosesintheflames.com',
-        twitter: true,
-        schemaOrg: true,
-        index: true
-    }
-
     export let data;
     let { supabase, image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed, tooltipConfig } = data;
     $: ({books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed} = data);
@@ -96,7 +83,18 @@
     }
 </script>
 
-<Seo {...seo} />
+<Seo
+        title="Roses In The Flames - Platform"
+        description="The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature."
+        siteName="Roses in The Flames - Platform"
+        imageURL="https://tales.rosesintheflames.com/favicon.webp"
+        logo="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        canonical="https://tales.rosesintheflames.com"
+        twitter="true"
+        schemaOrg="true"
+        index="true"
+/>
 
 <div class="container-fluid mb-3 mt-2" style="min-height: 69vh">
     <div class="row justify-content-center">

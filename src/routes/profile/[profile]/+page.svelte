@@ -89,22 +89,20 @@
 
         followActionActive = false;
     }
-
-    $: seo = {
-        title: (profile ? profile.username : 'Profile') + ' - Profile',
-        description: 'Profile page of ' + (profile ? profile.username : 'Profile'),
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: (profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'),
-        logo: (profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'),
-        author: 'ArchangelGCA',
-        name: profile.username,
-        schemaOrg: true,
-        twitter: true,
-        index: true
-    };
 </script>
 
-<Seo {...seo} />
+<Seo
+        title="{profile ? profile.username : 'Profile'} - Profile"
+        description="Profile page of {profile ? profile.username : 'Profile'}"
+        siteName="Roses in The Flames - Platform"
+        imageURL="{profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'}"
+        logo="{profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'}"
+        author="ArchangelGCA"
+        name="{profile.username}"
+        schemaOrg="true"
+        twitter="true"
+        index="true"
+/>
 
 <div class="container-fluid px-0" style="min-height: 71vh">
     {#if !profile || profile.length === 0}
@@ -157,7 +155,7 @@
             {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                 <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
             {:else}
-                <span class="h1 mt-2 mb-1">{profile.username} <a class="link-purple" href="{profile.website ? profile.website : ''}" target="_blank" use:tooltip={{...tooltipConfig}} title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Your profile'}"><i class="fa-solid fa-external-link fa-2xs"></i></a></span>
+                <span class="h1 mt-2 mb-1">{profile.username} <a class="link-purple" href="{profile.website ? profile.website : ''}" target="_blank" use:tooltip={{...tooltipConfig}} title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"><i class="fa-solid fa-external-link fa-2xs"></i></a></span>
             {/if}
         </div>
     </div>

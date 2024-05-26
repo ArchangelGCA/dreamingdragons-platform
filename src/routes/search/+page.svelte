@@ -9,16 +9,7 @@
     export let data;
     let { searchResults, partialText, image_proxy } = data;
 
-    let seo = {};
-
-    $: seo = {
-        title: partialText + ' | Roses In The Flames',
-        description: 'Search results for ' + partialText + ' on Roses In The Flames.',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA',
-        index: true
-    };
+    let index = true;
 
     onMount(() => {
         window.addEventListener('scroll', handleScroll);
@@ -53,7 +44,7 @@
     } else {
         allResultsLoaded = true;
         // index to false in seo
-        seo.index = false;
+        index = false;
     }
 
     async function loadMoreResults(){
@@ -111,7 +102,14 @@
     }
 </script>
 
-<Seo {...seo} />
+<Seo
+        title="{partialText} | Roses In The Flames"
+        description="Search results for {partialText} on Roses In The Flames."
+        siteName="Roses in The Flames - Platform"
+        imageURL="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        index={index}
+/>
 
 <div class="container-fluid my-3" style="min-height: 69vh">
     {#if partialText === ""}

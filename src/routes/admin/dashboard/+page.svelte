@@ -11,7 +11,6 @@
     $: ({panic, tooltipConfig} = data);
     let isPanicAction = false;
 
-
     async function handlePanic() {
         if (isPanicAction) return;
         isPanicAction = true;
@@ -80,18 +79,16 @@
 
         isPanicAction = false;
     }
-
-    $: seo = {
-        title: 'Admin - Dashboard',
-        description: 'Admin dashboard for Roses in The Flames platform.',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA',
-        index: false
-    };
 </script>
 
-<Seo {...seo} />
+<Seo
+        title="Admin - Dashboard"
+        description="Admin dashboard for Roses in The Flames platform."
+        siteName="Roses in The Flames - Platform"
+        imageURL="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        index="false"
+/>
 
 <div class="row text-center mb-2 mt-1">
     <div class="col-md-12">

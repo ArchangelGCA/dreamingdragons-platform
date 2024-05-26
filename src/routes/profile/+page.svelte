@@ -9,4 +9,8 @@
     </div>
 </div>
 
-<Seo index="false" />
+<Seo
+        title="Roses In The Flames - Profile Error"
+        description="Profile error."
+        index="false"
+/>

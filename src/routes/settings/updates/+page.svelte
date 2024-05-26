@@ -3,14 +3,6 @@
     import autoAnimate from '@formkit/auto-animate';
     import Seo from "sk-seo";
 
-    $: seo = {
-        title: "Roses In The Flames - Mailing List",
-        description: "Subscribe to the official Roses In The Flames mailing list.",
-        siteName: "Roses In The Flames - Platform",
-        imageURL: "https://tales.rosesintheflames.com/favicon.webp",
-        author: "ArchangelGCA"
-    }
-
     let email = '';
     let activeEvent = false;
     let resultAction = '';
@@ -45,7 +37,14 @@
     }
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Roses In The Flames - Mailing List"
+    description="Subscribe to the official Roses In The Flames mailing list."
+    siteName="Roses In The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    index="true"
+/>
 
 <div class="container text-center">
     <div class="row d-flex align-items-center" style="min-height: 69.5vh">

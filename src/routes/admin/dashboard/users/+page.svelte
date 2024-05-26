@@ -5,18 +5,16 @@
     export let data;
     let {profiles, supabase, image_proxy} = data;
     $: ({profiles, supabase} = data);
-
-    $: seo = {
-        title: 'Admin - Users',
-        description: 'Admin Users dashboard for Roses in The Flames platform.',
-        siteName: 'Roses in The Flames - Platform',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA',
-        index: false
-    };
 </script>
 
-<Seo {...seo} />
+<Seo
+        title="Admin - Users"
+        description="Admin Users dashboard for Roses in The Flames platform."
+        siteName="Roses in The Flames - Platform"
+        imageURL="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        index="false"
+/>
 
 <div class="row mb-2">
     <div class="col text-center">

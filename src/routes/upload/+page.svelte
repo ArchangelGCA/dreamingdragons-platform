@@ -469,11 +469,10 @@
     }
 </script>
 
-<svelte:head>
-    <title>Roses In The Flames | Upload</title>
-</svelte:head>
-
-<Seo index="false" />
+<Seo
+        title="Rose In The Flames | Upload"
+        index="false"
+/>
 
 <div class="container-md px-0">
     <!-- Alert if users can't upload -->
