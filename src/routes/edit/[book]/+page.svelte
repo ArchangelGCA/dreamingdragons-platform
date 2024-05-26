@@ -6,7 +6,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import Editor from "@tinymce/tinymce-svelte";
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 
     let conf = {
         skin: 'oxide-dark',
@@ -249,7 +249,7 @@
 </script>
 
 <Seo
-    title="Roses In The Flames - Edit Tale"
+    title="Roses in The Flames - Edit Tale"
     description="Edit your tale."
     index="false"
 />

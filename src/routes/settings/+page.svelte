@@ -4,7 +4,7 @@
     import {toast} from "@zerodevx/svelte-toast";
     import {tooltip} from "@svelte-plugins/tooltips";
     import Cover from "$lib/components/profile/Cover.svelte";
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
     import {invalidateAll} from "$app/navigation";
     import {onMount} from "svelte";
     import {browser} from "$app/environment";

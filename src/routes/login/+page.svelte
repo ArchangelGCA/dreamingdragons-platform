@@ -1,7 +1,7 @@
 <script>
     import { Auth } from '@supabase/auth-ui-svelte'
     import { ThemeSupa } from '@supabase/auth-ui-shared'
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 
     // For convenience, I'll keep this list of theme variables here: https://github.com/supabase-community/auth-ui/blob/main/packages/shared/src/theming/Themes.ts
 
@@ -9,8 +9,8 @@
 </script>
 
 <Seo
-    title="Roses In The Flames - Login"
-    description="Register or Login to Roses In The Flames."
+    title="Roses in The Flames - Login"
+    description="Register or Login to Roses in The Flames."
     siteName="Roses in The Flames - Platform"
     imageURL="https://tales.rosesintheflames.com/favicon.webp"
     author="ArchangelGCA"

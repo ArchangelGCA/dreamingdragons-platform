@@ -6,7 +6,7 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 
     export let data;
     let { session, image_proxy, profile, isFollowing, tooltipConfig } = data;
@@ -93,7 +93,7 @@
 
 <Seo
         title="{profile ? profile.username : 'Profile'} - Profile"
-        description="Profile page of {profile ? profile.username : 'Profile'}"
+        description="Profile of {profile ? profile.username : 'Profile'} on RiTF, Roses in The Flames."
         siteName="Roses in The Flames - Platform"
         imageURL="{profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'}"
         logo="{profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'}"

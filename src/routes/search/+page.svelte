@@ -4,7 +4,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
     import {onMount} from "svelte";
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 
     export let data;
     let { searchResults, partialText, image_proxy } = data;
@@ -103,8 +103,8 @@
 </script>
 
 <Seo
-        title="{partialText} | Roses In The Flames"
-        description="Search results for {partialText} on Roses In The Flames."
+        title="{partialText} | Roses in The Flames"
+        description="Search results for {partialText} on Roses in The Flames."
         siteName="Roses in The Flames - Platform"
         imageURL="https://tales.rosesintheflames.com/favicon.webp"
         author="ArchangelGCA"

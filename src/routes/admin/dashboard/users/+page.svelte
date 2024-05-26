@@ -1,6 +1,6 @@
 <script>
     import AdminUser from "$lib/components/admin/AdminUser.svelte";
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 
     export let data;
     let {profiles, supabase, image_proxy} = data;

@@ -1,5 +1,5 @@
 <script>
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 </script>
 
 <Seo

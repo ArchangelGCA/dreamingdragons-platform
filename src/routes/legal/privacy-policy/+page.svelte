@@ -1,10 +1,10 @@
 <script>
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 </script>
 
 <Seo
-    title="Roses In The Flames - Privacy Policy"
-    description="Privacy Policy of Roses In The Flames (RiTF)."
+    title="Roses in The Flames - Privacy Policy"
+    description="Privacy Policy of Roses in The Flames (RiTF)."
     siteName="Roses in The Flames - Platform"
     imageURL="https://tales.rosesintheflames.com/favicon.webp"
     author="ArchangelGCA"

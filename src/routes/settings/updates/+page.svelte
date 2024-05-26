@@ -1,7 +1,7 @@
 <script>
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 
     let email = '';
     let activeEvent = false;
@@ -38,9 +38,9 @@
 </script>
 
 <Seo
-    title="Roses In The Flames - Mailing List"
-    description="Subscribe to the official Roses In The Flames mailing list."
-    siteName="Roses In The Flames - Platform"
+    title="Roses in The Flames - Mailing List"
+    description="Subscribe to the official Roses in The Flames mailing list."
+    siteName="Roses in The Flames - Platform"
     imageURL="https://tales.rosesintheflames.com/favicon.webp"
     author="ArchangelGCA"
     index="true"

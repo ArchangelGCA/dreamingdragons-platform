@@ -1,13 +1,13 @@
 <script>
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
     import {page} from "$app/stores";
     import autoAnimate from '@formkit/auto-animate';
 
 </script>
 
 <Seo
-    title="Roses In The Flames - Admin Dashboard"
-    description="Admin Dashboard for Roses In The Flames."
+    title="Roses in The Flames - Admin Dashboard"
+    description="Admin Dashboard for Roses in The Flames."
     index="false"
 />
 

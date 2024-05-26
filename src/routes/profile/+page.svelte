@@ -1,5 +1,5 @@
 <script>
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 </script>
 
 <div class="row mt-3">
@@ -10,7 +10,7 @@
 </div>
 
 <Seo
-        title="Roses In The Flames - Profile Error"
+        title="Roses in The Flames - Profile Error"
         description="Profile error."
         index="false"
 />

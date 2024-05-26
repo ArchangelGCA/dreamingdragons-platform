@@ -1,6 +1,6 @@
 <script>
 
-import Seo from "sk-seo";
+import Seo from "$lib/components/layout/SEO.svelte";
 </script>
 
 <div class="row text-center mt-4 mb-3">
@@ -10,7 +10,7 @@ import Seo from "sk-seo";
 </div>
 
 <Seo
-        title="Roses In The Flames - Book Error"
+        title="Roses in The Flames - Book Error"
         description="Book error."
         index="false"
 />

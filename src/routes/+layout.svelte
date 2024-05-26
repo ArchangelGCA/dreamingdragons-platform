@@ -71,7 +71,7 @@
     ];
 
     const currentYear = new Date().getFullYear(); // Will use this in the footer to automatically update the year
-    const owner = 'Roses In The Flames Official'
+    const owner = 'Roses in The Flames Official'
     const designedBy = 'ArchangelGCA';
     const designedByLink = 'https://archangelgca.eu';
     const tosLink = '/legal/tos'

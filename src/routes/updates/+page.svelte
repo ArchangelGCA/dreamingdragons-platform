@@ -1,5 +1,5 @@
 <script>
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/layout/SEO.svelte";
 
     export let data;
 
@@ -19,8 +19,8 @@
 </script>
 
 <Seo
-    title="Roses In The Flames - Updates"
-    description="Updates and changelogs of the Roses In The Flames."
+    title="Roses in The Flames - Updates"
+    description="Updates and changelogs of the Roses in The Flames."
     siteName="Roses in The Flames - Platform"
     imageURL="https://tales.rosesintheflames.com/favicon.webp"
     author="ArchangelGCA"

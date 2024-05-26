@@ -1,6 +1,6 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
-    import Seo from 'sk-seo';
+    import Seo from '$lib/components/layout/SEO.svelte';
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import Masonry from "$lib/components/layout/Masonry.svelte";
@@ -84,7 +84,7 @@
 </script>
 
 <Seo
-        title="Roses In The Flames - Platform"
+        title="Roses in The Flames - Platform"
         description="The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature."
         siteName="Roses in The Flames - Platform"
         imageURL="https://tales.rosesintheflames.com/favicon.webp"
