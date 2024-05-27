@@ -21,9 +21,15 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
     if (id) {
         const {data: profile, error: errorTest} = await supabase
             .from('profiles')
-            .select('*, book!book_owner_id_fkey(id,title,owner_id,cover_url,created_at, book_likes(user_id)), followers:followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username))')
+            .select('*, book!book_owner_id_fkey(id,title,owner_id,cover_url,created_at, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username))')
             .eq('id', id)
             .order('created_at', {referencedTable: 'book' ,ascending: false});
+
+        // Note: Relationships should use nametableofReference!namefield_fkey(data_that_I_want)
+        // Example, I want to get many followers related to a profile, I can use followersLoL!followers_following_id_fkey(data_that_I_want) etc.
+        // The difference between "!" and ":" is that:
+        // The "!" is OneToMany (A profile can have many followers)
+        // The ":" is ManyToOne (A follower can follow many profiles)
 
         if (errorTest) {
             console.error(errorTest);

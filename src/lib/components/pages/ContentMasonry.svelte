@@ -15,34 +15,26 @@
         theme: 'text-center w-auto'
     };
 
-    export let owner_username;
-    export let owner_id;
-    export let book_title;
-    export let book_id;
-    export let book_cover_url;
-    export let likes_count;
-    export let book_description;
-    export let owner_avatar_url;
-    export let created_at;
+    export let book;
     export let image_proxy;
 
     let width = 500;
     const dispatch = createEventDispatcher();
 
     $: if (image_proxy) {
-        if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url;
+        if (!book.cover_url.startsWith(image_proxy)) book.cover_url = image_proxy + book.cover_url;
     } else {
         console.log('No image proxy');
     }
 
-    $: if (book_title.length > 20) book_title = book_title.substring(0, 18) + '...';
-    $: if (owner_username.length > 16) owner_username = owner_username.substring(0, 15) + '...';
+    $: if (book.title.length > 20) book.title = book.title.substring(0, 18) + '...';
+    $: if (book.profiles.username.length > 16) book.profiles.username = book.profiles.username.substring(0, 15) + '...';
 
     onMount(() => {
         const img = new Image();
-        img.src = book_cover_url + `?width=${width}&quality=80`;
+        img.src = book.cover_url + `?width=${width}&quality=80`;
         img.onerror = () => {
-            console.error('Error loading image:', book_cover_url + `?width=${width}&quality=80`);
+            console.error('Error loading image:', book.cover_url + `?width=${width}&quality=80`);
             dispatch('notfound');
         };
     });
@@ -50,19 +42,16 @@
 
 <div>
     <div class="card border-0">
-        <div class="d-none"> <!-- Added this as a workaround for warning but also to add more context for SEO -->
-            <p>{book_description}</p>
-            <p>Posted on {created_at}</p>
-            <p>Avatar {owner_avatar_url}</p>
-            <p>Likes {likes_count}</p>
+        <div class="d-none"> <!-- Added this as a workaround for warnings but also to add more context for SEO -->
+            <p>Posted on {book.created_at}</p>
         </div>
-        <a href="/content/{book_id}">
+        <a href="/content/{book.id}">
             <div class="card-img">
                 <!-- 1x is for desktop, 2x is for mobile -->
                 <img
-                        srcset="{book_cover_url + `?width=${width}&quality=80`} 2x,
-                        {book_cover_url + `?width=${width}&quality=80`} 1x"
-                        src={book_cover_url + `?width=${width}&quality=80`}
+                        srcset="{book.cover_url + `?width=${width}&quality=80`} 2x,
+                        {book.cover_url + `?width=${width}&quality=80`} 1x"
+                        src={book.cover_url + `?width=${width}&quality=80`}
                         alt="Book cover"
                         class="img-fluid rounded-3"
                         on:load={() => {dispatch('loaded')}}
@@ -72,13 +61,13 @@
             <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
                 <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                     <div class="col-12 px-0 px-md-2">
-                        <a class="link-light link-custom text-decoration-none text-wrap" href="/content/{book_id}"
-                           use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{book_title}</span></a>
+                        <a class="link-light link-custom text-decoration-none text-wrap" href="/content/{book.id}"
+                           use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{book.title}</span></a>
                         <p class="card-text"><small class="text-description"><span>
-                            <UserAvatarNavbar url={owner_avatar_url} username={owner_username} {image_proxy} size="25px"/>
+                            <UserAvatarNavbar url={book.profiles.avatar_url} username={book.profiles.username} {image_proxy} size="25px"/>
                         </span> <a
-                                class="link-light link-custom text-decoration-none" href="/profile/{owner_id}"
-                                use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
+                                class="link-light link-custom text-decoration-none" href="/profile/{book.id}"
+                                use:tooltip={{...tooltipConfig}} title="Visit profile">{book.profiles.username}</a></small></p>
                     </div>
                 </div>
             </div>

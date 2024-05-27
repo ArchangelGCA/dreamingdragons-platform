@@ -28,8 +28,9 @@
 
         // fetch from books_ordered_by_created_at using range and append to books_ordered_by_created_at
         let { data: newBooks, error } = await supabase
-            .from('books_ordered_by_created_at')
-            .select('*')
+            .from('book')
+            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url)')
+            .order('created_at', {ascending: false})
             .range((pageStep * page) + 1, pageStep * (page + 1));
 
         if (error) {
@@ -153,8 +154,8 @@
                 <div class="row column-vertical" on:scroll={handleScroll}>
                     <div class="col-12 px-0">
                         <Masonry {reset}>
-                            {#each books_ordered_by_created_at as book (book.book_id)}
-                                <ContentMasonry {...book} {image_proxy} on:loaded={handleLoadedImage} on:notfound={handleLoadedImage}/>
+                            {#each books_ordered_by_created_at as book (book.id)}
+                                <ContentMasonry {book} {image_proxy} on:loaded={handleLoadedImage} on:notfound={handleLoadedImage}/>
                             {/each}
                         </Masonry>
                     </div>

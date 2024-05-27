@@ -19,18 +19,59 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         return data;
     }
 
+    const fetchCreatedAtBooks = async () => {
+        const { data, error } = await supabase
+            .from('book')
+            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url)')
+            .order('created_at', {ascending: false})
+            .range(startRange, endRange);
+
+        if (error) throw error;
+        return data;
+    }
+
+
     let books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter;
 
     try {
         [books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter] = await Promise.all([
             fetchBooks('books_ordered_by_likes'),
-            fetchBooks('books_ordered_by_created_at'),
+            fetchCreatedAtBooks(),
             fetchBooks('books_ordered_by_latest_chapter_created_at')
         ]);
     } catch (error) {
         console.error(error);
         return errorx(500, "Error fetching content")
     }
+
+    /*const { data: new_books_ordered_by_likes, error: new_books_likes_error } = await supabase
+        .from('book')
+        .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url), book_likes(count)')
+        .order('count', {referencedTable: 'book_likes', ascending: true}) // NOT WORKING SORT
+        .range(startRange, endRange);
+
+    if (new_books_likes_error) {
+        console.error(new_books_likes_error);
+        return errorx(500, "Error fetching content")
+    }
+
+    // Print all new_books_ordered_by_likes with likes count
+    for (const book of new_books_ordered_by_likes) {
+        console.log(book.title, book.book_likes);
+    }*/
+
+    /*const { data: new_books_ordered_by_latest_chapter_created_at, error: new_books_chapter_created_at_error } = await supabase
+        .from('book')
+        .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url), chapters(created_at)')
+        .order('created_at', {referencedTable: 'chapters', ascending: false})
+        .range(startRange, endRange);
+
+    if (new_books_chapter_created_at_error) {
+        console.error(new_books_chapter_created_at_error);
+        return errorx(500, "Error fetching content")
+    }
+
+    console.log("new_books_ordered_by_latest_chapter_created_at", new_books_ordered_by_latest_chapter_created_at);*/ // DOESN'T SORT, but it sorts only chapters.
 
     /****************************************************/
     //    END GLOBAL CODE EXECUTED FOR EVERY VISITOR    //
