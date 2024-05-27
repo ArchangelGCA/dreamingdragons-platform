@@ -52,7 +52,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     const bookId = params.book;
 
     const { data: bookContent, error} = await supabase
-        .from('book_content_views')
+        .from('secure_book_content_views')
         .select('*, book_tags(tags(id, name))')
         .eq('book_id', bookId);
 

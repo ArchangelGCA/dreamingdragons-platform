@@ -50,7 +50,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     const chapterId = params.chapter;
 
     const {data: chapterContent, error} = await supabase
-            .from('chapter_content_views')
+            .from('secure_chapter_content_views')
             .select('*, chapter_tags(tags(id, name)), chapter_likes!chapter_id(user_id)')
             .eq('book_id', bookId)
             .eq('chapter_id', chapterId);

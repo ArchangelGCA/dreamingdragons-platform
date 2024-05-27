@@ -35,9 +35,9 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     try {
         [books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter] = await Promise.all([
-            fetchBooks('books_ordered_by_likes'),
+            fetchBooks('secure_books_ordered_by_likes'),
             fetchCreatedAtBooks(),
-            fetchBooks('books_ordered_by_latest_chapter_created_at')
+            fetchBooks('secure_books_ordered_by_latest_chapter_created_at')
         ]);
     } catch (error) {
         console.error(error);
