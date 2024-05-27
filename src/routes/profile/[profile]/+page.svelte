@@ -9,13 +9,11 @@
     import Seo from "$lib/components/layout/SEO.svelte";
 
     export let data;
-    let { session, image_proxy, profile, isFollowing, tooltipConfig } = data;
-    $: ({ session, image_proxy, profile, isFollowing, tooltipConfig } = data);
+    let { session, image_proxy, profile, total_likes, total_followers, isFollowing, tooltipConfig } = data;
+    $: ({ session, image_proxy, profile, total_likes, total_followers, isFollowing, tooltipConfig } = data);
 
     let avatarFound = true;
     let yearCreated;
-    let books = [];
-    let followers = 0;
     let followActionActive = false;
 
     $: if (profile && profile !== null) {
@@ -23,8 +21,6 @@
         const options = { year: 'numeric', month: 'long' };
         profile.created_at = date.toLocaleDateString('en-US', options);
         yearCreated = date.getFullYear();
-        books = profile.books;
-        followers = profile.followers ? profile.followers.length : 0;
     }
 
     async function handleVisit(e) {
@@ -168,15 +164,15 @@
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="col-auto mt-1">
-                            <span class="">{followers}</span>
+                            <span class="">{total_followers}</span>
                         </div>
                     </div>
                     <div class="dropdown-menu ms-md-5" aria-labelledby="followers"> <!-- TODO: Fix positioning -->
                         {#if !profile.followers || profile.followers.length === 0}
                             <span class="dropdown-item rounded-3">No followers yet</span>
                         {:else}
-                            {#each profile.followers as follower (follower.id)}
-                                <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none" href="/profile/{follower.id}" on:click={handleVisit}>{follower.username}</a></span>
+                            {#each profile.followers as follower (follower.follower_id)}
+                                <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none" href="/profile/{follower.follower_id}" on:click={handleVisit}>{follower.profiles.username}</a></span>
                             {/each}
                         {/if}
                     </div>
@@ -187,7 +183,7 @@
                             <i class="fas fa-heart"></i>
                         </div>
                         <div class="col-auto mt-1">
-                            <span class="">{profile.total_likes}</span>
+                            <span class="">{total_likes}</span>
                         </div>
                     </div>
                 </div>
@@ -215,13 +211,13 @@
         </div>
     </div>
     <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-auto">
-        {#if !books || books.length === 0}
+        {#if !profile.book || profile.book.length === 0}
             <div class="col mt-4 text-center">
                 <p class="h1">Looks a bit empty here... 😶‍🌫️!</p>
                 <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
             </div>
         {:else}
-            {#each books as content (content.book.id)}
+            {#each profile.book as content (content.id)}
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
                     <ContentCard {content} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
                 </div>

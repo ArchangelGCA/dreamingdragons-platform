@@ -19,17 +19,18 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
     /*************************************************/
 
     if (id) {
-        let {data: profile, errorId} = await supabase
-            .from('experimental_books_new')
-            .select('*')
-            .eq('id', id);
+        const {data: profile, error: errorTest} = await supabase
+            .from('profiles')
+            .select('*, book!book_owner_id_fkey(id,title,owner_id,cover_url,created_at, book_likes(user_id)), followers:followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username))')
+            .eq('id', id)
+            .order('created_at', {referencedTable: 'book' ,ascending: false});
 
-        if (errorId) {
-            console.error(errorId);
+        if (errorTest) {
+            console.error(errorTest);
             return {
                 status: 500,
                 body: {
-                    message: errorId.message
+                    message: errorTest.message
                 }
             }
         }
@@ -50,30 +51,30 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
 
         results.profile = profile[0];
 
+        let total_likes = 0;
+        for (let i = 0; i < results.profile.book.length; i++) {
+            if (session) {
+                results.profile.book[i].is_liked = results.profile.book[i].book_likes.some(like => like.user_id === session.user.id);
+            } else {
+                results.profile.book[i].is_liked = false;
+            }
+            results.profile.book[i].likes = results.profile.book[i].book_likes.length;
+            total_likes += results.profile.book[i].book_likes.length;
+        }
+        results.total_likes = total_likes;
+        results.total_followers = results.profile.followers.length;
+
         // If there's a session
         if (session) {
 
             results.session = session;
-            results.isOwner = profile[0].id === session.user.id;
+            results.isOwner = results.profile.id === session.user.id;
 
             if (!results.isOwner) {
-                const { data: follow, error } = await supabase
-                    .from('followers')
-                    .select('*')
-                    .eq('following_id', profile[0].id)
-                    .eq('follower_id', session.user.id);
-
-                if (error) {
-                    console.error(error);
-                    return {
-                        status: 500,
-                        body: {
-                            message: error.message
-                        }
-                    }
+                // Check if user is following the profile
+                for (let i = 0; i < results.profile.followers.length; i++) {
+                    if (results.profile.followers[i].follower_id === session.user.id) results.isFollowing = true;
                 }
-
-                results.isFollowing = follow.length > 0;
             }
         }
 
