@@ -262,6 +262,7 @@
     author="ArchangelGCA"
     name="{bookContent.owner_username}"
     schemaOrg="true"
+    imagePreview="true"
     twitter="true"
     index="true"
 />

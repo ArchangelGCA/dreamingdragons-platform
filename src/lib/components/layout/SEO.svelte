@@ -15,6 +15,7 @@
     export let twitter = false;
     export let openGraph = true;
     export let schemaOrg = false;
+    export let imagePreview = false;
     export let socials = [];
 
     let Ld = {
@@ -41,7 +42,11 @@
 
 <svelte:head>
     {#if title}
-        <meta name="robots" content={index ? "index, follow" : "noindex"} />
+        {#if imagePreview}
+            <meta name="robots" content={index ? "index, follow, noimageai, max-image-preview:large" : "noindex"} />
+        {:else}
+            <meta name="robots" content={index ? "index, follow" : "noindex"} />
+        {/if}
         <title>{title}</title>
         <link rel="canonical" href={canonical || $page.url.href} />
     {/if}

@@ -270,6 +270,7 @@
         author="ArchangelGCA"
         name="{chapterContent.owner_username}"
         schemaOrg="true"
+        imagePreview="true"
         twitter="true"
         index="true"
 />

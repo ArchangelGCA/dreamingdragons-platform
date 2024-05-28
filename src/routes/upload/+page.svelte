@@ -568,10 +568,6 @@
                                                     <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                                 {/if}
                                             </div>
-                                            <div class="col-12 mt-3 px-0 rounded-3">
-                                                <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>
-                                                <p class="text-danger-emphasis text-center mb-0">NO AI/NSFW!</p>
-                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -639,16 +635,16 @@
                                                     <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                                 {/if}
                                             </div>
-                                            <div class="col-12 mt-3 px-0 rounded-3">
-                                                <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a>.</p>
-                                                <p class="text-danger-emphasis text-center mb-0">NO AI/NSFW!</p>
-                                            </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         {/if}
                     </div>
+                </div>
+                <div class="col-12 mt-3 mb-1 rounded-3">
+                    <p class="text-danger-emphasis text-center mb-1">NO AI/NSFW!</p>
+                    <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>
                 </div>
             </div>
         </div>
