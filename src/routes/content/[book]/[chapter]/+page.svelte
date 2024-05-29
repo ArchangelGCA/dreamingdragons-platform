@@ -265,7 +265,7 @@
         title="{chapterContent.book_title} - {chapterContent.title} - {chapterContent.owner_username}"
         description="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title}"
         siteName="Roses in The Flames - Platform"
-        imageURL="{image_proxy}{chapterContent.book_cover_url}"
+        imageURL="{chapterContent.book_cover_url}"
         logo="https://tales.rosesintheflames.com/favicon.webp"
         author="ArchangelGCA"
         name="{chapterContent.owner_username}"
