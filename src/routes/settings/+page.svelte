@@ -195,25 +195,25 @@
                                         <form class="form" method="post" action="?/update" on:submit|preventDefault={handleProfileUpdate}>
                                             <div class="row">
                                                 <div class="col-12 mb-3">
-                                                    <label for="email" class="form-label">Email</label>
+                                                    <label for="email" class="form-label">Email 📧</label>
                                                     <input id="email" type="text" bind:value={session.user.email} disabled
                                                            class="form-control"/>
                                                 </div>
 
                                                 <div class="col-12 col-md-6 mb-3">
-                                                    <label for="fullName" class="form-label">Full Name</label>
+                                                    <label for="fullName" class="form-label">Full Name 🪧</label>
                                                     <input id="fullName" name="fullName" type="text" bind:value={profile.full_name}
                                                            class="form-control"/>
                                                 </div>
 
                                                 <div class="col-12 col-md-6 mb-3">
-                                                    <label for="username" class="form-label">Username<span class="text-danger-emphasis">*</span></label>
+                                                    <label for="username" class="form-label">Username<span class="text-danger-emphasis">*</span> 🪟</label>
                                                     <input id="username" name="username" type="text" bind:value={profile.username}
                                                            class="form-control"/>
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <label for="website" class="form-label">Website</label>
+                                                    <label for="website" class="form-label">Website 🌐</label>
                                                     <input id="website" name="website" type="url" bind:value={profile.website}
                                                            class="form-control"/>
                                                 </div>
@@ -284,16 +284,16 @@
                                         <input class="form-check-input" type="checkbox" id="necessaryCookiesSwitch"
                                                checked disabled>
                                         <label class="form-check-label" for="necessaryCookiesSwitch">
-                                            Necessary Cookies
-                                            <i class="fas fa-toggle-on ms-2" style="color: grey;"></i>
+                                            🍪 Necessary Cookies
+                                            <i class="fas fa-toggle-on ms-1" style="color: grey;"></i>
                                         </label>
                                     </div>
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" id="analyticsSwitch"
                                                bind:checked={analyticsEnabled} on:click={handleAnalytics}>
                                         <label class="form-check-label" for="analyticsSwitch">
-                                            Analytics
-                                            <i class={analyticsEnabled ? 'fas fa-toggle-on ms-2' : 'fas fa-toggle-off ms-2'}
+                                            📈 Analytics
+                                            <i class={analyticsEnabled ? 'fas fa-toggle-on ms-2' : 'fas fa-toggle-off ms-1'}
                                                style="color: {analyticsEnabled ? 'green' : 'red'};"></i>
                                         </label>
                                     </div>

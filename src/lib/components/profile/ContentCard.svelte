@@ -99,12 +99,12 @@
     </div>
     <a href="/content/{content.id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
-            <div class="row custom-overlay-content justify-content-center rounded-bottom-4 ps-3 pb-1 pt-3 mx-0">
-                <div class="col-9">
-                    <a class="link-light text-decoration-none text-wrap" href="/content/{content.id}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.title}</span></a>
-                    <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.owner_username}</a></small></p>
+            <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-3 pb-2 mx-0">
+                <div class="col-9 my-auto">
+                    <a class="link-light text-decoration-none text-wrap " href="/content/{content.id}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.title}</span></a>
+                    <!--<p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.owner_username}</a></small></p>-->
                 </div>
-                <div class="col-3 mb-1 text-end">
+                <div class="col-3 text-end my-auto">
                     <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
                         <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
