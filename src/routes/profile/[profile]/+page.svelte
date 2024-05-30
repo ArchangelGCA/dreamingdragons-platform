@@ -6,7 +6,7 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
-    import Seo from "$lib/components/layout/SEO.svelte";
+    import Seo from "@archangelgca/sk-seo";
 
     export let data;
     let { session, image_proxy, profile, total_likes, total_followers, isFollowing, tooltipConfig } = data;

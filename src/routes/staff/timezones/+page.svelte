@@ -2,7 +2,7 @@
     import {onMount} from "svelte";
     import StaffTime from "$lib/components/profile/StaffTime.svelte";
     import {browser} from "$app/environment";
-    import Seo from "$lib/components/layout/SEO.svelte";
+    import Seo from "@archangelgca/sk-seo";
 
     export let data;
     let { timedata } = data;

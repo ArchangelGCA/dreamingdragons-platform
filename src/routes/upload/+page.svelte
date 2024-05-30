@@ -6,7 +6,7 @@
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
     import { tooltip } from "@svelte-plugins/tooltips";
-    import Seo from "$lib/components/layout/SEO.svelte";
+    import Seo from "@archangelgca/sk-seo";
 
     let conf = {
         skin: 'oxide-dark',
