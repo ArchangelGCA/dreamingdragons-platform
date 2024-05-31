@@ -2,15 +2,7 @@
     import {onMount} from "svelte";
     import StaffTime from "$lib/components/profile/StaffTime.svelte";
     import {browser} from "$app/environment";
-    import Seo from "sk-seo";
-
-    const seo = {
-        title: 'Roses In The Flames | Staff Timezones',
-        description: 'Roses In The Flames Staff Timezones page. Check the current time of our staff members.',
-        siteName: 'Roses In The Flames | Tales',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
-    }
+    import Seo from "@archangelgca/sk-seo";
 
     export let data;
     let { timedata } = data;
@@ -42,7 +34,14 @@
     });
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Roses in The Flames - Staff Timezones"
+    description="Roses in The Flames Staff Timezones page. Check the current time of our staff members."
+    siteName="Roses in The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    index="true"
+/>
 
 <div class="container-fluid">
     <div class="row justify-content-center text-center my-3 pt-2 bg-animated bg-opacity-25 rounded-4">

@@ -3,3 +3,4 @@ Disallow: /admin/*
 Disallow: /edit/*
 
 Sitemap: https://tales.rosesintheflames.com/sitemap.xml
+Sitemap: https://tales.rosesintheflames.com/imagemap.xml

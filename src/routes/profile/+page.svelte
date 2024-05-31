@@ -1,5 +1,5 @@
 <script>
-    import Seo from "sk-seo";
+    import Seo from "@archangelgca/sk-seo";
 </script>
 
 <div class="row mt-3">
@@ -9,4 +9,8 @@
     </div>
 </div>
 
-<Seo index="false" />
+<Seo
+        title="Roses in The Flames - Profile Error"
+        description="Profile error."
+        index="false"
+/>

@@ -4,67 +4,50 @@
     import {toast} from "@zerodevx/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
     import {onMount} from "svelte";
-    import Seo from "sk-seo";
+    import Seo from "@archangelgca/sk-seo";
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
+    import autoAnimate from '@formkit/auto-animate';
+    import ContentImage from "$lib/components/layout/ContentImage.svelte";
 
     export let data;
-    let avatarUrl;
-    let { supabase, comments, ip_address, user_id } = data;
-    $: ({ comments, user_id } = data)
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px',
-        },
-        theme: 'text-center w-auto'
-    };
+    let { supabase, image_proxy, bookContent, comments, ip_address, user_id, tooltipConfig, tags } = data;
+    $: ({ comments, user_id, bookContent, comments, tags } = data)
 
     onMount(() => {
         handleView();
         hasUserLikedBook();
     });
 
-    let bookContent = data.bookContent[0];
-    let chapters = bookContent.chapters;
-    let tags = data.tags;
-    let chaptersFound = false;
-    let finalAvatarUrl = '';
-    let avatarFound = true;
-    let loadedAvatar = false;
-    let viewsCount = 0;
+    let chapters;
+    let chaptersFound;
     let commentsCount = comments.length;
-    let isLiked = bookContent.is_liked;
     let likeActionActive = false;
     let reportActionActive = false;
     let currentYear = new Date().getFullYear();
     let createdAt = new Date(bookContent.created_at);
     let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
+    let createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
     let deleteBookActionActive = false;
     let reportText = '';
 
-    if (bookContent.owner_avatar_url) {
-        avatarUrl = bookContent.owner_avatar_url;
-    }
+    $: if (bookContent) {
 
-    if (bookContent.total_views){
-        viewsCount = bookContent.total_views;
-    }
+        chapters = bookContent.chapters;
 
-    if (chapters !== undefined && chapters !== null) {
-        if (chapters[0].chapter_id !== null) {
-            chaptersFound = true;
-            chapters.forEach((item) => item.chapter_image_url = bookContent.book_cover_url);
+        if (chapters !== undefined && chapters !== null) {
+            if (chapters[0].chapter_id !== null) {
+                chaptersFound = true;
+                chapters.forEach((item) => item.chapter_image_url = bookContent.book_cover_url);
+            }
+        } else {
+            chaptersFound = false;
         }
+
+        tags.forEach((item) => item.url = `/search?tag=${item.name}`);
     }
 
-    tags.forEach((item) => item.url = `/search?tag=${item.name}`);
 
     async function hasUserLikedBook() {
         if (!user_id) return;
@@ -76,7 +59,7 @@
             .eq('user_id', user_id);
 
         if (!error) {
-            likes.length > 0 ? isLiked = true : isLiked = false;
+            likes.length > 0 ? bookContent.is_liked = true : bookContent.is_liked = false;
         }
         likeActionActive = false;
     }
@@ -93,7 +76,7 @@
             ]);
 
             if (!error) {
-                viewsCount++;
+                bookContent.total_views++;
             }
         } else {
             // Using only IP address
@@ -106,7 +89,7 @@
             ]);
 
             if (!error) {
-                viewsCount++;
+                bookContent.total_views++;
             }
         }
     }
@@ -121,7 +104,7 @@
         const data = new FormData();
         data.append('contentId', bookContent.book_id);
 
-        isLiked = !isLiked;
+        bookContent.is_liked = !bookContent.is_liked;
 
         const response = await fetch('?/like', {
             method: 'POST',
@@ -131,8 +114,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                // isLiked = !isLiked;
-                if (isLiked) {
+                if (bookContent.is_liked) {
                     bookContent.likes_count++;
                     toast.push('Tale liked ❤️', {
                         theme: {
@@ -142,15 +124,16 @@
                     });
                 } else {
                     bookContent.likes_count--;
-                    toast.push('Book unliked 💔', {
+                    toast.push('Tale unliked 💔', {
                         theme: {
                             '--toastBackground': '#5c00a6',
                             '--toastColor': '#fff',
                         }
                     });
                 }
+                invalidateAll();
             } else {
-                isLiked = !isLiked;
+                bookContent.is_liked = !bookContent.is_liked;
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
@@ -159,7 +142,7 @@
                 });
             }
         } else {
-            isLiked = !isLiked;
+            bookContent.is_liked = !bookContent.is_liked;
             toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
@@ -195,7 +178,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                toast.push('Book ' + bookContent.book_title +  ' deleted! 🗑️', {
+                toast.push('Tale ' + bookContent.book_title +  ' deleted! 🗑️', {
                     theme: {
                         '--toastBackground': '#5c00a6',
                         '--toastColor': '#fff',
@@ -268,17 +251,21 @@
 
         reportActionActive = false;
     }
-
-    const seo = {
-        title: bookContent.book_title + ' by ' + bookContent.owner_username + ' | Roses In The Flames',
-        description: bookContent.book_description,
-        siteName: 'Roses In The Flames | Tales',
-        imageURL: bookContent.book_cover_url,
-        author: 'ArchangelGCA'
-    }
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="{bookContent.book_title} by {bookContent.owner_username}"
+    description="Content by {bookContent.owner_username} - {bookContent.book_title}"
+    siteName="Roses in The Flames - Platform"
+    imageURL="{bookContent.book_cover_url}"
+    logo="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    name="{bookContent.owner_username}"
+    schemaOrg="true"
+    imagePreview="true"
+    twitter="true"
+    index="true"
+/>
 
 <div class="container-xxl">
     <div class="row justify-content-center my-2">
@@ -289,21 +276,21 @@
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-auto mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
-            <a href="{bookContent.book_cover_url}" target="_blank">
-                <img src="{bookContent.book_cover_url}" alt="{bookContent.book_title}" class="img-fluid rounded-4" style="max-height: 82vh" loading="lazy">
+        <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
+            <a href="{bookContent.book_cover_url}" target="_blank" use:autoAnimate>
+                <ContentImage url="{bookContent.book_cover_url}" alt="{bookContent.book_title}" />
             </a>
         </div>
     </div>
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end">
-                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} size="80px"/>
+                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
+                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} {image_proxy} size="75px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.book_title}</p>
-                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted">{createdAtFormatted}</span></p>
+                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted" use:tooltip={{...tooltipConfig}} title="{createdAtDetailed}">{createdAtFormatted}</span></p>
                     {#if tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
@@ -322,7 +309,7 @@
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Total likes">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1" on:click={handleHeartClick}>
-                        <i class="fas fa-heart {isLiked ? 'liked' : 'unliked'}"></i>
+                        <i class="fas fa-heart {bookContent.is_liked ? 'liked' : 'unliked'}"></i>
                     </button>
                 </div>
                 <div class="col-auto">
@@ -336,7 +323,7 @@
                     <i class="fas fa-eye"></i>
                 </div>
                 <div class="col-auto mt-1">
-                    <span class="">{viewsCount}</span>
+                    <span class="">{bookContent.total_views}</span>
                 </div>
             </div>
         </div>
@@ -367,7 +354,7 @@
                 <div class="row justify-content-evely gy-3 mx-0">
                     {#each chapters as chapter, index (chapter.chapter_id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <ChapterCard content={chapter} index={index + 1} />
+                            <ChapterCard content={chapter} index={index + 1} {image_proxy} on:invalidate={() => {invalidateAll()}} />
                         </div>
                     {/each}
                 </div>
@@ -417,7 +404,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" on:invalidate={handleCommentInvalidate} />
+    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" {image_proxy} on:invalidate={handleCommentInvalidate} />
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

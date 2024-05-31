@@ -19,6 +19,13 @@
     export let book_id;
     export let book_cover_url;
     export let description;
+    export let image_proxy;
+
+    $: if (image_proxy) {
+        if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url + '?width=500&quality=80';
+    } else {
+        console.log('No image proxy');
+    }
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">

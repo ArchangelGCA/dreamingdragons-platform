@@ -6,51 +6,21 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
-    import Seo from "sk-seo";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
+    import Seo from "@archangelgca/sk-seo";
 
     export let data;
-    let { session, profile, isOwner, isFollowing } = data;
+    let { session, image_proxy, profile, total_likes, total_followers, isFollowing, tooltipConfig } = data;
+    $: ({ session, image_proxy, profile, total_likes, total_followers, isFollowing, tooltipConfig } = data);
 
-    let finalProfile = null;
-    let avatarUrl = '';
-    let coverUrl = '';
-    let finalAvatarUrl = '';
-    let finalCoverUrl = '';
-    let hasCustomCover = false;
     let avatarFound = true;
-    let yearCreated = '';
-    let books = [];
-    let followers = 0;
-    let followersArray = [];
+    let yearCreated;
     let followActionActive = false;
 
-    if (profile && profile !== null && profile.length > 0) {
-        finalProfile = profile[0];
-        const date = new Date(finalProfile.created_at);
+    $: if (profile && profile !== null) {
+        const date = new Date(profile.created_at);
         const options = { year: 'numeric', month: 'long' };
-        finalProfile.created_at = date.toLocaleDateString('en-US', options);
+        profile.created_at = date.toLocaleDateString('en-US', options);
         yearCreated = date.getFullYear();
-        books = profile[0].books;
-        followersArray = finalProfile.followers;
-        if (followersArray === null) followersArray = [];
-        followers = followersArray.length;
-        avatarUrl = finalProfile.avatar_url;
-        if (finalProfile.cover_url && finalProfile.cover_url !== null) {
-            coverUrl = finalProfile.cover_url;
-            hasCustomCover = true;
-        }
     }
 
     async function handleVisit(e) {
@@ -67,7 +37,7 @@
         isFollowing = !isFollowing;
 
         const formData = new FormData();
-        formData.append('profileId', finalProfile.id);
+        formData.append('profileId', profile.id);
 
         const response = await fetch('?/follow', {
             method: 'POST',
@@ -79,18 +49,16 @@
         if (result.type === 'success') {
             if (result.data.status === 200){
                 if (result.data.body.follow){
-                    followers += 1;
                     isFollowing = true;
-                    toast.push('➕ You\'re now following ' + finalProfile.username + "!", {
+                    toast.push('➕ You\'re now following ' + profile.username + "!", {
                         theme: {
                             '--toastBackground': '#8b00b6',
                             '--toastColor': '#fff'
                         }
                     });
                 } else {
-                    followers -= 1;
                     isFollowing = false;
-                    toast.push('➖ You\'ve unfollowed ' + finalProfile.username + "!", {
+                    toast.push('➖ You\'ve unfollowed ' + profile.username + "!", {
                         theme: {
                             '--toastBackground': '#7b2eff',
                             '--toastColor': '#fff'
@@ -98,7 +66,6 @@
                     });
                 }
             } else {
-                isFollowing = !isFollowing;
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
@@ -118,20 +85,21 @@
 
         followActionActive = false;
     }
-
-    $: if (avatarUrl && avatarUrl !== null && avatarUrl !== '') {finalAvatarUrl = avatarUrl}
-    $: if (coverUrl && coverUrl !== null && coverUrl !== '') {finalCoverUrl = coverUrl}
-
-    const seo = {
-        title: (finalProfile ? finalProfile.username : 'Profile') + ' | Profile',
-        description: 'Profile page of ' +  (finalProfile ? finalProfile.username : 'Profile'),
-        siteName: 'Roses In The Flames | Tales',
-        imageURL: (avatarUrl ? avatarUrl : 'https://tales.rosesintheflames.com/favicon.webp'),
-        author: 'ArchangelGCA'
-    };
 </script>
 
-<Seo {...seo} />
+<Seo
+        title="{profile ? profile.username : 'Profile'} - Profile"
+        description="Profile of {profile ? profile.username : 'Profile'} on RiTF, Roses in The Flames."
+        siteName="Roses in The Flames - Platform"
+        imageURL="{profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'}"
+        logo="{profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'}"
+        author="ArchangelGCA"
+        name="{profile.username}"
+        schemaOrg="true"
+        imagePreview="true"
+        twitter="true"
+        index="true"
+/>
 
 <div class="container-fluid px-0" style="min-height: 71vh">
     {#if !profile || profile.length === 0}
@@ -144,14 +112,14 @@
     {:else}
     <div class="row justify-content-center">
         <div class="col-12">
-            {#if avatarUrl === ''}
+            {#if profile.avatar_url === ''}
                 <div class="bg-image rounded-bottom-5" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                     <div class="row justify-content-center align-items-end" style="height: 100%;">
                         <div class="col-auto">
                         </div>
                     </div>
                 </div>
-            {:else if finalAvatarUrl === '' && avatarFound}
+            {:else if profile.avatar_url === '' && avatarFound}
                 <div class="row text-center justify-content-center mt-3">
                     <div class="col-auto">
                         <div class="spinner-border text-light align-self-center" role="status">
@@ -160,10 +128,10 @@
                     </div>
                 </div>
             {:else}
-                <div class="bg-image rounded-bottom-5 shadow-sm" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({hasCustomCover ? finalCoverUrl : finalAvatarUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                <div class="bg-image rounded-bottom-5 shadow-sm" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({profile.cover_url ? profile.cover_url : profile.avatar_url}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                     <div class="row justify-content-center align-items-end" style="height: 100%;">
                         <div class="col-auto">
-                            <img src="{finalAvatarUrl}" alt="{finalProfile.username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon" on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
+                            <img src="{profile.avatar_url}" alt="{profile.username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon" on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
                         </div>
                     </div>
                 </div>
@@ -181,10 +149,10 @@
     </div>
     <div class="row justify-content-center mt-3">
         <div class="col text-center">
-            {#if finalProfile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
+            {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                 <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
             {:else}
-                <span class="h1 mt-2 mb-1">{finalProfile.username}</span>
+                <span class="h1 mt-2 mb-1">{profile.username} <a class="link-purple" href="{profile.website ? profile.website : ''}" target="_blank" use:tooltip={{...tooltipConfig}} title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"><i class="fa-solid fa-external-link fa-2xs"></i></a></span>
             {/if}
         </div>
     </div>
@@ -197,15 +165,15 @@
                             <i class="fas fa-user"></i>
                         </div>
                         <div class="col-auto mt-1">
-                            <span class="">{followers}</span>
+                            <span class="">{total_followers}</span>
                         </div>
                     </div>
                     <div class="dropdown-menu ms-md-5" aria-labelledby="followers"> <!-- TODO: Fix positioning -->
-                        {#if followersArray.length === 0}
+                        {#if !profile.followers || profile.followers.length === 0}
                             <span class="dropdown-item rounded-3">No followers yet</span>
                         {:else}
-                            {#each followersArray as follower (follower)}
-                                <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none" href="/profile/{follower.id}" on:click={handleVisit}>{follower.username}</a></span>
+                            {#each profile.followers as follower (follower.follower_id)}
+                                <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none" href="/profile/{follower.follower_id}" on:click={handleVisit}>{follower.profiles.username}</a></span>
                             {/each}
                         {/if}
                     </div>
@@ -216,12 +184,12 @@
                             <i class="fas fa-heart"></i>
                         </div>
                         <div class="col-auto mt-1">
-                            <span class="">{finalProfile.total_likes}</span>
+                            <span class="">{total_likes}</span>
                         </div>
                     </div>
                 </div>
                 <div class="col-4 col-md-3">
-                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Joined: {finalProfile.created_at}">
+                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Joined: {profile.created_at}">
                         <div class="col-auto d-flex align-items-center pe-0">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
@@ -244,15 +212,15 @@
         </div>
     </div>
     <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-auto">
-        {#if !books || books.length === 0}
+        {#if !profile.book || profile.book.length === 0}
             <div class="col mt-4 text-center">
-                <p class="h1">No content found, yet!</p>
+                <p class="h1">Looks a bit empty here... 😶‍🌫️!</p>
                 <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
             </div>
         {:else}
-            {#each books as content (content.book.id)}
+            {#each profile.book as content (content.id)}
                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                    <ContentCard content={content} />
+                    <ContentCard {content} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
                 </div>
             {/each}
         {/if}
@@ -275,6 +243,15 @@
 
     .dropdown-item:hover {
         background-color: rgba(43, 0, 73, 0.95);
+    }
+
+    .link-purple {
+        color: #7d00dd;
+        transition: color 0.3s;
+    }
+
+    .link-purple:hover {
+        color: #9100ff;
     }
 
     #followers {

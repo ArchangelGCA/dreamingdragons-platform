@@ -2,12 +2,22 @@
     import ReportItem from "$lib/components/admin/ReportItem.svelte";
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
+    import Seo from "@archangelgca/sk-seo";
 
     export let data;
 
     let {openReports, closedReports} = data;
     $: ({openReports, closedReports} = data);
 </script>
+
+<Seo
+        title="Admin - Reports"
+        description="Admin Reports dashboard for Roses in The Flames platform."
+        siteName="Roses in The Flames - Platform"
+        imageURL="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        index="false"
+/>
 
 <div class="row mb-2">
     <div class="col text-center">

@@ -1,6 +1,6 @@
 <script>
 
-import Seo from "sk-seo";
+import Seo from "@archangelgca/sk-seo";
 </script>
 
 <div class="row text-center mt-4 mb-3">
@@ -9,4 +9,8 @@ import Seo from "sk-seo";
     </div>
 </div>
 
-<Seo index="false" />
+<Seo
+        title="Roses in The Flames - Book Error"
+        description="Book error."
+        index="false"
+/>

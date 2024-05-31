@@ -1,25 +1,13 @@
 <script>
-    import {enhance} from '$app/forms';
+    import {deserialize, enhance} from '$app/forms';
     import Avatar from '$lib/components/profile/Avatar.svelte';
     import {toast} from "@zerodevx/svelte-toast";
     import {tooltip} from "@svelte-plugins/tooltips";
     import Cover from "$lib/components/profile/Cover.svelte";
-    import Seo from "sk-seo";
+    import Seo from "@archangelgca/sk-seo";
     import {invalidateAll} from "$app/navigation";
     import {onMount} from "svelte";
     import {browser} from "$app/environment";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
 
     let analyticsEnabled;
 
@@ -31,46 +19,24 @@
 
     export let data;
 
-    let {session, supabase, profile} = data;
-    $: ({session, supabase, profile} = data);
+    let {session, supabase, profile, tooltipConfig} = data;
+    $: ({session, supabase, profile, tooltipConfig} = data);
 
-    let profileForm;
-    let fullName = '';
-    let username = '';
-    let website = '';
     let avatarUrl = '';
     let coverUrl = '';
     let loading = false;
     let isAccordionOpen = false;
     let isCoverAccordionOpen = false;
     let isAvatarAccordionOpen = false;
-
-    if (profile !== null) {
-        try {
-            fullName = profile.full_name;
-        } catch (e) {
-            fullName = '';
-        }
-        try {
-            username = profile.username;
-        } catch (e2) {
-            username = '';
-        }
-        try {
-            website = profile.website;
-        } catch (e3) {
-            website = '';
-        }
-        try {
-            avatarUrl = profile.avatar_url;
-        } catch (e4) {
-            avatarUrl = '';
-        }
-        try {
-            coverUrl = profile.cover_url;
-        } catch (e5) {
-            coverUrl = '';
-        }
+    let isActiveUpdate = false;
+    if (!profile) {
+        profile = {
+            full_name: '',
+            username: '',
+            website: '',
+            avatar_url: '',
+            cover_url: ''
+        };
     }
 
     const handleSubmit = () => {
@@ -87,6 +53,47 @@
             });
         };
     };
+
+    async function handleProfileUpdate(e){
+        if (isActiveUpdate) return;
+        isActiveUpdate = true;
+
+        // Get data from form
+        const formData = new FormData(e.target);
+
+        const response = await fetch('?/update', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+            } else {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('An error occurred while updating your profile.', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+        invalidateAll();
+        isActiveUpdate = false;
+    }
 
     const handleSignOut = () => {
         loading = true
@@ -112,19 +119,15 @@
     }
 
     $: if (profile) {
-        fullName = profile.full_name;
-        username = profile.username;
-        website = profile.website;
         avatarUrl = profile.avatar_url;
         coverUrl = profile.cover_url;
     }
 </script>
 
-<svelte:head>
-    <title>{username ? username : 'Guest'} | Settings</title>
-</svelte:head>
-
-<Seo index="false"/>
+<Seo
+        title="{(profile && profile.username) ? profile.username : 'Guest'} | Settings"
+        index="false"
+/>
 
 <div class="container-xxl px-0" style="min-height: 70vh">
     <div class="row mt-3 mb-2 mx-1">
@@ -153,18 +156,15 @@
                                             aria-controls="avatarCollapse"
                                             on:click={() => isAvatarAccordionOpen = !isAvatarAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Avatar Settings">
-                                        Avatar
+                                        <i class="fas fa-user me-2"></i>Avatar
                                     </button>
                                 </h2>
                                 <div id="avatarCollapse" class="accordion-collapse collapse"
                                      aria-labelledby="avatarHeading" data-bs-parent="#avatarAccordion">
                                     <div class="accordion-body">
                                         <form class="form" method="post" action="?/update">
-                                            <input type="hidden" name="fullName" value={fullName}/>
-                                            <input type="hidden" name="username" value={username}/>
-                                            <input type="hidden" name="website" value={website}/>
                                             <div class="row justify-content-center">
-                                                <Avatar {supabase} url={avatarUrl} size={10}
+                                                <Avatar url={avatarUrl} size={10}
                                                         on:upload={() => {invalidateAll()}}/>
                                             </div>
                                         </form>
@@ -186,43 +186,38 @@
                                             aria-controls="profileCollapse"
                                             on:click={() => isAccordionOpen = !isAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Profile Settings">
-                                        Profile Details
+                                        <i class="fas fa-id-card me-2"></i>Profile Details
                                     </button>
                                 </h2>
                                 <div id="profileCollapse" class="accordion-collapse collapse"
                                      aria-labelledby="profileHeading" data-bs-parent="#profileAccordion">
                                     <div class="accordion-body">
-                                        <form class="form" method="post" action="?/update" use:enhance={handleSubmit}
-                                              bind:this={profileForm}>
+                                        <form class="form" method="post" action="?/update" on:submit|preventDefault={handleProfileUpdate}>
                                             <div class="row">
                                                 <div class="col-12 mb-3">
-                                                    <label for="email" class="form-label">Email</label>
-                                                    <input id="email" type="text" value={session.user.email} disabled
+                                                    <label for="email" class="form-label">Email 📧</label>
+                                                    <input id="email" type="text" bind:value={session.user.email} disabled
                                                            class="form-control"/>
                                                 </div>
 
                                                 <div class="col-12 col-md-6 mb-3">
-                                                    <label for="fullName" class="form-label">Full Name</label>
-                                                    <input id="fullName" name="fullName" type="text" value={fullName}
+                                                    <label for="fullName" class="form-label">Full Name 🪧</label>
+                                                    <input id="fullName" name="fullName" type="text" bind:value={profile.full_name}
                                                            class="form-control"/>
                                                 </div>
 
                                                 <div class="col-12 col-md-6 mb-3">
-                                                    <label for="username" class="form-label">Username</label>
-                                                    <input id="username" name="username" type="text" value={username}
+                                                    <label for="username" class="form-label">Username<span class="text-danger-emphasis">*</span> 🪟</label>
+                                                    <input id="username" name="username" type="text" bind:value={profile.username}
                                                            class="form-control"/>
                                                 </div>
 
                                                 <div class="mb-3">
-                                                    <label for="website" class="form-label">Website</label>
-                                                    <input id="website" name="website" type="url" value={website}
+                                                    <label for="website" class="form-label">Website 🌐</label>
+                                                    <input id="website" name="website" type="url" bind:value={profile.website}
                                                            class="form-control"/>
                                                 </div>
                                             </div>
-
-                                            <!-- Hidden input for avatar url -->
-                                            <input type="hidden" name="avatarUrl" value={avatarUrl}/>
-
                                             <div class="mb-3">
                                                 <input
                                                         type="submit"
@@ -231,6 +226,9 @@
                                                         disabled={loading}
                                                 />
                                             </div>
+                                            <small class="text-muted mb-3">
+                                                <span class="text-danger-emphasis">*</span> Required fields
+                                            </small>
                                         </form>
                                     </div>
                                 </div>
@@ -251,13 +249,13 @@
                                             aria-controls="avatarCollapse"
                                             on:click={() => isCoverAccordionOpen = !isCoverAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Cover Settings">
-                                        Profile Cover
+                                        <i class="fas fa-portrait me-2"></i> Profile Cover
                                     </button>
                                 </h2>
                                 <div id="coverCollapse" class="accordion-collapse collapse"
                                      aria-labelledby="coverHeading" data-bs-parent="#coverAccordion">
                                     <div class="accordion-body">
-                                        <Cover {session} {supabase} url={coverUrl} on:upload={() => {invalidateAll()}}/>
+                                        <Cover url={coverUrl} on:upload={() => {invalidateAll()}}/>
                                     </div>
                                 </div>
                             </div>
@@ -276,7 +274,7 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#privacyCollapse" aria-expanded="false"
                                         aria-controls="privacyCollapse">
-                                    Privacy Settings
+                                    <i class="fas fa-eye me-2"></i> Privacy Settings
                                 </button>
                             </h2>
                             <div id="privacyCollapse" class="accordion-collapse collapse"
@@ -286,16 +284,16 @@
                                         <input class="form-check-input" type="checkbox" id="necessaryCookiesSwitch"
                                                checked disabled>
                                         <label class="form-check-label" for="necessaryCookiesSwitch">
-                                            Necessary Cookies
-                                            <i class="fas fa-toggle-on ms-2" style="color: grey;"></i>
+                                            🍪 Necessary Cookies
+                                            <i class="fas fa-toggle-on ms-1" style="color: grey;"></i>
                                         </label>
                                     </div>
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" id="analyticsSwitch"
                                                bind:checked={analyticsEnabled} on:click={handleAnalytics}>
                                         <label class="form-check-label" for="analyticsSwitch">
-                                            Analytics
-                                            <i class={analyticsEnabled ? 'fas fa-toggle-on ms-2' : 'fas fa-toggle-off ms-2'}
+                                            📈 Analytics
+                                            <i class={analyticsEnabled ? 'fas fa-toggle-on ms-2' : 'fas fa-toggle-off ms-1'}
                                                style="color: {analyticsEnabled ? 'green' : 'red'};"></i>
                                         </label>
                                     </div>
@@ -316,8 +314,8 @@
             <div class="col px-1">
                 <form method="post" action="?/signout" use:enhance={handleSignOut}>
                     <div class="mb-3">
-                        <button class="btn btn-outline-danger w-100" disabled={loading} use:tooltip={{...tooltipConfig}}
-                                title="Click to Logout">Sign Out
+                        <button class="btn btn-logout w-100" disabled={loading} use:tooltip={{...tooltipConfig}}
+                                title="Click to Logout">Logout
                         </button>
                     </div>
                 </form>
@@ -340,6 +338,84 @@
 
     .btn-purple:hover {
         background-color: #4a0086;
+    }
+
+    .accordion-button {
+        background-color: rgba(92, 0, 166, 0.6);
+        border: 1px solid rgb(125, 0, 221);
+        color: #fff;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(92, 0, 166, 0.8) !important;
+    }
+
+    .accordion-button:focus {
+        box-shadow: 0 0 0 0.25rem rgba(92, 0, 166, 0.5);
+    }
+
+    .accordion-collapse {
+        background-color: rgba(92, 0, 166, 0.3);
+    }
+
+    .form-control {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221, 0.5);
+        color: #f6e6ff;
+    }
+
+    .form-control:focus {
+        background-color: rgba(92, 0, 166, 0.5);
+        border: 1px solid rgba(125, 0, 221, 0.7);
+        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
+        color: #f6e6ff;
+    }
+
+    .form-control:disabled {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221, 0.5);
+        color: #6c757d;
+    }
+
+    .form-check-input {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221);
+        color: #f6e6ff;
+    }
+
+    .form-check-input:focus {
+        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
+    }
+
+    .form-check-input:checked {
+        background-color: rgba(92, 0, 166, 0.5);
+        border: 1px solid rgba(125, 0, 221, 0.7);
+        color: #f6e6ff;
+    }
+
+    .form-check-input:disabled {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221, 0.5);
+        color: #6c757d;
+    }
+
+    .form-check-label {
+        color: #f6e6ff;
+    }
+
+    .btn-logout {
+        background-color: rgba(92, 0, 166, 0.3);
+        border: 1px solid rgba(125, 0, 221, 0.5);
+    }
+
+    .btn-logout:hover {
+        background-color: rgba(92, 0, 166, 0.5);
+        border: 1px solid rgba(125, 0, 221, 0.7);
+        color: #ffffff;
+    }
+
+    .btn-logout:focus {
+        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
     }
 
     @keyframes Gradient {

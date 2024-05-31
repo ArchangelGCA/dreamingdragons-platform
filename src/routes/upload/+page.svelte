@@ -6,22 +6,12 @@
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
     import { tooltip } from "@svelte-plugins/tooltips";
-    import Seo from "sk-seo";
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
+    import Seo from "@archangelgca/sk-seo";
 
     let conf = {
         skin: 'oxide-dark',
         content_css: 'dark',
+        license_key: 'gpl',
         block_unsupported_drop: true,
         branding: false,
         plugins: 'link autolink wordcount charmap code fullscreen',
@@ -69,8 +59,7 @@
 
     export let data;
 
-    let { session, supabase, books, can_upload } = data;
-    $: ({ session, supabase } = data);
+    let { books, can_upload, tooltipConfig } = data;
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = '';
@@ -87,7 +76,6 @@
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
 
     $: if (selectedBook) {
-        console.log(selectedBook);
         if (books && books.length > 0) {
             chaptersNumber = books.find(book => book.id === selectedBook).chapters;
         }
@@ -128,6 +116,7 @@
                 }
                 tags = [...tags, tag];
                 e.target.value = '';
+                suggestions = [];
                 hasDoneTagAction = true;
                 return;
             }
@@ -160,7 +149,7 @@
             const result = deserialize(await response.text());
             if (result.type === 'success') {
                 if (result.data.status === 200) {
-                    suggestions = result.data.body.map(tag => tag.name);
+                    suggestions = result.data.body.map(tag => tag.name).filter(suggestion => !tags.includes(suggestion));
                 } else {
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {
@@ -480,11 +469,10 @@
     }
 </script>
 
-<svelte:head>
-    <title>Roses In The Flames | Upload</title>
-</svelte:head>
-
-<Seo index="false" />
+<Seo
+        title="Rose In The Flames | Upload"
+        index="false"
+/>
 
 <div class="container-md px-0">
     <!-- Alert if users can't upload -->
@@ -580,9 +568,6 @@
                                                     <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                                 {/if}
                                             </div>
-                                            <div class="col-12 mt-3 px-0 rounded-3">
-                                                <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>
-                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -650,15 +635,16 @@
                                                     <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
                                                 {/if}
                                             </div>
-                                            <div class="col-12 mt-3 px-0 rounded-3">
-                                                <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a>.</p>
-                                            </div>
                                         </div>
                                     </form>
                                 </div>
                             </div>
                         {/if}
                     </div>
+                </div>
+                <div class="col-12 mt-3 mb-1 rounded-3">
+                    <p class="text-danger-emphasis text-center mb-1">NO AI/NSFW!</p>
+                    <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>
                 </div>
             </div>
         </div>

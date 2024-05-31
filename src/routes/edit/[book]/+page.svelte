@@ -6,23 +6,12 @@
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import Editor from "@tinymce/tinymce-svelte";
-    import Seo from "sk-seo";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
+    import Seo from "@archangelgca/sk-seo";
 
     let conf = {
         skin: 'oxide-dark',
         content_css: 'dark',
+        license_key: 'gpl',
         block_unsupported_drop: true,
         branding: false,
         plugins: 'link autolink wordcount charmap code fullscreen',
@@ -70,7 +59,8 @@
 
     export let data;
 
-    let { book, supabase } = data;
+    let { book, supabase, tooltipConfig } = data;
+    $: ({book} = data)
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = book.cover_url;
@@ -204,7 +194,7 @@
             const result = deserialize(await response.text());
             if (result.type === 'success') {
                 if (result.data.status === 200) {
-                    suggestions = result.data.body.map(tag => tag.name);
+                    suggestions = result.data.body.map(tag => tag.name).filter(suggestion => !tags.includes(suggestion));
                 } else {
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {
@@ -258,7 +248,11 @@
 
 </script>
 
-<Seo index="false" />
+<Seo
+    title="Roses in The Flames - Edit Tale"
+    description="Edit your tale."
+    index="false"
+/>
 
 <div class="container-md mt-4 mb-3 px-0">
     <div class="row text-center">

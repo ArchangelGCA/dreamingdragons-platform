@@ -1,36 +1,19 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
-    import Seo from 'sk-seo';
+    import Seo from '$lib/components/layout/SEO.svelte';
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import autoAnimate from '@formkit/auto-animate';
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
-
-    const seo = {
-        title: 'Roses In The Flames | Home',
-        description: 'A place to share your stories and art, featured by Roses In The Flames and built with love by its community.',
-        siteName: 'Roses In The Flames | Tales',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
-    }
+    import Masonry from "$lib/components/layout/Masonry.svelte";
+    import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
+    import {toast} from "@zerodevx/svelte-toast";
 
     export let data;
-    let { supabase, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed } = data;
+    let { supabase, image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed, tooltipConfig } = data;
+    $: ({books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed} = data);
     let loading = false;
     let allContentLoaded = false;
     let page = 1;
-    let pageStep = 10;
+    let pageStep = 40;
 
     if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
         allContentLoaded = true;
@@ -45,8 +28,9 @@
 
         // fetch from books_ordered_by_created_at using range and append to books_ordered_by_created_at
         let { data: newBooks, error } = await supabase
-            .from('books_ordered_by_created_at')
-            .select('*')
+            .from('book')
+            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url)')
+            .order('created_at', {ascending: false})
             .range((pageStep * page) + 1, pageStep * (page + 1));
 
         if (error) {
@@ -63,19 +47,55 @@
         loading = false;
     }
 
+    let reset = false;
+    let counterImg = 0;
+    let areLoadingCounter = 0;
+
+    async function handleLoadedImage() {
+        let maxLoad = books_ordered_by_created_at.length; // - (pageStep + 1)
+        if (areLoadingCounter > 1) maxLoad -= (pageStep + 1);
+        counterImg++;
+        // console.log('Image loaded', counterImg, maxLoad);
+        if (counterImg >= maxLoad) {
+            areLoadingCounter = 0;
+            reset = !reset;
+            toast.pop(0);
+            toast.push('Masonry updated ✨!', {
+                theme: {
+                    '--toastBackground': 'rgba(92,0,166,1)',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+    }
+
     function handleScroll(event) {
+        if (allContentLoaded && areLoadingCounter !== 0) {
+            reset = !reset;
+            areLoadingCounter = 0;
+            return;
+        }
         const target = event.target;
-        if (target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.5)) {
+        if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2)) && !allContentLoaded) {
+            // console.log((target.scrollHeight - target.scrollTop) + ' <= ' + (target.clientHeight + (target.clientHeight / 0.2)));
             loadMoreContentByCreatedAt();
+            areLoadingCounter++;
         }
     }
 </script>
 
-<svelte:head>
-    <link rel="canonical" href="https://tales.rosesintheflames.com/">
-</svelte:head>
-
-<Seo {...seo} />
+<Seo
+        title="Roses in The Flames - Platform"
+        description="The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature."
+        siteName="Roses in The Flames - Platform"
+        imageURL="https://tales.rosesintheflames.com/favicon.webp"
+        logo="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        canonical="https://tales.rosesintheflames.com"
+        twitter="true"
+        schemaOrg="true"
+        index="true"
+/>
 
 <div class="container-fluid mb-3 mt-2" style="min-height: 69vh">
     <div class="row justify-content-center">
@@ -93,13 +113,14 @@
                 <div class="row row-horizontal flex-nowrap ps-1 pe-1 gx-4 gx-md-5">
                     {#each followed as follow (follow.id)}
                         <div class="col-auto py-2">
-                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} size="45px" />
+                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {image_proxy} size="50px" />
                         </div>
                     {/each}
                 </div>
             </div>
         {/if}
 
+        <!-- Old version
         <div class="col-12 mt-3 mb-2">
             <p class="h4">Newest Content</p>
         </div>
@@ -107,12 +128,37 @@
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row column-vertical pb-3 gy-3" on:scroll={handleScroll} use:autoAnimate>
-                    {#each books_ordered_by_created_at as book}
-                        <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content {...book} />
+                <div class="row column-vertical pb-3 gy-2" on:scroll={handleScroll} use:autoAnimate>
+                    {#each books_ordered_by_created_at as book (book.book_id)}
+                        <div class="col-6 col-sm-4 col-md-3 col-xl-2 px-1">
+                            <Content {...book} {image_proxy} />
                         </div>
                     {/each}
+                    {#if allContentLoaded}
+                        <div class="col-12">
+                            <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All Content loaded!⚠️</p>
+                        </div>
+                    {/if}
+                </div>
+            {/if}
+        </div>
+        -->
+
+        <div class="col-12 mt-3 mb-2">
+            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1.5</span></p>
+        </div>
+        <div class="col-12">
+            {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
+                <p class="h5 text-center">No new content available.</p>
+            {:else}
+                <div class="row column-vertical" on:scroll={handleScroll}>
+                    <div class="col-12 px-0">
+                        <Masonry {reset}>
+                            {#each books_ordered_by_created_at as book (book.id)}
+                                <ContentMasonry {book} {image_proxy} on:loaded={handleLoadedImage} on:notfound={handleLoadedImage}/>
+                            {/each}
+                        </Masonry>
+                    </div>
                     {#if allContentLoaded}
                         <div class="col-12">
                             <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All Content loaded!⚠️</p>
@@ -130,9 +176,9 @@
                 <p class="h5 text-center">No new content available.</p>
             {:else}
                 <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
-                    {#each books_ordered_by_likes as book}
+                    {#each books_ordered_by_likes as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content {...book} />
+                            <Content {...book} {image_proxy} />
                         </div>
                     {/each}
                 </div>
@@ -147,9 +193,9 @@
                 <p class="h5 text-center">No new content available.</p>
             {:else}
                 <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
-                    {#each books_ordered_by_latest_chapter as book}
+                    {#each books_ordered_by_latest_chapter as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content {...book} />
+                            <Content {...book} {image_proxy} />
                         </div>
                     {/each}
                 </div>
@@ -179,8 +225,9 @@
     }
 
     .column-vertical {
+        flex-wrap: wrap;
         overflow-y: auto;
-        max-height: calc(100vh / 2.1);
+        max-height: calc(100vh / 1.8);
         white-space: normal;
     }
 
@@ -255,6 +302,10 @@
 
     .blink {
         animation: blinker 1s linear 2;
+    }
+
+    .small-text {
+        font-size: 0.8rem;
     }
 
     @keyframes blinker {

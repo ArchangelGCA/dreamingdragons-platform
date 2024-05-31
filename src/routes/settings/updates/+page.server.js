@@ -169,7 +169,7 @@ export const actions = {
         const sent = await resend.emails.send({
             from: 'RiTF <mailing@tales.rosesintheflames.com>',
             to: [email],
-            subject: 'Welcome to the mailing list! - Roses In The Flames',
+            subject: 'Welcome to the mailing list! - Roses in The Flames',
             html: htmlEmail,
             tags: [
                 {

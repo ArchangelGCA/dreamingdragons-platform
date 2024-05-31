@@ -9,6 +9,7 @@
 
     export let comment;
     export let supabase;
+    export let image_proxy;
 
     const dispatch = createEventDispatcher();
 
@@ -150,7 +151,7 @@
 
 <div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave} role="none">
     <div class="col-auto">
-        <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.user_id} size="50px" />
+        <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.user_id} {image_proxy} size="50px" />
     </div>
     <div class="col align-middle pt-1">
         <p class="mb-0"><a class="link-light text-decoration-none" href="/profile/{comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
@@ -188,7 +189,7 @@
     <div class="row border-start border-light-subtle ms-5">
         <div class="col-12" use:autoAnimate>
             {#each comment.children as child (child.id)}
-                <Comment comment={child} {supabase} on:invalidate={handleInvalidate}/>
+                <Comment comment={child} {supabase} {image_proxy} on:invalidate={handleInvalidate}/>
             {/each}
         </div>
     </div>

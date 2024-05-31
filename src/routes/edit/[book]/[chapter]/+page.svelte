@@ -5,23 +5,12 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
-    import Seo from "sk-seo";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
+    import Seo from "@archangelgca/sk-seo";
 
     let conf = {
         skin: 'oxide-dark',
         content_css: 'dark',
+        license_key: 'gpl',
         block_unsupported_drop: true,
         branding: false,
         plugins: 'link autolink wordcount charmap code fullscreen',
@@ -69,7 +58,7 @@
 
 
     export let data;
-    const { chapter, books, supabase } = data;
+    const { chapter, books, supabase, tooltipConfig } = data;
 
     let editorContent = chapter.text;
     let tags = chapter.chapter_tags.map(tag => tag.tags.name);
@@ -200,7 +189,7 @@
             const result = deserialize(await response.text());
             if (result.type === 'success') {
                 if (result.data.status === 200) {
-                    suggestions = result.data.body.map(tag => tag.name);
+                    suggestions = result.data.body.map(tag => tag.name).filter(suggestion => !tags.includes(suggestion));
                 } else {
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {
@@ -240,7 +229,11 @@
     }
 </script>
 
-<Seo index="false" />
+<Seo
+    title="Roses in The Flames - Edit Chapter"
+    description="Edit a chapter."
+    index="false"
+/>
 
 <div class="container-md mt-4 mb-3">
     <div class="row text-center">

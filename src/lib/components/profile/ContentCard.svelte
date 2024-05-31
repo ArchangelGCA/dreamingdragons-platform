@@ -1,8 +1,8 @@
 <script>
-    import {onMount} from "svelte";
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import {createEventDispatcher} from "svelte";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -16,23 +16,11 @@
         theme: 'text-center w-auto'
     };
 
+    const dispatch = createEventDispatcher();
+
     export let content;
-    let isLoading = true;
-    let isLiked = content.is_liked;
-    let likes = content.likes_count;
+    export let image_proxy;
     let likeActionActive = false;
-
-    onMount(() => {
-        const imgElement = document.querySelector('.img-home img');
-        if (imgElement && imgElement.complete) {
-            handleImageLoad();
-        }
-    });
-
-    function handleImageLoad() {
-        if (!isLoading) return;
-        isLoading = false;
-    }
 
     function handleMouseEnter(e) {
         e.target.parentElement.querySelector('.to-scale').style.transform = 'scale(1.1)';
@@ -52,14 +40,14 @@
         likeActionActive = true;
 
         const data = new FormData();
-        data.append('contentId', content.book.id);
+        data.append('contentId', content.id);
 
-        isLiked = !isLiked;
+        content.is_liked = !content.is_liked;
 
-        if (isLiked) {
-            likes++;
+        if (content.is_liked) {
+            content.likes++;
         } else {
-            likes--;
+            content.likes--;
         }
 
         const response = await fetch('?/like', {
@@ -70,10 +58,10 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                // isLiked = !isLiked;
+                dispatch('invalidate');
             } else {
-                isLiked = !isLiked;
-                likes--;
+                content.is_liked = !content.is_liked;
+                content.likes--;
 
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -83,8 +71,8 @@
                 });
             }
         } else {
-            isLiked = !isLiked;
-            likes--;
+            content.is_liked = !content.is_liked;
+            content.likes--;
 
             toast.push('Error during action (Please login)', {
                 theme: {
@@ -96,30 +84,31 @@
 
         likeActionActive = false;
     }
+
+    $: if (image_proxy) {
+        if (!content.cover_url.startsWith(image_proxy)) content.cover_url = image_proxy + content.cover_url + '?width=750&quality=80';
+    } else {
+        console.log('No image proxy');
+    }
 </script>
 
 <div class="card border-0 bg-dark bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
-        {#if isLoading}
-            <div class="spinner-border text-light" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        {/if}
-        <img src={content.book.cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;" on:load={handleImageLoad}>
+        <img src={content.cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
-    <a href="/content/{content.book.id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+    <a href="/content/{content.id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
-            <div class="row custom-overlay-content justify-content-center rounded-bottom-4 ps-3 pb-1 pt-3 mx-0">
-                <div class="col-9">
-                    <a class="link-light text-decoration-none text-wrap" href="/content/{content.book.id}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.book.title}</span></a>
-                    <p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{content.book.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.owner_username}</a></small></p>
+            <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-3 pb-2 mx-0">
+                <div class="col-9 my-auto">
+                    <a class="link-light text-decoration-none text-wrap " href="/content/{content.id}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.title}</span></a>
+                    <!--<p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.owner_username}</a></small></p>-->
                 </div>
-                <div class="col-3 mb-1 text-end">
-                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={isLiked ? 'Unlike' : 'Like'}>
-                        <span class="heart-icon {isLiked ? 'liked' : 'unliked'}">
+                <div class="col-3 text-end my-auto">
+                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
+                        <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
-                            <span class="likes-counter">{likes}</span>
+                            <span class="likes-counter">{content.likes}</span>
                         </span>
                     </button>
                 </div>

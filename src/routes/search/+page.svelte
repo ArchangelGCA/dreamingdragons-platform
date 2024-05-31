@@ -4,18 +4,12 @@
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
     import {onMount} from "svelte";
-    import Seo from "sk-seo";
+    import Seo from "@archangelgca/sk-seo";
 
     export let data;
-    let { supabase, searchResults, partialText } = data;
+    let { searchResults, partialText, image_proxy } = data;
 
-    const seo = {
-        title: partialText + ' | Roses In The Flames',
-        description: 'Search results for ' + partialText + 'on Roses In The Flames.',
-        siteName: 'Roses In The Flames | Tales',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
-    };
+    let index = true;
 
     onMount(() => {
         window.addEventListener('scroll', handleScroll);
@@ -49,6 +43,8 @@
         });
     } else {
         allResultsLoaded = true;
+        // index to false in seo
+        index = false;
     }
 
     async function loadMoreResults(){
@@ -58,6 +54,7 @@
 
         const formData = new FormData();
         formData.append('page', page++);
+        formData.append('query', partialText);
         const response = await fetch('?/loadmore', {
             method: 'POST',
             body: formData,
@@ -72,7 +69,7 @@
             } else {
                 searchResults.forEach(result => {
                     if (result.book_id !== undefined){
-                        books.push(result);
+                        if (!books.some(book => book.book_id === result.book_id)) books.push(result);
                         if (!profiles.some(profile => profile.owner_id === result.owner_id)){
                             profiles.push({
                                 owner_id: result.owner_id,
@@ -105,69 +102,85 @@
     }
 </script>
 
-<Seo {...seo} />
+<Seo
+        title="{partialText} | Roses in The Flames"
+        description="Search results for {partialText} on Roses in The Flames."
+        siteName="Roses in The Flames - Platform"
+        imageURL="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        index={index}
+/>
 
 <div class="container-fluid my-3" style="min-height: 69vh">
-    <div class="row mb-2">
-        <div class="col">
-            <p class="h2 text-center">Search Results</p>
+    {#if partialText === ""}
+        <div class="row">
+            <div class="col">
+                <p class="h2 text-center text-danger-emphasis">Mmm... nothing found. Did you forget to enter a search query? 🤔</p>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col px-0" use:autoAnimate>
-            {#if searchResults.length === 0}
-                <p class="h2 text-center text-danger-emphasis">Nothing found! Please try again...</p>
-            {:else}
-                <div class="row">
-                    <div class="col">
-                        <p class="h3 text-start">Profiles</p>
+    {:else}
+        <div class="row mb-2">
+            <div class="col">
+                <p class="h2 text-center">Search Results</p>
+                <p class="h6 text-center text-muted">Results for: {partialText}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col px-0" use:autoAnimate>
+                {#if searchResults.length === 0}
+                    <p class="h2 text-center text-danger-emphasis">Nothing found! Please try again...</p>
+                {:else}
+                    <div class="row">
+                        <div class="col">
+                            <p class="h3 text-start">Profiles</p>
+                        </div>
                     </div>
-                </div>
-                <div class="row row-horizontal flex-nowrap border-bottom border-top py-2 ps-1 pe-1 ps-xl-5 pe-xl-5">
-                        {#if profiles.length === 0 && books.length !== 0}
-                            <div class="col-12">
-                                <p class="text-center">Profiles not found!</p>
+                    <div class="row row-horizontal flex-nowrap border-bottom border-top py-2 ps-1 pe-1 ps-xl-5 pe-xl-5">
+                            {#if profiles.length === 0 && books.length !== 0}
+                                <div class="col-12">
+                                    <p class="text-center">Profiles not found!</p>
+                                </div>
+                            {:else}
+                                {#each profiles as profile (profile.owner_id)}
+                                    <div class="col-auto">
+                                        <UserAvatar url={profile.owner_avatar_url} username={profile.owner_username} id={profile.owner_id} {image_proxy} size="50px" />
+                                    </div>
+                                {/each}
+                            {/if}
+                    </div>
+                    <div class="row mt-4 mb-2">
+                        <div class="col">
+                            <p class="h3 text-center">Content</p>
+                        </div>
+                    </div>
+                    <div class="container-xxl">
+                        {#if books.length === 0}
+                            <div class="row">
+                                <div class="col">
+                                    <p class="text-center">Books not found!</p>
+                                </div>
                             </div>
                         {:else}
-                            {#each profiles as profile (profile.owner_id)}
-                                <div class="col-auto">
-                                    <UserAvatar url={profile.owner_avatar_url} username={profile.owner_username} id={profile.owner_id} size="60px" />
-                                </div>
-                            {/each}
+                            <div class="row g-3 justify-content-center">
+                                {#each books as book (book.book_id)}
+                                    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                                        <BookSearch owner_username={book.owner_username} owner_id={book.owner_id} title={book.book_title} book_id={book.book_id} description={book.book_description} book_cover_url={book.book_cover_url} {image_proxy}/>
+                                    </div>
+                                {/each}
+                            </div>
                         {/if}
-                </div>
-                <div class="row mt-4 mb-2">
-                    <div class="col">
-                        <p class="h3 text-center">Content</p>
-                    </div>
-                </div>
-                <div class="container-xxl">
-                    {#if books.length === 0}
-                        <div class="row">
-                            <div class="col">
-                                <p class="text-center">Books not found!</p>
-                            </div>
-                        </div>
-                    {:else}
-                        <div class="row g-3 justify-content-center">
-                            {#each books as book (book.book_id)}
-                                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                                    <BookSearch owner_username={book.owner_username} owner_id={book.owner_id} title={book.book_title} book_id={book.book_id} description={book.book_description} book_cover_url={book.book_cover_url} />
+                        {#if allResultsLoaded}
+                            <div class="row pt-3 mt-3">
+                                <div class="col">
+                                    <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All results loaded!⚠️</p>
                                 </div>
-                            {/each}
-                        </div>
-                    {/if}
-                    {#if allResultsLoaded}
-                        <div class="row pt-3 mt-3">
-                            <div class="col">
-                                <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All results loaded!⚠️</p>
                             </div>
-                        </div>
-                    {/if}
-                </div>
-            {/if}
+                        {/if}
+                    </div>
+                {/if}
+            </div>
         </div>
-    </div>
+    {/if}
 </div>
 
 <style>

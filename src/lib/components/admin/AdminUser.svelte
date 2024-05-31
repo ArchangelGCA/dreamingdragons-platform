@@ -18,6 +18,7 @@
     };
 
     export let profile;
+    export let image_proxy;
     let isWarningActive = false;
     let isSendWarningActive = false;
     let isCanUploadActive = false;
@@ -421,7 +422,7 @@
         <div class="col-12">
             <div class="row justify-content-center">
                 <div class="col-12 col-md-auto my-auto mb-3 mb-md-auto">
-                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} size="100px" />
+                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {image_proxy} size="100px" />
                 </div>
                 <div class="col-12 col-md-auto my-auto">
                     <h1 class="h1 text-center">{profile.username}</h1>
@@ -447,7 +448,7 @@
                         <div class="accordion-body">
                             <div class="row">
                                 <div class="col-12 col-md-6 mb-3 mb-md-auto my-auto">
-                                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} size="200px" />
+                                    <UserAvatar url={profile.avatar_url} username={profile.username} id={profile.id} {image_proxy} size="200px" />
                                 </div>
                                 <div class="col-12 col-md-6 my-auto">
                                     <p>Full Name: {profile.full_name}</p>
@@ -457,8 +458,8 @@
                                     <p>Created At: {profile.created_at}</p>
                                     <p>Updated At: {profile.updated_at}</p>
                                 </div>
-                                <div class="col-12 border-top border-primary pt-3">
-                                    <p class="h5 text-center">Profile cover: </p>
+                                <div class="col-12 border-top border-primary pt-3 text-center">
+                                    <p class="h5">Profile cover: </p>
                                     {#if profile.cover_url && finalCoverUrl}
                                         <a href="{finalCoverUrl}" target="_blank">
                                             <img src={finalCoverUrl} alt="Profile cover" class="img-fluid rounded-4" use:tooltip={{...tooltipConfig}} title="View Cover" />
@@ -516,13 +517,13 @@
                         </button>
                         <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
                             {#if profile.avatar_url}
-                                <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetAvatarModal-{profile.id}"><i class="fas fa-refresh text-warning"></i> <i class="fas fa-user text-primary-emphasis"></i> Reset Avatar</a></li>
+                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetAvatarModal-{profile.id}"><i class="fas fa-refresh text-warning"></i> <i class="fas fa-user text-primary-emphasis"></i> Reset Avatar</button></li>
                             {/if}
                             {#if profile.cover_url}
-                                <li><a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetCoverModal-{profile.id}"><i class="fas fa-refresh text-warning"></i> <i class="fas fa-image text-secondary-emphasis"></i> Reset Cover</a></li>
+                                <li><button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#resetCoverModal-{profile.id}"><i class="fas fa-refresh text-warning"></i> <i class="fas fa-image text-secondary-emphasis"></i> Reset Cover</button></li>
                             {/if}
                             {#if !profile.avatar_url && !profile.cover_url}
-                                <li><a href="#" class="dropdown-item disabled"><i class="fas fa-exclamation-triangle text-danger"></i> No actions available, the user doesn't have neither avatar or cover</a></li>
+                                <li><button class="dropdown-item disabled"><i class="fas fa-exclamation-triangle text-danger"></i> No actions available, the user doesn't have neither avatar or cover</button></li>
                             {/if}
                         </ul>
                     </div>

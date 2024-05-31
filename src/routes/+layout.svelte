@@ -10,22 +10,10 @@
     import { page as pageStore } from '$app/stores';
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
-
     export let data;
 
-    let { supabase, session, notifications } = data;
-    $: ({ supabase, session, notifications } = data);
+    let { supabase, session, image_proxy, notifications, tooltipConfig } = data;
+    $: ({ supabase, session, notifications, tooltipConfig } = data);
 
     let intervalId;
     let searchTerm = '';
@@ -83,7 +71,7 @@
     ];
 
     const currentYear = new Date().getFullYear(); // Will use this in the footer to automatically update the year
-    const owner = 'Roses In The Flames Official'
+    const owner = 'Roses in The Flames Official'
     const designedBy = 'ArchangelGCA';
     const designedByLink = 'https://archangelgca.eu';
     const tosLink = '/legal/tos'
@@ -204,7 +192,7 @@
         <form action="/search" method="get" data-sveltekit-reload>
             <div class="input-group">
                 <input type="text" class="form-control form-control-sm border-0 rounded-start-3" placeholder="Search" aria-label="Search" aria-describedby="searchButton" name="q" bind:value={searchTerm} />
-                <button class="btn btn-sm btn-outline-search" type="submit" id="searchButton"><i class="fas fa-search"></i></button>
+                <button class="btn btn-sm btn-outline-search" type="submit" id="searchButton" aria-label="Search"><i class="fas fa-search"></i></button>
             </div>
         </form>
     </div>
@@ -230,19 +218,30 @@
                         {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                             <i class="fa-solid fa-user py-2 pb-2 mb-1 px-1"></i>
                         {:else}
-                            <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} size="25px"/>
+                            <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="25px"/>
                         {/if}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                         {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
-                            <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                            {#if session}
+                                <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                            {/if}
                         {:else}
-                            <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" data-sveltekit-reload href="/profile"><UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a></li>
+                            <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" href="/profile">
+                                <UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a>
+                            </li>
                         {/if}
                         <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/settings') ? 'active' : ''}" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
-                        <li><a class="dropdown-item upload-button rounded-3 py-2 my-1 {$pageStore.url.pathname.startsWith('/upload') ? 'active' : ''}" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
-                        <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/updates') ? 'active' : ''}" href="/updates"><i class="fas fa-edit border-end border-light-subtle pe-2"></i> Updates</a></li>
-                        <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
+                        {#if session}
+                            <li><a class="dropdown-item upload-button rounded-3 py-2 my-1 {$pageStore.url.pathname.startsWith('/upload') ? 'active' : ''}" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
+                        {/if}
+                        <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/updates') ? 'active' : ''}" href="/updates"><i class="fas fa-newspaper border-end border-light-subtle pe-2"></i> Updates</a></li>
+                        {#if session}
+                            <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
+                        {:else}
+                            <li><a class="dropdown-item register-button rounded-3 py-2" href="/login"><i class="fa-solid fa-user-plus border-end border-light-subtle pe-1"></i> Register</a></li>
+                            <li><a class="dropdown-item" href="/login"><i class="fa-solid fa-sign-in border-end border-light-subtle pe-2"></i> Login</a></li>
+                        {/if}
                     </ul>
                 </div>
             </div>
@@ -257,7 +256,7 @@
     </div>
     <div class="offcanvas-body" on:scroll={handleScroll}>
         {#if notifications && notifications !== null && notifications.length !== 0}
-            {#each notifications as notification}
+            {#each notifications as notification (notification.id)}
                 <Notification {notification} {supabase} {session} />
             {/each}
         {:else}
@@ -276,10 +275,10 @@
         <div class="row border-top border-light-subtle pt-3 pb-2">
             <div class="col">
                 <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
-                    <strong>Warning!</strong> Cover uploads from settings page is NOT working as expected. There may be issues and some features may not work as expected.
+                    <strong>Maintenance!</strong> System outage!
                     <!-- Little text with a few details about the maintenance -->
-                    <small class="text-muted d-block">Only profile Covers uploads are affected.</small>
-                    <small class="text-muted d-block">Maintenance started on: 29/04/2024 06:21AM UTC/GMT+2</small>
+                    <small class="text-muted d-block">We're currently experiencing a system outage involving images uploads/edits and downloads (Content, Profile Covers and Avatars), all other functionalities are operational! For any question please reach us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a></small>
+                    <small class="text-muted d-block">System outage started around: 19/05/2024 11:30AM UTC/GMT+2</small>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" on:click={() => {maintenance = false}}></button>
                 </div>
             </div>
@@ -301,7 +300,7 @@
                 <p class="fs-6 text-center mb-1">Follow us on:</p>
                 <p class="fs-4 text-center">
                     {#each socials as social}
-                        <a href="{social.link}" target="_blank" use:tooltip={{...tooltipConfig}} title="Open {social.name}" class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
+                        <a href="{social.link}" target="_blank" aria-label="Find us on {social.name}" use:tooltip={{...tooltipConfig}} title="Open {social.name}" class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
                     {/each}
                 </p>
             </div>
@@ -351,6 +350,21 @@
         transform: scale(0.95);
     }
 
+    .register-button {
+        background: linear-gradient(270deg, #830054, #5c00a6);
+        background-size: 200% 200%;
+        animation: Gradient-Register 5s ease infinite, tranform 1s ease-in-out;
+        transition: transform 0.12s ease-in-out;
+    }
+
+    .register-button:hover {
+        box-shadow: 0 0 0.6rem 0.25rem rgba(255, 0, 250, 0.75);
+    }
+
+    .register-button:active {
+        transform: scale(0.95);
+    }
+
     .btn-outline-search {
         border-color: #b200e8;
         color: #b200e8;
@@ -395,6 +409,12 @@
     #notificationBell {
         cursor: pointer;
         font-size: 1.1rem;
+    }
+
+    @keyframes Gradient-Register {
+        0% {background-position: 0% 50%;}
+        50% {background-position: 100% 50%;}
+        100% {background-position: 0% 50%;}
     }
 
     @keyframes Gradient {

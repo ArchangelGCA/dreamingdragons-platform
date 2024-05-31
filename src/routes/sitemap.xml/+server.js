@@ -1,6 +1,6 @@
 import * as sitemap from 'super-sitemap';
 
-export const GET = async ({locals: {supabase, getSession}}) => {
+export const GET = async ({locals: {supabase}}) => {
 
     const [books, chapters, profiles, tags] = await Promise.all([
         supabase.from('book').select('id'),
@@ -28,6 +28,7 @@ export const GET = async ({locals: {supabase, getSession}}) => {
             excludePatterns: [
                 '^/edit.*',
                 '^/admin.*',
+                '^/health.*'
             ]
         });
     }

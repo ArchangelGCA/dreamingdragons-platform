@@ -1,11 +1,15 @@
 <script>
-    import Seo from "sk-seo";
+    import Seo from "@archangelgca/sk-seo";
     import {page} from "$app/stores";
     import autoAnimate from '@formkit/auto-animate';
 
 </script>
 
-<Seo index="false" />
+<Seo
+    title="Roses in The Flames - Admin Dashboard"
+    description="Admin Dashboard for Roses in The Flames."
+    index="false"
+/>
 
 <div class="row">
     <nav class="col-lg-2 navbar navbar-expand-lg navbar-dark bg-black bg-opacity-10 rounded-end-3 border-end border-light-subtle pt-1 px-3">

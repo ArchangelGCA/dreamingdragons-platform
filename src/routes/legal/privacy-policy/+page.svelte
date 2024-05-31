@@ -1,16 +1,15 @@
 <script>
-    import Seo from "sk-seo";
-
-    const seo = {
-        title: 'Roses In The Flames | Privacy Policy',
-        description: 'Privacy Policy of Roses In The Flames (RiTF).',
-        siteName: 'Roses In The Flames | Tales',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
-    }
+    import Seo from "@archangelgca/sk-seo";
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Roses in The Flames - Privacy Policy"
+    description="Privacy Policy of Roses in The Flames (RiTF)."
+    siteName="Roses in The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+    index="true"
+/>
 
 <div class="container-fluid p-2 pe-3 pb-3 mt-3 mb-3 rounded-3">
     <h1 style="padding-top: 6pt;padding-left: 23pt;text-indent: 0pt;text-align: center;">ONLINE PRIVACY POLICY

@@ -1,8 +1,11 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
+    import {createEventDispatcher} from "svelte";
 
     export let url;
+
+    const dispatch = createEventDispatcher();
 
     let coverUrl = '';
     let uploading = false;
@@ -42,9 +45,7 @@
                     '--toastText': '#868686',
                 },
             });
-            setTimeout(() => {
-                dispatch('upload');
-            }, 100)
+            dispatch('upload');
         } catch (error) {
             if (error instanceof Error) {
                 alert(error.message);

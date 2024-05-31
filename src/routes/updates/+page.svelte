@@ -1,5 +1,5 @@
 <script>
-    import Seo from "sk-seo";
+    import Seo from "@archangelgca/sk-seo";
 
     export let data;
 
@@ -16,22 +16,20 @@
         const options = { hour: 'numeric', minute: 'numeric'};
         return new Date(dateString).toLocaleTimeString(undefined, options);
     }
-
-    const seo = {
-        title: 'Roses In The Flames | Updates',
-        description: 'Updates and changelogs of the Roses In The Flames website.',
-        siteName: 'Roses In The Flames | Tales',
-        imageURL: 'https://tales.rosesintheflames.com/favicon.webp',
-        author: 'ArchangelGCA'
-    };
 </script>
 
-<Seo {...seo} />
+<Seo
+    title="Roses in The Flames - Updates"
+    description="Updates and changelogs of the Roses in The Flames."
+    siteName="Roses in The Flames - Platform"
+    imageURL="https://tales.rosesintheflames.com/favicon.webp"
+    author="ArchangelGCA"
+/>
 
 <div class="container mt-3">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="text-center mb-4 bg-animated-gradient py-2 rounded-4">Website Updates</h1>
+            <h1 class="text-center mb-4 bg-animated-gradient py-2 rounded-4">🚀 Website Updates</h1>
             <p class="text-center mb-4">Here we will share all changelogs and updates made to the website.</p>
             {#each updates as update}
                 <div class="card mb-3">

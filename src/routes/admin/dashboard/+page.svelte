@@ -3,25 +3,13 @@
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
+    import Seo from "@archangelgca/sk-seo";
 
     export let data;
 
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px',
-        },
-        theme: 'text-center w-auto'
-    };
-
-    let {panic} = data;
-    $: ({panic} = data);
+    let {panic, tooltipConfig} = data;
+    $: ({panic, tooltipConfig} = data);
     let isPanicAction = false;
-
 
     async function handlePanic() {
         if (isPanicAction) return;
@@ -92,6 +80,15 @@
         isPanicAction = false;
     }
 </script>
+
+<Seo
+        title="Admin - Dashboard"
+        description="Admin dashboard for Roses in The Flames platform."
+        siteName="Roses in The Flames - Platform"
+        imageURL="https://tales.rosesintheflames.com/favicon.webp"
+        author="ArchangelGCA"
+        index="false"
+/>
 
 <div class="row text-center mb-2 mt-1">
     <div class="col-md-12">

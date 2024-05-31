@@ -4,12 +4,16 @@
     export let size = '100px';
 
     export let classes = '';
+    export let image_proxy = null;
 
     let avatarUrl = '';
     let isAvatarLoaded = false;
 
     $: if (url && url !== '' && !isAvatarLoaded) {
         avatarUrl = url;
+        if (image_proxy){
+            if (!avatarUrl.startsWith(image_proxy)) avatarUrl = image_proxy + avatarUrl + '?width=250';
+        }
         isAvatarLoaded = true;
     } else if ((!url || url === '') && avatarUrl !== '') {
         avatarUrl = '';
@@ -23,5 +27,5 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 {:else}
-    <img src={avatarUrl} alt={username} class="rounded-circle {classes}" width={size} height={size}>
+    <img src={avatarUrl} alt='{username} avatar' class="rounded-circle {classes}" width={size} height={size}>
 {/if}
