@@ -11,14 +11,14 @@
 
     export let data;
 
-    let { supabase, session, image_proxy, notifications, tooltipConfig } = data;
-    $: ({ supabase, session, notifications, tooltipConfig } = data);
+    let { supabase, session, image_proxy, notifications, tooltipConfig, userData } = data;
+    $: ({ supabase, session, notifications, tooltipConfig, userData } = data);
 
     let intervalId;
     let searchTerm = '';
     let latestNotificationTimestamp = notifications.length > 0 ? notifications[0].created_at : null;
     const notifsUpdateInterval = 30000;
-    let maintenance = true;
+    let maintenance = false;
 
     if ($pageStore.url.searchParams.has('q')) {
         searchTerm = $pageStore.url.searchParams.get('q');
@@ -40,8 +40,6 @@
                 document.querySelector('.navbar-collapse').classList.remove('show');
             });
         });
-
-        getAvatarUrl();
 
         intervalId = setInterval(async () => {
             await tick();
@@ -78,22 +76,12 @@
     const copyright = `© ${currentYear} ${owner}. All rights reserved.`;
     const notificationsRangeStep = 20;
 
-    let userData = null;
     let notificationsCount = 0;
     let allNotificationsLoaded = false;
     if (notifications !== null && notifications.length !== 0) {
         notificationsCount = notifications.filter(notification => notification.watched === false).length;
     } else {
         allNotificationsLoaded = true;
-    }
-
-    // When session changes, run getAvatarUrl() again, and if null, set userData to null
-    $: {
-        if (session) {
-            getAvatarUrl();
-        } else {
-            userData = null;
-        }
     }
 
     let loading = false;
@@ -149,24 +137,6 @@
                 notifications = [...newNotifs, ...notifications];
                 latestNotificationTimestamp = newNotifs[0].created_at;
                 await loadNewNotificationsCounter();
-            }
-        }
-    }
-
-    async function getAvatarUrl() {
-        if (session) {
-            const { data: data, error } = await supabase
-                .from('profiles')
-                .select('id, username, avatar_url')
-                .eq('id', session.user.id)
-                .single();
-
-            if (error) {
-                console.error(error);
-            }
-
-            if (data && data.length !== 0 && data.avatar_url !== null) {
-                userData = data;
             }
         }
     }

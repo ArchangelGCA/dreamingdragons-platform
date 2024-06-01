@@ -38,6 +38,7 @@ export const load = async ({ fetch, data, depends }) => {
     };
 
     let notifications = [];
+    let userData = null;
 
     if (session) {
         const {data: notifs, error} = await supabase
@@ -57,11 +58,29 @@ export const load = async ({ fetch, data, depends }) => {
             }
         }
 
+        const { data: user, errorProfiles } = await supabase
+            .from('profiles')
+            .select('id, username, avatar_url')
+            .eq('id', session.user.id)
+            .single();
+
+        if (errorProfiles) {
+            console.error(errorProfiles)
+            return {
+                status: 500,
+                body: {
+                    message: errorProfiles.message,
+                },
+            }
+        }
+
+        userData = user;
         notifications = notifs;
     }
 
     return {
         supabase,
+        userData,
         session,
         notifications,
         image_proxy,
