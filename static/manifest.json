@@ -1,7 +1,7 @@
 {
   "name": "Roses In The Flames - Platform",
   "short_name": "RiTF",
-  "description": "A place where you can share your stories and art.",
+  "description": "The official platform of Roses in The Flames.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
