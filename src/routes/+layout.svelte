@@ -2,7 +2,6 @@
     import {invalidateAll} from '$app/navigation'
     import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";
-    import '$lib/css/banner.css';
     import { SvelteToast } from '@zerodevx/svelte-toast';
     import autoAnimate from '@formkit/auto-animate';
     import Notification from "$lib/components/layout/Notification.svelte";
@@ -182,139 +181,141 @@
 
 <SvelteToast />
 
-<div class="row border-bottom border-light-subtle py-2">
-    <div class="col-2 col-md-3 col-xxl-4">
-        <a href="/">
-            <img src={favicon} alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
-        </a>
-    </div>
-    <div class="col-6 col-xxl-4 my-auto pe-0">
-        <form action="/search" method="get" data-sveltekit-reload>
-            <div class="input-group">
-                <input type="text" class="form-control form-control-sm border-0 rounded-start-3" placeholder="Search" aria-label="Search" aria-describedby="searchButton" name="q" bind:value={searchTerm} />
-                <button class="btn btn-sm btn-outline-search" type="submit" id="searchButton" aria-label="Search"><i class="fas fa-search"></i></button>
-            </div>
-        </form>
-    </div>
-    <div class="col-4 col-md-3 col-xxl-4 text-end ps-0">
-        <div class="row align-items-center" use:autoAnimate>
-            {#if notificationsCount !== 0}
-                <div class="col pe-3 mt-1">
-                    <div class="position-relative">
-                        <button class="btn border border-0 p-0 bg-transparent" on:click={() => notificationsCount = 0} on:keydown={() => notificationsCount = 0}>
-                            <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
-                        </button>
-                        <span class="position-absolute top-0 start-100 mt-1 ms-2 translate-middle badge rounded-pill bg-danger">{notificationsCount}</span>
+<div class="container-fluid bg-black bg-opacity-50">
+    <div class="row border-bottom border-light-subtle py-2">
+        <div class="col-2 col-md-3 col-xxl-4">
+            <a href="/">
+                <img src={favicon} alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
+            </a>
+        </div>
+        <div class="col-6 col-xxl-4 my-auto pe-0">
+            <form action="/search" method="get" data-sveltekit-reload>
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm border-0 rounded-start-3" placeholder="Search" aria-label="Search" aria-describedby="searchButton" name="q" bind:value={searchTerm} />
+                    <button class="btn btn-sm btn-outline-search" type="submit" id="searchButton" aria-label="Search"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+        <div class="col-4 col-md-3 col-xxl-4 text-end ps-0">
+            <div class="row align-items-center" use:autoAnimate>
+                {#if notificationsCount !== 0}
+                    <div class="col pe-3 mt-1">
+                        <div class="position-relative">
+                            <button class="btn border border-0 p-0 bg-transparent" on:click={() => notificationsCount = 0} on:keydown={() => notificationsCount = 0}>
+                                <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
+                            </button>
+                            <span class="position-absolute top-0 start-100 mt-1 ms-2 translate-middle badge rounded-pill bg-danger">{notificationsCount}</span>
+                        </div>
                     </div>
-                </div>
-            {:else}
-                <div class="col pe-1">
-                    <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
-                </div>
-            {/if}
-            <div class="col-auto">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle py-0 pt-1 ps-2 animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
-                            <i class="fa-solid fa-user py-2 pb-2 mb-1 px-1"></i>
-                        {:else}
-                            <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="25px"/>
-                        {/if}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                        {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
-                            {#if session}
-                                <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                {:else}
+                    <div class="col pe-1">
+                        <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
+                    </div>
+                {/if}
+                <div class="col-auto">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle py-0 pt-1 ps-2 animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
+                                <i class="fa-solid fa-user py-2 pb-2 mb-1 px-1"></i>
+                            {:else}
+                                <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="25px"/>
                             {/if}
-                        {:else}
-                            <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" href="/profile">
-                                <UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a>
-                            </li>
-                        {/if}
-                        <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/settings') ? 'active' : ''}" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
-                        {#if session}
-                            <li><a class="dropdown-item upload-button rounded-3 py-2 my-1 {$pageStore.url.pathname.startsWith('/upload') ? 'active' : ''}" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
-                        {/if}
-                        <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/updates') ? 'active' : ''}" href="/updates"><i class="fas fa-newspaper border-end border-light-subtle pe-2"></i> Updates</a></li>
-                        {#if session}
-                            <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
-                        {:else}
-                            <li><a class="dropdown-item register-button rounded-3 py-2" href="/login"><i class="fa-solid fa-user-plus border-end border-light-subtle pe-1"></i> Register</a></li>
-                            <li><a class="dropdown-item" href="/login"><i class="fa-solid fa-sign-in border-end border-light-subtle pe-2"></i> Login</a></li>
-                        {/if}
-                    </ul>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                            {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
+                                {#if session}
+                                    <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
+                                {/if}
+                            {:else}
+                                <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" href="/profile">
+                                    <UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a>
+                                </li>
+                            {/if}
+                            <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/settings') ? 'active' : ''}" href="/settings"><i class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a></li>
+                            {#if session}
+                                <li><a class="dropdown-item upload-button rounded-3 py-2 my-1 {$pageStore.url.pathname.startsWith('/upload') ? 'active' : ''}" href="/upload"><i class="fa-solid fa-upload border-end border-light-subtle pe-2"></i> Upload</a></li>
+                            {/if}
+                            <li><a class="dropdown-item {$pageStore.url.pathname.startsWith('/updates') ? 'active' : ''}" href="/updates"><i class="fas fa-newspaper border-end border-light-subtle pe-2"></i> Updates</a></li>
+                            {#if session}
+                                <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
+                            {:else}
+                                <li><a class="dropdown-item register-button rounded-3 py-2" href="/login"><i class="fa-solid fa-user-plus border-end border-light-subtle pe-1"></i> Register</a></li>
+                                <li><a class="dropdown-item" href="/login"><i class="fa-solid fa-sign-in border-end border-light-subtle pe-2"></i> Login</a></li>
+                            {/if}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="offcanvas offcanvas-end rounded-4 p-2 my-2 me-1" tabindex="-1" id="notifications" aria-labelledby="notifications">
-    <div class="offcanvas-header bg-light bg-opacity-25 rounded-4">
-        <h5 class="offcanvas-title mt-1">Notifications</h5>
-        <button type="button" class="btn-close me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <div class="offcanvas offcanvas-end rounded-4 p-2 my-2 me-1" tabindex="-1" id="notifications" aria-labelledby="notifications">
+        <div class="offcanvas-header bg-light bg-opacity-25 rounded-4">
+            <h5 class="offcanvas-title mt-1">Notifications</h5>
+            <button type="button" class="btn-close me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" on:scroll={handleScroll}>
+            {#if notifications && notifications !== null && notifications.length !== 0}
+                {#each notifications as notification (notification.id)}
+                    <Notification {notification} {supabase} {session} />
+                {/each}
+            {:else}
+                <div class="row border border-light-subtle rounded-3 p-2 mb-2">
+                    <div class="col">
+                        <p class="fs-6 text-center mb-auto">No notifications found.</p>
+                    </div>
+                </div>
+            {/if}
+        </div>
     </div>
-    <div class="offcanvas-body" on:scroll={handleScroll}>
-        {#if notifications && notifications !== null && notifications.length !== 0}
-            {#each notifications as notification (notification.id)}
-                <Notification {notification} {supabase} {session} />
-            {/each}
-        {:else}
-            <div class="row border border-light-subtle rounded-3 p-2 mb-2">
+
+    <div use:autoAnimate>
+        {#if maintenance}
+            <!-- Warning like row telling peoples that the website is in maintenance mode temporarily and there may be issues -->
+            <div class="row border-top border-light-subtle pt-3 pb-2">
                 <div class="col">
-                    <p class="fs-6 text-center mb-auto">No notifications found.</p>
+                    <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
+                        <strong>We're back online!</strong>
+                        <!-- Little text with a few details about the maintenance -->
+                        <small class="text-muted d-block">We apologise for the unexpected downtime, however we're back online. Issues are still expected (please report them)! For any question please reach us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a></small>
+                        <small class="text-muted d-block">Degraded performance started around: 31/05/2024 18:30AM UTC/GMT+2</small>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" on:click={() => {maintenance = false}}></button>
+                    </div>
                 </div>
             </div>
         {/if}
+        <slot></slot>
     </div>
-</div>
 
-<div use:autoAnimate>
-    {#if maintenance}
-        <!-- Warning like row telling peoples that the website is in maintenance mode temporarily and there may be issues -->
-        <div class="row border-top border-light-subtle pt-3 pb-2">
-            <div class="col">
-                <div class="alert alert-success alert-dismissible fade show mb-0" role="alert">
-                    <strong>We're back online!</strong>
-                    <!-- Little text with a few details about the maintenance -->
-                    <small class="text-muted d-block">We apologise for the unexpected downtime, however we're back online. Issues are still expected (please report them)! For any question please reach us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a></small>
-                    <small class="text-muted d-block">Degraded performance started around: 31/05/2024 18:30AM UTC/GMT+2</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" on:click={() => {maintenance = false}}></button>
+    <div class="row border-top border-light-subtle pt-3 pb-2">
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    <p class="fs-6 text-center">Designed by: <a href="{designedByLink}" use:tooltip={{...tooltipConfig}} title="Visit Developer" target="_blank">{designedBy}</a></p>
                 </div>
             </div>
-        </div>
-    {/if}
-    <slot></slot>
-</div>
-
-<div class="row border-top border-light-subtle pt-3 pb-2">
-    <div class="col">
-        <div class="row">
-            <div class="col">
-                <p class="fs-6 text-center">Designed by: <a href="{designedByLink}" use:tooltip={{...tooltipConfig}} title="Visit Developer" target="_blank">{designedBy}</a></p>
+            <!-- Socials -->
+            <div class="row">
+                <div class="col">
+                    <p class="fs-6 text-center mb-1">Follow us on:</p>
+                    <p class="fs-4 text-center">
+                        {#each socials as social}
+                            <a href="{social.link}" target="_blank" aria-label="Find us on {social.name}" use:tooltip={{...tooltipConfig}} title="Open {social.name}" class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
+                        {/each}
+                    </p>
+                </div>
             </div>
-        </div>
-        <!-- Socials -->
-        <div class="row">
-            <div class="col">
-                <p class="fs-6 text-center mb-1">Follow us on:</p>
-                <p class="fs-4 text-center">
-                    {#each socials as social}
-                        <a href="{social.link}" target="_blank" aria-label="Find us on {social.name}" use:tooltip={{...tooltipConfig}} title="Open {social.name}" class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
-                    {/each}
-                </p>
+            <!-- Links to TOS and Privacy Policy -->
+            <div class="row">
+                <div class="col">
+                    <p class="fs-6 text-center">For Terms of Service and Privacy Policy, please visit: <a href="{tosLink}" target="_blank" use:tooltip={{...tooltipConfig}} title="Terms Of Service" class="text-decoration-none text-light">TOS</a> and <a href="{privacyPolicyLink}" target="_blank" use:tooltip={{...tooltipConfig}} data-bs-placement="top" title="Privacy Policy" class="text-decoration-none text-light">Privacy Policy</a>.</p>
+                </div>
             </div>
-        </div>
-        <!-- Links to TOS and Privacy Policy -->
-        <div class="row">
-            <div class="col">
-                <p class="fs-6 text-center">For Terms of Service and Privacy Policy, please visit: <a href="{tosLink}" target="_blank" use:tooltip={{...tooltipConfig}} title="Terms Of Service" class="text-decoration-none text-light">TOS</a> and <a href="{privacyPolicyLink}" target="_blank" use:tooltip={{...tooltipConfig}} data-bs-placement="top" title="Privacy Policy" class="text-decoration-none text-light">Privacy Policy</a>.</p>
-            </div>
-        </div>
-        <!-- Copyright -->
-        <div class="row">
-            <div class="col">
-                <p class="fs-6 text-center">{copyright}</p>
+            <!-- Copyright -->
+            <div class="row">
+                <div class="col">
+                    <p class="fs-6 text-center">{copyright}</p>
+                </div>
             </div>
         </div>
     </div>
