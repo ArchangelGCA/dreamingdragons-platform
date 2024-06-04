@@ -30,6 +30,8 @@
     $: if (book.title.length > 20) book.title = book.title.substring(0, 18) + '...';
     $: if (book.profiles.username.length > 16) book.profiles.username = book.profiles.username.substring(0, 15) + '...';
 
+    console.log("Book profiles", book.profiles);
+
     onMount(() => {
         const img = new Image();
         img.src = book.cover_url + `?width=${width}&quality=80`;
@@ -66,7 +68,7 @@
                         <p class="card-text"><small class="text-description"><span>
                             <UserAvatarNavbar url={book.profiles.avatar_url} username={book.profiles.username} {image_proxy} size="25px"/>
                         </span> <a
-                                class="link-light link-custom text-decoration-none" href="/profile/{book.id}"
+                                class="link-light link-custom text-decoration-none" href="/profile/{book.profiles.id}"
                                 use:tooltip={{...tooltipConfig}} title="Visit profile">{book.profiles.username}</a></small></p>
                     </div>
                 </div>

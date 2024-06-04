@@ -2,7 +2,6 @@ import {error as errorx} from '@sveltejs/kit';
 import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
 import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import PocketBase from "pocketbase";
-
 async function loadComments(supabase, session, bookId) {
     let {data: comments, error: commentsError} = await supabase
         .from('comments')
