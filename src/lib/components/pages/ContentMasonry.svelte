@@ -30,8 +30,6 @@
     $: if (book.title.length > 20) book.title = book.title.substring(0, 18) + '...';
     $: if (book.profiles.username.length > 16) book.profiles.username = book.profiles.username.substring(0, 15) + '...';
 
-    console.log("Book profiles", book.profiles);
-
     onMount(() => {
         const img = new Image();
         img.src = book.cover_url + `?width=${width}&quality=80`;
