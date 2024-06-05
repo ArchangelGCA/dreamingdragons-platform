@@ -19,10 +19,7 @@
     export let book_title;
     export let book_id;
     export let book_cover_url;
-    export let likes_count;
-    export let book_description;
     export let owner_avatar_url;
-    export let created_at;
     export let image_proxy;
 
     $: if (image_proxy) {
@@ -36,12 +33,6 @@
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4">
-    <div class="d-none"> <!-- Added this as a workaround for warning but also to add more context for SEO -->
-        <p>{book_description}</p>
-        <p>Posted on {created_at}</p>
-        <p>Avatar {owner_avatar_url}</p>
-        <p>Likes {likes_count}</p>
-    </div>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 35vh; overflow: hidden;">
         <img

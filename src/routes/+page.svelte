@@ -178,7 +178,7 @@
                 <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
                     {#each books_ordered_by_likes as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content {...book} {image_proxy} />
+                            <Content owner_username={book.owner_username} owner_id={book.owner_id} book_title={book.book_title} book_id={book.book_id} book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url} {image_proxy} />
                         </div>
                     {/each}
                 </div>
@@ -195,7 +195,7 @@
                 <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
                     {#each books_ordered_by_latest_chapter as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content {...book} {image_proxy} />
+                            <Content owner_username={book.owner_username} owner_id={book.owner_id} book_title={book.book_title} book_id={book.book_id} book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url} {image_proxy} />
                         </div>
                     {/each}
                 </div>

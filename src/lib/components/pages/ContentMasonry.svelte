@@ -42,9 +42,6 @@
 
 <div>
     <div class="card border-0">
-        <div class="d-none"> <!-- Added this as a workaround for warnings but also to add more context for SEO -->
-            <p>Posted on {book.created_at}</p>
-        </div>
         <a href="/content/{book.id}">
             <div class="card-img">
                 <!-- 1x is for desktop, 2x is for mobile -->
