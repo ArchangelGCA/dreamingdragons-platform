@@ -8,10 +8,13 @@
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
+    import {onMount} from "svelte";
+    import {browser} from "$app/environment";
 
     export let data;
-    let { supabase, comments, image_proxy, ip_address, user_id, is_liked, tooltipConfig, chapterContent, tags } = data;
+    let { supabase, comments, image_proxy, user_id, is_liked, tooltipConfig, chapterContent, tags } = data;
     $: ({ comments, chapterContent, user_id, is_liked, tags } = data)
+    let ip_address = '';
 
     let likeActionActive = false;
     let reportActionActive = false;
@@ -26,6 +29,20 @@
     let createdAtDetailed;
     let deleteChapterActionActive = false;
     let reportText = '';
+
+    onMount(async () => {
+        ip_address = await getClientIp();
+    })
+
+    async function getClientIp() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            return data.ip;
+        } catch (error) {
+            console.error('Error fetching IP address:', error);
+        }
+    }
 
     async function handleView(){
         if (user_id){
@@ -270,7 +287,6 @@
         author="ArchangelGCA"
         name="{chapterContent.owner_username}"
         schemaOrg="true"
-        imagePreview="true"
         twitter="true"
         index="true"
 />

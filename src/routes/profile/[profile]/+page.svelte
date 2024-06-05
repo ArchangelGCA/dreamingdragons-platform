@@ -96,7 +96,6 @@
         author="ArchangelGCA"
         name="{profile.username}"
         schemaOrg="true"
-        imagePreview="true"
         twitter="true"
         index="true"
 />

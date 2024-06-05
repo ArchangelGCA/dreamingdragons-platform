@@ -12,13 +12,18 @@
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
 
     export let data;
-    let { supabase, image_proxy, bookContent, comments, ip_address, user_id, tooltipConfig, tags } = data;
+    let { supabase, image_proxy, bookContent, comments, user_id, tooltipConfig, tags } = data;
     $: ({ comments, user_id, bookContent, comments, tags } = data)
+    let ip_address = '';
 
     onMount(() => {
         handleView();
         hasUserLikedBook();
     });
+
+    onMount(async () => {
+        ip_address = await getClientIp();
+    })
 
     let chapters;
     let chaptersFound;
@@ -48,6 +53,15 @@
         tags.forEach((item) => item.url = `/search?tag=${item.name}`);
     }
 
+    async function getClientIp() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            return data.ip;
+        } catch (error) {
+            console.error('Error fetching IP address:', error);
+        }
+    }
 
     async function hasUserLikedBook() {
         if (!user_id) return;
@@ -262,7 +276,6 @@
     author="ArchangelGCA"
     name="{bookContent.owner_username}"
     schemaOrg="true"
-    imagePreview="true"
     twitter="true"
     index="true"
 />

@@ -38,7 +38,7 @@ async function loadComments(supabase, session, chapterId) {
     return comments;
 }
 
-export const load = async ({ params, locals: { supabase, ip_address, getSession } }) => {
+export const load = async ({ params, locals: { supabase, getSession } }) => {
     const {session} = await getSession();
     let isOwner = false;
 
@@ -92,7 +92,7 @@ export const load = async ({ params, locals: { supabase, ip_address, getSession 
     chapterContent[0].is_owner = isOwner;
 
     // return
-    return { chapterContent: chapterContent[0], tags, comments, ip_address, user_id, is_liked };
+    return { chapterContent: chapterContent[0], tags, comments, user_id, is_liked };
 }
 
 export const actions = {
