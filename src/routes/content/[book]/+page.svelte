@@ -17,13 +17,13 @@
     let ip_address = '';
 
     onMount(() => {
-        handleView();
         hasUserLikedBook();
     });
 
     onMount(async () => {
         ip_address = await getClientIp();
-    })
+        await handleView();
+    });
 
     let chapters;
     let chaptersFound;

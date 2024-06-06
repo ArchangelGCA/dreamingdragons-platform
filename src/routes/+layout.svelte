@@ -18,7 +18,7 @@
     let searchTerm = '';
     let latestNotificationTimestamp = notifications.length > 0 ? notifications[0].created_at : null;
     const notifsUpdateInterval = 30000;
-    let maintenance = true;
+    let maintenance = false;
 
     if ($pageStore.url.searchParams.has('q')) {
         searchTerm = $pageStore.url.searchParams.get('q');

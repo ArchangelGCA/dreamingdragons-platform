@@ -32,7 +32,8 @@
 
     onMount(async () => {
         ip_address = await getClientIp();
-    })
+        await handleView();
+    });
 
     async function getClientIp() {
         try {
