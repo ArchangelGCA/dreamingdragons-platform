@@ -1,24 +1,26 @@
 <script>
     import ContentCard from "$lib/components/profile/ContentCard.svelte";
-    import { tooltip } from "@svelte-plugins/tooltips";
-    import { PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
+    import {tooltip} from "@svelte-plugins/tooltips";
+    import {PUBLIC_DEFAULT_USERNAME} from '$env/static/public';
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
     import Seo from "@archangelgca/sk-seo";
+    import Content from "$lib/components/pages/Content.svelte";
 
     export let data;
-    let { session, image_proxy, profile, total_likes, total_followers, isFollowing, tooltipConfig } = data;
-    $: ({ session, image_proxy, profile, total_likes, total_followers, isFollowing, tooltipConfig } = data);
+    let {session, image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, tooltipConfig} = data;
+    $: ({session, image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, tooltipConfig} = data);
 
     let avatarFound = true;
     let yearCreated;
     let followActionActive = false;
+    let show = 'gallery';
 
     $: if (profile && profile !== null) {
         const date = new Date(profile.created_at);
-        const options = { year: 'numeric', month: 'long' };
+        const options = {year: 'numeric', month: 'long'};
         profile.created_at = date.toLocaleDateString('en-US', options);
         yearCreated = date.getFullYear();
     }
@@ -47,8 +49,8 @@
         const result = deserialize(await response.text());
         await invalidateAll(); // Not sure if it's actually necessary.
         if (result.type === 'success') {
-            if (result.data.status === 200){
-                if (result.data.body.follow){
+            if (result.data.status === 200) {
+                if (result.data.body.follow) {
                     isFollowing = true;
                     toast.push('➕ You\'re now following ' + profile.username + "!", {
                         theme: {
@@ -109,121 +111,167 @@
             </div>
         </div>
     {:else}
-    <div class="row justify-content-center">
-        <div class="col-12">
-            {#if profile.avatar_url === ''}
-                <div class="bg-image rounded-bottom-5" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
-                    <div class="row justify-content-center align-items-end" style="height: 100%;">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                {#if profile.avatar_url === ''}
+                    <div class="bg-image rounded-bottom-5"
+                         style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                        <div class="row justify-content-center align-items-end" style="height: 100%;">
+                            <div class="col-auto">
+                            </div>
+                        </div>
+                    </div>
+                {:else if profile.avatar_url === '' && avatarFound}
+                    <div class="row text-center justify-content-center mt-3">
                         <div class="col-auto">
+                            <div class="spinner-border text-light align-self-center" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {:else if profile.avatar_url === '' && avatarFound}
-                <div class="row text-center justify-content-center mt-3">
-                    <div class="col-auto">
-                        <div class="spinner-border text-light align-self-center" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                {:else}
+                    <div class="bg-image rounded-bottom-5 shadow-sm"
+                         style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({profile.cover_url ? profile.cover_url : profile.avatar_url}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                        <div class="row justify-content-center align-items-end" style="height: 100%;">
+                            <div class="col-auto">
+                                <img src="{profile.avatar_url}" alt="{profile.username}" loading="lazy"
+                                     class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon"
+                                     on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {:else}
-                <div class="bg-image rounded-bottom-5 shadow-sm" style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({profile.cover_url ? profile.cover_url : profile.avatar_url}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
-                    <div class="row justify-content-center align-items-end" style="height: 100%;">
+                {/if}
+                {#if !avatarFound}
+                    <div class="row justify-content-center mt-3">
                         <div class="col-auto">
-                            <img src="{profile.avatar_url}" alt="{profile.username}" loading="lazy" class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon" on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
+                            <div class="alert alert-danger" role="alert">
+                                <i class="fa-solid fa-exclamation-triangle"></i> Avatar not found, please upload one
+                                from your profile <a class="link-light" href="/settings">Settings</a>.
+                            </div>
                         </div>
                     </div>
-                </div>
-            {/if}
-            {#if !avatarFound}
-                <div class="row justify-content-center mt-3">
-                    <div class="col-auto">
-                        <div class="alert alert-danger" role="alert">
-                            <i class="fa-solid fa-exclamation-triangle"></i> Avatar not found, please upload one from your profile <a class="link-light" href="/settings">Settings</a>.
-                        </div>
-                    </div>
-                </div>
-            {/if}
+                {/if}
+            </div>
         </div>
-    </div>
-    <div class="row justify-content-center mt-3">
-        <div class="col text-center">
-            {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
-                <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
-            {:else}
-                <span class="h1 mt-2 mb-1">{profile.username} <a class="link-purple" href="{profile.website ? profile.website : ''}" target="_blank" use:tooltip={{...tooltipConfig}} title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"><i class="fa-solid fa-external-link fa-2xs"></i></a></span>
-            {/if}
+        <div class="row justify-content-center mt-3">
+            <div class="col text-center">
+                {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
+                    <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
+                {:else}
+                    <span class="h1 mt-2 mb-1">{profile.username} <a class="link-purple"
+                                                                     href="{profile.website ? profile.website : ''}"
+                                                                     target="_blank" use:tooltip={{...tooltipConfig}}
+                                                                     title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"><i
+                            class="fa-solid fa-external-link fa-2xs"></i></a></span>
+                {/if}
+            </div>
         </div>
-    </div>
-    <div class="row justify-content-center mx-0 mt-3">
-        <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
-            <div class="row justify-content-center align-items-center text-center py-3">
-                <div class="col-4 col-md-3 align-items-center" id="followers" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Followers">
-                        <div class="col-auto d-flex align-items-center pe-0">
-                            <i class="fas fa-user"></i>
+        <div class="row justify-content-center mx-0 mt-3">
+            <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
+                <div class="row justify-content-center align-items-center text-center py-3">
+                    <div class="col-4 col-md-3 align-items-center" id="followers" data-bs-toggle="dropdown"
+                         aria-expanded="false">
+                        <div class="row justify-content-center d-flex align-items-center"
+                             use:tooltip={{...tooltipConfig}} title="Followers">
+                            <div class="col-auto d-flex align-items-center pe-0">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="col-auto mt-1">
+                                <span class="">{total_followers}</span>
+                            </div>
                         </div>
-                        <div class="col-auto mt-1">
-                            <span class="">{total_followers}</span>
-                        </div>
-                    </div>
-                    <div class="dropdown-menu ms-md-5" aria-labelledby="followers"> <!-- TODO: Fix positioning -->
-                        {#if !profile.followers || profile.followers.length === 0}
-                            <span class="dropdown-item rounded-3">No followers yet</span>
-                        {:else}
-                            {#each profile.followers as follower (follower.follower_id)}
-                                <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none" href="/profile/{follower.follower_id}" on:click={handleVisit}>{follower.profiles.username}</a></span>
-                            {/each}
-                        {/if}
-                    </div>
-                </div>
-                <div class="col-4 col-md-3">
-                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Total likes">
-                        <div class="col-auto d-flex align-items-center pe-0">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="col-auto mt-1">
-                            <span class="">{total_likes}</span>
+                        <div class="dropdown-menu ms-md-5" aria-labelledby="followers"> <!-- TODO: Fix positioning -->
+                            {#if !profile.followers || profile.followers.length === 0}
+                                <span class="dropdown-item rounded-3">No followers yet</span>
+                            {:else}
+                                {#each profile.followers as follower (follower.follower_id)}
+                                    <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none"
+                                                                             href="/profile/{follower.follower_id}"
+                                                                             on:click={handleVisit}>{follower.profiles.username}</a></span>
+                                {/each}
+                            {/if}
                         </div>
                     </div>
-                </div>
-                <div class="col-4 col-md-3">
-                    <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Joined: {profile.created_at}">
-                        <div class="col-auto d-flex align-items-center pe-0">
-                            <i class="fas fa-calendar-alt"></i>
-                        </div>
-                        <div class="col-auto mt-1">
-                            <span class="h6">{yearCreated}</span>
+                    <div class="col-4 col-md-3">
+                        <div class="row justify-content-center d-flex align-items-center"
+                             use:tooltip={{...tooltipConfig}} title="Total likes">
+                            <div class="col-auto d-flex align-items-center pe-0">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="col-auto mt-1">
+                                <span class="">{total_likes}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-3 px-4">
-                    <div class="row justify-content-center">
-                        <div class="col-11 col-md-auto px-0">
-                            <button class="btn btn-outline-light w-100 mt-3 mt-md-0 shadow" on:click={handleFollow} use:tooltip={{...tooltipConfig}} title="Follow/Unfollow">
-                                <i class="fas {isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
-                                <span class="ms-1">{isFollowing ? 'Unfollow' : 'Follow'}</span>
-                            </button>
+                    <div class="col-4 col-md-3">
+                        <div class="row justify-content-center d-flex align-items-center"
+                             use:tooltip={{...tooltipConfig}} title="Joined: {profile.created_at}">
+                            <div class="col-auto d-flex align-items-center pe-0">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="col-auto mt-1">
+                                <span class="h6">{yearCreated}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 px-4">
+                        <div class="row justify-content-center">
+                            <div class="col-11 col-md-auto px-0">
+                                <button class="btn btn-outline-light w-100 mt-3 mt-md-0 shadow" on:click={handleFollow}
+                                        use:tooltip={{...tooltipConfig}} title="Follow/Unfollow">
+                                    <i class="fas {isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
+                                    <span class="ms-1">{isFollowing ? 'Unfollow' : 'Follow'}</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mt-2 mb-4 justify-content-evely gy-3 mx-auto">
-        {#if !profile.book || profile.book.length === 0}
-            <div class="col mt-4 text-center">
-                <p class="h1">Looks a bit empty here... 😶‍🌫️!</p>
-                <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
+        <div class="row my-2 justify-content-center text-center">
+            <div class="col-auto">
+                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'gallery') ? 'active' : ''}" on:click={() => show = 'gallery'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Gallery 🖼️'}">Gallery</button>
             </div>
-        {:else}
-            {#each profile.book as content (content.id)}
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                    <ContentCard {content} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
+            {#if profile.show_favourites || isOwner}
+                <div class="col-auto">
+                    <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'favourites') ? 'active' : ''}" on:click={() => show = 'favourites'} use:tooltip={{...tooltipConfig}} title="{isOwner ? 'Owner can always see his favs 😉' : (profile.username + ' Favs 🩷')}">Favourites</button>
                 </div>
-            {/each}
-        {/if}
-    </div>
+            {:else}
+                <div class="col-auto">
+                    <button class="btn btn-view-options rounded-3 px-3 py-2 disabled">Favourites</button>
+                </div>
+            {/if}
+        </div>
+        <div class="row mb-4 justify-content-evely gy-3 mx-auto" use:autoAnimate>
+            {#if show === "gallery"}
+                {#if !profile.book || profile.book.length === 0}
+                    <div class="col mt-4 text-center">
+                        <p class="h1">Looks a bit empty here... 😶‍🌫️!</p>
+                        <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
+                    </div>
+                {:else}
+                    {#each profile.book as content (content.id)}
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
+                            <ContentCard {content} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
+                        </div>
+                    {/each}
+                {/if}
+            {/if}
+            {#if show === "favourites"}
+                {#if !likedBooks || likedBooks.length === 0}
+                    <div class="col mt-4 text-center">
+                        <p class="h1">Looks a bit empty here... 😶‍🌫️!</p>
+                        <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
+                    </div>
+                {:else}
+                    {#each likedBooks as content (content.book_id)}
+                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
+                            <Content owner_username={content.book.profiles.username} owner_id={content.book.owner_id} book_title={content.book.title} book_id={content.book_id} book_cover_url={content.book.cover_url} owner_avatar_url={content.book.profiles.avatar_url} {image_proxy} />
+                        </div>
+                    {/each}
+                {/if}
+            {/if}
+        </div>
     {/if}
 </div>
 
@@ -255,5 +303,30 @@
 
     #followers {
         cursor: pointer;
+    }
+
+    .btn-view-options {
+        background-color: transparent;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-view-options:hover {
+        background-color: #7d00dd;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .btn-view-options.active {
+        background-color: #7d00dd;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75);
     }
 </style>

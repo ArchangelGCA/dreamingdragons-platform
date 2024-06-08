@@ -48,7 +48,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
     if (session) {
         const { data: profileData, error } = await supabase
             .from('profiles')
-            .select(`username, full_name, website, avatar_url, cover_url`)
+            .select(`username, full_name, website, avatar_url, cover_url, show_favourites`)
             .eq('id', session.user.id)
             .single();
         results.profile = profileData;
@@ -249,6 +249,41 @@ export const actions = {
             status: 200,
             body: {
                 message: 'Cover uploaded successfully'
+            }
+        }
+    },
+    showfavourites: async ({ request, locals: { supabase, getSession } }) => {
+        const {session} = await getSession();
+
+        if (!session) {
+            throw new Error('Unauthorized');
+        }
+
+        const formData = Object.fromEntries(await request.formData());
+        const showFavourites = formData.showFavourites;
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({
+                show_favourites: showFavourites,
+                updated_at: new Date(),
+            })
+            .eq('id', session.user.id);
+
+        if (error) {
+            console.error('Error updating profile', error);
+            return {
+                status: 500,
+                body: {
+                    message: 'Error updating profile'
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: showFavourites === 'true' ? 'Favourites will be shown' : 'Favourites will be hidden'
             }
         }
     }

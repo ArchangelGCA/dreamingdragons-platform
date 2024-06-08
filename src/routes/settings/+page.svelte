@@ -29,6 +29,7 @@
     let isCoverAccordionOpen = false;
     let isAvatarAccordionOpen = false;
     let isActiveUpdate = false;
+    let isActiveShowFavourites = false;
     if (!profile) {
         profile = {
             full_name: '',
@@ -116,6 +117,47 @@
         if (browser) {
             window.localStorage.setItem('analyticsEnabled', analyticsEnabled);
         }
+    }
+
+    async function handleShowFavourites() {
+        if (isActiveShowFavourites) return;
+        isActiveShowFavourites = true;
+
+        const formData = new FormData();
+        formData.append('showFavourites', profile.show_favourites ? 'false' : 'true');
+
+        const response = await fetch('?/showfavourites', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                    }
+                });
+            } else {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                    }
+                });
+            }
+        } else {
+            toast.push('An error occurred while updating your profile.', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                }
+            });
+        }
+
+        isActiveShowFavourites = false;
     }
 
     $: if (profile) {
@@ -280,6 +322,17 @@
                             <div id="privacyCollapse" class="accordion-collapse collapse"
                                  aria-labelledby="privacyHeading" data-bs-parent="#privacyAccordion">
                                 <div class="accordion-body">
+                                    {#if session}
+                                        <!-- Check for showing favourites -->
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox" id="showFavouritesSwitch" bind:checked={profile.show_favourites} on:click={handleShowFavourites}>
+                                            <label class="form-check label ps-0" for="showFavouritesSwitch">
+                                                🌟 Show Favourites
+                                                <i class="fas fa-toggle-on ms-1" style="color: grey;"></i>
+                                            </label>
+                                        </div>
+                                        <hr class="my-2">
+                                    {/if}
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" id="necessaryCookiesSwitch"
                                                checked disabled>

@@ -84,6 +84,25 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
             }
         }
 
+        if (results.isOwner || results.profile.show_favourites) {
+
+            // Get a list of books liked by user, sorted by most recently liked
+            const {data: likedBooks, error: errorLikedBooks} = await supabase
+                .from('book_likes')
+                .select('book_id, book!id(title,cover_url,owner_id,created_at, profiles:owner_id(username, avatar_url))')
+                .eq('user_id', id)
+                .order('created_at', {ascending: false});
+
+            if (errorLikedBooks) {
+                console.error(errorLikedBooks);
+                results.likedBooks = [];
+            } else {
+                results.likedBooks = likedBooks;
+            }
+        } else {
+            results.likedBooks = [];
+        }
+
         return results;
     } else { // ID IS NOT SPECIFIED
 
