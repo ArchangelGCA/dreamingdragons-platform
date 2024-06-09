@@ -283,7 +283,7 @@ export const actions = {
         return {
             status: 200,
             body: {
-                message: showFavourites === 'true' ? 'Favourites will be shown' : 'Favourites will be hidden'
+                message: showFavourites === 'true' ? 'Favourites are now shown' : 'Favourites are now hidden'
             }
         }
     }

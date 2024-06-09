@@ -40,7 +40,7 @@
         };
     }
 
-    const handleSubmit = () => {
+    /*const handleSubmit = () => {
         loading = true;
         return async () => {
             loading = false;
@@ -53,7 +53,7 @@
                 },
             });
         };
-    };
+    };*/
 
     async function handleProfileUpdate(e){
         if (isActiveUpdate) return;
@@ -74,6 +74,7 @@
                     theme: {
                         '--toastBackground': '#5c00a6',
                         '--toastColor': '#fff',
+                        '--toastProgressBackground': '#c800ff',
                     }
                 });
             } else {
@@ -81,6 +82,7 @@
                     theme: {
                         '--toastBackground': '#f44336',
                         '--toastColor': '#fff',
+                        '--toastProgressBackground': '#ff0000',
                     }
                 });
             }
@@ -89,6 +91,7 @@
                 theme: {
                     '--toastBackground': '#f44336',
                     '--toastColor': '#fff',
+                    '--toastProgressBackground': '#ff0000',
                 }
             });
         }
@@ -138,6 +141,7 @@
                     theme: {
                         '--toastBackground': '#5c00a6',
                         '--toastColor': '#fff',
+                        '--toastProgressBackground': '#c800ff',
                     }
                 });
             } else {
@@ -145,6 +149,7 @@
                     theme: {
                         '--toastBackground': '#f44336',
                         '--toastColor': '#fff',
+                        '--toastProgressBackground': '#ff0000',
                     }
                 });
             }
@@ -153,6 +158,7 @@
                 theme: {
                     '--toastBackground': '#f44336',
                     '--toastColor': '#fff',
+                    '--toastProgressBackground': '#ff0000',
                 }
             });
         }
@@ -174,7 +180,7 @@
 <div class="container-xxl px-0" style="min-height: 70vh">
     <div class="row mt-3 mb-2 mx-1">
         <div class="col-12 bg-animated-gradient bg-opacity-0 rounded-4 pt-2 mx-auto">
-            <h1 class="text-center">Profile Settings</h1>
+            <h1 class="text-center">Settings</h1>
         </div>
     </div>
     {#if !session}
@@ -228,7 +234,7 @@
                                             aria-controls="profileCollapse"
                                             on:click={() => isAccordionOpen = !isAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Profile Settings">
-                                        <i class="fas fa-id-card me-2"></i>Profile Details
+                                        <i class="fas fa-id-card me-2"></i>Details
                                     </button>
                                 </h2>
                                 <div id="profileCollapse" class="accordion-collapse collapse"
@@ -291,7 +297,7 @@
                                             aria-controls="avatarCollapse"
                                             on:click={() => isCoverAccordionOpen = !isCoverAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Cover Settings">
-                                        <i class="fas fa-portrait me-2"></i> Profile Cover
+                                        <i class="fas fa-portrait me-2"></i> Cover
                                     </button>
                                 </h2>
                                 <div id="coverCollapse" class="accordion-collapse collapse"
@@ -316,7 +322,7 @@
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#privacyCollapse" aria-expanded="false"
                                         aria-controls="privacyCollapse">
-                                    <i class="fas fa-eye me-2"></i> Privacy Settings
+                                    <i class="fas fa-eye me-2"></i> Privacy
                                 </button>
                             </h2>
                             <div id="privacyCollapse" class="accordion-collapse collapse"
@@ -328,7 +334,7 @@
                                             <input class="form-check-input" type="checkbox" id="showFavouritesSwitch" bind:checked={profile.show_favourites} on:click={handleShowFavourites}>
                                             <label class="form-check label ps-0" for="showFavouritesSwitch">
                                                 🌟 Show Favourites
-                                                <i class="fas fa-toggle-on ms-1" style="color: grey;"></i>
+                                                <i class="fas ms-1 {profile.show_favourites ? 'fa-toggle-on' : 'fa-toggle-off'}" style="color: {profile.show_favourites ? 'green' : 'red'}"></i>
                                             </label>
                                         </div>
                                         <hr class="my-2">
@@ -395,7 +401,7 @@
 
     .accordion-button {
         background-color: rgba(92, 0, 166, 0.6);
-        border: 1px solid rgb(125, 0, 221);
+        border: 1px solid rgba(125, 0, 221, 0.7);
         color: #fff;
     }
 

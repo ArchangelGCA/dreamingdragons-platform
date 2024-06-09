@@ -61,9 +61,11 @@
             reset = !reset;
             toast.pop(0);
             toast.push('Masonry updated ✨!', {
+                duration: 1500,
                 theme: {
                     '--toastBackground': 'rgba(92,0,166,1)',
                     '--toastColor': '#fff',
+                    '--toastProgressBackground': '#c800ff',
                 }
             });
         }

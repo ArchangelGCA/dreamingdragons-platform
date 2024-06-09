@@ -228,7 +228,7 @@
                 </div>
             </div>
         </div>
-        <div class="row my-2 justify-content-center text-center">
+        <div class="row my-3 justify-content-center text-center">
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'gallery') ? 'active' : ''}" on:click={() => show = 'gallery'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Gallery 🖼️'}">Gallery</button>
             </div>
