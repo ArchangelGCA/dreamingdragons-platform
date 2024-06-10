@@ -1,7 +1,7 @@
 <script>
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     let email = '';
     let activeEvent = false;

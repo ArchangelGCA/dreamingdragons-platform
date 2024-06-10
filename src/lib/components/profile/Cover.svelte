@@ -63,7 +63,7 @@
 <div class="row justify-content-center">
     <div class="col-12 text-center">
         {#if coverUrl}
-            <img src={coverUrl} alt="Cover" class="img-fluid" style="max-height: 25vh;" />
+            <img src={coverUrl} alt="Cover" class="img-fluid" style="max-height: 50vh;" />
         {:else}
             <div class="alert alert-info">
                 <p class="mb-0">No custom cover uploaded yet.</p>

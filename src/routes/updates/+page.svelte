@@ -1,5 +1,5 @@
 <script>
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     export let data;
 

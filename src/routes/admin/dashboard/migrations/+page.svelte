@@ -1,7 +1,7 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     let isMigrating = false;
 

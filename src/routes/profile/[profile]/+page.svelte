@@ -6,7 +6,7 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
     import Content from "$lib/components/pages/Content.svelte";
 
     export let data;

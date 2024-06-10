@@ -2,7 +2,7 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";

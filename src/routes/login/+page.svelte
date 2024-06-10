@@ -1,7 +1,7 @@
 <script>
     import { Auth } from '@supabase/auth-ui-svelte'
     import { ThemeSupa } from '@supabase/auth-ui-shared'
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     // For convenience, I'll keep this list of theme variables here: https://github.com/supabase-community/auth-ui/blob/main/packages/shared/src/theming/Themes.ts
 

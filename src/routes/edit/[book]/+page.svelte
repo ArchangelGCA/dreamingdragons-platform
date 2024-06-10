@@ -6,7 +6,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import Editor from "@tinymce/tinymce-svelte";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     let conf = {
         skin: 'oxide-dark',

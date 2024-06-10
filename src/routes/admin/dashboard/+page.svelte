@@ -3,7 +3,7 @@
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     export let data;
 

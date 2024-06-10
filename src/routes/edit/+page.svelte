@@ -1,6 +1,6 @@
 <script>
 
-import Seo from "@archangelgca/sk-seo";
+import Seo from "sk-seo";
 </script>
 
 <div class="row text-center mt-4 mb-3">

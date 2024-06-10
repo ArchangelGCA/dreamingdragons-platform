@@ -6,7 +6,7 @@
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
     import { tooltip } from "@svelte-plugins/tooltips";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     let conf = {
         skin: 'oxide-dark',
@@ -74,6 +74,7 @@
     let selectedBook;
     let chaptersNumber = 0;
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
+    let isDragging = false;
 
     $: if (selectedBook) {
         if (books && books.length > 0) {
@@ -183,6 +184,42 @@
             };
             reader.readAsDataURL(file);
             fileName = file.name;
+        }
+    }
+
+    function handleDragOver(event) {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy';
+    }
+
+    function handleDragEnter(event) {
+        event.preventDefault();
+        isDragging = true;
+    }
+
+    function handleDragLeave(event) {
+        event.preventDefault();
+        isDragging = false;
+    };
+
+    function handleDrop(event) {
+        event.preventDefault();
+        isDragging = false;
+        const files = event.dataTransfer.files;
+        if (files.length > 0) {
+            // Check if file is an image, if not return
+            if (!files[0].type.startsWith('image/')) {
+                toast.push('Error: File is not an image', {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+                return;
+            }
+            loadImagePreview({ target: { files: [files[0]] } });
+            // Set the files to the input
+            document.getElementById('file').files = files;
         }
     }
 
@@ -385,6 +422,7 @@
                 event.target.reset();
                 tags = [];
                 previewUrl = '';
+                fileName = '';
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -516,7 +554,13 @@
                                 <div class="col px-0">
                                     <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
                                         <div class="row mx-auto mt-1">
-                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center" style="min-height: 30vh">
+                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center drop-zone" style="min-height: 30vh"
+                                                 on:dragover={handleDragOver}
+                                                 on:drop={handleDrop}
+                                                 on:dragenter={handleDragEnter}
+                                                 on:dragleave={handleDragLeave}
+                                                 class:dragging={isDragging}
+                                                 role="button" aria-label="File upload drop zone" tabindex="0">
                                                 <label for="file" class="form-label" title="Tale image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
                                                 <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required/>
                                                 <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
@@ -740,6 +784,15 @@
 
     .input-tags {
         all: unset;
+    }
+
+    .drop-zone {
+        position: relative;
+        border: 2px dashed rgb(92, 0, 166) !important;
+    }
+
+    .drop-zone.dragging {
+        background-color: rgb(47, 0, 89) !important;
     }
 
     @keyframes Gradient {

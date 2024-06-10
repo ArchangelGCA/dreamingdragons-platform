@@ -2,7 +2,7 @@
     import AdminContent from "$lib/components/admin/AdminContent.svelte";
     import autoAnimate from "@formkit/auto-animate";
     import {invalidateAll} from "$app/navigation";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     export let data;
     let {content, supabase} = data;

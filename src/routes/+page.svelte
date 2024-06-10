@@ -1,6 +1,6 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
-    import Seo from '@archangelgca/sk-seo';
+    import Seo from 'sk-seo';
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import Masonry from "$lib/components/layout/Masonry.svelte";

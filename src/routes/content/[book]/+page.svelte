@@ -4,7 +4,7 @@
     import {toast} from "@zerodevx/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
     import {onMount} from "svelte";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";

@@ -2,7 +2,7 @@
     import ReportItem from "$lib/components/admin/ReportItem.svelte";
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
-    import Seo from "@archangelgca/sk-seo";
+    import Seo from "sk-seo";
 
     export let data;
 
