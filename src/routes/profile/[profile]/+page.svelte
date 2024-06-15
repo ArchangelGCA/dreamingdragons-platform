@@ -326,7 +326,16 @@
         color: #fff;
         border: none;
         border-radius: 5px;
-        transition: background-color 0.3s;
+        transition: all 0.3s;
+        box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75);
+    }
+
+    .btn-view-options:active {
+        background-color: #7d00dd;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        transition: all 0.3s;
         box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75);
     }
 </style>
