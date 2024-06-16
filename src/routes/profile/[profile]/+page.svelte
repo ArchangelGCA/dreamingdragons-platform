@@ -8,6 +8,8 @@
     import {toast} from "@zerodevx/svelte-toast";
     import Seo from "sk-seo";
     import Content from "$lib/components/pages/Content.svelte";
+    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
 
     export let data;
     let {session, image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, tooltipConfig} = data;
@@ -17,6 +19,8 @@
     let yearCreated;
     let followActionActive = false;
     let show = 'gallery';
+
+    console.log('Profile:', profile);
 
     $: if (profile && profile !== null) {
         const date = new Date(profile.created_at);
@@ -180,12 +184,14 @@
                                 <span class="">{total_followers}</span>
                             </div>
                         </div>
-                        <div class="dropdown-menu ms-md-5" aria-labelledby="followers"> <!-- TODO: Fix positioning -->
+                        <div class="dropdown-menu ms-md-5 py-1" aria-labelledby="followers"> <!-- TODO: Fix positioning -->
                             {#if !profile.followers || profile.followers.length === 0}
                                 <span class="dropdown-item rounded-3">No followers yet</span>
                             {:else}
                                 {#each profile.followers as follower (follower.follower_id)}
-                                    <span class="dropdown-item rounded-3"><a class="link-light text-decoration-none"
+                                    <span class="dropdown-item">
+                                        <UserAvatarNavbar url="{follower.profiles.avatar_url}" id="{follower.follower_id}" username="{follower.profiles.username}" {image_proxy} size="25px" classes="me-2" />
+                                        <a class="link-light text-decoration-none h-100"
                                                                              href="/profile/{follower.follower_id}"
                                                                              on:click={handleVisit}>{follower.profiles.username}</a></span>
                                 {/each}

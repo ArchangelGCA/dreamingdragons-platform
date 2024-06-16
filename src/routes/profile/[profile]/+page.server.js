@@ -21,7 +21,7 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
     if (id) {
         const {data: profile, error: errorTest} = await supabase
             .from('profiles')
-            .select('*, book!book_owner_id_fkey(id,title,owner_id,cover_url,created_at, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username))')
+            .select('*, book!book_owner_id_fkey(id,title,owner_id,cover_url,created_at, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username,avatar_url))')
             .eq('id', id)
             .order('created_at', {referencedTable: 'book' ,ascending: false});
 
@@ -33,12 +33,7 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
 
         if (errorTest) {
             console.error(errorTest);
-            return {
-                status: 500,
-                body: {
-                    message: errorTest.message
-                }
-            }
+            errorx(404, "Profile not found!");
         }
 
         // Profile not found

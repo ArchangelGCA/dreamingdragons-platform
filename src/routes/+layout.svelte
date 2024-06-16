@@ -191,13 +191,13 @@
                                 <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="25px"/>
                             {/if}
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end pt-0" aria-labelledby="profileDropdown">
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                                 {#if session}
                                     <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
                                 {/if}
                             {:else}
-                                <li class="text-center"><a class="dropdown-item ps-1 mb-2 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" href="/profile">
+                                <li class="text-center"><a class="dropdown-item ps-1 mb-1 {$pageStore.url.pathname.startsWith('/profile') ? 'active' : ''}" href="/profile">
                                     <UserAvatarNavbar classes="me-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="50px"/><span class="border-start border-light-subtle ps-1 my-auto">Profile</span></a>
                                 </li>
                             {/if}
