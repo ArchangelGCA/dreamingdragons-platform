@@ -25,6 +25,8 @@
     let avatarUrl = '';
     let coverUrl = '';
     let loading = false;
+    let password = '';
+    let loadingPassword = false;
     let isAccordionOpen = false;
     let isCoverAccordionOpen = false;
     let isAvatarAccordionOpen = false;
@@ -166,6 +168,54 @@
         isActiveShowFavourites = false;
     }
 
+    async function handlePasswordUpdate(){
+        if (loadingPassword) return;
+
+        if (!confirm('Are you sure you want to change your password?')) return;
+
+        loadingPassword = true;
+
+        const formData = new FormData();
+        formData.append('password', password);
+
+        const response = await fetch('?/updatepassword', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                        '--toastProgressBackground': '#c800ff',
+                    }
+                });
+                password = '';
+            } else {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                        '--toastProgressBackground': '#ff0000',
+                    }
+                });
+            }
+        } else {
+            toast.push('An error occurred while updating your profile.', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                    '--toastProgressBackground': '#ff0000',
+                }
+            });
+        }
+
+        loadingPassword = false;
+    }
+
     $: if (profile) {
         avatarUrl = profile.avatar_url;
         coverUrl = profile.cover_url;
@@ -278,6 +328,32 @@
                                                 <span class="text-danger-emphasis">*</span> Required fields
                                             </small>
                                         </form>
+                                        <!-- Security section that allows to input new password -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <h3 class="text-center">Security</h3>
+                                                <form class="form" method="post" action="?/updatepassword" on:submit|preventDefault={handlePasswordUpdate}>
+                                                    <div class="mb-3">
+                                                        <p class="h5">Change Password:</p>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="password" class="form-label">New Password 🔒</label>
+                                                        <input id="password" name="password" type="password" class="form-control" bind:value={password}>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <input
+                                                                type="submit"
+                                                                class="btn btn-purple w-100"
+                                                                value={loadingPassword ? 'Loading...' : 'Update'}
+                                                                disabled={loadingPassword}
+                                                        />
+                                                    </div>
+                                                    <small class="text-muted mb-3">
+                                                        Careful! There's no going back!
+                                                    </small>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

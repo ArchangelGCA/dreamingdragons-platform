@@ -191,7 +191,7 @@
                                 <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="25px"/>
                             {/if}
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end pt-0" aria-labelledby="profileDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end {session ? 'pt-0' : 'pt-2'}" aria-labelledby="profileDropdown">
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                                 {#if session}
                                     <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
@@ -209,7 +209,7 @@
                             {#if session}
                                 <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i> Logout</a></li>
                             {:else}
-                                <li><a class="dropdown-item register-button rounded-3 py-2" href="/login"><i class="fa-solid fa-user-plus border-end border-light-subtle pe-1"></i> Register</a></li>
+                                <li><a class="dropdown-item register-button rounded-3 py-2" href="/login?signup=true"><i class="fa-solid fa-user-plus border-end border-light-subtle pe-1"></i> Register</a></li>
                                 <li><a class="dropdown-item" href="/login"><i class="fa-solid fa-sign-in border-end border-light-subtle pe-2"></i> Login</a></li>
                             {/if}
                         </ul>

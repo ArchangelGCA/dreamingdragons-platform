@@ -286,5 +286,44 @@ export const actions = {
                 message: showFavourites === 'true' ? 'Favourites are now shown' : 'Favourites are now hidden'
             }
         }
-    }
+    },
+    updatepassword: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const newPassword = formData.password;
+
+        const {session} = await getSession();
+        if (!session) {
+            throw new Error('Unauthorized');
+        }
+
+        if (!newPassword) {
+            return {
+                status: 400,
+                body: {
+                    message: 'New password is required'
+                }
+            }
+        }
+
+        const { error } = await supabase.auth.updateUser({
+            password: newPassword,
+        });
+
+        if (error) {
+            console.error('Error updating password', error);
+            return {
+                status: 500,
+                body: {
+                    message: 'Error updating password (You must have logged in recently to update password, please try to logout and login again!)'
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: 'Password updated successfully'
+            }
+        }
+    },
 }
