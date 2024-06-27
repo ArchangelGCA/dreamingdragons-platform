@@ -1,5 +1,4 @@
 <script>
-    import {createEventDispatcher, onMount} from "svelte";
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
@@ -19,7 +18,6 @@
     export let image_proxy;
 
     let width = 500;
-    const dispatch = createEventDispatcher();
 
     $: if (image_proxy) {
         if (!book.cover_url.startsWith(image_proxy)) book.cover_url = image_proxy + book.cover_url;
@@ -29,15 +27,6 @@
 
     $: if (book.title.length > 20) book.title = book.title.substring(0, 18) + '...';
     $: if (book.profiles.username.length > 16) book.profiles.username = book.profiles.username.substring(0, 15) + '...';
-
-    onMount(() => {
-        const img = new Image();
-        img.src = book.cover_url + `?width=${width}&quality=80`;
-        img.onerror = () => {
-            console.error('Error loading image:', book.cover_url + `?width=${width}&quality=80`);
-            dispatch('notfound');
-        };
-    });
 </script>
 
 <div>
@@ -51,7 +40,6 @@
                         src={book.cover_url + `?width=${width}&quality=80`}
                         alt="Book cover"
                         class="img-fluid rounded-3"
-                        on:load={() => {dispatch('loaded')}}
                         width={width}
                 >
             </div>

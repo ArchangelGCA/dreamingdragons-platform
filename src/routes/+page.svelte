@@ -3,9 +3,8 @@
     import Seo from 'sk-seo';
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import Masonry from "$lib/components/layout/Masonry.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
-    import {toast} from "@zerodevx/svelte-toast";
+    import Masonry from "svelte-bricks";
 
     export let data;
     let { supabase, image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed, tooltipConfig } = data;
@@ -14,6 +13,7 @@
     let allContentLoaded = false;
     let page = 1;
     let pageStep = 40;
+    let width, height;
 
     if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
         allContentLoaded = true;
@@ -47,41 +47,11 @@
         loading = false;
     }
 
-    let reset = false;
-    let counterImg = 0;
-    let areLoadingCounter = 0;
-
-    async function handleLoadedImage() {
-        let maxLoad = books_ordered_by_created_at.length; // - (pageStep + 1)
-        if (areLoadingCounter > 1) maxLoad -= (pageStep + 1);
-        counterImg++;
-        // console.log('Image loaded', counterImg, maxLoad);
-        if (counterImg >= maxLoad) {
-            areLoadingCounter = 0;
-            reset = !reset;
-            toast.pop(0);
-            toast.push('Masonry updated ✨!', {
-                duration: 1500,
-                theme: {
-                    '--toastBackground': 'rgba(92,0,166,1)',
-                    '--toastColor': '#fff',
-                    '--toastProgressBackground': '#c800ff',
-                }
-            });
-        }
-    }
-
     function handleScroll(event) {
-        if (allContentLoaded && areLoadingCounter !== 0) {
-            reset = !reset;
-            areLoadingCounter = 0;
-            return;
-        }
         const target = event.target;
         if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2)) && !allContentLoaded) {
             // console.log((target.scrollHeight - target.scrollTop) + ' <= ' + (target.clientHeight + (target.clientHeight / 0.2)));
             loadMoreContentByCreatedAt();
-            areLoadingCounter++;
         }
     }
 </script>
@@ -122,32 +92,8 @@
             </div>
         {/if}
 
-        <!-- Old version
         <div class="col-12 mt-3 mb-2">
-            <p class="h4">Newest Content</p>
-        </div>
-        <div class="col-12">
-            {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
-                <p class="h5 text-center">No new content available.</p>
-            {:else}
-                <div class="row column-vertical pb-3 gy-2" on:scroll={handleScroll} use:autoAnimate>
-                    {#each books_ordered_by_created_at as book (book.book_id)}
-                        <div class="col-6 col-sm-4 col-md-3 col-xl-2 px-1">
-                            <Content {...book} {image_proxy} />
-                        </div>
-                    {/each}
-                    {#if allContentLoaded}
-                        <div class="col-12">
-                            <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All Content loaded!⚠️</p>
-                        </div>
-                    {/if}
-                </div>
-            {/if}
-        </div>
-        -->
-
-        <div class="col-12 mt-3 mb-2">
-            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.1.5</span></p>
+            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.2.1</span></p>
         </div>
         <div class="col-12">
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
@@ -155,10 +101,16 @@
             {:else}
                 <div class="row column-vertical" on:scroll={handleScroll}>
                     <div class="col-12 px-0">
-                        <Masonry {reset}>
-                            {#each books_ordered_by_created_at as book (book.id)}
-                                <ContentMasonry {book} {image_proxy} on:loaded={handleLoadedImage} on:notfound={handleLoadedImage}/>
-                            {/each}
+                        <Masonry
+                                items={books_ordered_by_created_at}
+                                minColWidth={250}
+                                gap={10}
+                                animate={true}
+                                let:item
+                                bind:width
+                                bind:height
+                        >
+                            <ContentMasonry book={item} {image_proxy} />
                         </Masonry>
                     </div>
                     {#if allContentLoaded}
