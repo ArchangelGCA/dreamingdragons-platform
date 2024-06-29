@@ -8,6 +8,7 @@
     import {invalidateAll} from "$app/navigation";
     import {onMount} from "svelte";
     import {browser} from "$app/environment";
+    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
     let analyticsEnabled;
 
@@ -239,7 +240,11 @@
                                             aria-controls="avatarCollapse"
                                             on:click={() => isAvatarAccordionOpen = !isAvatarAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Avatar Settings">
-                                        <i class="fas fa-user me-2"></i>Avatar
+                                        {#if !avatarUrl}<i class="fas fa-user me-2"></i>
+                                        {:else}
+                                            <UserAvatarNavbar url={avatarUrl} username={profile.username} size="20px" classes="me-2"/>
+                                        {/if}
+                                            Avatar
                                     </button>
                                 </h2>
                                 <div id="avatarCollapse" class="accordion-collapse collapse"
@@ -358,7 +363,11 @@
                                             aria-controls="avatarCollapse"
                                             on:click={() => isCoverAccordionOpen = !isCoverAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Cover Settings">
-                                        <i class="fas fa-portrait me-2"></i> Cover
+                                        {#if !coverUrl}<i class="fas fa-portrait me-2"></i>
+                                        {:else}
+                                            <UserAvatarNavbar url={coverUrl} username={profile.username} size="20px" classes="me-2"/>
+                                        {/if}
+                                        Cover
                                     </button>
                                 </h2>
                                 <div id="coverCollapse" class="accordion-collapse collapse"
