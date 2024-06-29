@@ -58,7 +58,17 @@
         {
             name: 'Discord',
             icon: 'fab fa-discord',
-            link: 'https://discord.gg/F6cpNm9fZU', // TODO: Needs to be updated
+            link: 'https://discord.gg/XKEKGfPKCU',
+        },
+        {
+            name: 'Reddit',
+            icon: 'fab fa-reddit',
+            link: 'https://www.reddit.com/r/rosesintheflames',
+        },
+        {
+            name: 'X/Twitter',
+            icon: 'fab fa-x-twitter',
+            link: 'https://x.com/CringleDragons',
         },
         {
             name: 'Github',
@@ -260,12 +270,14 @@
     <div class="row border-top border-light-subtle pt-3 pb-2">
         <div class="col">
             <div class="row">
-                <div class="col">
-                    <p class="fs-6 text-center">Designed by: <a href="{designedByLink}" use:tooltip={{...tooltipConfig}} title="Visit Developer" target="_blank">{designedBy}</a></p>
+                <div class="col text-center pb-1">
+                    <p class="mb-1">Designed for <a class="link-purple text-decoration-none" href="https://rosesintheflames.com" target="_blank" use:tooltip={{...tooltipConfig}} title="Official Website">RiTF</a> by:</p>
+                    <a class="link-purple text-decoration-none" href="{designedByLink}" use:tooltip={{...tooltipConfig}} title="Visit Developer" target="_blank">{designedBy}</a>
+                    <!--<UserAvatar url="https://avatars.githubusercontent.com/u/159050591?v=4" username={designedBy} size="25px"/>-->
                 </div>
             </div>
             <!-- Socials -->
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col">
                     <p class="fs-6 text-center mb-1">Follow us on:</p>
                     <p class="fs-4 text-center">
@@ -278,7 +290,7 @@
             <!-- Links to TOS and Privacy Policy -->
             <div class="row">
                 <div class="col">
-                    <p class="fs-6 text-center">For Terms of Service and Privacy Policy, please visit: <a href="{tosLink}" target="_blank" use:tooltip={{...tooltipConfig}} title="Terms Of Service" class="text-decoration-none text-light">TOS</a> and <a href="{privacyPolicyLink}" target="_blank" use:tooltip={{...tooltipConfig}} data-bs-placement="top" title="Privacy Policy" class="text-decoration-none text-light">Privacy Policy</a>.</p>
+                    <p class="fs-6 text-center mb-md-0">For Terms of Service and Privacy Policy, please visit: <a href="{tosLink}" target="_blank" use:tooltip={{...tooltipConfig}} title="Terms Of Service" class="text-decoration-none text-light">TOS</a> and <a href="{privacyPolicyLink}" target="_blank" use:tooltip={{...tooltipConfig}} data-bs-placement="top" title="Privacy Policy" class="text-decoration-none text-light">Privacy Policy</a>.</p>
                 </div>
             </div>
             <!-- Copyright -->
@@ -375,6 +387,14 @@
     .offcanvas {
         background: linear-gradient(75deg, #0b0086, #410075);
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+    }
+
+    .link-purple {
+        color: #c400ff;
+    }
+
+    .link-purple:hover {
+        color: #FF00FABF;
     }
 
     #notificationBell {
