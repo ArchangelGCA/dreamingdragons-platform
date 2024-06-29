@@ -1,6 +1,7 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
+    import { PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH } from "$env/static/public"
     import {createEventDispatcher} from "svelte";
 
     export let url;
@@ -15,8 +16,28 @@
         try {
             uploading = true;
 
+            // Check if file is selected.
             if (!files || files.length === 0) {
-                throw new Error('You must select an image to upload.');
+                toast.push('Error: No file selected', {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+                uploading = false;
+                return;
+            }
+
+            // Check if image.
+            if (!files[0].type.startsWith('image/')) {
+                toast.push('Error: File is not an image', {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+                uploading = false;
+                return;
             }
 
             const file = files[0];
@@ -33,8 +54,15 @@
             });
 
             const result = deserialize(await response.text());
-            if (result.type !== 'success' || result.status !== 200) {
-                throw new Error('Failed to compress image');
+            if (result.type !== 'success' || result.data.status !== 200) {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+                uploading = false;
+                return;
             }
 
             toast.push('Cover updated successfully!', {
@@ -70,9 +98,12 @@
             </div>
         {/if}
     </div>
+    <div class="col-12 text-center mt-1">
+        <small class="text-light text-opacity-50">Recommended Max resolution: {PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH}x{PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} - 16:9</small>
+    </div>
     <input type="hidden" name="coverUrl" value={url} />
     <div class="col-12">
-        <label class="btn btn-purple w-100 mt-2" for="cover">
+        <label class="btn btn-purple w-100 mt-1" for="cover">
             {uploading ? 'Uploading ...' : 'Upload'}
         </label>
         <input class="d-none"

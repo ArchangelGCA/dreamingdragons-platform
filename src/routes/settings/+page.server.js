@@ -129,7 +129,12 @@ export const actions = {
         const {session} = await getSession();
 
         if (!session) {
-            throw new Error('Unauthorized');
+            return {
+                status: 401,
+                body: {
+                    message: 'Unauthorized'
+                }
+            }
         }
 
         const formData = Object.fromEntries(await request.formData());
@@ -137,11 +142,21 @@ export const actions = {
         let filePath = formData.filePath;
 
         if (!file) {
-            throw new Error('No file uploaded');
+            return {
+                status: 400,
+                body: {
+                    message: 'No file uploaded'
+                }
+            }
         }
 
         if (!filePath) {
-            throw new Error('No file path provided');
+            return {
+                status: 400,
+                body: {
+                    message: 'No file path provided'
+                }
+            }
         }
 
         const imageSharp = sharp(await file.arrayBuffer());
@@ -159,7 +174,12 @@ export const actions = {
             .single();
 
         if (error2) {
-            throw new Error('Error fetching profile');
+            return {
+                status: 500,
+                body: {
+                    message: 'Error fetching profile'
+                }
+            }
         }
 
         let avatarUrl = await uploadImage(optimizedImage, session.user.id, profile.avatar_url);
@@ -174,7 +194,12 @@ export const actions = {
             .eq('id', session.user.id);
 
         if (error3) {
-            throw new Error('Error updating profile');
+            return {
+                status: 500,
+                body: {
+                    message: 'Error updating profile'
+                }
+            }
         }
 
         return {
@@ -188,7 +213,12 @@ export const actions = {
         const {session} = await getSession();
 
         if (!session) {
-            throw new Error('Unauthorized');
+            return {
+                status: 401,
+                body: {
+                    message: 'Unauthorized'
+                }
+            }
         }
 
         const formData = Object.fromEntries(await request.formData());
@@ -197,11 +227,21 @@ export const actions = {
         const maxSize = parseInt(PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH);
 
         if (!file) {
-            throw new Error('No file uploaded');
+            return {
+                status: 400,
+                body: {
+                    message: 'No file uploaded'
+                }
+            }
         }
 
         if (!filePath) {
-            throw new Error('No file path provided');
+            return {
+                status: 400,
+                body: {
+                    message: 'No file path provided'
+                }
+            }
         }
 
         const imageSharp = sharp(await file.arrayBuffer());
@@ -226,7 +266,12 @@ export const actions = {
             .single();
 
         if (error2) {
-            throw new Error('Error fetching profile');
+            return {
+                status: 500,
+                body: {
+                    message: 'Error fetching profile'
+                }
+            }
         }
 
         // Upload image to PocketBase
@@ -242,7 +287,12 @@ export const actions = {
             .eq('id', session.user.id);
 
         if (error3) {
-            throw new Error('Error updating profile');
+            return {
+                status: 500,
+                body: {
+                    message: 'Error updating profile'
+                }
+            }
         }
 
         return {
@@ -256,7 +306,12 @@ export const actions = {
         const {session} = await getSession();
 
         if (!session) {
-            throw new Error('Unauthorized');
+            return {
+                status: 401,
+                body: {
+                    message: 'Unauthorized'
+                }
+            }
         }
 
         const formData = Object.fromEntries(await request.formData());

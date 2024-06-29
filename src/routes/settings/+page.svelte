@@ -42,21 +42,6 @@
         };
     }
 
-    /*const handleSubmit = () => {
-        loading = true;
-        return async () => {
-            loading = false;
-            toast.push('Profile updated!', {
-                theme: {
-                    '--toastBackground': '#029fcc',
-                    '--toastProgressBackground': '#38d971',
-                    '--toastProgressText': '#ffffff',
-                    '--toastText': '#868686',
-                },
-            });
-        };
-    };*/
-
     async function handleProfileUpdate(e){
         if (isActiveUpdate) return;
         isActiveUpdate = true;

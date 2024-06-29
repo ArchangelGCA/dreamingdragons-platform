@@ -2,6 +2,7 @@
     import { createEventDispatcher } from 'svelte';
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
+    import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH} from "$env/static/public";
 
     export let size = 10
     export let url;
@@ -16,8 +17,28 @@
         try {
             uploading = true;
 
+            // Check if file is selected.
             if (!files || files.length === 0) {
-                throw new Error('You must select an image to upload.');
+                toast.push('Error: No file selected', {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+                uploading = false;
+                return;
+            }
+
+            // Check if image.
+            if (!files[0].type.startsWith('image/')) {
+                toast.push('Error: File is not an image', {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+                uploading = false;
+                return;
             }
 
             const file = files[0];
@@ -34,8 +55,15 @@
             });
 
             const result = deserialize(await response.text());
-            if (result.type !== 'success' || result.status !== 200) {
-                throw new Error('Failed to compress image');
+            if (result.type !== 'success' || result.data.status !== 200) {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff',
+                    },
+                });
+                uploading = false;
+                return;
             }
 
             avatarUrl = '';
@@ -60,7 +88,7 @@
     $: if (url) avatarUrl = url;
 </script>
 
-<div class="col-auto">
+<div class="col-auto text-center">
     {#if avatarUrl}
         <img
                 src={avatarUrl}
@@ -70,12 +98,15 @@
                 style="height: {size}em; width: {size}em;"
         />
     {:else}
-        <div class="img-thumbnail" style="height: {size}em; width: {size}em;" />
+        <div class="img-thumbnail" style="height: {size}em; width: {size}em;" ></div>
     {/if}
+    <div class="col-12 text-center mt-1">
+        <small class="text-light text-opacity-50">Recommended Max resolution: {PUBLIC_PROFILE_ICON_RESIZE_WIDTH}x{PUBLIC_PROFILE_ICON_RESIZE_WIDTH} - 1:1</small>
+    </div>
     <input type="hidden" name="avatarUrl" value={url} />
 
-    <div style="width: {size}em;">
-        <label class="btn btn-purple w-100 mt-2" for="single">
+    <div class="text-center" style="min-width: {size}em;">
+        <label class="btn btn-purple w-100 mt-1" for="single">
             {uploading ? 'Uploading ...' : 'Upload'}
         </label>
         <input class="d-none"

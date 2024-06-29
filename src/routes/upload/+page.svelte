@@ -200,7 +200,7 @@
     function handleDragLeave(event) {
         event.preventDefault();
         isDragging = false;
-    };
+    }
 
     function handleDrop(event) {
         event.preventDefault();
@@ -388,7 +388,6 @@
 
         // Due to previous check.
         if (!activeUpload) return;
-
 
         const toastId = toast.push('Uploading...', {
             duration: 600000,
