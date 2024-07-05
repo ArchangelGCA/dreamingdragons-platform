@@ -379,7 +379,7 @@
     <p style="text-indent: 0pt;text-align: left;"><br></p>
     <p
             style="padding-left: 5pt;text-indent: 0pt;text-align: left;"><a href="mailto:reddragononline03@gmail.com"
-                                                                            style=" color: black; font-family:&quot;Times New Roman&quot;, serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 12pt;"
+                                                                            style=" color: black; font-family:'Times New Roman', serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 12pt;"
                                                                             target="_blank">Email: </a><a
             href="mailto:reddragononline03@gmail.com" class="s2" target="_blank">reddragononline03@gmail.com</a></p>
     <p
@@ -406,7 +406,7 @@
         as: (i) doing an assessment of data processing activities to improve security; (ii) have a data processing</p>
     <p
             class="s4" style="padding-left: 5pt;text-indent: 0pt;text-align: left;"><a href="https://gdpr.eu/"
-                                                                                       style=" color: black; font-family:&quot;Times New Roman&quot;, serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 10pt;"
+                                                                                       style=" color: black; font-family: 'Times New Roman';, serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 10pt;"
                                                                                        target="_blank">agreement with
         any
         third party vendors; (iii) appoint a data protection officer for the company to monitor GDPR compliance; (iv)
@@ -415,7 +415,7 @@
         potential data breach. For more details on how to make sure your company is fully compliant with GDPR, please
         visit
         the official website at </a><span
-            style=" color: #00F; font-family:&quot;Times New Roman&quot;, serif; font-style: normal; font-weight: normal; text-decoration: underline; font-size: 10pt;">https://gdpr.eu</span>.
+            style=" color: #00F; font-family:'Times New Roman', serif; font-style: normal; font-weight: normal; text-decoration: underline; font-size: 10pt;">https://gdpr.eu</span>.
         FormSwift and its subsidiaries are in no way</p>
     <p class="s4"
        style="padding-left: 5pt;text-indent: 0pt;text-align: left;">
@@ -464,13 +464,13 @@
     <p
             class="s4" style="padding-left: 5pt;text-indent: 0pt;line-height: 130%;text-align: left;"><a
             href="https://www.ftc.gov/tips-advice/business-center/guidance/childrens-online-privacy-protection-rule-six-step-compliance"
-            style=" color: black; font-family:&quot;Times New Roman&quot;, serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 10pt;"
+            style=" color: black; font-family:'Times New Roman', serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 10pt;"
             target="_blank">compliant with COPPA please visit </a><span
-            style=" color: #00F; font-family:&quot;Times New Roman&quot;, serif; font-style: normal; font-weight: normal; text-decoration: underline; font-size: 10pt;">https://www.ftc.gov/tips-advice/business-center/guidance/childrens-online-</span><a
+            style=" color: #00F; font-family:'Times New Roman', serif; font-style: normal; font-weight: normal; text-decoration: underline; font-size: 10pt;">https://www.ftc.gov/tips-advice/business-center/guidance/childrens-online-</span><a
             href="https://www.ftc.gov/tips-advice/business-center/guidance/childrens-online-privacy-protection-rule-six-step-compliance"
-            style=" color: #00F; font-family:&quot;Times New Roman&quot;, serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 10pt;"
+            style=" color: #00F; font-family:'Times New Roman', serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 10pt;"
             target="_blank"> </a><span
-            style=" color: #00F; font-family:&quot;Times New Roman&quot;, serif; font-style: normal; font-weight: normal; text-decoration: underline; font-size: 10pt;">privacy-protection-rule-six-step-compliance</span>.
+            style=" color: #00F; font-family:'Times New Roman', serif; font-style: normal; font-weight: normal; text-decoration: underline; font-size: 10pt;">privacy-protection-rule-six-step-compliance</span>.
         FormSwift and its subsidiaries are in no way responsible for determining whether or not your company is in fact
         compliant with COPPA and takes no responsibility for the use you make of this Privacy Policy or for any
         potential

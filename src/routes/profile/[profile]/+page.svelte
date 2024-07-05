@@ -88,6 +88,24 @@
 
         followActionActive = false;
     }
+
+    async function copyToClipboardId() {
+        navigator.clipboard.writeText(profile.id).then(() => {
+            toast.push('📋 Copied to clipboard!', {
+                theme: {
+                    '--toastBackground': '#7b2eff',
+                    '--toastColor': '#fff'
+                }
+            });
+        }).catch(err => {
+            toast.push('Error: ' + err, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        });
+    }
 </script>
 
 <Seo
@@ -159,7 +177,7 @@
                 {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                     <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
                 {:else}
-                    <span class="h1 mt-2 mb-1">{profile.username} <a class="link-purple"
+                    <span class="h1 mt-2 mb-1"><button type="button" class="btn-username" on:click={copyToClipboardId} use:tooltip={{...tooltipConfig}} title="Click to copy profile ID!">{profile.username}</button> <a class="link-purple"
                                                                      href="{profile.website ? profile.website : ''}"
                                                                      target="_blank" use:tooltip={{...tooltipConfig}}
                                                                      title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"><i
@@ -340,5 +358,21 @@
         border-radius: 5px;
         transition: all 0.3s;
         box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75);
+    }
+
+    .btn-username {
+        background: none;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.15s;
+    }
+
+    /** on hover, change btn-username color */
+    .btn-username:hover {
+        color: #7d00dd;
     }
 </style>
