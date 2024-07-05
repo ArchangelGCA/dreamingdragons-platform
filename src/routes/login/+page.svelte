@@ -83,47 +83,47 @@
         </div>
         <div class="row justify-content-center" use:autoAnimate>
             {#if view === "forgotten_password"}
-                <div class="col-11 col-md-6 col-xxl-4 bg-purple border border-purple rounded-4 mb-4 px-3 py-2 pt-3" use:autoAnimate>
+                <div class="col-11 col-md-6 col-xxl-4 bg-purple border border-purple rounded-4 mb-4 px-3 py-2 pt-3 main-div main-div1" use:autoAnimate>
                     <p class="h5 text-danger-emphasis">Password Recovery</p>
                     <p class="h6">You'll receive an email with a link allowing you to login. Once you're in, you should head to <a class="link" href="/settings">settings</a> and change your password!</p>
                 </div>
             {/if}
             <div class="col-12 text-center">
                 {#if view === "magic_link"}
-                    <button class="btn btn-link text-white" on:click={() => view = "sign_up"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_up"}>
                         Classic Register
                     </button>
-                    <button class="btn btn-link text-white" on:click={() => view = "sign_in"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_in"}>
                         Classic Login
                     </button>
                 {:else if view === "sign_up"}
-                    <button class="btn btn-link text-white" on:click={() => view = "sign_in"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_in"}>
                         Classic Login
                     </button>
-                    <button class="btn btn-link text-white" on:click={() => view = "magic_link"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "magic_link"}>
                         Modern Login/Register 🪄
                     </button>
-                    <button class="btn btn-link text-danger-emphasis" on:click={() => view = "forgotten_password"}>
+                    <button class="btn btn-link text-danger-emphasis text-decoration-none" on:click={() => view = "forgotten_password"}>
                         Forgot Password?
                     </button>
                 {:else if view === "sign_in"}
-                    <button class="btn btn-link text-white" on:click={() => view = "sign_up"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_up"}>
                         Classic Register
                     </button>
-                    <button class="btn btn-link text-white" on:click={() => view = "magic_link"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "magic_link"}>
                         Modern Login/Register 🪄
                     </button>
-                    <button class="btn btn-link text-danger-emphasis" on:click={() => view = "forgotten_password"}>
+                    <button class="btn btn-link text-danger-emphasis text-decoration-none" on:click={() => view = "forgotten_password"}>
                         Forgot Password?
                     </button>
                 {:else if view === "forgotten_password"}
-                    <button class="btn btn-link text-white" on:click={() => view = "sign_in"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_in"}>
                         Classic Login
                     </button>
-                    <button class="btn btn-link text-white" on:click={() => view = "magic_link"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "magic_link"}>
                         Modern login and register 🪄
                     </button>
-                    <button class="btn btn-link text-white" on:click={() => view = "sign_up"}>
+                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_up"}>
                         Classic Register
                     </button>
                 {/if}
@@ -147,9 +147,5 @@
 
     .text-magic-link {
         color: #b056ff;
-    }
-
-    .bg-purple {
-        background-color: rgba(92, 0, 166, 0.15) !important;
     }
 </style>
