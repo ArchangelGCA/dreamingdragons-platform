@@ -76,7 +76,7 @@
         </div>
 
         {#if is_logged && followed && followed.length > 0}
-            <div class="col-12 border border-top border-start-0 border-end-0 pb-1 mt-2">
+            <div class="col-12 pb-1 mt-2">
                 <div class="row justify-content-center bg-purple-opacity-50 rounded-3 mb-1 mt-1 p-1" use:tooltip={{...tooltipConfig}} title="Following Users">
                     <div class="col-12 text-center">
                         <p class="fs-5 mb-0">Following</p>
