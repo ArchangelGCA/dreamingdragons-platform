@@ -62,7 +62,7 @@
         siteName="Roses in The Flames - Platform"
         imageURL="https://tales.rosesintheflames.com/favicon.webp"
         logo="https://tales.rosesintheflames.com/favicon.webp"
-        author="ArchangelGCA"
+        author="ArchangelGCA, CringleDragons"
         canonical="https://tales.rosesintheflames.com"
         twitter="true"
         schemaOrg="true"

@@ -372,6 +372,7 @@
             return;
         }
 
+        // New image from file
         const image = new Image();
 
         image.onload = () => {
