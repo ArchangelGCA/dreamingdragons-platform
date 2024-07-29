@@ -2,7 +2,9 @@
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import {createEventDispatcher} from "svelte";
+    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     export let report;
+    export let image_proxy = '';
 
     const dispatch = createEventDispatcher();
 
@@ -88,16 +90,23 @@
 </script>
 
 <div class="card bg-black bg-opacity-25 shadow">
+    <div class="card-title text-uppercase bg-light bg-opacity-10 p-2 rounded-2 mb-0">
+        {report.report_type} <span class="fs-6 text-muted">{report.created_at}</span>
+        <br>
+        <UserAvatarNavbar url={report.profiles.avatar_url} username={report.profiles.username} image_proxy={image_proxy} size="25px" /> <a class="text-warning-emphasis fs-7 text-decoration-none" href="/profile/{report.profiles.id}">{report.profiles.username}</a>
+    </div>
     <div class="card-body">
-        <h5 class="card-title text-uppercase bg-light bg-opacity-10 p-2 rounded-2">{report.report_type} <span class="fs-6 text-muted">{report.created_at}</span></h5>
         <p class="card-text">{report.report_description}</p>
+        <hr>
         <div class="row">
             <div class="col-12">
                 <a class="btn btn-open w-100" href="{urlToOpen}" target="_blank">Open {(report.book_id && report.chapter_id) ? 'Chapter' : 'Book'}</a>
             </div>
             <div class="col-12">
                 {#if !report.is_closed}
-                    <button class="btn btn-danger w-100 mt-2" on:click={handleCloseReport}>Close Report</button>
+                    <button class="btn btn-danger w-100 mt-2" on:click={handleCloseReport}>
+                        Close Report
+                    </button>
                 {:else}
                     <div class="alert alert-success mt-2 mb-0" role="alert">
                         Report closed
@@ -117,5 +126,9 @@
     .btn-open:hover {
         background-color: #4d0090;
         color: #fff;
+    }
+
+    .fs-7 {
+        font-size: 0.875rem;
     }
 </style>

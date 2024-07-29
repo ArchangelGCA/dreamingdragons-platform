@@ -6,7 +6,7 @@
 
     export let data;
 
-    let {openReports, closedReports} = data;
+    let {openReports, closedReports, image_proxy} = data;
     $: ({openReports, closedReports} = data);
 </script>
 
@@ -49,7 +49,7 @@
                         <div class="row gy-2" use:autoAnimate>
                             {#each openReports.filter(report => report.report_type === 'book') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} on:closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} {image_proxy} on:closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -61,7 +61,7 @@
                         <div class="row gy-2" use:autoAnimate>
                             {#each openReports.filter(report => report.report_type === 'chapter') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} on:closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} {image_proxy} on:closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>
