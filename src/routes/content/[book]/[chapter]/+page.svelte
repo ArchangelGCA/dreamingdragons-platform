@@ -501,7 +501,7 @@
     <!-- Bottom offcanvas chapters navigation -->
     <div class="offcanvas offcanvas-bottom h-auto border-top-purple" tabindex="-1" id="offcanvasPageNavigation" aria-labelledby="offcanvasPageNavigationLabel">
         <div class="offcanvas-header bg-black bg-opacity-75 pb-0">
-            <h5 id="offcanvasPageNavigationLabel">Chapter navigator</h5>
+            <h5 id="offcanvasPageNavigationLabel">Chapters navigator</h5>
             <button type="button" class="btn-close text-reset me-md-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body bg-black bg-opacity-75 pt-1 pt-md-2">

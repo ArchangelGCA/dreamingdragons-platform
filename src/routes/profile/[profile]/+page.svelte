@@ -9,6 +9,9 @@
     import Seo from "sk-seo";
     import Content from "$lib/components/pages/Content.svelte";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import Masonry from "svelte-bricks";
+    import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
+    import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
 
     export let data;
     let {session, image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, tooltipConfig} = data;
@@ -18,6 +21,7 @@
     let yearCreated;
     let followActionActive = false;
     let show = 'gallery';
+    let width, height;
 
     $: if (profile && profile !== null) {
         const date = new Date(profile.created_at);
@@ -249,6 +253,7 @@
                 </div>
             </div>
         </div>
+        <!-- Options to view gallery or favourites -->
         <div class="row my-3 justify-content-center text-center">
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'gallery') ? 'active' : ''}" on:click={() => show = 'gallery'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Gallery 🖼️'}">Gallery</button>
@@ -263,6 +268,7 @@
                 </div>
             {/if}
         </div>
+        <!-- Content section -->
         <div class="row mb-4 justify-content-evely gy-3 mx-auto" use:autoAnimate>
             {#if show === "gallery"}
                 {#if !profile.book || profile.book.length === 0}
@@ -271,11 +277,25 @@
                         <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
                     </div>
                 {:else}
-                    {#each profile.book as content (content.id)}
+                    <!--{#each profile.book as content (content.id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
                             <ContentCard {content} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
                         </div>
-                    {/each}
+                    {/each}-->
+                    <!-- New Masonry style -->
+                    <div class="col-12 px-0">
+                        <Masonry
+                                items={profile.book}
+                                minColWidth={400}
+                                gap={10}
+                                animate={true}
+                                let:item
+                                bind:width
+                                bind:height
+                        >
+                            <ProfileMasonry content={item} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
+                        </Masonry>
+                    </div>
                 {/if}
             {/if}
             {#if show === "favourites"}
