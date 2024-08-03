@@ -12,8 +12,8 @@
     import {browser} from "$app/environment";
 
     export let data;
-    let { supabase, comments, image_proxy, user_id, is_liked, tooltipConfig, chapterContent, tags } = data;
-    $: ({ comments, chapterContent, user_id, is_liked, tags } = data)
+    let { supabase, comments, image_proxy, user_id, is_liked, tooltipConfig, chapterContent, chapters, tags } = data;
+    $: ({ comments, chapterContent, user_id, is_liked, chapters, tags } = data)
     let ip_address = '';
 
     let likeActionActive = false;
@@ -379,6 +379,16 @@
     {#if hasPreviousChapter || hasNextChapter}
         <div class="row justify-content-center text-center mb-3">
             <div class="col-12 col-md-6 col-lg-5">
+                <!-- Chapters navigator -->
+                <div class="row justify-content-center mb-2">
+                    <div class="col-12 px-1">
+                        <button class="btn btn-chapters-navigator w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPageNavigation" aria-controls="offcanvasPageNavigation">
+                            <i class="fas fa-list"></i>
+                            <span class="fs-6">Chapters</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Previous and Next Chapters -->
                 <div class="row justify-content-center text-center">
                     <div class="col-6 px-1" use:autoAnimate>
                         {#if hasPreviousChapter}
@@ -488,6 +498,26 @@
             </div>
         </div>
     </div>
+    <!-- Bottom offcanvas chapters navigation -->
+    <div class="offcanvas offcanvas-bottom h-auto border-top-purple" tabindex="-1" id="offcanvasPageNavigation" aria-labelledby="offcanvasPageNavigationLabel">
+        <div class="offcanvas-header bg-black bg-opacity-75 pb-0">
+            <h5 id="offcanvasPageNavigationLabel">Chapter navigator</h5>
+            <button type="button" class="btn-close text-reset me-md-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body bg-black bg-opacity-75 pt-1 pt-md-2">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row row-horizontal flex-nowrap py-2">
+                        {#each chapters as chapter, index (chapter.id)}
+                            <div class="col-3 col-md-2 col-lg-1">
+                                <a href="/content/{chapter.book_id}/{chapter.id}" data-sveltekit-noscroll class="btn {chapter.id === chapterContent.chapter_id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index}</a>
+                            </div>
+                        {/each}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -526,6 +556,10 @@
         background-color: #280043;
     }
 
+    .border-top-purple {
+        border-top: 1px solid #5c00a6;
+    }
+
     .btn-shortcut {
         background-color: transparent;
     }
@@ -547,6 +581,22 @@
     .btn-chapters:active {
         background-color: #4a007f;
         border-color: #4a007f;
+    }
+
+    .btn-chapters-active {
+        background-color: #4a007f;
+        border-color: #4a007f;
+        box-shadow: 0 0 0.15rem 0.2rem rgba(92, 0, 166, 0.75);
+    }
+
+    .btn-chapters-navigator {
+        background-color: rgba(92, 0, 166, 0.15);
+        border-color: rgba(92, 0, 166, 0.75);
+    }
+
+    .btn-chapters-navigator:hover {
+        background-color: rgba(92, 0, 166, 0.25);
+        border-color: rgba(92, 0, 166, 0.75);
     }
 
     .btn-link-secondary {
@@ -604,6 +654,34 @@
     .form-control:focus {
         border-color: #5c00a6;
         box-shadow: 0 0 0 0.25rem rgba(92, 0, 166, 0.25);
+    }
+
+    .row-horizontal {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    /** customize scrollbar chapters navigator */
+    .row-horizontal::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    .row-horizontal::-webkit-scrollbar-track {
+        background: rgba(92, 0, 166, 0.25);
+    }
+
+    .row-horizontal::-webkit-scrollbar-thumb {
+        background: rgba(92, 0, 166, 0.80);
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .row-horizontal::-webkit-scrollbar-thumb:hover {
+        background: rgba(92, 0, 166, 1);
+    }
+
+    .row-horizontal::-webkit-scrollbar-thumb:active {
+        background: rgba(92, 0, 166, 1);
     }
 
     .liked {

@@ -1,5 +1,19 @@
 import {error as errorx} from '@sveltejs/kit';
 
+async function loadChapters(supabase, bookId) {
+    const {data: chapters, error: chaptersError} = await supabase
+        .from('chapters')
+        .select('id, book_id, owner_id, number_ordinal, title')
+        .eq('book_id', bookId)
+        .order('created_at', { ascending: true });
+
+    if (chaptersError) {
+        return Error('Something went wrong, chapters loading error...');
+    }
+
+    return chapters;
+}
+
 async function loadComments(supabase, session, chapterId) {
     let {data: comments, error: commentsError} = await supabase
         .from('comments')
@@ -74,25 +88,35 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         isOwner = chapterContent[0].owner_id === session.user.id;
     }
 
-    const comments = await loadComments(supabase, session, chapterId);
+    const [comments, chapters] = await Promise.all([
+        loadComments(supabase, session, chapterId),
+        loadChapters(supabase, bookId)
+    ]);
 
     if (comments instanceof Error) {
         return errorx(500, comments.message);
     }
 
+    if (chapters instanceof Error) {
+        return errorx(500, chapters.message);
+    }
+
     if (user_id) {
-        if (chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id)) {
-            is_liked = true;
-        } else {
-            is_liked = false;
-        }
+        is_liked = !!(chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id));
     }
 
     // add isOwner to chapterContent
     chapterContent[0].is_owner = isOwner;
 
     // return
-    return { chapterContent: chapterContent[0], tags, comments, user_id, is_liked };
+    return {
+        chapterContent: chapterContent[0],
+        chapters,
+        tags,
+        comments,
+        user_id,
+        is_liked
+    };
 }
 
 export const actions = {
