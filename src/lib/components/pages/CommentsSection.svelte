@@ -147,11 +147,16 @@
     }
 
     .form-floating>.form-control:focus~label,
+    .form-floating>.form-control:not(:placeholder-shown)~label {
+        opacity: 0;
+    }
+
+    /*.form-floating>.form-control:focus~label,
     .form-floating>.form-control:not(:placeholder-shown)~label,
     .form-floating>.form-select~label {
         opacity: 0;
         transform: scale(.85) translateY(-1.3rem) translateX(0.15rem);
-    }
+    }*/
 
     .bg-purple-opacity-25 {
         background-color: rgba(92, 0, 166, 0.25);

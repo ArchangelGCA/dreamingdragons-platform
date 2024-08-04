@@ -451,12 +451,12 @@
 
 <style>
 
-    .form-floating>.form-control:focus~label,
+    /*.form-floating>.form-control:focus~label,
     .form-floating>.form-control:not(:placeholder-shown)~label,
     .form-floating>.form-select~label {
         opacity: 0;
         transform: scale(.85) translateY(-1.3rem) translateX(0.15rem);
-    }
+    }*/
 
     .fa-heart, .fa-eye, .fa-comment {
         font-size: 1.6rem;
