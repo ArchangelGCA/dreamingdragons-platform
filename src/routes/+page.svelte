@@ -31,6 +31,7 @@
             .from('book')
             .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url)')
             .order('created_at', {ascending: false})
+            .eq('hidden', false)
             .range((pageStep * page) + 1, pageStep * (page + 1));
 
         if (error) {
