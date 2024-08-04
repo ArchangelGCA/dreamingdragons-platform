@@ -20,7 +20,7 @@
     let avatarFound = true;
     let yearCreated;
     let followActionActive = false;
-    let show = 'gallery';
+    let show = 'home';
     let width, height;
 
     $: if (profile && profile !== null) {
@@ -256,7 +256,7 @@
         <!-- Options to view gallery or favourites -->
         <div class="row my-3 justify-content-center text-center">
             <div class="col-auto">
-                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'gallery') ? 'active' : ''}" on:click={() => show = 'gallery'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Gallery 🖼️'}">Gallery</button>
+                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'home') ? 'active' : ''}" on:click={() => show = 'home'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Home 🏠'}">Home</button>
             </div>
             {#if profile.show_favourites || isOwner}
                 <div class="col-auto">
@@ -267,10 +267,13 @@
                     <button class="btn btn-view-options rounded-3 px-3 py-2 disabled">Favourites</button>
                 </div>
             {/if}
+            <div class="col-auto">
+                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'galleries') ? 'active' : ''}" on:click={() => show = 'galleries'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Galleries (Coming soon!) 🖼️'}">Galleries</button>
+            </div>
         </div>
         <!-- Content section -->
         <div class="row mb-4 justify-content-evely gy-3 mx-auto" use:autoAnimate>
-            {#if show === "gallery"}
+            {#if show === "home"}
                 {#if !profile.book || profile.book.length === 0}
                     <div class="col mt-4 text-center">
                         <p class="h1">Looks a bit empty here... 😶‍🌫️!</p>
@@ -311,6 +314,12 @@
                         </div>
                     {/each}
                 {/if}
+            {/if}
+            <!-- Coming soon, galleries -->
+            {#if show === "galleries"}
+                <div class="col mt-4 text-center">
+                    <p class="h1">Coming soon... 🖼️</p>
+                </div>
             {/if}
         </div>
     {/if}
