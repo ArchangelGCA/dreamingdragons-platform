@@ -36,8 +36,6 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
             errorx(404, "Profile not found!");
         }
 
-        console.log(profile);
-
         // Profile not found
         if (!profile || profile.length === 0) {
 
