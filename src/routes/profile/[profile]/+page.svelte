@@ -12,8 +12,8 @@
     import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
 
     export let data;
-    const { tooltipConfig } = data;
-    $: ({image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner} = data);
+    const {tooltipConfig} = data;
+    $: ({image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, id} = data);
 
     let avatarFound = true;
     let booksStart = 0;
@@ -28,20 +28,22 @@
     let show = 'home';
     let width, height;
 
-    $: {
-        if (profile && profile !== null) {
-            avatarFound = true;
-            show = 'home';
-            booksStart = 0;
-            booksEnd = 40;
-            likedBooksStart = 0;
-            likedBooksEnd = 40;
-            isFetching = false;
-            allBooksLoaded = false;
-            allLikedBooksLoaded = false;
-            if (profile.book.length < 40) allBooksLoaded = true;
-            if (likedBooks.length < 40) allLikedBooksLoaded = true;
-        }
+    $: if (id) {
+        resetVariables();
+    }
+
+    async function resetVariables() {
+        avatarFound = true;
+        show = 'home';
+        booksStart = 0;
+        booksEnd = 40;
+        likedBooksStart = 0;
+        likedBooksEnd = 40;
+        isFetching = false;
+        allBooksLoaded = false;
+        allLikedBooksLoaded = false;
+        if (profile.book.length < 40) allBooksLoaded = true;
+        if (likedBooks.length < 40) allLikedBooksLoaded = true;
     }
 
     async function handleVisit(e) {
@@ -125,7 +127,7 @@
         });
     }
 
-    async function loadMoreLikedBooks(){
+    async function loadMoreLikedBooks() {
         if (isFetching) return;
         isFetching = true;
 
@@ -180,11 +182,9 @@
         isFetching = false;
     }
 
-    async function loadMoreBooks(){
+    async function loadMoreBooks() {
         if (isFetching) return;
         isFetching = true;
-
-        console.log('Loading more books...');
 
         booksStart = booksEnd;
         booksEnd += loadStep;
@@ -309,10 +309,13 @@
                 {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                     <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
                 {:else}
-                    <span class="h1 mt-2 mb-1"><button type="button" class="btn-username" on:click={copyToClipboardId} use:tooltip={{...tooltipConfig}} title="Click to copy profile ID!">{profile.username}</button> <a class="link-purple"
-                                                                     href="{profile.website ? profile.website : ''}"
-                                                                     target="_blank" use:tooltip={{...tooltipConfig}}
-                                                                     title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"><i
+                    <span class="h1 mt-2 mb-1"><button type="button" class="btn-username" on:click={copyToClipboardId}
+                                                       use:tooltip={{...tooltipConfig}}
+                                                       title="Click to copy profile ID!">{profile.username}</button> <a
+                            class="link-purple"
+                            href="{profile.website ? profile.website : ''}"
+                            target="_blank" use:tooltip={{...tooltipConfig}}
+                            title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"><i
                             class="fa-solid fa-external-link fa-2xs"></i></a></span>
                 {/if}
             </div>
@@ -331,16 +334,19 @@
                                 <span class="">{total_followers}</span>
                             </div>
                         </div>
-                        <div class="dropdown-menu ms-md-5 py-1" aria-labelledby="followers"> <!-- TODO: Fix positioning -->
+                        <div class="dropdown-menu ms-md-5 py-1" aria-labelledby="followers">
+                            <!-- TODO: Fix positioning -->
                             {#if !profile.followers || profile.followers.length === 0}
                                 <span class="dropdown-item rounded-3">No followers yet</span>
                             {:else}
                                 {#each profile.followers as follower (follower.follower_id)}
                                     <span class="dropdown-item">
-                                        <UserAvatarNavbar url="{follower.profiles.avatar_url}" username="{follower.profiles.username}" {image_proxy} size="25px" classes="me-2" />
+                                        <UserAvatarNavbar url="{follower.profiles.avatar_url}"
+                                                          username="{follower.profiles.username}" {image_proxy}
+                                                          size="25px" classes="me-2"/>
                                         <a class="link-light text-decoration-none h-100"
-                                                                             href="/profile/{follower.follower_id}"
-                                                                             on:click={handleVisit}>{follower.profiles.username}</a></span>
+                                           href="/profile/{follower.follower_id}"
+                                           on:click={handleVisit}>{follower.profiles.username}</a></span>
                                 {/each}
                             {/if}
                         </div>
@@ -358,7 +364,8 @@
                     </div>
                     <div class="col-4 col-md-3">
                         <div class="row justify-content-center d-flex align-items-center"
-                             title="Joined: {new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}" use:tooltip={{...tooltipConfig}}>
+                             title="Joined: {new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}"
+                             use:tooltip={{...tooltipConfig}}>
                             <div class="col-auto d-flex align-items-center pe-0">
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
@@ -384,11 +391,18 @@
         <!-- Options to view gallery or favourites -->
         <div class="row mt-3 justify-content-center text-center">
             <div class="col-auto">
-                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'home') ? 'active' : ''}" on:click={() => show = 'home'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Home 🏠'}">Home</button>
+                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'home') ? 'active' : ''}"
+                        on:click={() => show = 'home'} use:tooltip={{...tooltipConfig}}
+                        title="{profile.username + ' Home 🏠'}">Home
+                </button>
             </div>
             {#if profile.show_favourites || isOwner}
                 <div class="col-auto">
-                    <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'favourites') ? 'active' : ''}" on:click={() => show = 'favourites'} use:tooltip={{...tooltipConfig}} title="{isOwner ? 'Owner can always see his favs 😉' : (profile.username + ' Favs 🩷')}">Favourites</button>
+                    <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'favourites') ? 'active' : ''}"
+                            on:click={() => show = 'favourites'} use:tooltip={{...tooltipConfig}}
+                            title="{isOwner ? 'Owner can always see his favs 😉' : (profile.username + ' Favs 🩷')}">
+                        Favourites
+                    </button>
                 </div>
             {:else}
                 <div class="col-auto">
@@ -396,7 +410,10 @@
                 </div>
             {/if}
             <div class="col-auto">
-                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'galleries') ? 'active' : ''}" on:click={() => show = 'galleries'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Galleries (Coming soon!) 🖼️'}">Galleries</button>
+                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'galleries') ? 'active' : ''}"
+                        on:click={() => show = 'galleries'} use:tooltip={{...tooltipConfig}}
+                        title="{profile.username + ' Galleries (Coming soon!) 🖼️'}">Galleries
+                </button>
             </div>
         </div>
         <!-- Content section -->
@@ -447,7 +464,7 @@
                                 bind:width
                                 bind:height
                         >
-                            <ContentMasonry book={item.book} {image_proxy} />
+                            <ContentMasonry book={item.book} {image_proxy}/>
                         </Masonry>
                     </div>
                 {/if}

@@ -53,6 +53,7 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
     /*************************************************/
 
     if (id) {
+        results.id = id;
         const {data: profile, error: errorTest} = await supabase
             .from('profiles')
             .select('*, book!book_owner_id_fkey(id,title,owner_id,cover_url,created_at, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username,avatar_url)), gallery(id, name, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
