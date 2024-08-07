@@ -18,6 +18,11 @@
     $: ({session, image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, tooltipConfig} = data);
 
     let avatarFound = true;
+    let likedBooksStart = 0;
+    let likedBooksEnd = 40;
+    let likedBooksStep = 20;
+    let isFetching = false;
+    let allContentLoaded = false;
     let yearCreated;
     let followActionActive = false;
     let show = 'home';
@@ -28,6 +33,9 @@
         const options = {year: 'numeric', month: 'long'};
         profile.created_at = date.toLocaleDateString('en-US', options);
         yearCreated = date.getFullYear();
+        if (!likedBooks || likedBooks.length === 0) {
+            allContentLoaded = true;
+        }
     }
 
     async function handleVisit(e) {
@@ -109,6 +117,65 @@
                 }
             });
         });
+    }
+
+    async function loadMoreLikedBooks(){
+        if (isFetching) return;
+        isFetching = true;
+
+        likedBooksStart = likedBooksEnd;
+        likedBooksEnd += likedBooksStep;
+
+        const formData = new FormData();
+        formData.append('profileId', profile.id);
+        formData.append('startRange', likedBooksStart);
+        formData.append('endRange', likedBooksEnd);
+
+        const response = await fetch('?/books_liked', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
+                if (result.data.body.books.length === 0) {
+                    allContentLoaded = true;
+                    toast.push('🎉 All favourites loaded!', {
+                        theme: {
+                            '--toastBackground': '#7b2eff',
+                            '--toastColor': '#fff'
+                        }
+                    });
+                } else {
+                    likedBooks = [...likedBooks, ...result.data.body.books];
+                }
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+            }
+        } else {
+            toast.push('Error: ' + result.data.body.message, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        }
+
+        isFetching = false;
+    }
+
+    function handleScroll(event) {
+        console.log('scrolling');
+        const target = event.target;
+        if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2)) && !allContentLoaded) {
+            if (show === 'favourites') loadMoreLikedBooks();
+        }
     }
 </script>
 
@@ -254,7 +321,7 @@
             </div>
         </div>
         <!-- Options to view gallery or favourites -->
-        <div class="row my-3 justify-content-center text-center">
+        <div class="row mt-3 justify-content-center text-center">
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'home') ? 'active' : ''}" on:click={() => show = 'home'} use:tooltip={{...tooltipConfig}} title="{profile.username + ' Home 🏠'}">Home</button>
             </div>
@@ -272,7 +339,7 @@
             </div>
         </div>
         <!-- Content section -->
-        <div class="row mb-4 justify-content-evely gy-3 mx-auto" use:autoAnimate>
+        <div class="row mb-4 mt-3 justify-content-evely gy-3 mx-auto" use:autoAnimate>
             {#if show === "home"}
                 {#if !profile.book || profile.book.length === 0}
                     <div class="col mt-4 text-center">
@@ -286,7 +353,7 @@
                         </div>
                     {/each}-->
                     <!-- New Masonry style -->
-                    <div class="col-12 px-0">
+                    <div class="col-12 mt-0 ps-0 column-vertical" on:scroll={handleScroll}>
                         <Masonry
                                 items={profile.book}
                                 minColWidth={400}
@@ -308,11 +375,20 @@
                         <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
                     </div>
                 {:else}
-                    {#each likedBooks as content (content.book_id)}
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <Content owner_username={content.book.profiles.username} owner_id={content.book.owner_id} book_title={content.book.title} book_id={content.book_id} book_cover_url={content.book.cover_url} owner_avatar_url={content.book.profiles.avatar_url} {image_proxy} />
-                        </div>
-                    {/each}
+                    <div class="col-12 mt-0 ps-0 column-vertical" on:scroll={handleScroll}>
+                        <Masonry
+                                items={likedBooks}
+                                idKey="book_id"
+                                minColWidth={300}
+                                gap={10}
+                                animate={true}
+                                let:item
+                                bind:width
+                                bind:height
+                        >
+                            <ContentMasonry book={item.book} {image_proxy} />
+                        </Masonry>
+                    </div>
                 {/if}
             {/if}
             <!-- Coming soon, galleries -->
@@ -400,8 +476,32 @@
         transition: color 0.15s;
     }
 
-    /** on hover, change btn-username color */
     .btn-username:hover {
         color: #7d00dd;
+    }
+
+    .column-vertical {
+        flex-wrap: wrap;
+        overflow-y: auto;
+        max-height: calc(100vh / 1.2);
+        white-space: normal;
+    }
+
+    .column-vertical::-webkit-scrollbar {
+        width: 15px;
+    }
+
+    .column-vertical::-webkit-scrollbar-track {
+        background: rgba(92, 0, 166, 0.25);
+    }
+
+    .column-vertical::-webkit-scrollbar-thumb {
+        background: rgba(92, 0, 166, 0.80);
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .column-vertical::-webkit-scrollbar-thumb:hover {
+        background: rgba(92, 0, 166, 1);
     }
 </style>

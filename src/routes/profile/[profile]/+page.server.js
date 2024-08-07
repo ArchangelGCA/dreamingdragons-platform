@@ -1,8 +1,24 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 
+// Async function to get books, from range start to end, from book_likes
+async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
+    const {data, error} = await supabase
+        .from('book_likes')
+        .select('book_id, book!id(id, title, cover_url, owner_id, created_at, profiles:owner_id(id, username, avatar_url))')
+        .eq('user_id', profileId)
+        .order('created_at', {ascending: false})
+        .range(startRange, endRange);
+
+    if (error) throw error;
+    return data;
+}
+
 export const load = async ( { params, locals: { supabase, getSession } }) => {
     const {session} = await getSession();
     const id = params.profile;
+
+    const startRange = 0;
+    const endRange = 40;
 
     const results = {
         isFollowing: false,
@@ -84,9 +100,10 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
             // Get a list of books liked by user, sorted by most recently liked
             const {data: likedBooks, error: errorLikedBooks} = await supabase
                 .from('book_likes')
-                .select('book_id, book!id(title,cover_url,owner_id,created_at, profiles:owner_id(username, avatar_url))')
+                .select('book_id, book!id(id, title, cover_url, owner_id, created_at, profiles:owner_id(id, username, avatar_url))')
                 .eq('user_id', id)
-                .order('created_at', {ascending: false});
+                .order('created_at', {ascending: false})
+                .range(startRange, endRange);
 
             if (errorLikedBooks) {
                 console.error(errorLikedBooks);
@@ -293,6 +310,105 @@ export const actions = {
             body: {
                 message: action + " successfully",
                 follow: follow
+            }
+        }
+    },
+    books_liked: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const {session} = await getSession();
+
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to view this content"
+                }
+            }
+        }
+
+        const profileId = formData.profileId;
+        let startRange = formData.startRange;
+        let endRange = formData.endRange;
+
+        if (profileId === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields: profileId"
+                }
+            }
+        }
+
+        if (startRange === null || isNaN(startRange) || startRange < 0) startRange = 0;
+        if (endRange === null || isNaN(endRange) || endRange < 0 || endRange < startRange) endRange = startRange + 40;
+
+        // Check if user in session is owner of profile, if not, check if profileId allows other users to see their liked books
+        if (session && profileId !== session.user.id) {
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('show_favourites')
+                .eq('id', profileId);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+
+            if (!profile || profile.length === 0) {
+                return {
+                    status: 404,
+                    body: {
+                        message: "Profile not found"
+                    }
+                }
+            }
+
+            if (!profile[0].show_favourites) {
+                return {
+                    status: 403,
+                    body: {
+                        message: "This profile doesn't allow others to view their liked books"
+                    }
+                }
+            }
+        }
+
+        let books = await fetchBooksLiked(startRange, endRange, profileId, supabase);
+
+        if (books instanceof Error) {
+            console.error(books);
+            return {
+                status: 500,
+                body: {
+                    message: books.message
+                }
+            }
+        }
+
+        // If there's at least one book, check for book_id duplicates and keep only one of them
+        if (books.length > 1) {
+            const book_ids = [];
+            const unique_books = [];
+
+            for (const book of books) {
+                if (!book_ids.includes(book.book_id)) {
+                    book_ids.push(book.book_id);
+                    unique_books.push(book);
+                }
+            }
+
+            books = unique_books;
+        }
+
+        return {
+            status: 200,
+            body: {
+                books
             }
         }
     }
