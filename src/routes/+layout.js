@@ -34,7 +34,8 @@ export const load = async ({ fetch, data, depends }) => {
             padding: '10px',
             borderRadius: '5px'
         },
-        theme: 'text-center w-auto'
+        theme: 'text-center w-auto',
+        autoPosition: true,
     };
 
     let notifications = [];

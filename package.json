@@ -1,6 +1,6 @@
 {
   "name": "ritf-svelte-new",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -16,7 +16,7 @@
     "sk-seo": "^0.3.5",
     "super-sitemap": "^0.14.20",
     "svelte": "^4.2.18",
-    "vite": "^5.3.5"
+    "vite": "^5.4.0"
   },
   "type": "module",
   "dependencies": {

@@ -1,5 +1,4 @@
 <script>
-    import ContentCard from "$lib/components/profile/ContentCard.svelte";
     import {tooltip} from "@svelte-plugins/tooltips";
     import {PUBLIC_DEFAULT_USERNAME} from '$env/static/public';
     import autoAnimate from '@formkit/auto-animate';
@@ -7,34 +6,41 @@
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
     import Seo from "sk-seo";
-    import Content from "$lib/components/pages/Content.svelte";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import Masonry from "svelte-bricks";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
 
     export let data;
-    let {session, image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, tooltipConfig} = data;
-    $: ({session, image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, tooltipConfig} = data);
+    const { tooltipConfig } = data;
+    $: ({image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner} = data);
 
     let avatarFound = true;
+    let booksStart = 0;
+    let booksEnd = 40;
+    let loadStep = 20;
     let likedBooksStart = 0;
     let likedBooksEnd = 40;
-    let likedBooksStep = 20;
     let isFetching = false;
-    let allContentLoaded = false;
-    let yearCreated;
+    let allBooksLoaded = false;
+    let allLikedBooksLoaded = false;
     let followActionActive = false;
     let show = 'home';
     let width, height;
 
-    $: if (profile && profile !== null) {
-        const date = new Date(profile.created_at);
-        const options = {year: 'numeric', month: 'long'};
-        profile.created_at = date.toLocaleDateString('en-US', options);
-        yearCreated = date.getFullYear();
-        if (!likedBooks || likedBooks.length === 0) {
-            allContentLoaded = true;
+    $: {
+        if (profile && profile !== null) {
+            avatarFound = true;
+            show = 'home';
+            booksStart = 0;
+            booksEnd = 40;
+            likedBooksStart = 0;
+            likedBooksEnd = 40;
+            isFetching = false;
+            allBooksLoaded = false;
+            allLikedBooksLoaded = false;
+            if (profile.book.length < 40) allBooksLoaded = true;
+            if (likedBooks.length < 40) allLikedBooksLoaded = true;
         }
     }
 
@@ -124,7 +130,7 @@
         isFetching = true;
 
         likedBooksStart = likedBooksEnd;
-        likedBooksEnd += likedBooksStep;
+        likedBooksEnd += loadStep;
 
         const formData = new FormData();
         formData.append('profileId', profile.id);
@@ -140,7 +146,7 @@
         if (result.type === 'success') {
             if (result.data.status === 200) {
                 if (result.data.body.books.length === 0) {
-                    allContentLoaded = true;
+                    allLikedBooksLoaded = true;
                     toast.push('🎉 All favourites loaded!', {
                         theme: {
                             '--toastBackground': '#7b2eff',
@@ -148,7 +154,62 @@
                         }
                     });
                 } else {
-                    likedBooks = [...likedBooks, ...result.data.body.books];
+                    for (let i = 0; i < result.data.body.books.length; i++) {
+                        if (!likedBooks.find(book => book.book_id === result.data.body.books[i].book_id)) {
+                            likedBooks = [...likedBooks, result.data.body.books[i]];
+                        }
+                    }
+                }
+            } else {
+                toast.push('Error: ' + result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
+            }
+        } else {
+            toast.push('Error: ' + result.data.body.message, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        }
+
+        isFetching = false;
+    }
+
+    async function loadMoreBooks(){
+        if (isFetching) return;
+        isFetching = true;
+
+        console.log('Loading more books...');
+
+        booksStart = booksEnd;
+        booksEnd += loadStep;
+
+        const formData = new FormData();
+        formData.append('profileId', profile.id);
+        formData.append('startRange', booksStart);
+        formData.append('endRange', booksEnd);
+
+        const response = await fetch('?/books', {
+            method: 'POST',
+            body: formData,
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
+                if (result.data.body.books.length !== 0) {
+                    for (let i = 0; i < result.data.body.books.length; i++) {
+                        if (!profile.book.find(book => book.id === result.data.body.books[i].id)) {
+                            profile.book = [...profile.book, result.data.body.books[i]];
+                        }
+                    }
+                } else {
+                    allBooksLoaded = true;
                 }
             } else {
                 toast.push('Error: ' + result.data.body.message, {
@@ -171,10 +232,10 @@
     }
 
     function handleScroll(event) {
-        console.log('scrolling');
         const target = event.target;
-        if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2)) && !allContentLoaded) {
-            if (show === 'favourites') loadMoreLikedBooks();
+        if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2))) {
+            if (show === 'favourites' && !allLikedBooksLoaded) loadMoreLikedBooks();
+            if (show === 'home' && !allBooksLoaded) loadMoreBooks();
         }
     }
 </script>
@@ -297,12 +358,12 @@
                     </div>
                     <div class="col-4 col-md-3">
                         <div class="row justify-content-center d-flex align-items-center"
-                             use:tooltip={{...tooltipConfig}} title="Joined: {profile.created_at}">
+                             title="Joined: {new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}" use:tooltip={{...tooltipConfig}}>
                             <div class="col-auto d-flex align-items-center pe-0">
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
                             <div class="col-auto mt-1">
-                                <span class="h6">{yearCreated}</span>
+                                <span class="h6">{new Date(profile.created_at).getFullYear()}</span>
                             </div>
                         </div>
                     </div>

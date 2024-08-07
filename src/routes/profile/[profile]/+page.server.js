@@ -1,6 +1,6 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 
-// Async function to get books, from range start to end, from book_likes
+// Async function to get liked books, from range start to end, from book_likes
 async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
     const {data, error} = await supabase
         .from('book_likes')
@@ -13,7 +13,25 @@ async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
     return data;
 }
 
-export const load = async ( { params, locals: { supabase, getSession } }) => {
+// Async function to get books + likes + owner related to them, from range start to end, from book
+async function fetchBooks(startRange, endRange, profileId, supabase) {
+    const {data, error} = await supabase
+        .from('book')
+        .select('id, title, owner_id, cover_url, created_at, book_likes(user_id)')
+        .eq('owner_id', profileId)
+        .order('created_at', {ascending: false})
+        .range(startRange, endRange);
+
+    // is_liked for each book
+    for (let i = 0; i < data.length; i++) {
+        data[i].is_liked = data[i].book_likes.some(like => like.user_id === profileId);
+    }
+
+    if (error) throw error;
+    return data;
+}
+
+export const load = async ({params, locals: {supabase, getSession}}) => {
     const {session} = await getSession();
     const id = params.profile;
 
@@ -39,7 +57,7 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
             .from('profiles')
             .select('*, book!book_owner_id_fkey(id,title,owner_id,cover_url,created_at, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username,avatar_url)), gallery(id, name, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
             .eq('id', id)
-            .order('created_at', {referencedTable: 'book' ,ascending: false});
+            .order('created_at', {referencedTable: 'book', ascending: false});
 
         // Note: Relationships should use nametableofReference!namefield_fkey(data_that_I_want)
         // Example, I want to get many followers related to a profile, I can use followersLoL!followers_following_id_fkey(data_that_I_want) etc.
@@ -67,6 +85,11 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
         }
 
         results.profile = profile[0];
+
+        // Keep only the first books in range
+        if (results.profile.book) {
+            results.profile.book = results.profile.book.slice(startRange, endRange);
+        }
 
         let total_likes = 0;
         for (let i = 0; i < results.profile.book.length; i++) {
@@ -97,16 +120,11 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
 
         if (results.isOwner || results.profile.show_favourites) {
 
-            // Get a list of books liked by user, sorted by most recently liked
-            const {data: likedBooks, error: errorLikedBooks} = await supabase
-                .from('book_likes')
-                .select('book_id, book!id(id, title, cover_url, owner_id, created_at, profiles:owner_id(id, username, avatar_url))')
-                .eq('user_id', id)
-                .order('created_at', {ascending: false})
-                .range(startRange, endRange);
+            // Books liked by user.
+            const likedBooks = await fetchBooksLiked(startRange, endRange, id, supabase);
 
-            if (errorLikedBooks) {
-                console.error(errorLikedBooks);
+            if (likedBooks instanceof Error) {
+                console.error(likedBooks);
                 results.likedBooks = [];
             } else {
                 results.likedBooks = likedBooks;
@@ -133,7 +151,7 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
 
 
 export const actions = {
-    like: async ({ request, locals: { supabase, getSession } }) => {
+    like: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
         const {session} = await getSession();
 
@@ -158,7 +176,7 @@ export const actions = {
             }
         }
 
-        const { data: likes, error } = await supabase
+        const {data: likes, error} = await supabase
             .from('book_likes')
             .select('*')
             .eq('book_id', contentId)
@@ -177,9 +195,9 @@ export const actions = {
         const action = likes.length === 0 ? 'added' : 'removed';
 
         if (likes.length === 0) {
-            const { error } = await supabase
+            const {error} = await supabase
                 .from('book_likes')
-                .insert([{ book_id: contentId, user_id: userId }]);
+                .insert([{book_id: contentId, user_id: userId}]);
 
             if (error) {
                 console.error(error);
@@ -191,7 +209,7 @@ export const actions = {
                 }
             }
         } else {
-            const { error } = await supabase
+            const {error} = await supabase
                 .from('book_likes')
                 .delete()
                 .eq('book_id', contentId)
@@ -215,7 +233,7 @@ export const actions = {
             }
         }
     },
-    follow: async ({ request, locals: { supabase, getSession } }) => { // TODO: Refactor to use rules directly on database.
+    follow: async ({request, locals: {supabase, getSession}}) => { // TODO: Refactor to use rules directly on database.
         const formData = Object.fromEntries(await request.formData());
         const {session} = await getSession();
 
@@ -251,7 +269,7 @@ export const actions = {
         }
 
         // Insert follower if not already following, if already following, delete it from followers
-        let { data: followData, error } = await supabase
+        let {data: followData, error} = await supabase
             .from('followers')
             .select('*')
             .eq('following_id', profileId)
@@ -268,9 +286,9 @@ export const actions = {
         }
 
         if (followData.length === 0) {
-            const { error } = await supabase
+            const {error} = await supabase
                 .from('followers')
-                .insert([{ following_id: profileId, follower_id: userId }]);
+                .insert([{following_id: profileId, follower_id: userId}]);
 
             if (error) {
                 console.error(error);
@@ -284,7 +302,7 @@ export const actions = {
 
             follow = true;
         } else {
-            const { error } = await supabase
+            const {error} = await supabase
                 .from('followers')
                 .delete()
                 .eq('following_id', profileId)
@@ -313,7 +331,7 @@ export const actions = {
             }
         }
     },
-    books_liked: async ({ request, locals: { supabase, getSession } }) => {
+    books_liked: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
         const {session} = await getSession();
 
@@ -344,7 +362,7 @@ export const actions = {
 
         // Check if user in session is owner of profile, if not, check if profileId allows other users to see their liked books
         if (session && profileId !== session.user.id) {
-            const { data: profile, error } = await supabase
+            const {data: profile, error} = await supabase
                 .from('profiles')
                 .select('show_favourites')
                 .eq('id', profileId);
@@ -403,6 +421,44 @@ export const actions = {
             }
 
             books = unique_books;
+        }
+
+        return {
+            status: 200,
+            body: {
+                books
+            }
+        }
+    },
+    books: async ({request, locals: {supabase, getSession}}) => { // using fetchBooks function
+        const formData = Object.fromEntries(await request.formData());
+
+        let startRange = formData.startRange;
+        let endRange = formData.endRange;
+        let profileId = formData.profileId;
+
+        if (profileId === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields: profileId"
+                }
+            }
+        }
+
+        if (startRange === null || isNaN(startRange) || startRange < 0) startRange = 0;
+        if (endRange === null || isNaN(endRange) || endRange < 0 || endRange < startRange) endRange = startRange + 40;
+
+        let books = await fetchBooks(startRange, endRange, profileId, supabase);
+
+        if (books instanceof Error) {
+            console.error(books);
+            return {
+                status: 500,
+                body: {
+                    message: books.message
+                }
+            }
         }
 
         return {
