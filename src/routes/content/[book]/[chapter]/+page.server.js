@@ -1,4 +1,4 @@
-import {error as errorx} from '@sveltejs/kit';
+import {error as errorx, redirect} from '@sveltejs/kit';
 
 async function loadChapters(supabase, bookId) {
     const {data: chapters, error: chaptersError} = await supabase
@@ -62,6 +62,11 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
 
     const bookId = params.book;
     const chapterId = params.chapter;
+
+    // FIX for some URLs that have double /content/content and need redirect.
+    if ((bookId === 'content' || bookId === 'profile') && !isNaN(chapterId)) {
+        return redirect(302,`/${bookId}/${chapterId}`);
+    }
 
     const {data: chapterContent, error} = await supabase
             .from('secure_chapter_content_views')
