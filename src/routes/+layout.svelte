@@ -1,4 +1,5 @@
 <script>
+    import '$lib/css/global.css';
     import {invalidateAll} from '$app/navigation'
     import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";

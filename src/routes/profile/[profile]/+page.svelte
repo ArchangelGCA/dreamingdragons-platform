@@ -314,8 +314,9 @@
                                                        title="Click to copy profile ID!">{profile.username}</button> <a
                             class="link-purple"
                             href="{profile.website ? profile.website : ''}"
-                            target="_blank" use:tooltip={{...tooltipConfig}}
-                            title="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"><i
+                            target="_blank"
+                            data-tooltip="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"
+                            ><i
                             class="fa-solid fa-external-link fa-2xs"></i></a></span>
                 {/if}
             </div>
@@ -364,8 +365,8 @@
                     </div>
                     <div class="col-4 col-md-3">
                         <div class="row justify-content-center d-flex align-items-center"
-                             title="Joined: {new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}"
-                             use:tooltip={{...tooltipConfig}}>
+                             data-tooltip="Joined: {new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}"
+                        >
                             <div class="col-auto d-flex align-items-center pe-0">
                                 <i class="fas fa-calendar-alt"></i>
                             </div>
@@ -378,7 +379,7 @@
                         <div class="row justify-content-center">
                             <div class="col-11 col-md-auto px-0">
                                 <button class="btn btn-outline-light w-100 mt-3 mt-md-0 shadow" on:click={handleFollow}
-                                        use:tooltip={{...tooltipConfig}} title="Follow/Unfollow">
+                                        data-tooltip="{isFollowing ? '➖ Unfollow' : '➕ Follow'}">
                                     <i class="fas {isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
                                     <span class="ms-1">{isFollowing ? 'Unfollow' : 'Follow'}</span>
                                 </button>
@@ -392,15 +393,16 @@
         <div class="row mt-3 justify-content-center text-center">
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'home') ? 'active' : ''}"
-                        on:click={() => show = 'home'} use:tooltip={{...tooltipConfig}}
-                        title="{profile.username + ' Home 🏠'}">Home
+                        on:click={() => show = 'home'}
+                        data-tooltip="{profile.username + ' Home 🏠'}">Home
                 </button>
             </div>
             {#if profile.show_favourites || isOwner}
                 <div class="col-auto">
                     <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'favourites') ? 'active' : ''}"
-                            on:click={() => show = 'favourites'} use:tooltip={{...tooltipConfig}}
-                            title="{isOwner ? 'Owner can always see his favs 😉' : (profile.username + ' Favs 🩷')}">
+                            on:click={() => show = 'favourites'}
+                            data-tooltip="{isOwner ? 'Owner can always see his favs 😉' : (profile.username + ' Favs 🩷')}"
+                    >
                         Favourites
                     </button>
                 </div>
@@ -411,8 +413,8 @@
             {/if}
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'galleries') ? 'active' : ''}"
-                        on:click={() => show = 'galleries'} use:tooltip={{...tooltipConfig}}
-                        title="{profile.username + ' Galleries (Coming soon!) 🖼️'}">Galleries
+                        on:click={() => show = 'galleries'}
+                        data-tooltip="{profile.username + ' Galleries (Coming soon!) 🖼️'}">Galleries
                 </button>
             </div>
         </div>
