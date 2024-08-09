@@ -64,7 +64,7 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
     const chapterId = params.chapter;
 
     // FIX for some URLs that have double /content/content and need redirect.
-    if ((bookId === 'content' || bookId === 'profile') && !isNaN(chapterId)) {
+    if ((bookId === 'content' || bookId === 'profile')) {
         return redirect(302,`/${bookId}/${chapterId}`);
     }
 
