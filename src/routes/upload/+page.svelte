@@ -66,8 +66,8 @@
     let fileName = '';
     let editorContent = '';
     let selectedOption = 'book';
+    let inputTag = '';
     let suggestions = [];
-    let hasDoneTagAction = false;
     let activeUpload = false;
     let editorContentTale = '';
     let activePreviousChapterTags = false;
@@ -84,7 +84,25 @@
 
     let tags = [];
     async function addTag(e) {
-        if (e.key === 'Tab' && suggestions.length > 0) {
+        if (e.type === 'click') {
+            e.preventDefault();
+            const tag = e.target.value.trim();
+            if (tag) {
+                if (tags.includes(tag)) {
+                    toast.push('Tag already added', {
+                        theme: {
+                            '--toastBackground': '#ffcc00',
+                            '--toastColor': '#000'
+                        }
+                    });
+                    return;
+                }
+                tags = [...tags, tag];
+                e.target.value = '';
+                suggestions = [];
+                inputTag = '';
+            }
+        } else if (e.key === 'Tab' && suggestions.length > 0) {
             e.preventDefault();
             if (tags.includes(suggestions[0])) {
                 toast.push('Tag already added', {
@@ -98,10 +116,7 @@
             tags = [...tags, suggestions[0]];
             e.target.value = '';
             suggestions = [];
-            hasDoneTagAction = true;
-            return;
-        }
-        if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
+        } else if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
             e.preventDefault();
             const tag = e.target.value.trim();
             if (tag) {
@@ -118,27 +133,19 @@
                 tags = [...tags, tag];
                 e.target.value = '';
                 suggestions = [];
-                hasDoneTagAction = true;
-                return;
+            }
+        } else {
+            const tag = e.target.value.trim();
+            if (tag) {
+                await fetchTags(e.target.value.trim());
             }
         }
-
-        hasDoneTagAction = false;
     }
 
-    async function fetchTags(e) {
-
-        if (hasDoneTagAction) {
-            return;
-        }
-
-        const tag = e.target.value.trim();
-        // if tag is empty, don't fetch suggestions and reset suggestions
+    async function fetchTags(tag) {
         if (!tag) {
             suggestions = [];
-            return;
-        }
-        if (tag) {
+        } else {
             const formData = new FormData();
             formData.append('tag', tag);
 
@@ -172,6 +179,8 @@
 
     function removeTag(tag) {
         tags = tags.filter(t => t !== tag);
+        suggestions = [];
+        inputTag = '';
     }
 
     // Function to load image preview
@@ -221,18 +230,6 @@
             // Set the files to the input
             document.getElementById('file').files = files;
         }
-    }
-
-    function addTagSuggestionBook(tag) {
-        tags = [...tags, tag];
-        suggestions = [];
-        document.getElementById('inputTagBook').value = '';
-    }
-
-    function addTagSuggestionChapter(tag) {
-        tags = [...tags, tag];
-        suggestions = [];
-        document.getElementById('inputTagChapter').value = '';
     }
 
     async function fetchPreviousChapterTags(){
@@ -513,7 +510,7 @@
 />
 
 <div class="container-md px-0">
-    <!-- Alert if users can't upload -->
+    <!-- Alert  -->
     {#if !can_upload}
         <div class="row justify-content-center">
             <div class="col-12">
@@ -524,6 +521,7 @@
             </div>
         </div>
     {/if}
+    <!-- Upload Page -->
     <div class="row justify-content-center">
         <div class="col">
             <div class="row justify-content-center">
@@ -579,8 +577,6 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Tale description">
-                                                <!--<textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" required></textarea>
-                                                -->
                                                 <div class="col-12 px-0">
                                                     <Editor {conf}
                                                             scriptSrc="tinymce/tinymce.min.js"
@@ -594,12 +590,12 @@
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
-                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
+                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTagBook" placeholder="Add tags" on:keydown={addTag} on:keyup={fetchTags}/>
+                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
-                                                        <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestionBook(suggestion)}>{suggestion}</button>
+                                                        <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
                                                     {/each}
                                                     <!-- Hidden input bind with tags -->
                                                     <input type="hidden" name="tags" value={tags} />
@@ -656,12 +652,12 @@
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
-                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
+                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" id="inputTagChapter" placeholder="Add tags" on:keydown={addTag} on:keyup={fetchTags}/>
+                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
-                                                        <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestionChapter(suggestion)}>{suggestion}</button>
+                                                        <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
                                                     {/each}
                                                     <!-- Hidden input bind with tags -->
                                                     <input type="hidden" name="tags" value={tags} />
@@ -669,7 +665,7 @@
                                             </div>
                                             {#if chaptersNumber > 0}
                                                 <div class="col-12 px-0">
-                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button" on:click={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
+                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button" on:click|preventDefault={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
                                                 </div>
                                             {/if}
                                             <div class="col-12 mb-1 mt-2 px-0">
