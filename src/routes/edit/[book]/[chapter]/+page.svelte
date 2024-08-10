@@ -63,7 +63,7 @@
     let editorContent = chapter.text;
     let tags = chapter.chapter_tags.map(tag => tag.tags.name);
     let suggestions = [];
-    let hasDoneTagAction = false;
+    let inputTag = '';
     let editActive = false;
     let title = chapter.title;
 
@@ -124,7 +124,25 @@
     }
 
     async function addTag(e) {
-        if (e.key === 'Tab' && suggestions.length > 0) {
+        if (e.type === 'click') {
+            e.preventDefault();
+            const tag = e.target.value.trim();
+            if (tag) {
+                if (tags.includes(tag)) {
+                    toast.push('Tag already added', {
+                        theme: {
+                            '--toastBackground': '#ffcc00',
+                            '--toastColor': '#000'
+                        }
+                    });
+                    return;
+                }
+                tags = [...tags, tag];
+                e.target.value = '';
+                suggestions = [];
+                inputTag = '';
+            }
+        } else if (e.key === 'Tab' && suggestions.length > 0) {
             e.preventDefault();
             if (tags.includes(suggestions[0])) {
                 toast.push('Tag already added', {
@@ -138,10 +156,7 @@
             tags = [...tags, suggestions[0]];
             e.target.value = '';
             suggestions = [];
-            hasDoneTagAction = true;
-            return;
-        }
-        if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
+        } else if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
             e.preventDefault();
             const tag = e.target.value.trim();
             if (tag) {
@@ -158,26 +173,19 @@
                 tags = [...tags, tag];
                 e.target.value = '';
                 suggestions = [];
-                hasDoneTagAction = true;
-                return;
+            }
+        } else {
+            const tag = e.target.value.trim();
+            if (tag) {
+                await fetchTags(e.target.value.trim());
             }
         }
-
-        hasDoneTagAction = false;
     }
 
-    async function fetchTags(e) {
-
-        if (hasDoneTagAction) {
-            return;
-        }
-
-        const tag = e.target.value.trim();
-        if (!tag || tag === '') {
+    async function fetchTags(tag) {
+        if (!tag) {
             suggestions = [];
-            return;
-        }
-        if (tag) {
+        } else {
             const formData = new FormData();
             formData.append('tag', tag);
 
@@ -211,21 +219,8 @@
 
     function removeTag(tag) {
         tags = tags.filter(t => t !== tag);
-    }
-
-    function addTagSuggestion(tag) {
-        if (tags.includes(tag)) {
-            toast.push('Tag already added', {
-                theme: {
-                    '--toastBackground': '#ffcc00',
-                    '--toastColor': '#000'
-                }
-            });
-            return;
-        }
-        tags = [...tags, tag];
         suggestions = [];
-        document.getElementById('inputTag').value = '';
+        inputTag = '';
     }
 </script>
 
@@ -278,12 +273,12 @@
                             {#each tags as tag}
                                 <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                     <span>{tag}</span>
-                                    <button class="button-tags text-danger-emphasis ms-1" type="button" on:click={() => removeTag(tag)}>x</button>
+                                    <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
                                 </div>
                             {/each}
-                            <input class="input-tags my-auto ms-1" type="text" id="inputTag" placeholder="Add tags" on:keydown={addTag} on:keyup={fetchTags}/>
+                            <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
                             {#each suggestions as suggestion (suggestion)}
-                                <button class="dropdown-item" on:click|preventDefault={() => addTagSuggestion(suggestion)}>{suggestion}</button>
+                                <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
                             {/each}
                             <!-- Hidden inputs -->
                             <input type="hidden" name="tags" value={tags} />
