@@ -5,14 +5,16 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import Masonry from "svelte-bricks";
+    import {deserialize} from "$app/forms";
 
     export let data;
     let { supabase, image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed, tooltipConfig } = data;
     $: ({books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed} = data);
     let loading = false;
     let allContentLoaded = false;
-    let page = 1;
-    let pageStep = 40;
+    let startRange = 0;
+    let endRange = 40;
+    let step = 40;
     let width, height;
 
     if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
@@ -25,24 +27,34 @@
         console.log('loading more content');
 
         loading = true;
+        let newBooks = [];
 
-        // fetch from books_ordered_by_created_at using range and append to books_ordered_by_created_at
-        let { data: newBooks, error } = await supabase
-            .from('book')
-            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url)')
-            .order('created_at', {ascending: false})
-            .eq('hidden', false)
-            .range((pageStep * page) + 1, pageStep * (page + 1));
+        const formData = new FormData();
+        formData.append('startRange', startRange);
+        formData.append('endRange', endRange);
 
-        if (error) {
-            console.error(error);
+        const response = await fetch('?/books_created_at', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
+                newBooks = result.data.body.books;
+            } else {
+                console.error(result.data.body);
+            }
+        } else {
+            console.error(result.error);
         }
 
         if (newBooks.length === 0) {
             allContentLoaded = true;
         } else {
-            books_ordered_by_created_at = [...books_ordered_by_created_at, ...newBooks];
-            page++;
+            books_ordered_by_created_at = [...books_ordered_by_created_at, ...newBooks.filter((book) => !books_ordered_by_created_at.some((b) => b.id === book.id))];
+            startRange = endRange;
+            endRange += step;
         }
 
         loading = false;

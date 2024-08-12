@@ -101,3 +101,43 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     return results;
 }
+
+export const actions = {
+    books_created_at: async ( {request, locals: { supabase } }) => {
+        const formData = Object.fromEntries(await request.formData());
+
+        let startRange = formData.startRange;
+        let endRange = formData.endRange;
+
+        if (startRange === null || isNaN(startRange) || startRange < 0) startRange = 0;
+        if (endRange === null || isNaN(endRange) || endRange < 0 || endRange < startRange) endRange = startRange + 40;
+
+        let {data: books, error} = await supabase
+            .from('book')
+            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url)')
+            .order('created_at', {ascending: false})
+            .eq('hidden', false)
+            .range(startRange, endRange);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: data.message
+                }
+            }
+        }
+
+        if (books.length > 40) {
+            books = books.slice(0, 40);
+        }
+
+        return {
+            status: 200,
+            body: {
+                books
+            }
+        }
+    }
+}
