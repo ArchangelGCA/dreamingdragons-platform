@@ -1,5 +1,5 @@
 import {PUBLIC_IMAGE_PROXY_URL} from "$env/static/public";
-export const load = async ({locals: {getSession}}) => {
+export const load = async ({locals: {supabase, getSession}}) => {
     const {session, user} = await getSession();
     const image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
 

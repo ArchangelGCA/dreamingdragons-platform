@@ -139,5 +139,84 @@ export const actions = {
                 books
             }
         }
+    },
+    newNotifications: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const {session} = await getSession();
+
+        const latestNotificationTimestamp = formData.latestNotificationTimestamp;
+        if (session) {
+
+            const { data: newNotifs, error } = await supabase
+                .from('notifications')
+                .select('*')
+                .gt('created_at', latestNotificationTimestamp)
+                .eq('recipient_id', session.user.id)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                };
+            }
+
+            return {
+                status: 200,
+                body: {
+                    newNotifs
+                }
+            };
+        }
+
+        return {
+            status: 401,
+            body: {
+                message: 'Unauthorized'
+            }
+        };
+    },
+    loadMoreNotifications: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const {session} = await getSession();
+
+        const startRange = formData.startRange;
+        const endRange = formData.endRange;
+
+        if (session) {
+            const { data: notifs, error } = await supabase
+                .from('notifications')
+                .select('*')
+                .eq('recipient_id', session.user.id)
+                .order('created_at', { ascending: false })
+                .range(startRange, endRange);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                };
+            }
+
+            return {
+                status: 200,
+                body: {
+                    notifs
+                }
+            };
+        }
+
+        return {
+            status: 401,
+            body: {
+                message: 'Unauthorized'
+            }
+        };
     }
 }

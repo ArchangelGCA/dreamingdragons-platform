@@ -9,6 +9,7 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import { page as pageStore } from '$app/stores';
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import {deserialize} from "$app/forms";
 
     export let data;
 
@@ -96,58 +97,64 @@
     }
 
     let loading = false;
-    let page = 1;
+    let notificationsStart = 0;
+    let notificationsEnd = notificationsRangeStep;
     async function loadMoreNotifications() {
         if (loading || allNotificationsLoaded) return;
 
         loading = true;
 
         if (session){
-            const { data: notifs, error } = await supabase
-                .from('notifications')
-                .select('*')
-                .eq('recipient_id', session.user.id)
-                .order('created_at', { ascending: false })
-                .range(notificationsRangeStep * page, notificationsRangeStep * (page + 1));
+            const formData = new FormData();
+            formData.append('startRange', notificationsStart);
+            formData.append('endRange', notificationsEnd);
 
-            if (error) {
-                console.error(error)
+            let notifs = [];
+
+            const response = await fetch('/?/loadMoreNotifications', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = deserialize(await response.text());
+            if (result.type === 'success') {
+                if (result.data.status === 200) {
+                    notifs = result.data.body.notifs;
+                }
             }
 
             if (notifs.length === 0) {
                 allNotificationsLoaded = true;
             } else {
-                notifications = [...notifications, ...notifs];
-                page++;
+                notifications = [...notifications, ...notifs.filter(notif => !notifications.some(notification => notification.id === notif.id))];
+                notificationsStart = notificationsEnd;
+                notificationsEnd += notificationsRangeStep;
             }
         }
 
         loading = false;
     }
 
-    async function loadNewNotificationsCounter(){
-        if (notifications !== null && notifications.length !== 0) {
-            notificationsCount = notifications.filter(notification => notification.watched === false).length;
-        }
-    }
-
     async function fetchNewNotifications() {
         if (session) {
-            const { data: newNotifs, error } = await supabase
-                .from('notifications')
-                .select('*')
-                .gt('created_at', latestNotificationTimestamp)
-                .eq('recipient_id', session.user.id)
-                .order('created_at', { ascending: false });
+            const formData = new FormData();
+            formData.append('latestNotificationTimestamp', latestNotificationTimestamp);
 
-            if (error) {
-                console.error(error);
-            }
+            const response = await fetch('/?/newNotifications', {
+                method: 'POST',
+                body: formData,
+            });
 
-            if (newNotifs.length > 0) {
-                notifications = [...newNotifs, ...notifications];
-                latestNotificationTimestamp = newNotifs[0].created_at;
-                await loadNewNotificationsCounter();
+            const result = deserialize(await response.text());
+            if (result.type === 'success') {
+                if (result.data.status === 200) {
+                    const newNotifs = result.data.body.newNotifs;
+                    if (newNotifs.length > 0) {
+                        notifications = [...newNotifs, ...notifications];
+                        latestNotificationTimestamp = newNotifs[0].created_at;
+                        notificationsCount += newNotifs.length;
+                    }
+                }
             }
         }
     }

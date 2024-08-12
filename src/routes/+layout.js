@@ -40,6 +40,7 @@ export const load = async ({ fetch, data, depends }) => {
 
     let notifications = [];
     let userData = null;
+    let notifs = [];
 
     if (session) {
         const {data: notifs, error} = await supabase

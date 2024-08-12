@@ -8,13 +8,13 @@
     import {deserialize} from "$app/forms";
 
     export let data;
-    let { supabase, image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed, tooltipConfig } = data;
+    let { image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed, tooltipConfig } = data;
     $: ({books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed} = data);
     let loading = false;
     let allContentLoaded = false;
-    let startRange = 0;
-    let endRange = 40;
     let step = 40;
+    let startRange = 0;
+    let endRange = step;
     let width, height;
 
     if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
