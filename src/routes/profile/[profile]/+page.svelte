@@ -236,7 +236,7 @@
     function handleScroll(event) {
         //const target = event.target; // OLD TARGET (Element)
         const target = event.target.body; // NEW TARGET (Document.body)
-        if (y >= target.clientHeight / 1.5) {
+        if (y >= target.clientHeight / 2) {
             if (show === 'favourites' && !allLikedBooksLoaded) loadMoreLikedBooks();
             if (show === 'home' && !allBooksLoaded) loadMoreBooks();
         }
