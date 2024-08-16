@@ -28,6 +28,8 @@
     let show = 'home';
     let width, height;
 
+    let y;
+
     $: if (id) {
         resetVariables();
     }
@@ -232,8 +234,9 @@
     }
 
     function handleScroll(event) {
-        const target = event.target;
-        if ((target.scrollHeight - target.scrollTop <= target.clientHeight + (target.clientHeight / 0.2))) {
+        //const target = event.target; // OLD TARGET (Element)
+        const target = event.target.body; // NEW TARGET (Document.body)
+        if (y >= target.clientHeight / 1.5) {
             if (show === 'favourites' && !allLikedBooksLoaded) loadMoreLikedBooks();
             if (show === 'home' && !allBooksLoaded) loadMoreBooks();
         }
@@ -252,6 +255,8 @@
         twitter="true"
         index="true"
 />
+
+<svelte:window on:scroll={handleScroll} bind:scrollY={y}/>
 
 <div class="container-fluid px-0" style="min-height: 71vh">
     {#if !profile || profile.length === 0}
@@ -433,7 +438,7 @@
                         </div>
                     {/each}-->
                     <!-- New Masonry style -->
-                    <div class="col-12 mt-0 ps-0 column-vertical" on:scroll={handleScroll}>
+                    <div class="col-12 mt-0 ps-0">
                         <Masonry
                                 items={profile.book}
                                 minColWidth={400}
@@ -455,7 +460,7 @@
                         <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
                     </div>
                 {:else}
-                    <div class="col-12 mt-0 ps-0 column-vertical" on:scroll={handleScroll}>
+                    <div class="col-12 mt-0 ps-0">
                         <Masonry
                                 items={likedBooks}
                                 idKey="book_id"
@@ -558,30 +563,5 @@
 
     .btn-username:hover {
         color: #7d00dd;
-    }
-
-    .column-vertical {
-        flex-wrap: wrap;
-        overflow-y: auto;
-        max-height: calc(100vh / 1.2);
-        white-space: normal;
-    }
-
-    .column-vertical::-webkit-scrollbar {
-        width: 15px;
-    }
-
-    .column-vertical::-webkit-scrollbar-track {
-        background: rgba(92, 0, 166, 0.25);
-    }
-
-    .column-vertical::-webkit-scrollbar-thumb {
-        background: rgba(92, 0, 166, 0.80);
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .column-vertical::-webkit-scrollbar-thumb:hover {
-        background: rgba(92, 0, 166, 1);
     }
 </style>
