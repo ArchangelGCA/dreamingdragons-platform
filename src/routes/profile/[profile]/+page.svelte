@@ -258,7 +258,7 @@
 
 <svelte:window on:scroll={handleScroll} bind:scrollY={y}/>
 
-<div class="container-fluid px-0" style="min-height: 71vh">
+<div class="container-fluid px-0" style="min-height: 71vh;">
     {#if !profile || profile.length === 0}
         <div class="row justify-content-center">
             <div class="col-12 text-center">

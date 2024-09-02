@@ -169,7 +169,7 @@
 
 <SvelteToast />
 
-<div class="container-fluid bg-black bg-opacity-50">
+<div class="container-fluid bg-black bg-opacity-50" style="max-width: 100%; overflow-x: hidden">
     <div class="row border-bottom border-light-subtle py-2">
         <div class="col-2 col-md-3 col-xxl-4">
             <a href="/">
@@ -239,7 +239,7 @@
         </div>
     </div>
 
-    <div class="offcanvas offcanvas-end rounded-4 p-2 my-2 me-1" tabindex="-1" id="notifications" aria-labelledby="notifications">
+    <div class="offcanvas offcanvas-end rounded-4 p-2 my-2 me-lg-2" tabindex="-1" id="notifications" aria-labelledby="notifications">
         <div class="offcanvas-header bg-light bg-opacity-25 rounded-4">
             <h5 class="offcanvas-title mt-1">Notifications</h5>
             <button type="button" class="btn-close me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
