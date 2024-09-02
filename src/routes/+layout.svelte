@@ -60,7 +60,7 @@
         {
             name: 'Discord',
             icon: 'fab fa-discord',
-            link: 'https://discord.gg/XKEKGfPKCU',
+            link: 'https://discord.gg/rosesintheflames',
         },
         {
             name: 'Reddit',
@@ -70,7 +70,7 @@
         {
             name: 'X/Twitter',
             icon: 'fab fa-x-twitter',
-            link: 'https://x.com/CringleDragons',
+            link: 'https://x.com/RosesInTheFlame',
         },
         {
             name: 'Github',
