@@ -237,4 +237,8 @@
     .comment-element:hover {
         background-color: rgba(92, 0, 166, 0.3);
     }
+
+    .text-secondary-emphasis {
+        word-wrap: break-word;
+    }
 </style>
