@@ -95,7 +95,7 @@
                         <p class="fs-5 mb-0">Following</p>
                     </div>
                 </div>
-                <div class="row row-horizontal flex-nowrap ps-1 pe-1 gx-4 gx-md-5">
+                <div class="row row-horizontal flex-nowrap ps-1 pe-1 gx-3 gx-md-4">
                     {#each followed as follow (follow.id)}
                         <div class="col-auto py-2">
                             <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {image_proxy} size="50px" />
@@ -194,7 +194,7 @@
     .column-vertical {
         flex-wrap: wrap;
         overflow-y: auto;
-        max-height: calc(100vh / 1.8);
+        max-height: calc(100vh / 1.15);
         white-space: normal;
     }
 
