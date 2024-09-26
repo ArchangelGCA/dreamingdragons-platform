@@ -8,28 +8,28 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@sveltejs/adapter-node": "^5.2.0",
-    "@sveltejs/kit": "^2.5.20",
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
-    "@zerodevx/svelte-toast": "^0.9.5",
+    "@sveltejs/adapter-node": "^5.2.4",
+    "@sveltejs/kit": "^2.5.28",
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
+    "@zerodevx/svelte-toast": "^0.9.6",
     "bootstrap": "^5.3.3",
-    "sk-seo": "^0.3.5",
-    "super-sitemap": "^0.14.20",
-    "svelte": "^4.2.18",
-    "vite": "^5.4.0"
+    "sk-seo": "^0.4.1",
+    "super-sitemap": "^0.15.1",
+    "svelte": "^4.2.19",
+    "vite": "^5.4.8"
   },
   "type": "module",
   "dependencies": {
     "@formkit/auto-animate": "^0.8.2",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/auth-ui-svelte": "^0.2.9",
-    "@supabase/ssr": "^0.3.0",
-    "@supabase/supabase-js": "^2.45.1",
+    "@supabase/ssr": "^0.5.1",
+    "@supabase/supabase-js": "^2.45.4",
     "@svelte-plugins/tooltips": "^3.0.1",
-    "@tinymce/tinymce-svelte": "^2.0.2",
-    "pocketbase": "^0.21.4",
-    "resend": "^3.5.0",
-    "sharp": "^0.33.4",
+    "@tinymce/tinymce-svelte": "^3.0.0",
+    "pocketbase": "^0.21.5",
+    "resend": "^4.0.0",
+    "sharp": "^0.33.5",
     "svelte-bricks": "^0.2.1"
   }
 }
