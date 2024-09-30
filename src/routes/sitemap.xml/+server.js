@@ -25,7 +25,7 @@ export const GET = async ({locals: {supabase}}) => {
                 '/content/[book]/[chapter]': [],
             },
             // additionalPaths: [],
-            excludePatterns: [
+            excludeRoutePatterns: [
                 '^/edit.*',
                 '^/admin.*',
                 '^/health.*'
@@ -41,7 +41,7 @@ export const GET = async ({locals: {supabase}}) => {
             '/profile/[profile]': profilesData.map((profile) => profile.id)
         },
         // additionalPaths: tagsData.map((tag) => `/search?q=${encodeURIComponent(tag.name)}`),
-        excludePatterns: [
+        excludeRoutePatterns: [
             '^/edit.*',
             '^/admin.*',
         ]
