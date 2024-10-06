@@ -20,5 +20,6 @@
         <div class="placeholder bg-light-subtle rounded-4 w-100 h-100"></div>
     </div>
 {:else}
-    <img src="{url}" alt="{alt}" class="img-fluid rounded-4" style="max-height: 82vh" loading="lazy">
+    <!-- removed loading lazy -->
+    <img src="{url}" alt="{alt}" class="img-fluid rounded-4" style="max-height: 82vh">
 {/if}
