@@ -27,5 +27,16 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 {:else}
-    <img src={avatarUrl} alt='{username} avatar' class="rounded-circle {classes}" width={size} height={size}>
+    <img src={avatarUrl} alt='{username} avatar' class="rounded-circle avatar {classes}" width={size} height={size}>
 {/if}
+
+<style>
+    .avatar {
+        transition: all 0.15s ease-in-out;
+    }
+
+    .avatar:hover {
+        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        scale: 1.1;
+    }
+</style>

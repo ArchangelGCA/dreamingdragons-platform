@@ -233,7 +233,7 @@
     }
 
     .column-vertical::-webkit-scrollbar-thumb {
-        background: linear-gradient(-145deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
+        background: linear-gradient(0deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
         border-radius: 8px;
         cursor: pointer;
     }
@@ -267,7 +267,7 @@
     }
 
     .row-horizontal::-webkit-scrollbar-thumb {
-        background: linear-gradient(-145deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
+        background: linear-gradient(90deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
         border-radius: 8px;
         cursor: pointer;
     }

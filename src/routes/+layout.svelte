@@ -176,7 +176,7 @@
         <!-- Logo -->
         <div class="col-2 col-md-3 col-xxl-4">
             <a href="/">
-                <img src={favicon} alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
+                <img src={favicon} class="logo" alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
             </a>
         </div>
         <!-- Search -->
@@ -220,7 +220,7 @@
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                                 <i class="fa-solid fa-user py-2 pb-2 mb-1 px-2 border border-2 border-light border-opacity-25 rounded-3"></i>
                             {:else}
-                                <UserAvatarNavbar url={userData.avatar_url} username={userData.username} {image_proxy} size="35px"/>
+                                <UserAvatarNavbar classes="profile-avatar" url={userData.avatar_url} username={userData.username} {image_proxy} size="35px"/>
                             {/if}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end mt-2 {session ? 'pt-0' : 'pt-2'}" aria-labelledby="profileDropdown">
@@ -431,18 +431,42 @@
         background-color: transparent;
         color: #ffffff;
         border: none;
-        transition: transform 0.05s ease-in-out;
+        transition: all 0.1s ease-in-out;
     }
 
-    /** On click of btn-transparent, scale down the icon */
     .btn-transparent:active {
-        transform: scale(0.95);
+        transform: scale(0.85);
     }
 
     .link-animated {
         color: #ffffff;
         animation: link-animation 2s ease-in-out infinite alternate;
-        transition: transform 0.12s ease-in-out;
+        transition: all 0.12s ease-in-out;
+    }
+
+    .fa-upload, .fa-bell {
+        transition: all 0.12s ease-in-out;
+    }
+
+    .fa-upload:hover, .fa-bell:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        background-color: #5c00a6;
+        border-radius: 0.25rem;
+    }
+
+    .logo {
+        transition: all 0.12s ease-in-out;
+    }
+
+    .logo:hover {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 0.75rem #c400ff);
+
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
     }
 
     /* Link animation (small glowing text effect) */
@@ -454,7 +478,6 @@
             text-shadow: 0 0 1rem #c400ff, 0 0 1rem #c400ff, 0 0 1rem #c400ff;
         }
     }
-
 
     @keyframes Gradient-Register {
         0% {background-position: 0% 50%;}
