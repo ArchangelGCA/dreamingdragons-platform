@@ -170,12 +170,16 @@
 <SvelteToast />
 
 <div class="container-fluid bg-black bg-opacity-50" style="max-width: 100%; overflow-x: hidden">
+
+    <!-- Start Navbar -->
     <div class="row border-bottom border-light-subtle py-2">
+        <!-- Logo -->
         <div class="col-2 col-md-3 col-xxl-4">
             <a href="/">
                 <img src={favicon} alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
             </a>
         </div>
+        <!-- Search -->
         <div class="col-6 col-xxl-4 my-auto pe-0">
             <form action="/search" method="get" data-sveltekit-reload>
                 <div class="input-group">
@@ -184,6 +188,7 @@
                 </div>
             </form>
         </div>
+        <!-- Notifications & Profile -->
         <div class="col-4 col-md-3 col-xxl-4 text-end ps-0">
             <div class="row align-items-center" use:autoAnimate>
                 {#if notificationsCount !== 0}
@@ -200,16 +205,25 @@
                         <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
                     </div>
                 {/if}
+                <!-- Upload -->
+                {#if session}
+                    <div class="col-auto pe-0 mt-1">
+                        <a class="link-animated rounded-3" href="/upload" on:click={() => {notificationsCount = 0}} on:keydown={() => {notificationsCount = 0}}>
+                            <i class="fa-solid fa-upload"></i>
+                        </a>
+                    </div>
+                {/if}
+                <!-- Profile -->
                 <div class="col-auto">
                     <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle py-0 pt-1 ps-2 animate-button border-light-subtle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-transparent py-0 pt-1 ps-0 pe-1" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
-                                <i class="fa-solid fa-user py-2 pb-2 mb-1 px-1"></i>
+                                <i class="fa-solid fa-user py-2 pb-2 mb-1 px-2 border border-2 border-light border-opacity-25 rounded-3"></i>
                             {:else}
-                                <UserAvatarNavbar classes="mb-2 mt-1" url={userData.avatar_url} username={userData.username} {image_proxy} size="25px"/>
+                                <UserAvatarNavbar url={userData.avatar_url} username={userData.username} {image_proxy} size="35px"/>
                             {/if}
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end {session ? 'pt-0' : 'pt-2'}" aria-labelledby="profileDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end mt-2 {session ? 'pt-0' : 'pt-2'}" aria-labelledby="profileDropdown">
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                                 {#if session}
                                     <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a></li>
@@ -238,6 +252,7 @@
             </div>
         </div>
     </div>
+    <!-- End Navbar -->
 
     <div class="offcanvas offcanvas-end rounded-4 p-2 my-2 me-lg-2" tabindex="-1" id="notifications" aria-labelledby="notifications">
         <div class="offcanvas-header bg-light bg-opacity-25 rounded-4">
@@ -411,6 +426,35 @@
         cursor: pointer;
         font-size: 1.1rem;
     }
+
+    .btn-transparent {
+        background-color: transparent;
+        color: #ffffff;
+        border: none;
+        transition: transform 0.05s ease-in-out;
+    }
+
+    /** On click of btn-transparent, scale down the icon */
+    .btn-transparent:active {
+        transform: scale(0.95);
+    }
+
+    .link-animated {
+        color: #ffffff;
+        animation: link-animation 2s ease-in-out infinite alternate;
+        transition: transform 0.12s ease-in-out;
+    }
+
+    /* Link animation (small glowing text effect) */
+    @keyframes link-animation {
+        from {
+            text-shadow: 0 0 0.1rem #c400ff, 0 0 0.1rem #c400ff, 0 0 0.1rem #c400ff;
+        }
+        to {
+            text-shadow: 0 0 1rem #c400ff, 0 0 1rem #c400ff, 0 0 1rem #c400ff;
+        }
+    }
+
 
     @keyframes Gradient-Register {
         0% {background-position: 0% 50%;}

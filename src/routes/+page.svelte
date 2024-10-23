@@ -83,14 +83,19 @@
 />
 
 <div class="container-fluid mb-3 mt-2" style="min-height: 69vh">
+
+    <!-- Home, Following and Content Section -->
     <div class="row justify-content-center">
-        <div class="col-12 bg-purple-opacity-75 py-2 rounded-3">
+
+        <!-- Home title -->
+        <div class="col-12 bg-purple-gradient py-2 rounded-3">
             <span class="h2 text-start fw-bolder" use:tooltip={{...tooltipConfig}} title="Home 🏠">Home</span>
         </div>
 
+        <!-- Start following section -->
         {#if is_logged && followed && followed.length > 0}
             <div class="col-12 pb-1 mt-2">
-                <div class="row justify-content-center bg-purple-opacity-50 rounded-3 mb-1 mt-1 p-1" use:tooltip={{...tooltipConfig}} title="Following Users">
+                <div class="row justify-content-center bg-purple-gradient rounded-3 mb-1 mt-1 p-1" use:tooltip={{...tooltipConfig}} title="Following Users">
                     <div class="col-12 text-center">
                         <p class="fs-5 mb-0">Following</p>
                     </div>
@@ -104,7 +109,9 @@
                 </div>
             </div>
         {/if}
+        <!-- End following section -->
 
+        <!-- Start newest content section -->
         <div class="col-12 mt-3 mb-2">
             <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.2.1</span></p>
         </div>
@@ -134,7 +141,9 @@
                 </div>
             {/if}
         </div>
+        <!-- End newest content section -->
 
+        <!-- Start most liked and recently updated content section -->
         <div class="col-12 mt-5 mb-2">
             <p class="h4">Most Liked</p>
         </div>
@@ -151,7 +160,9 @@
                 </div>
             {/if}
         </div>
+        <!-- End most liked content section -->
 
+        <!-- Start recently updated content section -->
         <div class="col-12 mt-5 mb-2">
             <p class="h4">Recently Updated</p>
         </div>
@@ -168,6 +179,7 @@
                 </div>
             {/if}
         </div>
+        <!-- End recently updated content section -->
     </div>
     <div class="row justify-content-center text-center gy-3 my-auto border-top border-light-subtle mt-5">
         <div class="col-12 mt-5">
@@ -186,39 +198,10 @@
 
 <style>
 
-    .row-horizontal {
-        overflow-x: auto;
-        white-space: nowrap;
+    .bg-purple-gradient {
+        background: linear-gradient(145deg, rgba(92, 0, 166, 0.5) 10%, rgba(92, 0, 166, 0.1));
     }
 
-    .column-vertical {
-        flex-wrap: wrap;
-        overflow-y: auto;
-        max-height: calc(100vh / 1.15);
-        white-space: normal;
-    }
-
-    .column-vertical::-webkit-scrollbar {
-        width: 15px;
-    }
-
-    .column-vertical::-webkit-scrollbar-track {
-        background: rgba(92, 0, 166, 0.25);
-    }
-
-    .column-vertical::-webkit-scrollbar-thumb {
-        background: rgba(92, 0, 166, 0.80);
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .column-vertical::-webkit-scrollbar-thumb:hover {
-        background: rgba(92, 0, 166, 1);
-    }
-
-    .bg-purple-opacity-50 {
-        background-color: rgba(92, 0, 166, 0.5);
-    }
 
     /*
     .bg-purple {
@@ -234,12 +217,49 @@
     }
     */
 
-    .bg-purple-opacity-75 {
-        background-color: rgba(92, 0, 166, 0.75);
+    .column-vertical {
+        flex-wrap: wrap;
+        overflow-y: auto;
+        max-height: calc(100vh / 1.15);
+        white-space: normal;
+    }
+
+    .column-vertical::-webkit-scrollbar {
+        width: 12px;
+    }
+
+    .column-vertical::-webkit-scrollbar-track {
+        background: rgba(92, 0, 166, 0.25);
+    }
+
+    .column-vertical::-webkit-scrollbar-thumb {
+        background: linear-gradient(-145deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .column-vertical::-webkit-scrollbar-thumb:hover {
+        background: rgba(92, 0, 166, 1);
+    }
+
+    /* Custom for mobile */
+    @media (max-width: 576px) {
+        .column-vertical::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .row-horizontal::-webkit-scrollbar {
+            height: 8px;
+        }
+    }
+
+    .row-horizontal {
+        overflow-x: auto;
+        white-space: nowrap;
     }
 
     .row-horizontal::-webkit-scrollbar {
-        height: 15px;
+        height: 12px;
     }
 
     .row-horizontal::-webkit-scrollbar-track {
@@ -247,7 +267,7 @@
     }
 
     .row-horizontal::-webkit-scrollbar-thumb {
-        background: rgba(92, 0, 166, 0.80);
+        background: linear-gradient(-145deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
         border-radius: 8px;
         cursor: pointer;
     }
