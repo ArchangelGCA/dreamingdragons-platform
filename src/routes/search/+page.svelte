@@ -102,6 +102,7 @@
     }
 </script>
 
+<!--
 <Seo
         title="{partialText} | Roses in The Flames"
         description="Search results for {partialText} on Roses in The Flames."
@@ -110,6 +111,7 @@
         author="ArchangelGCA"
         index={index}
 />
+-->
 
 <div class="container-fluid my-3" style="min-height: 69vh">
     {#if partialText === ""}

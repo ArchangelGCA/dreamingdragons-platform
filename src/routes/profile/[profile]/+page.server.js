@@ -134,6 +134,12 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
             results.likedBooks = [];
         }
 
+        results.title = profile[0].username + " - Profile";
+        results.description = "Profile of " + profile[0].username + " on RiTF, Roses in The Flames";
+        results.imageURL = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? "https://tales.rosesintheflames.com/favicon.webp" : profile[0].avatar_url);
+        results.logo = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? "https://tales.rosesintheflames.com/favicon.webp" : profile[0].avatar_url);
+        results.author = profile[0].username;
+        results.name = profile[0].username;
         return results;
     } else { // ID IS NOT SPECIFIED
 

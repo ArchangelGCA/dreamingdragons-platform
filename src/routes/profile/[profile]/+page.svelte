@@ -243,6 +243,7 @@
     }
 </script>
 
+<!--
 <Seo
         title="{profile ? profile.username : 'Profile'} - Profile"
         description="Profile of {profile ? profile.username : 'Profile'} on RiTF, Roses in The Flames."
@@ -255,6 +256,7 @@
         twitter="true"
         index="true"
 />
+-->
 
 <svelte:window on:scroll={handleScroll} bind:scrollY={y}/>
 

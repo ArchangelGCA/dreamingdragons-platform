@@ -279,8 +279,9 @@
     }
 </script>
 
+<!--
 <Seo
-        title="{chapterContent.book_title} - {chapterContent.title} - {chapterContent.owner_username}"
+        title="{chapterContent.book_title} - {chapterContent.title} by {chapterContent.owner_username}"
         description="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title}"
         siteName="Roses in The Flames - Platform"
         imageURL="{chapterContent.book_cover_url}"
@@ -291,6 +292,7 @@
         twitter="true"
         index="true"
 />
+-->
 
 <div class="container-xxl">
     <!-- Shortcut button -->

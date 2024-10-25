@@ -267,6 +267,7 @@
     }
 </script>
 
+<!--
 <Seo
     title="{bookContent.book_title} by {bookContent.owner_username}"
     description="Content by {bookContent.owner_username} - {bookContent.book_title}"
@@ -279,6 +280,7 @@
     twitter="true"
     index="true"
 />
+-->
 
 <div class="container-xxl">
     <div class="row justify-content-center my-2">

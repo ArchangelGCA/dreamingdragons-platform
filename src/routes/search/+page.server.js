@@ -29,8 +29,10 @@ export const load = async ( { params, url, locals: { supabase, /*getSession,*/ }
     }
 
     results.searchResults = searchResults;
+    results.title = partial_text + ' - Roses in The Flames';
     results.partialText = partial_text;
-
+    results.description = 'Search Results for ' + partial_text + ' on Roses in The Flames'
+    results.index = (searchResults.length > 0);
     return results;
 }
 

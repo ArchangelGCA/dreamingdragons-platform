@@ -69,6 +69,7 @@
     }
 </script>
 
+<!--
 <Seo
         title="Roses in The Flames - Platform"
         description="The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature."
@@ -81,6 +82,7 @@
         schemaOrg="true"
         index="true"
 />
+-->
 
 <div class="container-fluid mb-3 mt-2" style="min-height: 69vh">
 

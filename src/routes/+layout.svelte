@@ -10,8 +10,16 @@
     import { page as pageStore } from '$app/stores';
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import {deserialize} from "$app/forms";
+    import Seo from "sk-seo";
 
     export let data;
+
+    // SEO DEBUG AND $page DATA.
+    /*
+    $: if ($pageStore.data) {
+        console.log($pageStore.data);
+    }
+    */
 
     let { supabase, session, image_proxy, notifications, tooltipConfig, userData } = data;
     $: ({ supabase, session, notifications, tooltipConfig, userData } = data);
@@ -168,6 +176,19 @@
 </script>
 
 <SvelteToast />
+
+<Seo
+    title={$pageStore.data.title ?? "Roses in The Flames - Platform"}
+    description={$pageStore.data.description ?? "The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature."}
+    siteName="Roses in The Flames - Platform"
+    imageURL={$pageStore.data.imageURL ?? "https://tales.rosesintheflames.com/favicon.webp"}
+    logo={$pageStore.data.logo ?? "https://tales.rosesintheflames.com/favicon.webp"}
+    author={$pageStore.data.author ?? "ArchangelGCA, CringleDragons"}
+    canonical={$pageStore.data.canonical ?? "https://tales.rosesintheflames.com"}
+    twitter="true"
+    schemaOrg="true"
+    index={$pageStore.data.index ?? "true"}
+/>
 
 <div class="container-fluid bg-black bg-opacity-50" style="max-width: 100%; overflow-x: hidden">
 
