@@ -35,6 +35,7 @@ export const handle = async ({ event, resolve }) => {
 
         return { session: Object.assign({}, session, { user }), user };
     }
+
     return resolve(event, {
         filterSerializedResponseHeaders(name) {
             return name === 'content-range' || name === 'x-supabase-api-version'

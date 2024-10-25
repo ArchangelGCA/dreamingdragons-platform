@@ -123,7 +123,7 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         is_liked,
         // For SEO $page.data on +layout etc...
         title: chapterContent[0].book_title + " - " +  chapterContent[0].title + " by " + chapterContent[0].owner_username,
-        description: chapterContent[0].title +  " by " + chapterContent[0].owner_username + " - " + chapterContent[0].book_title,
+        description: chapterContent[0].title +  " by " + chapterContent[0].owner_username + " - " + chapterContent[0].book_title + " on Roses in The Flames.",
         imageURL: chapterContent[0].book_cover_url,
         author: chapterContent[0].owner_username,
         name: chapterContent[0].owner_username,

@@ -89,7 +89,7 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         bookContent: bookContent[0], tags, comments, user_id,
         // For SEO $page.data on +layout etc...
         title: bookContent[0].book_title + " by " + bookContent[0].owner_username,
-        description: "Content by " + bookContent[0].owner_username + " - " + bookContent[0].book_title,
+        description: "Content by " + bookContent[0].owner_username + " - " + bookContent[0].book_title + " on Roses in The Flames.",
         imageURL: bookContent[0].book_cover_url,
         author: bookContent[0].owner_username,
         name: bookContent[0].owner_username,
