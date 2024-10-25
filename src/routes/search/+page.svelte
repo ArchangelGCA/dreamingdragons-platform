@@ -4,7 +4,6 @@
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
     import {onMount} from "svelte";
-    import Seo from "sk-seo";
 
     export let data;
     let { searchResults, partialText, image_proxy } = data;

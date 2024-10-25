@@ -4,7 +4,6 @@
     import {toast} from "@zerodevx/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
     import {onMount} from "svelte";
-    import Seo from "sk-seo";
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
@@ -266,21 +265,6 @@
         reportActionActive = false;
     }
 </script>
-
-<!--
-<Seo
-    title="{bookContent.book_title} by {bookContent.owner_username}"
-    description="Content by {bookContent.owner_username} - {bookContent.book_title}"
-    siteName="Roses in The Flames - Platform"
-    imageURL="{bookContent.book_cover_url}"
-    logo="https://tales.rosesintheflames.com/favicon.webp"
-    author="ArchangelGCA"
-    name="{bookContent.owner_username}"
-    schemaOrg="true"
-    twitter="true"
-    index="true"
-/>
--->
 
 <div class="container-xxl">
     <div class="row justify-content-center my-2">

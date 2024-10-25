@@ -51,7 +51,12 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         return errorx(500, "Error fetching content");
     }
 
-    return { content }
+    return {
+        content,
+        title: 'Admin - Content',
+        description: 'Admin Content Dashboard of Roses in The Flames platform.',
+        index: false
+    }
 }
 
 export const actions = {

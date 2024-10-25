@@ -5,7 +5,6 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
-    import Seo from "sk-seo";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import Masonry from "svelte-bricks";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
@@ -242,21 +241,6 @@
         }
     }
 </script>
-
-<!--
-<Seo
-        title="{profile ? profile.username : 'Profile'} - Profile"
-        description="Profile of {profile ? profile.username : 'Profile'} on RiTF, Roses in The Flames."
-        siteName="Roses in The Flames - Platform"
-        imageURL="{profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'}"
-        logo="{profile.avatar_url ? profile.avatar_url : 'https://tales.rosesintheflames.com/favicon.webp'}"
-        author="ArchangelGCA"
-        name="{profile.username}"
-        schemaOrg="true"
-        twitter="true"
-        index="true"
-/>
--->
 
 <svelte:window on:scroll={handleScroll} bind:scrollY={y}/>
 

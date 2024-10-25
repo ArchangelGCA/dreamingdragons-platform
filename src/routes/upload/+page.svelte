@@ -6,7 +6,6 @@
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
     import { tooltip } from "@svelte-plugins/tooltips";
-    import Seo from "sk-seo";
 
     let conf = {
         skin: 'oxide-dark',
@@ -503,11 +502,6 @@
         activeUpload = false;
     }
 </script>
-
-<Seo
-        title="Rose In The Flames | Upload"
-        index="false"
-/>
 
 <div class="container-md px-0">
     <!-- Alert  -->

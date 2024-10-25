@@ -10,6 +10,8 @@ export const load = async ( { locals: { supabase } }) => {
     }
 
     return {
-        updates
+        updates,
+        title: 'Roses in The Flames - Updates',
+        description: 'Updates and changelogs of the Roses in The Flames platform.'
     }
 }

@@ -59,6 +59,8 @@ export const load = async ({ locals: { supabase, getSession } }) => {
         }
     }
 
+    results.title = (results.profile !== null && results.profile.username !== null && results.profile.username !== "" ? results.profile.username : 'Guest') + ' - Settings';
+    results.description = 'Settings page for ' + (results.profile !== null && results.profile.username !== null && results.profile.username !== "" ? results.profile.username : 'Guest') + ' on Roses in The Flames.';
     return results;
 }
 

@@ -2,14 +2,12 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
-    import Seo from "sk-seo";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
     import {onMount} from "svelte";
-    import {browser} from "$app/environment";
 
     export let data;
     let { supabase, comments, image_proxy, user_id, is_liked, tooltipConfig, chapterContent, chapters, tags } = data;
@@ -278,21 +276,6 @@
         tags.forEach((item) => item.url = `/search?tag=${item.name}`);
     }
 </script>
-
-<!--
-<Seo
-        title="{chapterContent.book_title} - {chapterContent.title} by {chapterContent.owner_username}"
-        description="{chapterContent.title} by {chapterContent.owner_username} - {chapterContent.book_title}"
-        siteName="Roses in The Flames - Platform"
-        imageURL="{chapterContent.book_cover_url}"
-        logo="https://tales.rosesintheflames.com/favicon.webp"
-        author="ArchangelGCA"
-        name="{chapterContent.owner_username}"
-        schemaOrg="true"
-        twitter="true"
-        index="true"
-/>
--->
 
 <div class="container-xxl">
     <!-- Shortcut button -->

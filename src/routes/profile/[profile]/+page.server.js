@@ -1,4 +1,5 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
+import {ORIGIN} from '$env/static/private';
 
 // Async function to get liked books, from range start to end, from book_likes
 async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
@@ -136,8 +137,8 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
 
         results.title = profile[0].username + " - Profile";
         results.description = "Profile of " + profile[0].username + " on RiTF, Roses in The Flames";
-        results.imageURL = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? "https://tales.rosesintheflames.com/favicon.webp" : profile[0].avatar_url);
-        results.logo = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? "https://tales.rosesintheflames.com/favicon.webp" : profile[0].avatar_url);
+        results.imageURL = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? ORIGIN + "/favicon.webp" : profile[0].avatar_url);
+        results.logo = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? ORIGIN + "/favicon.webp" : profile[0].avatar_url);
         results.author = profile[0].username;
         results.name = profile[0].username;
         return results;

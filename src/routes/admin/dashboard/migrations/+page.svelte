@@ -1,7 +1,6 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
-    import Seo from "sk-seo";
 
     let isMigrating = false;
 
@@ -117,15 +116,6 @@
         isMigrating = false;
     }
 </script>
-
-<Seo
-        title="Admin - Migrations"
-        description="Admin Migrations dashboard for Roses in The Flames platform."
-        siteName="Roses in The Flames - Platform"
-        imageURL="https://tales.rosesintheflames.com/favicon.webp"
-        author="ArchangelGCA"
-        index="false"
-/>
 
 <div class="row mb-2">
     <div class="col text-center">

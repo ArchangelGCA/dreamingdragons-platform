@@ -38,8 +38,8 @@ export const load = async ( { params, locals: { supabase, getSession } }) => {
             }
         }
 
-        redirect(302,'/profile/' + session.user.id);
+        return redirect(302,'/profile/' + session.user.id);
     } else {
-        redirect(302,'/login');
+        return redirect(302,'/login');
     }
 }

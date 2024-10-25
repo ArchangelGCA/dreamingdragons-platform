@@ -31,6 +31,11 @@ async function isAdmin(session, supabase) {
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();
     let maxUsers = 1000000;
+    const pageData = {
+        title: 'Admin - Reports',
+        description: 'Admin Reports Dashboard of Roses in The Flames platform.',
+        index: false
+    }
 
     const result = await isAdmin(session, supabase);
     if (result !== true) {
@@ -49,6 +54,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     if (!reports || reports.length === 0) {
         return {
+            ...pageData,
             reports: []
         }
     } else {
@@ -57,6 +63,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         const openReports = reports.filter((r) => r.is_closed === false);
 
         return {
+            ...pageData,
             openReports,
             closedReports
         }

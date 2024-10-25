@@ -40,6 +40,12 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     const result = await isAdmin(session, supabase);
     if (result !== true) return result;
+
+    return {
+        title: 'Admin - Migrations',
+        description: 'Admin Migrations Dashboard of Roses in The Flames platform.',
+        index: false
+    }
 }
 
 export const actions = {

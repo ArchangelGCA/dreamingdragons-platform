@@ -1,7 +1,6 @@
 <script>
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
-    import Seo from "sk-seo";
 
     let email = '';
     let activeEvent = false;
@@ -36,15 +35,6 @@
         activeEvent = false;
     }
 </script>
-
-<Seo
-    title="Roses in The Flames - Mailing List"
-    description="Subscribe to the official Roses in The Flames mailing list."
-    siteName="Roses in The Flames - Platform"
-    imageURL="https://tales.rosesintheflames.com/favicon.webp"
-    author="ArchangelGCA"
-    index="true"
-/>
 
 <div class="container text-center">
     <div class="row d-flex align-items-center" style="min-height: 69.5vh">

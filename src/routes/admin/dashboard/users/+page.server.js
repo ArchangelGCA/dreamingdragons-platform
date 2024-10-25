@@ -79,7 +79,10 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     });
 
     return {
-        profiles
+        profiles,
+        title: 'Admin - Users',
+        description: 'Admin Users Dashboard of Roses in The Flames platform.',
+        index: false,
     }
 }
 

@@ -1,6 +1,14 @@
 import { PRIVATE_RESEND_API_KEY, PRIVATE_RESEND_AUDIENCE_ID } from '$env/static/private';
 import { Resend } from 'resend';
 
+export const load = async ({}) => {
+    return {
+        title: 'Roses in The Flames - Mailing List',
+        description: 'Subscribe to the official Roses in The Flames mailing list.',
+    }
+}
+
+
 export const actions = {
     // Register to mailing list
     subscribe: async ({ request }) => {

@@ -1,6 +1,4 @@
 <script>
-    import Seo from "sk-seo";
-
     export let data;
 
     let { updates } = data;
@@ -17,14 +15,6 @@
         return new Date(dateString).toLocaleTimeString(undefined, options);
     }
 </script>
-
-<Seo
-    title="Roses in The Flames - Updates"
-    description="Updates and changelogs of the Roses in The Flames."
-    siteName="Roses in The Flames - Platform"
-    imageURL="https://tales.rosesintheflames.com/favicon.webp"
-    author="ArchangelGCA"
-/>
 
 <div class="container mt-3">
     <div class="row">

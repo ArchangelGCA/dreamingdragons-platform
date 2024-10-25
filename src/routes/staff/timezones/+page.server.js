@@ -29,5 +29,9 @@ export const load = async ({locals: {supabase}}) => {
     // TODO: Find reason why this is running twice
     //console.log('timedata', timedata);
 
-    return {timedata};
+    return {
+        timedata,
+        title: 'Roses in The Flames - Staff Timezones',
+        description: 'Roses in The Flames Staff Timezones page. Check the current time of our staff members.'
+    };
 }

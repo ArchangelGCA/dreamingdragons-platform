@@ -31,6 +31,35 @@ async function isAdmin(session, supabase) {
     return true;
 }
 
+function getActivePanic(panic) {
+    if (!panic || panic.length === 0) {
+        return {
+            panic: {is_active: false}
+        }
+    } else {
+        if (panic.length === 1){ // Only one panic found, return it
+            return {
+                panic: panic[0]
+            }
+        } else {
+            const activePanic = panic.filter((p) => p.is_active === true);
+            if (activePanic.length > 1){ // Multiple active panic found, return latest one
+                return {
+                    panic: activePanic[0]
+                }
+            } else if (activePanic.length === 0){ // No active panic found, return latest one
+                return {
+                    panic: panic[0]
+                }
+            } else { // One active panic found, return it
+                return {
+                    panic: activePanic
+                }
+            }
+        }
+    }
+}
+
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();
     let maxUsers = 1000000;
@@ -50,31 +79,12 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         return errorx(500, "Error fetching panic");
     }
 
-    if (!panic || panic.length === 0) {
-        return {
-            panic: []
-        }
-    } else {
-        if (panic.length === 1){ // Only one panic found, return it
-            return {
-                panic: panic
-            }
-        } else {
-            const activePanic = panic.filter((p) => p.is_active === true);
-            if (activePanic.length > 1){ // Multiple active panic found, return latest one
-                return {
-                    panic: [activePanic[0]]
-                }
-            } else if (activePanic.length === 0){ // No active panic found, return latest one
-                return {
-                    panic: [panic[0]]
-                }
-            } else { // One active panic found, return it
-                return {
-                    panic: activePanic
-                }
-            }
-        }
+
+    return {
+        panic: getActivePanic(panic),
+        title: 'Admin - Dashboard',
+        description: 'Admin Dashboard of Roses in The Flames platform.',
+        index: false,
     }
 }
 

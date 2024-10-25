@@ -26,4 +26,10 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     if (!data || data.length === 0) {
         return errorx(401, "Unauthorized");
     }
+
+    return {
+        title: 'Roses in The Flames - Admin Dashboard',
+        description: 'Admin Dashboard of Roses in The Flames platform.',
+        index: false
+    }
 }

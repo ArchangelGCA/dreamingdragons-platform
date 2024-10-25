@@ -5,7 +5,6 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
-    import Seo from "sk-seo";
 
     let conf = {
         skin: 'oxide-dark',
@@ -223,12 +222,6 @@
         inputTag = '';
     }
 </script>
-
-<Seo
-    title="Roses in The Flames - Edit Chapter"
-    description="Edit a chapter."
-    index="false"
-/>
 
 <div class="container-md mt-4 mb-3">
     <div class="row text-center">

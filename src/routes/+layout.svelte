@@ -181,12 +181,12 @@
     title={$pageStore.data.title ?? "Roses in The Flames - Platform"}
     description={$pageStore.data.description ?? "The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature."}
     siteName="Roses in The Flames - Platform"
-    imageURL={$pageStore.data.imageURL ?? "https://tales.rosesintheflames.com/favicon.webp"}
-    logo={$pageStore.data.logo ?? "https://tales.rosesintheflames.com/favicon.webp"}
+    imageURL={$pageStore.data.imageURL ?? $pageStore.url.origin + "/favicon.webp"}
+    logo={$pageStore.data.logo ?? $pageStore.url.origin + "/favicon.webp"}
     author={$pageStore.data.author ?? "ArchangelGCA, CringleDragons"}
-    canonical={$pageStore.data.canonical ?? "https://tales.rosesintheflames.com"}
-    twitter="true"
-    schemaOrg="true"
+    canonical={$pageStore.data.canonical ?? $pageStore.url.origin}
+    twitter={$pageStore.data.twitter ?? "true"}
+    schemaOrg={$pageStore.data.schemaOrg ?? "true"}
     index={$pageStore.data.index ?? "true"}
 />
 

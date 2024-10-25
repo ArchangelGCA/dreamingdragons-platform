@@ -37,7 +37,12 @@ export const load = async ({ params, locals: { supabase, getSession} }) => {
 
      const book = bookSearch[0];
 
-    return { book };
+    return {
+        book,
+        title: 'Roses in The Flames - Edit Tale',
+        description: 'Edit your tale.',
+        index: false
+    };
 }
 
 export const actions = {

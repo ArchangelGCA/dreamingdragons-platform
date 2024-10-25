@@ -3,7 +3,6 @@
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
-    import Seo from "sk-seo";
 
     export let data;
 
@@ -20,7 +19,7 @@
 
         const formData = new FormData();
 
-        if (panic.length === 0 || !panic[0].is_active) {
+        if (panic.length === 0 || !panic.is_active) {
             toastId = toast.push('Enabling panic mode...', {
                 theme: {
                     '--toastBackground': '#bd135a',
@@ -81,15 +80,6 @@
     }
 </script>
 
-<Seo
-        title="Admin - Dashboard"
-        description="Admin dashboard for Roses in The Flames platform."
-        siteName="Roses in The Flames - Platform"
-        imageURL="https://tales.rosesintheflames.com/favicon.webp"
-        author="ArchangelGCA"
-        index="false"
-/>
-
 <div class="row text-center mb-2 mt-1">
     <div class="col-md-12">
         <h2>Admin Dashboard (ALPHA)</h2>
@@ -101,11 +91,11 @@
             <div class="card-body text-center">
                 <i class="fas fa-exclamation-triangle fa-3x mb-3 purple"></i>
                 <h5 class="card-title">Panic Mode: <span
-                        class="{panic[0].is_active ? 'text-danger' : 'text-warning'}">{panic[0].is_active ? 'Enabled' : 'Disabled'}</span>
+                        class="{panic.is_active ? 'text-danger' : 'text-warning'}">{panic.is_active ? 'Enabled' : 'Disabled'}</span>
                 </h5>
                 <button class="btn btn-panic {isPanicAction ? 'disabled': ''}" on:click={handlePanic}
                         use:tooltip={{...tooltipConfig}}
-                        title="Toggle panic mode">{panic[0].is_active ? 'Disable Panic Mode' : 'Enable Panic Mode'}</button>
+                        title="Toggle panic mode">{panic.is_active ? 'Disable Panic Mode' : 'Enable Panic Mode'}</button>
             </div>
         </div>
     </div>

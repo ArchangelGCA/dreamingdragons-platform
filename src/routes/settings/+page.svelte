@@ -4,7 +4,6 @@
     import {toast} from "@zerodevx/svelte-toast";
     import {tooltip} from "@svelte-plugins/tooltips";
     import Cover from "$lib/components/profile/Cover.svelte";
-    import Seo from "sk-seo";
     import {invalidateAll} from "$app/navigation";
     import {onMount} from "svelte";
     import {browser} from "$app/environment";
@@ -207,11 +206,6 @@
         coverUrl = profile.cover_url;
     }
 </script>
-
-<Seo
-        title="{(profile && profile.username) ? profile.username : 'Guest'} | Settings"
-        index="false"
-/>
 
 <div class="container-xxl px-0" style="min-height: 70vh">
     <div class="row mt-3 mb-2 mx-1">
