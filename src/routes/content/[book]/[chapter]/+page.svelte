@@ -281,7 +281,7 @@
     <!-- Shortcut button -->
     <div class="row justify-content-center my-2">
         <div class="col-12 text-center px-0">
-            <a href="#title" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2" use:tooltip={{...tooltipConfig}} title="Go to Text">
+            <a href="#title" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2" use:tooltip={{...tooltipConfig}} title="Go to Text" aria-label="Go to text">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
@@ -289,7 +289,7 @@
     <!-- Chapter and Book cover -->
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
-            <a href="/content/{chapterContent.book_id}">
+            <a href="/content/{chapterContent.book_id}" target="_blank" aria-label="Open image in a new page.">
                 <ContentImage url={chapterContent.book_cover_url} alt={chapterContent.book_title} />
             </a>
         </div>
@@ -299,7 +299,7 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
-                    <a class="w-auto" href="/profile/{chapterContent.owner_id}">
+                    <a class="w-auto" href="/profile/{chapterContent.owner_id}" aria-label="Visit author's profile">
                         <UserAvatar url={chapterContent.owner_avatar_url} username={chapterContent.owner_username} id={chapterContent.owner_id} {image_proxy} size="75px"/>
                     </a>
                 </div>

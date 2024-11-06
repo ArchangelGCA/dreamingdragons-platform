@@ -269,14 +269,14 @@
 <div class="container-xxl">
     <div class="row justify-content-center my-2">
         <div class="col-12 text-center px-0">
-            <a href="#chapters" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2" use:tooltip={{...tooltipConfig}} title="Go to Chapters">
+            <a href="#chapters" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2" use:tooltip={{...tooltipConfig}} title="Go to Chapters" aria-label="View chapters">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
     </div>
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
-            <a href="{bookContent.book_cover_url}" target="_blank" use:autoAnimate>
+            <a href="{bookContent.book_cover_url}" target="_blank" aria-label="Open image in new page." use:autoAnimate>
                 <ContentImage url="{bookContent.book_cover_url}" alt="{bookContent.book_title}" />
             </a>
         </div>

@@ -307,6 +307,7 @@
                             href="{profile.website ? profile.website : ''}"
                             target="_blank"
                             data-tooltip="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"
+                            aria-label="Open profile linked website."
                             ><i
                             class="fa-solid fa-external-link fa-2xs"></i></a></span>
                 {/if}

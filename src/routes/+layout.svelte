@@ -215,7 +215,7 @@
                 {#if notificationsCount !== 0}
                     <div class="col pe-3 mt-1">
                         <div class="position-relative">
-                            <button class="btn border border-0 p-0 bg-transparent" on:click={() => notificationsCount = 0} on:keydown={() => notificationsCount = 0}>
+                            <button class="btn border border-0 p-0 bg-transparent" on:click={() => notificationsCount = 0} on:keydown={() => notificationsCount = 0} aria-label="View notifications">
                                 <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas" data-bs-target="#notifications" aria-controls="notifications"></i>
                             </button>
                             <span class="position-absolute top-0 start-100 mt-1 ms-2 translate-middle badge rounded-pill bg-danger">{notificationsCount}</span>
@@ -237,7 +237,7 @@
                 <!-- Profile -->
                 <div class="col-auto">
                     <div class="dropdown">
-                        <button class="btn btn-transparent py-0 pt-1 ps-0 pe-1" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-transparent py-0 pt-1 ps-0 pe-1" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profile dropdown">
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                                 <i class="fa-solid fa-user py-2 pb-2 mb-1 px-2 border border-2 border-light border-opacity-25 rounded-3"></i>
                             {:else}
