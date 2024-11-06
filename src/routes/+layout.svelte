@@ -156,10 +156,11 @@
             const result = deserialize(await response.text());
             if (result.type === 'success') {
                 if (result.data.status === 200) {
-                    const newNotifs = result.data.body.newNotifs;
-                    if (newNotifs.length > 0) {
+                    let newNotifs = result.data.body.newNotifs;
+                    if (newNotifs && newNotifs.length > 0) {
+                        newNotifs = newNotifs.filter(notif => !notifications.some(notification => notification.id === notif.id));
                         notifications = [...newNotifs, ...notifications];
-                        latestNotificationTimestamp = newNotifs[0].created_at;
+                        latestNotificationTimestamp = notifications[0].created_at;
                         notificationsCount += newNotifs.length;
                     }
                 }

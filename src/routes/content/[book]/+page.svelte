@@ -19,7 +19,6 @@
         bookContent,
         comments,
         user_id,
-        is_liked,
         tooltipConfig,
         tags
     } = data;
@@ -27,7 +26,6 @@
     $: ({
         comments,
         user_id,
-        is_liked,
         bookContent,
         comments,
         tags
@@ -66,13 +64,13 @@
             await supabase
                 .from('views')
                 .insert([{
-                    book_id: bookContent.book_id,
+                    book_id: bookContent.id,
                     ip_address: ip,
                     user_id: user_id
                 }
                 ]).then((error) => {
                     if (!error) {
-                        bookContent.total_views++;
+                        bookContent.views.count++;
                     }
                 });
         } else if (ip) {
@@ -80,15 +78,14 @@
             await supabase
                 .from('views')
                 .insert([{
-                    book_id: bookContent.book_id,
+                    book_id: bookContent.id,
                     ip_address: ip
                 }
                 ]).then((error) => {
                     if (!error) {
-                        bookContent.total_views++;
+                        bookContent.views.count++;
                     }
                 });
-
         }
     }
 
@@ -100,7 +97,7 @@
 
         likeActionActive = true;
         const data = new FormData();
-        data.append('contentId', bookContent.book_id);
+        data.append('contentId', bookContent.id);
 
         bookContent.is_liked = !bookContent.is_liked;
 
@@ -113,7 +110,7 @@
         if (result.type === 'success') {
             if (result.data.status === 200) {
                 if (bookContent.is_liked) {
-                    bookContent.likes_count++;
+                    bookContent.book_likes = [...bookContent.book_likes, {user_id: user_id}];
                     toast.push('Tale liked ❤️', {
                         theme: {
                             '--toastBackground': '#5c00a6',
@@ -121,7 +118,7 @@
                         }
                     });
                 } else {
-                    bookContent.likes_count--;
+                    bookContent.book_likes = bookContent.book_likes.filter((like) => like.user_id !== user_id);
                     toast.push('Tale unliked 💔', {
                         theme: {
                             '--toastBackground': '#5c00a6',
@@ -162,7 +159,7 @@
         deleteBookActionActive = true;
 
         const data = new FormData();
-        data.append('bookId', bookContent.book_id);
+        data.append('bookId', bookContent.id);
 
         const response = await fetch('?/delete_book', {
             method: 'POST',
@@ -172,7 +169,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success') {
             if (result.data.status === 200) {
-                toast.push('Tale ' + bookContent.book_title + ' deleted! 🗑️', {
+                toast.push('Tale ' + bookContent.title + ' deleted! 🗑️', {
                     theme: {
                         '--toastBackground': '#5c00a6',
                         '--toastColor': '#fff',
@@ -203,7 +200,7 @@
         reportActionActive = true;
 
         const formData = new FormData();
-        formData.append('book_id', bookContent.book_id);
+        formData.append('book_id', bookContent.id);
         formData.append('report_description', reportText);
 
         const response = await fetch('?/report', {
@@ -258,8 +255,8 @@
     </div>
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
-            <a href="{bookContent.book_cover_url}" target="_blank" aria-label="Open image in new page." use:autoAnimate>
-                <ContentImage url="{bookContent.book_cover_url}" alt="{bookContent.book_title}"/>
+            <a href="{bookContent.cover_url}" target="_blank" aria-label="Open image in new page." use:autoAnimate>
+                <ContentImage url="{bookContent.cover_url}" alt="{bookContent.title}"/>
             </a>
         </div>
     </div>
@@ -267,13 +264,13 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
-                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username}
-                                id={bookContent.book_owner_id} {image_proxy} size="75px"/>
+                    <UserAvatar url={bookContent.profiles.avatar_url} username={bookContent.profiles.username}
+                                id={bookContent.owner_id} {image_proxy} size="75px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
-                    <p class="h3">{bookContent.book_title}</p>
+                    <p class="h3">{bookContent.title}</p>
                     <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none"
-                                             href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a>
+                                             href="/profile/{bookContent.owner_id}">{bookContent.profiles.username}</a>
                         - <span class="text-muted" use:tooltip={{...tooltipConfig}}
                                 title="{createdAtDetailed}">{createdAtFormatted}</span></p>
                     {#if tags.length !== 0}
@@ -302,7 +299,7 @@
                     </button>
                 </div>
                 <div class="col-auto">
-                    <span class="mt-1">{bookContent.likes_count}</span>
+                    <span class="mt-1">{bookContent.book_likes.length}</span>
                 </div>
             </div>
         </div>
@@ -313,7 +310,7 @@
                     <i class="fas fa-eye"></i>
                 </div>
                 <div class="col-auto mt-1">
-                    <span class="">{bookContent.total_views}</span>
+                    <span class="">{bookContent.views[0].count}</span>
                 </div>
             </div>
         </div>
@@ -332,21 +329,20 @@
     <!-- Text section -->
     <div class="row justify-content-center text-center mt-3">
         <div class="col-12 fs-5 bg-purple-opacity-25 p-3 pb-0 mb-2 rounded-4 ">
-            {@html bookContent.book_description}
+            {@html bookContent.description}
         </div>
     </div>
     <!-- Chapters list section -->
     <div class="row justify-content-center text-center" id="chapters">
-        {#if bookContent && bookContent.chapters && (bookContent.chapters[0].chapter_id)}
-            <div class="col-12 pb-2 text-center">
+        {#if bookContent && bookContent.chapters.length > 0}
+            <div class="col-12 py-2 text-center">
                 <p class="h1">Chapters:</p>
             </div>
             <div class="col-12 bg-purple-opacity-25 p-3 px-2 rounded-4 mb-3">
                 <div class="row justify-content-evely gy-3 mx-0">
-                    {#each bookContent.chapters as chapter, index (chapter.chapter_id)}
+                    {#each bookContent.chapters as chapter, index (chapter.id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <ChapterCard content={chapter} index={index + 1} {image_proxy}
-                                         on:invalidate={() => {invalidateAll()}}/>
+                            <ChapterCard content={chapter} index={index + 1} {image_proxy} {user_id} />
                         </div>
                     {/each}
                 </div>
@@ -359,8 +355,8 @@
             <p class="text-secondary text-center">
                 <small>
                     &copy; {currentYear} <a class="link-secondary text-decoration-none"
-                                            href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}}
-                                            title="Profile">{bookContent.owner_username}</a> - {bookContent.book_title}
+                                            href="/profile/{bookContent.owner_id}" use:tooltip={{...tooltipConfig}}
+                                            title="Profile">{bookContent.profiles.username}</a> - {bookContent.title}
                 </small>
             </p>
         </div>
@@ -379,7 +375,7 @@
             <div class="col-12 px-0">
                 <div class="row justify-content-center pt-1">
                     <div class="col-auto">
-                        <a href="/edit/{bookContent.book_id}"
+                        <a href="/edit/{bookContent.id}"
                            class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
                            use:tooltip={{...tooltipConfig}} title="Edit Tale">
                             <i class="fas fa-edit"></i>
@@ -402,7 +398,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" {image_proxy}/>
+    <CommentsSection {comments} {supabase} bookId="{bookContent.id}" {image_proxy}/>
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

@@ -51,35 +51,18 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
     const bookId = params.book;
     let is_liked = false;
 
-    const { data: bookContent, error} = await supabase
-        .from('secure_book_content_views')
-        .select('*, book_tags(tags(id, name))')
-        .eq('book_id', bookId);
-
-    const { data: bookLikes, error: bookLikesError } = await supabase
-        .from('book_likes')
-        .select('id, user_id')
-        .eq('book_id', bookId);
+    const { data: bookContent, error: error } = await supabase
+        .from('book')
+        .select('*, profiles!book_owner_id_fkey(id, username, avatar_url), book_likes(*), views(count), book_tags(tags(id, name)), chapters(id, book_id, title, chapter_likes(id, user_id, created_at))')
+        .eq('id', bookId);
 
     if (error) {
         console.error(error);
         return errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
     }
 
-    if (bookLikesError) {
-        console.error(bookLikesError);
-        return errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
-    }
-
     if (!bookContent || bookContent.length === 0) {
         return errorx(404, "Content not found or removed by the original author.");
-    }
-
-    if (bookContent && bookContent.length > 0) {
-        if (bookContent[0].chapters) {
-            bookContent[0].chapters.sort((a, b) => a.chapter_id - b.chapter_id);
-            bookContent[0].chapters.forEach((item) => item.chapter_image_url = bookContent[0].book_cover_url);
-        }
     }
 
     const tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
@@ -91,9 +74,13 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         isOwner = bookContent[0].owner_id === session.user.id;
     }
 
-    if (user_id && bookLikes) {
-        // Check if bookLikes array contains the user_id, if so, set is_liked to true
-        is_liked = bookLikes.some(like => like.user_id === user_id);
+    if (bookContent && bookContent.length > 0) {
+        bookContent[0].chapters.sort((a, b) => a.id - b.id);
+        bookContent[0].chapters.forEach((item) => item.chapter_image_url = bookContent[0].cover_url);
+        if (user_id) {
+            is_liked = bookContent[0].book_likes.some(like => like.user_id === user_id);
+            bookContent[0].chapters.forEach((chapter) => chapter.is_liked = chapter.chapter_likes.some(like => like.user_id === user_id));
+        }
     }
 
     const comments = await loadComments(supabase, session, bookId);
@@ -108,11 +95,11 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         user_id,
         is_liked,
         // For SEO $page.data on +layout etc...
-        title: bookContent[0].book_title + " by " + bookContent[0].owner_username,
-        description: "Content by " + bookContent[0].owner_username + " - " + bookContent[0].book_title + " on Roses in The Flames.",
-        imageURL: bookContent[0].book_cover_url,
-        author: bookContent[0].owner_username,
-        name: bookContent[0].owner_username,
+        title: bookContent[0].title + " by " + bookContent[0].profiles.username,
+        description: "Content by " + bookContent[0].profiles.username + " - " + bookContent[0].title + " on Roses in The Flames.",
+        imageURL: bookContent[0].cover_url,
+        author: bookContent[0].profiles.username,
+        name: bookContent[0].profiles.username,
     };
 }
 

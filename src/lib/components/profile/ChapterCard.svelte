@@ -1,8 +1,8 @@
 <script>
-    import {createEventDispatcher, onMount} from "svelte";
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
     import {deserialize} from "$app/forms";
+    import {invalidateAll} from "$app/navigation";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -16,11 +16,8 @@
         theme: 'text-center w-auto'
     };
 
-    const dispatch = createEventDispatcher();
+    export let content, image_proxy, index, user_id;
 
-    export let content;
-    export let image_proxy;
-    export let index;
     let likeActionActive = false;
 
     function handleMouseEnter(e) {
@@ -41,15 +38,9 @@
         likeActionActive = true;
 
         const data = new FormData();
-        data.append('chapterId', content.chapter_id);
+        data.append('chapterId', content.id);
 
         content.is_liked = !content.is_liked;
-
-        if (content.is_liked) {
-            content.chapter_likes_count++;
-        } else {
-            content.chapter_likes_count--;
-        }
 
         const response = await fetch('?/like_chapter', {
             method: 'POST',
@@ -59,10 +50,26 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200) {
-                dispatch('invalidate');
+                if (content.is_liked) {
+                    content.chapter_likes = [...content.chapter_likes, {user_id: user_id}];
+                    toast.push('Chapter liked ❤️', {
+                        theme: {
+                            '--toastBackground': '#5c00a6',
+                            '--toastColor': '#fff',
+                        }
+                    });
+                } else {
+                    content.chapter_likes = content.chapter_likes.filter(like => like.user_id !== user_id);
+                    toast.push('Chapter unliked 💔', {
+                        theme: {
+                            '--toastBackground': '#5c00a6',
+                            '--toastColor': '#fff',
+                        }
+                    });
+                }
+                await invalidateAll();
             } else {
                 content.is_liked = !content.is_liked;
-                content.chapter_likes_count--;
 
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -73,7 +80,6 @@
             }
         } else {
             content.is_liked = !content.is_liked;
-            content.chapter_likes_count--;
 
             toast.push('Error during action (Please login)', {
                 theme: {
@@ -98,26 +104,26 @@
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
         {#if content.chapter_image_url}
-            <a href="/content/{content.book_id}/{content.chapter_id}">
-                <img src={content.chapter_image_url} alt="Chapter {content.chapter_title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy"
+            <a href="/content/{content.book_id}/{content.id}">
+                <img src={content.chapter_image_url} alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy"
                      style="object-fit: cover; position: absolute; top: 0; left: 0;">
                 <div class="chapter-number-over">{index}</div>
             </a>
         {:else}
-            <div class="chapter-number">{content.chapter_id}</div>
+            <div class="chapter-number">{content.id}</div>
         {/if}
     </div>
-    <a href="/content/{content.book_id}/{content.chapter_id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+    <a href="/content/{content.book_id}/{content.id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 ps-3 pb-1 pt-2 mx-0">
                 <div class="col-9 my-auto">
-                    <span class="h5 text-light">{content.chapter_title}</span>
+                    <span class="h5 text-light">{content.title}</span>
                 </div>
                 <div class="col-3 mb-1 text-end">
                     <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
                         <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
-                            <span class="likes-counter">{content.chapter_likes_count}</span>
+                            <span class="likes-counter">{content.chapter_likes.length}</span>
                         </span>
                     </button>
                 </div>
@@ -130,6 +136,7 @@
     .card {
         transition: 0.12s all ease-in-out;
     }
+
 
     .card:hover {
         box-shadow: 0 0 10px 0 rgb(211, 26, 103);
