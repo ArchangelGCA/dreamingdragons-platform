@@ -107,7 +107,7 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
     }
 
     if (user_id) {
-        is_liked = !!(chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id));
+        is_liked = (chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id));
     }
 
     // add isOwner to chapterContent

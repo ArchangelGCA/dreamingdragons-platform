@@ -11,21 +11,30 @@
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
 
     export let data;
-    let { supabase, image_proxy, bookContent, comments, user_id, tooltipConfig, tags } = data;
-    $: ({ comments, user_id, bookContent, comments, tags } = data)
-    let ip_address = '';
 
-    onMount(() => {
-        hasUserLikedBook();
-    });
+    let {
+        supabase,
+        image_proxy,
+        bookContent,
+        comments,
+        user_id,
+        tooltipConfig,
+        tags
+    } = data;
+
+    $: ({
+        comments,
+        user_id,
+        bookContent,
+        comments,
+        tags
+    } = data)
 
     onMount(async () => {
-        ip_address = await getClientIp();
-        await handleView();
+        await hasUserLikedBook();
+        await getClientIp().then((ip) => handleView(ip));
     });
 
-    let chapters;
-    let chaptersFound;
     let commentsCount = comments.length;
     let likeActionActive = false;
     let reportActionActive = false;
@@ -35,30 +44,13 @@
     let createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
     let deleteBookActionActive = false;
     let reportText = '';
-
-    $: if (bookContent) {
-
-        chapters = bookContent.chapters;
-
-        if (chapters !== undefined && chapters !== null) {
-            if (chapters[0].chapter_id !== null) {
-                chaptersFound = true;
-                chapters.forEach((item) => item.chapter_image_url = bookContent.book_cover_url);
-            }
-        } else {
-            chaptersFound = false;
-        }
-
-        tags.forEach((item) => item.url = `/search?tag=${item.name}`);
-    }
-
     async function getClientIp() {
         try {
             const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
-            return data.ip;
+            return await response.json().then((data) => {return data.ip});
         } catch (error) {
             console.error('Error fetching IP address:', error);
+            return null;
         }
     }
 
@@ -77,33 +69,30 @@
         likeActionActive = false;
     }
 
-    async function handleView(){
-        if (user_id){
-            const { error } = await supabase
+    async function handleView(ip = null) {
+        if (user_id && ip){
+            await supabase
                 .from('views')
                 .insert([{
                     book_id: bookContent.book_id,
-                    ip_address: ip_address,
+                    ip_address: ip,
                     user_id: user_id
                 }
-            ]);
-
-            if (!error) {
-                bookContent.total_views++;
-            }
-        } else {
+            ]).then((error) => {
+                if (!error) {bookContent.total_views++;}
+            });
+        } else if (ip){
             // Using only IP address
-            const { error } = await supabase
+            await supabase
                 .from('views')
                 .insert([{
                     book_id: bookContent.book_id,
-                    ip_address: ip_address
+                    ip_address: ip
                 }
-            ]);
+            ]).then((error) => {
+                if (!error) {bookContent.total_views++;}
+            });
 
-            if (!error) {
-                bookContent.total_views++;
-            }
         }
     }
 
@@ -294,7 +283,7 @@
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
                                 {#each tags as tag (tag.id)}
-                                    <a href="{tag.url}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
+                                    <a href="/search?tag={tag.name}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
                                 {/each}
                             </div>
                         </div>
@@ -345,13 +334,13 @@
     </div>
     <!-- Chapters list section -->
     <div class="row justify-content-center text-center" id="chapters">
-        {#if chaptersFound}
+        {#if bookContent && bookContent.chapters && (bookContent.chapters[0].chapter_id)}
             <div class="col-12 pb-2 text-center">
                 <p class="h1">Chapters:</p>
             </div>
             <div class="col-12 bg-purple-opacity-25 p-3 px-2 rounded-4 mb-3">
                 <div class="row justify-content-evely gy-3 mx-0">
-                    {#each chapters as chapter, index (chapter.chapter_id)}
+                    {#each bookContent.chapters as chapter, index (chapter.chapter_id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
                             <ChapterCard content={chapter} index={index + 1} {image_proxy} on:invalidate={() => {invalidateAll()}} />
                         </div>

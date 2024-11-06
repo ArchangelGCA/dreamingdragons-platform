@@ -11,7 +11,9 @@
     import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
 
     export let data;
-    const {tooltipConfig} = data;
+    const {
+        tooltipConfig
+    } = data;
     $: ({image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, id} = data);
 
     let avatarFound = true;

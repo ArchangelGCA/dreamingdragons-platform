@@ -10,9 +10,27 @@
     import {onMount} from "svelte";
 
     export let data;
-    let { supabase, comments, image_proxy, user_id, is_liked, tooltipConfig, chapterContent, chapters, tags } = data;
-    $: ({ comments, chapterContent, user_id, is_liked, chapters, tags } = data)
-    let ip_address = '';
+
+    let {
+        supabase,
+        comments,
+        image_proxy,
+        user_id,
+        is_liked,
+        tooltipConfig,
+        chapterContent,
+        chapters,
+        tags
+    } = data;
+
+    $: ({
+        comments,
+        chapterContent,
+        user_id,
+        is_liked,
+        chapters,
+        tags
+    } = data)
 
     let likeActionActive = false;
     let reportActionActive = false;
@@ -29,47 +47,42 @@
     let reportText = '';
 
     onMount(async () => {
-        ip_address = await getClientIp();
-        await handleView();
+        await getClientIp().then((ip) => handleView(ip));
     });
 
     async function getClientIp() {
         try {
             const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
-            return data.ip;
+            return await response.json().then((data) => {return data.ip});
         } catch (error) {
             console.error('Error fetching IP address:', error);
+            return null;
         }
     }
 
-    async function handleView(){
-        if (user_id){
-            const { error } = await supabase
+    async function handleView(ip = null){
+        if (user_id && ip) {
+            await supabase
                 .from('views')
                 .insert([{
                     chapter_id: chapterContent.chapter_id,
-                    ip_address: ip_address,
+                    ip_address: ip,
                     user_id: user_id
                 }
-                ]);
-
-            if (!error) {
-                chapterContent.total_views++;
-            }
-        } else {
+                ]).then((error) => {
+                    if (!error) chapterContent.total_views++;
+                });
+        } else if (ip){
             // Using only IP address
-            const { error } = await supabase
+            await supabase
                 .from('views')
                 .insert([{
                     chapter_id: chapterContent.chapter_id,
-                    ip_address: ip_address
+                    ip_address: ip
                 }
-                ]);
-
-            if (!error) {
-                chapterContent.total_views++;
-            }
+                ]).then((error) => {
+                    if (!error) chapterContent.total_views++;
+                });
         }
     }
 

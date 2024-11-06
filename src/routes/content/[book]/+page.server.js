@@ -65,11 +65,10 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
     }
 
     if (bookContent && bookContent.length > 0) {
-        bookContent.forEach(book => {
-            if (book.chapters) {
-                book.chapters.sort((a, b) => a.chapter_id - b.chapter_id);
-            }
-        });
+        if (bookContent[0].chapters) {
+            bookContent[0].chapters.sort((a, b) => a.chapter_id - b.chapter_id);
+            bookContent[0].chapters.forEach((item) => item.chapter_image_url = bookContent[0].book_cover_url);
+        }
     }
 
     const tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
@@ -86,7 +85,10 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
     bookContent[0].is_owner = isOwner;
 
     return {
-        bookContent: bookContent[0], tags, comments, user_id,
+        bookContent: bookContent[0],
+        tags,
+        comments,
+        user_id,
         // For SEO $page.data on +layout etc...
         title: bookContent[0].book_title + " by " + bookContent[0].owner_username,
         description: "Content by " + bookContent[0].owner_username + " - " + bookContent[0].book_title + " on Roses in The Flames.",
