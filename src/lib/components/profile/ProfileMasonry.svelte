@@ -109,8 +109,8 @@
             <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
                 <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                     <div class="col-9 my-auto">
-                        <a class="link-light link-custom text-decoration-none text-wrap" href="/content/{content.id}"
-                           use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{content.title}</span></a>
+                        <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap" href="/content/{content.id}"
+                           use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{content.title}</span></button>
                     </div>
                     <div class="col-3 text-center">
                         <button class="btn btn-link text-decoration-none p-0 w-auto" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>

@@ -1,6 +1,6 @@
 {
   "name": "ritf-svelte-new",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -8,15 +8,15 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@sveltejs/adapter-node": "^5.2.4",
-    "@sveltejs/kit": "^2.5.28",
+    "@sveltejs/adapter-node": "^5.2.9",
+    "@sveltejs/kit": "^2.7.7",
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@zerodevx/svelte-toast": "^0.9.6",
     "bootstrap": "^5.3.3",
-    "sk-seo": "^0.4.1",
+    "sk-seo": "^0.4.3",
     "super-sitemap": "^0.15.1",
     "svelte": "^4.2.19",
-    "vite": "^5.4.8"
+    "vite": "^5.4.10"
   },
   "type": "module",
   "dependencies": {
@@ -24,7 +24,7 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/auth-ui-svelte": "^0.2.9",
     "@supabase/ssr": "^0.5.1",
-    "@supabase/supabase-js": "^2.45.4",
+    "@supabase/supabase-js": "^2.46.1",
     "@svelte-plugins/tooltips": "^3.0.1",
     "@tinymce/tinymce-svelte": "^3.0.0",
     "pocketbase": "^0.21.5",
