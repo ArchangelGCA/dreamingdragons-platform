@@ -8,6 +8,7 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
     import {onMount} from "svelte";
+    import {browser} from "$app/environment";
 
     export let data;
 
@@ -47,7 +48,9 @@
     let reportText = '';
 
     onMount(async () => {
-        await getClientIp().then((ip) => handleView(ip));
+        if (browser) {
+            await getClientIp().then((ip) => handleView(ip));
+        }
     });
 
     async function getClientIp() {
@@ -274,10 +277,6 @@
         reportActionActive = false;
     }
 
-    async function handleCommentInvalidate(){
-        await invalidateAll();
-    }
-
     $: if (chapterContent) {
         handleView();
         handlePreviousAndNextChapters();
@@ -467,7 +466,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} chapterId="{chapterContent.chapter_id}" {image_proxy} on:invalidate={handleCommentInvalidate} />
+    <CommentsSection {comments} {supabase} chapterId="{chapterContent.chapter_id}" {image_proxy} />
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

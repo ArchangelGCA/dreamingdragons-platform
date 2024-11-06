@@ -9,6 +9,7 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import autoAnimate from '@formkit/auto-animate';
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
+    import {browser} from "$app/environment";
 
     export let data;
 
@@ -32,7 +33,9 @@
 
     onMount(async () => {
         await hasUserLikedBook();
-        await getClientIp().then((ip) => handleView(ip));
+        if (browser) {
+            await getClientIp().then((ip) => handleView(ip));
+        }
     });
 
     let commentsCount = comments.length;
@@ -70,6 +73,7 @@
     }
 
     async function handleView(ip = null) {
+        console.log('IP:', ip);
         if (user_id && ip){
             await supabase
                 .from('views')
@@ -154,10 +158,6 @@
         }
 
         likeActionActive = false;
-    }
-
-    async function handleCommentInvalidate(){
-        await invalidateAll();
     }
 
     async function handleBookDelete(){
@@ -392,7 +392,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" {image_proxy} on:invalidate={handleCommentInvalidate} />
+    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" {image_proxy} />
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">

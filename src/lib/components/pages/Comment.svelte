@@ -1,17 +1,15 @@
 <script>
-    import {createEventDispatcher} from "svelte";
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import Comment from "$lib/components/pages/Comment.svelte";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
+    import {invalidateAll} from "$app/navigation";
 
     export let comment;
     export let supabase;
     export let image_proxy;
-
-    const dispatch = createEventDispatcher();
 
     const tooltipConfig = {
         animation: 'fade',
@@ -28,10 +26,6 @@
     let isHovering = false;
     let isReplyVisible = false;
     let isReplyActionActive = false;
-
-    async function handleInvalidate(){
-        dispatch('invalidate');
-    }
 
     async function deleteComment() {
         const { error } = await supabase
@@ -54,7 +48,7 @@
                     '--toastColor': 'white'
                 }
             });
-            dispatch('invalidate', comment.id);
+            await invalidateAll();
         }
     }
 
@@ -123,7 +117,7 @@
                         '--toastColor': 'white'
                     }
                 });
-                dispatch('invalidate');
+                await invalidateAll();
                 replyContent = '';
             } else {
                 toast.push('Error sending reply!', {
@@ -189,7 +183,7 @@
     <div class="row border-start border-light-subtle ms-5">
         <div class="col-12" use:autoAnimate>
             {#each comment.children as child (child.id)}
-                <Comment comment={child} {supabase} {image_proxy} on:invalidate={handleInvalidate}/>
+                <Comment comment={child} {supabase} {image_proxy} />
             {/each}
         </div>
     </div>

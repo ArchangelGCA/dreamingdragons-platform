@@ -3,7 +3,6 @@
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
-    import {createEventDispatcher, onMount} from "svelte";
 
     export let comments;
     export let supabase;
@@ -11,18 +10,12 @@
     export let chapterId = null;
     export let image_proxy = null;
 
-    const dispatch = createEventDispatcher();
-
     let commentText = '';
     let isTextAreaFocused = false;
     let commentActionActive = false;
     let avatarsLoaded = true;
 
     $: commentsCount = comments.length;
-
-    async function handleInvalidate() {
-        dispatch('invalidate');
-    }
 
     async function handleCommentSubmit() {
         if (commentActionActive) return;
@@ -130,7 +123,7 @@
         <div class="col-12 mt-3 mb-1 pt-3 border-top border-light-subtle" use:autoAnimate>
             {#if avatarsLoaded}
                 {#each comments as comment (comment.id)}
-                    <Comment {comment} {supabase} on:invalidate={handleInvalidate} {image_proxy}/>
+                    <Comment {comment} {supabase} {image_proxy}/>
                 {/each}
             {:else}
                 <div class="row justify-content-center placeholder-glow mb-2">
