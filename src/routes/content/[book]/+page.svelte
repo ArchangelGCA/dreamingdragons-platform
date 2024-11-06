@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltip} from "@svelte-plugins/tooltips";
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
@@ -19,6 +19,7 @@
         bookContent,
         comments,
         user_id,
+        is_liked,
         tooltipConfig,
         tags
     } = data;
@@ -26,13 +27,13 @@
     $: ({
         comments,
         user_id,
+        is_liked,
         bookContent,
         comments,
         tags
     } = data)
 
     onMount(async () => {
-        await hasUserLikedBook();
         if (browser) {
             await getClientIp().then((ip) => handleView(ip));
         }
@@ -47,34 +48,21 @@
     let createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
     let deleteBookActionActive = false;
     let reportText = '';
+
     async function getClientIp() {
         try {
             const response = await fetch('https://api.ipify.org?format=json');
-            return await response.json().then((data) => {return data.ip});
+            return await response.json().then((data) => {
+                return data.ip
+            });
         } catch (error) {
             console.error('Error fetching IP address:', error);
             return null;
         }
     }
 
-    async function hasUserLikedBook() {
-        if (!user_id) return;
-        likeActionActive = true; // Prevents the user from adding a like while it hasn't loaded the previous like status
-        const { data: likes, error } = await supabase
-            .from('book_likes')
-            .select('*')
-            .eq('book_id', bookContent.book_id)
-            .eq('user_id', user_id);
-
-        if (!error) {
-            likes.length > 0 ? bookContent.is_liked = true : bookContent.is_liked = false;
-        }
-        likeActionActive = false;
-    }
-
     async function handleView(ip = null) {
-        console.log('IP:', ip);
-        if (user_id && ip){
+        if (user_id && ip) {
             await supabase
                 .from('views')
                 .insert([{
@@ -82,10 +70,12 @@
                     ip_address: ip,
                     user_id: user_id
                 }
-            ]).then((error) => {
-                if (!error) {bookContent.total_views++;}
-            });
-        } else if (ip){
+                ]).then((error) => {
+                    if (!error) {
+                        bookContent.total_views++;
+                    }
+                });
+        } else if (ip) {
             // Using only IP address
             await supabase
                 .from('views')
@@ -93,9 +83,11 @@
                     book_id: bookContent.book_id,
                     ip_address: ip
                 }
-            ]).then((error) => {
-                if (!error) {bookContent.total_views++;}
-            });
+                ]).then((error) => {
+                    if (!error) {
+                        bookContent.total_views++;
+                    }
+                });
 
         }
     }
@@ -118,8 +110,8 @@
         });
 
         const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
                 if (bookContent.is_liked) {
                     bookContent.likes_count++;
                     toast.push('Tale liked ❤️', {
@@ -137,7 +129,7 @@
                         }
                     });
                 }
-                invalidateAll();
+                await invalidateAll();
             } else {
                 bookContent.is_liked = !bookContent.is_liked;
                 toast.push('Error: ' + result.data.body.message, {
@@ -160,7 +152,7 @@
         likeActionActive = false;
     }
 
-    async function handleBookDelete(){
+    async function handleBookDelete() {
 
         if (deleteBookActionActive) return;
         if (!bookContent.is_owner) return;
@@ -178,9 +170,9 @@
         });
 
         const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
-                toast.push('Tale ' + bookContent.book_title +  ' deleted! 🗑️', {
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
+                toast.push('Tale ' + bookContent.book_title + ' deleted! 🗑️', {
                     theme: {
                         '--toastBackground': '#5c00a6',
                         '--toastColor': '#fff',
@@ -205,7 +197,7 @@
         }
     }
 
-    async function handleReport(){
+    async function handleReport() {
         if (reportActionActive) return;
 
         reportActionActive = true;
@@ -220,8 +212,8 @@
         });
 
         const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
                 toast.push('Report submitted! 🚩', {
                     theme: {
                         '--toastBackground': '#5c00a6',
@@ -258,7 +250,8 @@
 <div class="container-xxl">
     <div class="row justify-content-center my-2">
         <div class="col-12 text-center px-0">
-            <a href="#chapters" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2" use:tooltip={{...tooltipConfig}} title="Go to Chapters" aria-label="View chapters">
+            <a href="#chapters" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2"
+               use:tooltip={{...tooltipConfig}} title="Go to Chapters" aria-label="View chapters">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
@@ -266,7 +259,7 @@
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
             <a href="{bookContent.book_cover_url}" target="_blank" aria-label="Open image in new page." use:autoAnimate>
-                <ContentImage url="{bookContent.book_cover_url}" alt="{bookContent.book_title}" />
+                <ContentImage url="{bookContent.book_cover_url}" alt="{bookContent.book_title}"/>
             </a>
         </div>
     </div>
@@ -274,16 +267,22 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
-                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username} id={bookContent.book_owner_id} {image_proxy} size="75px"/>
+                    <UserAvatar url={bookContent.owner_avatar_url} username={bookContent.owner_username}
+                                id={bookContent.book_owner_id} {image_proxy} size="75px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.book_title}</p>
-                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a> - <span class="text-muted" use:tooltip={{...tooltipConfig}} title="{createdAtDetailed}">{createdAtFormatted}</span></p>
+                    <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none"
+                                             href="/profile/{bookContent.book_owner_id}">{bookContent.owner_username}</a>
+                        - <span class="text-muted" use:tooltip={{...tooltipConfig}}
+                                title="{createdAtDetailed}">{createdAtFormatted}</span></p>
                     {#if tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
                                 {#each tags as tag (tag.id)}
-                                    <a href="/search?tag={tag.name}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
+                                    <a href="/search?tag={tag.name}"
+                                       class="badge bg-purple text-light me-1 mb-1 text-decoration-none"
+                                       use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
                                 {/each}
                             </div>
                         </div>
@@ -294,9 +293,11 @@
     </div>
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Total likes">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
+                 title="Total likes">
                 <div class="col-auto d-flex align-items-center pe-0">
-                    <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1" on:click={handleHeartClick}>
+                    <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1"
+                            on:click={handleHeartClick}>
                         <i class="fas fa-heart {bookContent.is_liked ? 'liked' : 'unliked'}"></i>
                     </button>
                 </div>
@@ -306,7 +307,8 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Views">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
+                 title="Views">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-eye"></i>
                 </div>
@@ -316,7 +318,8 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Comments">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
+                 title="Comments">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-comment"></i>
                 </div>
@@ -342,7 +345,8 @@
                 <div class="row justify-content-evely gy-3 mx-0">
                     {#each bookContent.chapters as chapter, index (chapter.chapter_id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <ChapterCard content={chapter} index={index + 1} {image_proxy} on:invalidate={() => {invalidateAll()}} />
+                            <ChapterCard content={chapter} index={index + 1} {image_proxy}
+                                         on:invalidate={() => {invalidateAll()}}/>
                         </div>
                     {/each}
                 </div>
@@ -354,12 +358,15 @@
         <div class="col-10 col-md-9 pt-2 px-0">
             <p class="text-secondary text-center">
                 <small>
-                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{bookContent.owner_username}</a> - {bookContent.book_title}
+                    &copy; {currentYear} <a class="link-secondary text-decoration-none"
+                                            href="/profile/{bookContent.book_owner_id}" use:tooltip={{...tooltipConfig}}
+                                            title="Profile">{bookContent.owner_username}</a> - {bookContent.book_title}
                 </small>
             </p>
         </div>
         <div class="col-auto text-center my-auto mt-md-1 px-0">
-            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report" data-bs-toggle="modal" data-bs-target="#reportModal">
+            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report"
+                    data-bs-toggle="modal" data-bs-target="#reportModal">
                 <i class="fas fa-flag"></i>
             </button>
         </div>
@@ -372,13 +379,16 @@
             <div class="col-12 px-0">
                 <div class="row justify-content-center pt-1">
                     <div class="col-auto">
-                        <a href="/edit/{bookContent.book_id}" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Edit Tale">
+                        <a href="/edit/{bookContent.book_id}"
+                           class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
+                           use:tooltip={{...tooltipConfig}} title="Edit Tale">
                             <i class="fas fa-edit"></i>
                             <span class="fs-6">Edit</span>
                         </a>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Delete Tale" on:click={handleBookDelete}>
+                        <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
+                                use:tooltip={{...tooltipConfig}} title="Delete Tale" on:click={handleBookDelete}>
                             <i class="fas fa-trash-alt"></i>
                             <span class="fs-6">Delete</span>
                         </button>
@@ -392,7 +402,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" {image_proxy} />
+    <CommentsSection {comments} {supabase} bookId="{bookContent.book_id}" {image_proxy}/>
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
@@ -400,21 +410,28 @@
             <div class="modal-content border border-black text-light bg-purple-dark">
                 <div class="modal-header border-bottom border-black">
                     <h5 class="modal-title" id="reportModalLabel">Report Content</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body pb-0">
                     <div class="mb-3">
                         <label for="reportText" class="form-label">Report Text</label>
-                        <textarea class="form-control bg-dark bg-opacity-10 text-light" id="reportText" rows="3" maxlength="1000" placeholder="Is this AI? Or NSFW/Mature Content? These are examples of content that can and should be reported ⚠️!" bind:value={reportText}></textarea>
+                        <textarea class="form-control bg-dark bg-opacity-10 text-light" id="reportText" rows="3"
+                                  maxlength="1000"
+                                  placeholder="Is this AI? Or NSFW/Mature Content? These are examples of content that can and should be reported ⚠️!"
+                                  bind:value={reportText}></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <div class="row w-100">
                         <div class="col ps-0 pe-1">
-                            <button type="button" class="btn btn-close-report w-100" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-close-report w-100" data-bs-dismiss="modal">Close
+                            </button>
                         </div>
                         <div class="col ps-1 pe-0">
-                            <button type="button" class="btn btn-submit-report w-100" on:click={handleReport}>Submit Report</button>
+                            <button type="button" class="btn btn-submit-report w-100" on:click={handleReport}>Submit
+                                Report
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -546,15 +563,27 @@
     }
 
     @keyframes heart-pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); }
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
     }
 
     @keyframes heart-unpulse {
-        0% { transform: scale(0.8); }
-        50% { transform: scale(1); }
-        100% { transform: scale(0.8); }
+        0% {
+            transform: scale(0.8);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0.8);
+        }
     }
 </style>
 

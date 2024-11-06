@@ -1,17 +1,31 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import Masonry from "svelte-bricks";
     import {deserialize} from "$app/forms";
 
     export let data;
-    let { image_proxy, books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed, tooltipConfig } = data;
-    $: ({books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter, is_logged, followed} = data);
+    let {
+        image_proxy,
+        books_ordered_by_likes,
+        books_ordered_by_created_at,
+        books_ordered_by_latest_chapter,
+        is_logged,
+        followed,
+        tooltipConfig
+    } = data;
+    $: ({
+        books_ordered_by_likes,
+        books_ordered_by_created_at,
+        books_ordered_by_latest_chapter,
+        is_logged,
+        followed
+    } = data);
     let loading = false;
     let allContentLoaded = false;
-    let step = 40;
+    let step = 20;
     let startRange = 0;
     let endRange = step;
     let width, height;
@@ -81,7 +95,8 @@
         <!-- Start following section -->
         {#if is_logged && followed && followed.length > 0}
             <div class="col-12 pb-1 mt-2">
-                <div class="row justify-content-center bg-purple-gradient rounded-3 mb-1 mt-1 p-1" use:tooltip={{...tooltipConfig}} title="Following Users">
+                <div class="row justify-content-center bg-purple-gradient rounded-3 mb-1 mt-1 p-1"
+                     use:tooltip={{...tooltipConfig}} title="Following Users">
                     <div class="col-12 text-center">
                         <p class="fs-5 mb-0">Following</p>
                     </div>
@@ -89,7 +104,8 @@
                 <div class="row row-horizontal flex-nowrap ps-1 pe-1 gx-3 gx-md-4">
                     {#each followed as follow (follow.id)}
                         <div class="col-auto py-2">
-                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {image_proxy} size="50px" />
+                            <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {image_proxy}
+                                        size="50px"/>
                         </div>
                     {/each}
                 </div>
@@ -109,14 +125,14 @@
                     <div class="col-12 px-0">
                         <Masonry
                                 items={books_ordered_by_created_at}
-                                minColWidth={250}
+                                minColWidth={350}
                                 gap={10}
                                 animate={true}
                                 let:item
                                 bind:width
                                 bind:height
                         >
-                            <ContentMasonry book={item} {image_proxy} />
+                            <ContentMasonry book={item} {image_proxy}/>
                         </Masonry>
                     </div>
                     {#if allContentLoaded}
@@ -137,10 +153,13 @@
             {#if !books_ordered_by_likes || books_ordered_by_likes.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
+                <div class="row row-horizontal pb-3 flex-nowrap gy-3">
                     {#each books_ordered_by_likes as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content owner_username={book.owner_username} owner_id={book.owner_id} book_title={book.book_title} book_id={book.book_id} book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url} {image_proxy} />
+                            <Content owner_username={book.owner_username} owner_id={book.owner_id}
+                                     book_title={book.book_title} book_id={book.book_id}
+                                     book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url}
+                                     {image_proxy}/>
                         </div>
                     {/each}
                 </div>
@@ -156,10 +175,13 @@
             {#if !books_ordered_by_latest_chapter || books_ordered_by_latest_chapter.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row row-horizontal pb-3 flex-nowrap gy-3" >
+                <div class="row row-horizontal pb-3 flex-nowrap gy-3">
                     {#each books_ordered_by_latest_chapter as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                            <Content owner_username={book.owner_username} owner_id={book.owner_id} book_title={book.book_title} book_id={book.book_id} book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url} {image_proxy} />
+                            <Content owner_username={book.owner_username} owner_id={book.owner_id}
+                                     book_title={book.book_title} book_id={book.book_id}
+                                     book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url}
+                                     {image_proxy}/>
                         </div>
                     {/each}
                 </div>
@@ -172,12 +194,20 @@
             <p class="h2 text-center">Our Discord Servers:</p>
         </div>
         <div class="col-auto">
-            <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/5mVFmCBx5q" target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">DreamingDragons</a></p>
-            <iframe class="rounded-3" src="https://discord.com/widget?id=1054013154822205450&theme=dark" title="DreamingDragons Discord" width="350" height="500" allowtransparency="true" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/5mVFmCBx5q"
+                                         target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">DreamingDragons</a>
+            </p>
+            <iframe class="rounded-3" src="https://discord.com/widget?id=1054013154822205450&theme=dark"
+                    title="DreamingDragons Discord" width="350" height="500" allowtransparency="true"
+                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
         <div class="col-auto">
-            <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/8v5WucBuRe" target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">RiTF</a></p>
-            <iframe class="rounded-3" src="https://discord.com/widget?id=1149939721980624986&theme=dark" title="Roses in The Flames Discord" width="350" height="500" allowtransparency="true" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+            <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/8v5WucBuRe"
+                                         target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">RiTF</a>
+            </p>
+            <iframe class="rounded-3" src="https://discord.com/widget?id=1149939721980624986&theme=dark"
+                    title="Roses in The Flames Discord" width="350" height="500" allowtransparency="true"
+                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
     </div>
 </div>

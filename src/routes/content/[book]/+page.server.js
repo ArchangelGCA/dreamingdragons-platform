@@ -49,14 +49,25 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
     }
 
     const bookId = params.book;
+    let is_liked = false;
 
     const { data: bookContent, error} = await supabase
         .from('secure_book_content_views')
         .select('*, book_tags(tags(id, name))')
         .eq('book_id', bookId);
 
+    const { data: bookLikes, error: bookLikesError } = await supabase
+        .from('book_likes')
+        .select('id, user_id')
+        .eq('book_id', bookId);
+
     if (error) {
         console.error(error);
+        return errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
+    }
+
+    if (bookLikesError) {
+        console.error(bookLikesError);
         return errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
     }
 
@@ -80,15 +91,22 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         isOwner = bookContent[0].owner_id === session.user.id;
     }
 
+    if (user_id && bookLikes) {
+        // Check if bookLikes array contains the user_id, if so, set is_liked to true
+        is_liked = bookLikes.some(like => like.user_id === user_id);
+    }
+
     const comments = await loadComments(supabase, session, bookId);
 
     bookContent[0].is_owner = isOwner;
+    bookContent[0].is_liked = is_liked;
 
     return {
         bookContent: bookContent[0],
         tags,
         comments,
         user_id,
+        is_liked,
         // For SEO $page.data on +layout etc...
         title: bookContent[0].book_title + " by " + bookContent[0].owner_username,
         description: "Content by " + bookContent[0].owner_username + " - " + bookContent[0].book_title + " on Roses in The Flames.",
