@@ -97,7 +97,7 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         // For SEO $page.data on +layout etc...
         title: bookContent[0].title + " by " + bookContent[0].profiles.username,
         description: "Content by " + bookContent[0].profiles.username + " - " + bookContent[0].title + " on Roses in The Flames.",
-        imageURL: (image_proxy && bookContent[0].cover_url.startsWith(image_proxy)) ? bookContent[0].cover_url : image_proxy + bookContent[0].cover_url + "?width=1920",
+        imageURL: (image_proxy && bookContent[0].cover_url.startsWith(image_proxy)) ? bookContent[0].cover_url : image_proxy + bookContent[0].cover_url + "?width=1024",
         author: bookContent[0].profiles.username,
         name: bookContent[0].profiles.username,
     };

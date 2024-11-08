@@ -176,8 +176,6 @@
     }
 </script>
 
-<SvelteToast />
-
 <Seo
     title={$pageStore.data.title ?? "Roses in The Flames - Platform"}
     description={$pageStore.data.description ?? "The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature."}
@@ -190,6 +188,8 @@
     schemaOrg={$pageStore.data.schemaOrg ?? "true"}
     index={$pageStore.data.index ?? "true"}
 />
+
+<SvelteToast />
 
 <div class="container-fluid bg-black bg-opacity-50" style="max-width: 100%; overflow-x: hidden">
 
