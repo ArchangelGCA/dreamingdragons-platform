@@ -256,7 +256,7 @@
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
             <a href="{bookContent.cover_url}" target="_blank" aria-label="Open image in new page." use:autoAnimate>
-                <ContentImage url="{bookContent.cover_url}" alt="{bookContent.title}"/>
+                <ContentImage src={bookContent.cover_url} alt={bookContent.title} {image_proxy} />
             </a>
         </div>
     </div>

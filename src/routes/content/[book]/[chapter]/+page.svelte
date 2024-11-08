@@ -302,7 +302,7 @@
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
             <a href="/content/{chapterContent.book_id}" target="_blank" aria-label="Open image in a new page.">
-                <ContentImage url={chapterContent.book_cover_url} alt={chapterContent.book_title} />
+                <ContentImage src={chapterContent.book_cover_url} alt={chapterContent.book_title} {image_proxy}/>
             </a>
         </div>
     </div>
