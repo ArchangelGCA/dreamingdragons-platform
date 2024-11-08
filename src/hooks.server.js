@@ -1,4 +1,4 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_IMAGE_PROXY_URL } from '$env/static/public';
 import { createServerClient } from "@supabase/ssr";
 
 export const handle = async ({ event, resolve }) => {
@@ -35,6 +35,9 @@ export const handle = async ({ event, resolve }) => {
 
         return { session: Object.assign({}, session, { user }), user };
     }
+
+    /** Image proxy in locals */
+    event.locals.image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
 
     return resolve(event, {
         filterSerializedResponseHeaders(name) {

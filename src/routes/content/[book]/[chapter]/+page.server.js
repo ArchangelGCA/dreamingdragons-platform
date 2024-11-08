@@ -52,7 +52,7 @@ async function loadComments(supabase, session, chapterId) {
     return comments;
 }
 
-export const load = async ({ params, locals: { supabase, getSession } }) => {
+export const load = async ({ params, locals: { supabase, getSession, image_proxy } }) => {
     const {session} = await getSession();
     let isOwner = false;
 
@@ -124,7 +124,7 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         // For SEO $page.data on +layout etc...
         title: chapterContent[0].book_title + " - " +  chapterContent[0].title + " by " + chapterContent[0].owner_username,
         description: chapterContent[0].title +  " by " + chapterContent[0].owner_username + " - " + chapterContent[0].book_title + " on Roses in The Flames.",
-        imageURL: chapterContent[0].book_cover_url,
+        imageURL: (image_proxy && chapterContent[0].book_cover_url.startsWith(image_proxy)) ? chapterContent[0].book_cover_url : image_proxy + chapterContent[0].book_cover_url + "?width=1920",
         author: chapterContent[0].owner_username,
         name: chapterContent[0].owner_username,
     };
