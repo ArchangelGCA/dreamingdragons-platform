@@ -5,7 +5,7 @@ import {ORIGIN} from '$env/static/private';
 async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
     const {data, error} = await supabase
         .from('book_likes')
-        .select('book_id, book!id(id, title, cover_url, owner_id, created_at, profiles:owner_id(id, username, avatar_url))')
+        .select('book_id, book!id(id, title, cover_url, owner_id, created_at, hidden, profiles:owner_id(id, username, avatar_url))')
         .eq('user_id', profileId)
         .order('created_at', {ascending: false})
         .range(startRange, endRange);
@@ -20,6 +20,7 @@ async function fetchBooks(startRange, endRange, profileId, supabase) {
         .from('book')
         .select('id, title, owner_id, cover_url, created_at, book_likes(user_id)')
         .eq('owner_id', profileId)
+        .eq('hidden', false)
         .order('created_at', {ascending: false})
         .range(startRange, endRange);
 
@@ -57,7 +58,7 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
         results.id = id;
         const {data: profile, error: errorTest} = await supabase
             .from('profiles')
-            .select('*, book!book_owner_id_fkey(id,title,owner_id,cover_url,created_at, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username,avatar_url)), gallery(id, name, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
+            .select('*, book!book_owner_id_fkey(id, title, owner_id, cover_url,created_at, hidden, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username,avatar_url)), gallery(id, name, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
             .eq('id', id)
             .order('created_at', {referencedTable: 'book', ascending: false});
 
@@ -76,7 +77,7 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
         if (!profile || profile.length === 0) {
 
             // If user is logged in but no profile was found, even if this isn't expected to happen, but this is a solution
-            // neverthless, we send back the user to the /profile page, that will create the profile if it doesn't exist
+            // nevertheless, we send back the user to the /profile page, that will create the profile if it doesn't exist
             // and then send it back here.
             if (session && id === session.user.id) {
                 // redirect to /profile
@@ -88,9 +89,9 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
 
         results.profile = profile[0];
 
-        // Keep only the first books in range
+        // Remove hidden books and keep only those in range
         if (results.profile.book) {
-            results.profile.book = results.profile.book.slice(startRange, endRange);
+            results.profile.book = results.profile.book.filter(book => !book.hidden).slice(startRange, endRange);
         }
 
         let total_likes = 0;
@@ -135,6 +136,7 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
             results.likedBooks = [];
         }
 
+        results.likedBooks = results.likedBooks.filter(book => !book.book.hidden);
         results.title = profile[0].username + " - Profile";
         results.description = "Profile of " + profile[0].username + " on RiTF, Roses in The Flames";
         results.imageURL = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? ORIGIN + "/favicon.webp" : profile[0].avatar_url);
