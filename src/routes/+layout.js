@@ -1,7 +1,7 @@
 import { PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL, PUBLIC_IMAGE_PROXY_URL } from '$env/static/public'
 import {createBrowserClient, createServerClient, isBrowser} from '@supabase/ssr'
 
-export const load = async ({ fetch, data, depends }) => {
+export const load = async ({ fetch, data, depends, url }) => {
     depends('supabase:auth')
 
     const supabase = isBrowser()
@@ -88,5 +88,15 @@ export const load = async ({ fetch, data, depends }) => {
         notifications,
         image_proxy,
         tooltipConfig,
+        title: 'Roses in The Flames - Platform',
+        description: 'The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature.',
+        siteName: 'Roses in The Flames - Platform',
+        imageURL: `${url.origin}/favicon.webp`,
+        logo: `${url.origin}/favicon.webp`,
+        author: 'CringleDragons, ArchangelGCA',
+        twitter: true,
+        openGraph: true,
+        schemaOrg: true,
+        index: true,
     }
 }

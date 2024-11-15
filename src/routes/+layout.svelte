@@ -10,7 +10,7 @@
     import { page as pageStore } from '$app/stores';
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import {deserialize} from "$app/forms";
-    import Seo from "sk-seo";
+    import Seo from "$lib/components/seo/Seo.svelte";
 
     export let data;
 
@@ -176,18 +176,7 @@
     }
 </script>
 
-<Seo
-    title={$pageStore.data.title ?? "Roses in The Flames - Platform"}
-    description={$pageStore.data.description ?? "The official platform of Roses in The Flames. By CringleDragons, ArchangelGCA, and its community. Read, find and share your art and literature."}
-    siteName="Roses in The Flames - Platform"
-    imageURL={$pageStore.data.imageURL ?? $pageStore.url.origin + "/favicon.webp"}
-    logo={$pageStore.data.logo ?? $pageStore.url.origin + "/favicon.webp"}
-    author={$pageStore.data.author ?? "ArchangelGCA, CringleDragons"}
-    canonical={$pageStore.data.canonical ?? $pageStore.url.origin}
-    twitter={$pageStore.data.twitter ?? "true"}
-    schemaOrg={$pageStore.data.schemaOrg ?? "true"}
-    index={$pageStore.data.index ?? "true"}
-/>
+<Seo />
 
 <SvelteToast />
 
