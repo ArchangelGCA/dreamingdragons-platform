@@ -25,7 +25,7 @@
     $: socials = $page.data.socials ?? socials;
     $: jsonld = $page.data.jsonld ?? jsonld;
 
-    let Ld = {
+    $: Ld = {
         "@context": "https://schema.org",
         "@type": schemaType.length > 1 ? schemaType : schemaType[0],
         "name": name,
@@ -40,7 +40,7 @@
         "sameAs": socials
     };
     Ld = {...Ld, ...jsonld};
-    let LdScript = `<script type="application/ld+json">${JSON.stringify(Ld)}${'<'}/script>`;
+    $: LdScript = `<script type="application/ld+json">${JSON.stringify(Ld)}${'<'}/script>`;
 </script>
 <svelte:head>
     {#if title !== ""}
