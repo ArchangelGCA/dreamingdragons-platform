@@ -340,6 +340,20 @@
 </div>
 
 <style>
+    :global(body::-webkit-scrollbar) {
+        width: 10px;
+        background: #1f002e;
+    }
+
+    :global(body::-webkit-scrollbar-thumb) {
+        background: #370050;
+        border-radius: 20px;
+    }
+
+    :global(body::-webkit-scrollbar-thumb:hover) {
+        background: #5b0083;
+    }
+
     .animate-button {
         background: linear-gradient(270deg, #0b0086, #5c00a6);
         background-size: 200% 200%;

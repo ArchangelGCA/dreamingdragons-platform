@@ -246,7 +246,8 @@
 
 <svelte:window on:scroll={handleScroll} bind:scrollY={y}/>
 
-<div class="container-fluid px-0" style="min-height: 71vh;">
+<div class="container-fluid px-0" style="min-height: 71vh; overflow-x: hidden; overflow-y: hidden">
+    <!-- Profile not found error -->
     {#if !profile || profile.length === 0}
         <div class="row justify-content-center">
             <div class="col-12 text-center">
@@ -254,11 +255,11 @@
                 <i class="fa-solid fa-exclamation-triangle fa-5x text-warning" use:autoAnimate></i>
             </div>
         </div>
-    {:else}
+    {:else} <!-- Profile found -->
         <div class="row justify-content-center">
             <div class="col-12">
                 {#if profile.avatar_url === ''}
-                    <div class="bg-image rounded-bottom-5"
+                    <div class="rounded-bottom-5"
                          style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                         <div class="row justify-content-center align-items-end" style="height: 100%;">
                             <div class="col-auto">
@@ -274,7 +275,7 @@
                         </div>
                     </div>
                 {:else}
-                    <div class="bg-image rounded-bottom-5 shadow-sm"
+                    <div class="rounded-bottom-5 shadow-sm"
                          style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({profile.cover_url ? profile.cover_url : profile.avatar_url}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                         <div class="row justify-content-center align-items-end" style="height: 100%;">
                             <div class="col-auto">
@@ -427,7 +428,7 @@
                         </div>
                     {/each}-->
                     <!-- New Masonry style -->
-                    <div class="col-12 mt-0 ps-0">
+                    <div class="col-12 mt-0">
                         <Masonry
                                 items={profile.book}
                                 minColWidth={400}
