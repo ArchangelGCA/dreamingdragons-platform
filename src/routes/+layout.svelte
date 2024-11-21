@@ -285,7 +285,7 @@
         </div>
     </div>
 
-    <div use:autoAnimate>
+    <div use:autoAnimate style="overflow-y: hidden">
         {#if maintenance}
             <!-- Warning like row telling peoples that the website is in maintenance mode temporarily and there may be issues -->
             <div class="row border-top border-light-subtle pt-3 pb-2">
