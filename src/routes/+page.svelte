@@ -1,5 +1,6 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
+    import { dragscroll } from '@svelte-put/dragscroll';
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
@@ -121,7 +122,7 @@
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row column-vertical" on:scroll={handleScroll}>
+                <div class="row column-vertical" on:scroll={handleScroll} use:dragscroll={{axis: 'y'}}>
                     <div class="col-12 px-0">
                         <Masonry
                                 items={books_ordered_by_created_at}
@@ -153,7 +154,7 @@
             {#if !books_ordered_by_likes || books_ordered_by_likes.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row row-horizontal pb-3 flex-nowrap gy-3">
+                <div class="row row-horizontal pb-3 flex-nowrap gy-3" use:dragscroll={{axis: 'x'}}>
                     {#each books_ordered_by_likes as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                             <Content owner_username={book.owner_username} owner_id={book.owner_id}
@@ -175,7 +176,7 @@
             {#if !books_ordered_by_latest_chapter || books_ordered_by_latest_chapter.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row row-horizontal pb-3 flex-nowrap gy-3">
+                <div class="row row-horizontal pb-3 flex-nowrap gy-3" use:dragscroll={{axis: 'x'}}>
                     {#each books_ordered_by_latest_chapter as book (book.book_id)}
                         <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                             <Content owner_username={book.owner_username} owner_id={book.owner_id}

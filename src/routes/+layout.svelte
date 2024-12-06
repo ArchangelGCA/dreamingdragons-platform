@@ -14,13 +14,6 @@
 
     export let data;
 
-    // SEO DEBUG AND $page DATA.
-    /*
-    $: if ($pageStore.data) {
-        console.log($pageStore.data);
-    }
-    */
-
     let { supabase, session, image_proxy, notifications, tooltipConfig, userData } = data;
     $: ({ supabase, session, notifications, tooltipConfig, userData } = data);
 
