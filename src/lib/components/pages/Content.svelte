@@ -76,7 +76,7 @@
                 style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
     <a href="/content/{book_id}" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
-       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave}>
+       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="Content sorted by most recently updated: {book_title}">
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                 <div class="col-12 px-0 px-md-2">

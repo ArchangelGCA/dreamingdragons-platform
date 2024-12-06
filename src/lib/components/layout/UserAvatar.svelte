@@ -21,6 +21,8 @@
 
     //let avatarUrl = '';
     let isAvatarLoaded = false;
+    let isDragging = false;
+    let dragTimeout;
 
     /*$: if (url && url !== '' && !isAvatarLoaded) {
         avatarUrl = url;
@@ -38,11 +40,40 @@
     } else {
         isAvatarLoaded = false;
     }
+
+    // Prevent clicking while dragging.
+    function handlePointerDown() {
+        isDragging = false;
+        clearTimeout(dragTimeout);
+    }
+
+    function handlePointerMove() {
+        isDragging = true;
+    }
+
+    function handlePointerUp() {
+        dragTimeout = setTimeout(() => {
+            isDragging = false;
+        }, 100);
+    }
+
+    function handlePointerLeave() {
+        dragTimeout = setTimeout(() => {
+            isDragging = false;
+        }, 100);
+    }
+
+    function handleClick(event) {
+        if (isDragging) {
+            event.preventDefault();
+        }
+    }
 </script>
 
 <!-- Circle avatar, using Bootstrap 5 classes -->
 <div class="d-flex justify-content-center">
-    <a href={`/profile/${id}`} class="text-decoration-none" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
+    <a href={`/profile/${id}`} class="text-decoration-none" use:tooltip={{...tooltipConfig}} title="{username}'s Profile" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
+       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="View profile of {username}">
         {#if !isAvatarLoaded}
             <div class="placeholder-glow" style="width: {size}; height: {size};">
                 <div class="placeholder rounded-circle w-100 h-100"></div>

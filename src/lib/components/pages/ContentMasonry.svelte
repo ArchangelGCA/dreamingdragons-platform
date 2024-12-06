@@ -18,6 +18,8 @@
     export let image_proxy;
 
     let width = 500;
+    let isDragging = false;
+    let dragTimeout;
 
     $: if (image_proxy) {
         if (!book.cover_url.startsWith(image_proxy)) book.cover_url = image_proxy + book.cover_url;
@@ -27,11 +29,40 @@
 
     $: if (book.title.length > 20) book.title = book.title.substring(0, 18) + '...';
     $: if (book.profiles.username.length > 16) book.profiles.username = book.profiles.username.substring(0, 15) + '...';
+
+    // Prevent clicking while dragging.
+    function handlePointerDown() {
+        isDragging = false;
+        clearTimeout(dragTimeout);
+    }
+
+    function handlePointerMove() {
+        isDragging = true;
+    }
+
+    function handlePointerUp() {
+        dragTimeout = setTimeout(() => {
+            isDragging = false;
+        }, 100);
+    }
+
+    function handlePointerLeave() {
+        dragTimeout = setTimeout(() => {
+            isDragging = false;
+        }, 100);
+    }
+
+    function handleClick(event) {
+        if (isDragging) {
+            event.preventDefault();
+        }
+    }
 </script>
 
 <div>
     <div class="card border-0">
-        <a href="/content/{book.id}">
+        <a href="/content/{book.id}" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
+           on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="Content: {book.title}">
             <div class="card-img">
                 <!-- 1x is for desktop, 2x is for mobile -->
                 <img

@@ -2,6 +2,7 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import BookSearch from "$lib/components/layout/BookSearch.svelte";
     import autoAnimate from '@formkit/auto-animate';
+    import { dragscroll } from '@svelte-put/dragscroll';
     import {deserialize} from "$app/forms";
     import {onMount} from "svelte";
 
@@ -125,7 +126,7 @@
                             <p class="h3 text-start">Profiles</p>
                         </div>
                     </div>
-                    <div class="row row-horizontal flex-nowrap border-bottom border-top py-2 ps-1 pe-1 ps-xl-5 pe-xl-5">
+                    <div class="row row-horizontal flex-nowrap border-bottom border-top py-2 ps-1 pe-1 ps-xl-5 pe-xl-5" use:dragscroll={{axis: 'x'}}>
                             {#if profiles.length === 0 && books.length !== 0}
                                 <div class="col-12">
                                     <p class="text-center">Profiles not found!</p>
