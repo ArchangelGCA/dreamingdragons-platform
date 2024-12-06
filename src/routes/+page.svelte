@@ -274,24 +274,6 @@
         white-space: nowrap;
     }
 
-    .row-horizontal::-webkit-scrollbar {
-        height: 12px;
-    }
-
-    .row-horizontal::-webkit-scrollbar-track {
-        background: rgba(92, 0, 166, 0.25);
-    }
-
-    .row-horizontal::-webkit-scrollbar-thumb {
-        background: linear-gradient(90deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .row-horizontal::-webkit-scrollbar-thumb:hover {
-        background: rgba(92, 0, 166, 1);
-    }
-
     .btn-purple {
         background-color: #5c00a6;
         color: white;

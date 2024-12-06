@@ -101,17 +101,6 @@
     }
 </script>
 
-<!--
-<Seo
-        title="{partialText} | Roses in The Flames"
-        description="Search results for {partialText} on Roses in The Flames."
-        siteName="Roses in The Flames - Platform"
-        imageURL="https://tales.rosesintheflames.com/favicon.webp"
-        author="ArchangelGCA"
-        index={index}
-/>
--->
-
 <div class="container-fluid my-3" style="min-height: 69vh">
     {#if partialText === ""}
         <div class="row">

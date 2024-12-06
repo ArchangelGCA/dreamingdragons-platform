@@ -285,6 +285,7 @@
         </div>
     </div>
 
+    <!-- Maintenance and Content -->
     <div use:autoAnimate style="overflow-y: hidden; overflow-x: hidden">
         {#if maintenance}
             <!-- Warning like row telling peoples that the website is in maintenance mode temporarily and there may be issues -->
@@ -352,6 +353,24 @@
 
     :global(body::-webkit-scrollbar-thumb:hover) {
         background: #5b0083;
+    }
+
+    :global(.row-horizontal::-webkit-scrollbar) {
+        height: 8px;
+    }
+
+    :global(.row-horizontal::-webkit-scrollbar-track) {
+        background: rgba(92, 0, 166, 0.25);
+    }
+
+    :global(.row-horizontal::-webkit-scrollbar-thumb) {
+        background: linear-gradient(90deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    :global(.row-horizontal::-webkit-scrollbar-thumb:hover) {
+        background: rgba(92, 0, 166, 1);
     }
 
     .offcanvas-body::-webkit-scrollbar {
