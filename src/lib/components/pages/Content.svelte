@@ -22,6 +22,9 @@
     export let owner_avatar_url;
     export let image_proxy;
 
+    let isDragging = false;
+    let dragTimeout;
+
     $: if (image_proxy) {
         if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url;
     } else {
@@ -30,6 +33,34 @@
 
     $: if (book_title.length > 45) book_title = book_title.substring(0, 40) + '...';
     $: if (owner_username.length > 30) owner_username = owner_username.substring(0, 35) + '...';
+
+    // Prevent clicking while dragging.
+    function handlePointerDown() {
+        isDragging = false;
+        clearTimeout(dragTimeout);
+    }
+
+    function handlePointerMove() {
+        isDragging = true;
+    }
+
+    function handlePointerUp() {
+        dragTimeout = setTimeout(() => {
+            isDragging = false;
+        }, 100);
+    }
+
+    function handlePointerLeave() {
+        dragTimeout = setTimeout(() => {
+            isDragging = false;
+        }, 100);
+    }
+
+    function handleClick(event) {
+        if (isDragging) {
+            event.preventDefault();
+        }
+    }
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4">
@@ -44,7 +75,8 @@
                 loading="lazy"
                 style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
-    <a href="/content/{book_id}">
+    <a href="/content/{book_id}" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
+       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                 <div class="col-12 px-0 px-md-2">
