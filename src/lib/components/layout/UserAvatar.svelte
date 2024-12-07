@@ -72,14 +72,14 @@
 
 <!-- Circle avatar, using Bootstrap 5 classes -->
 <div class="d-flex justify-content-center">
-    <a href={`/profile/${id}`} class="text-decoration-none" use:tooltip={{...tooltipConfig}} title="{username}'s Profile" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
-       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="View profile of {username}">
+    <a href={`/profile/${id}`} class="text-decoration-none" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
+       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="View profile of {username}" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
         {#if !isAvatarLoaded}
             <div class="placeholder-glow" style="width: {size}; height: {size};">
                 <div class="placeholder rounded-circle w-100 h-100"></div>
             </div>
         {:else}
-            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url} alt={username} class="rounded-circle avatar-style" width={size} height={size}>
+            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url} alt={username} class="rounded-circle avatar-style" width={size} height={size} draggable="false">
         {/if}
     </a>
 </div>
