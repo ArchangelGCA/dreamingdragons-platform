@@ -176,7 +176,7 @@
 <div class="container-fluid bg-black bg-opacity-50" style="max-width: 100%; overflow-x: hidden">
 
     <!-- Start Navbar -->
-    <div class="row border-bottom border-light-subtle py-2">
+    <div class="row navbar-container py-2">
         <!-- Logo -->
         <div class="col-2 col-md-3 col-xxl-4">
             <a href="/">
@@ -187,7 +187,7 @@
         <div class="col-6 col-xxl-4 my-auto pe-0">
             <form action="/search" method="get" data-sveltekit-reload>
                 <div class="input-group">
-                    <input type="text" class="form-control form-control-sm border-0 rounded-start-3" placeholder="Search" aria-label="Search" aria-describedby="searchButton" name="q" bind:value={searchTerm} />
+                    <input type="text" class="form-control form-control-sm bg-light bg-opacity-10 border-0 rounded-start-3" placeholder="Search" aria-label="Search" aria-describedby="searchButton" name="q" bind:value={searchTerm} />
                     <button class="btn btn-sm btn-outline-search" type="submit" id="searchButton" aria-label="Search"><i class="fas fa-search"></i></button>
                 </div>
             </form>
@@ -297,7 +297,7 @@
         <slot></slot>
     </div>
 
-    <div class="row border-top border-light-subtle pt-3 pb-2">
+    <div class="row footer-container pt-3 pb-2">
         <div class="col">
             <div class="row">
                 <div class="col text-center pb-1">
@@ -458,6 +458,14 @@
     .dropdown-item.active {
         background-color: #5c00a6;
         border-radius: 0.25rem;
+    }
+
+    .navbar-container {
+        background: linear-gradient(180deg, rgba(65, 0, 117, 0.4), rgba(37, 0, 62, 0));
+    }
+
+    .footer-container {
+        background: linear-gradient(0deg, rgba(65, 0, 117, 0.4), rgba(37, 0, 62, 0));
     }
 
     .offcanvas {
