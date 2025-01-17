@@ -203,7 +203,7 @@
                     sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
         <div class="col-auto">
-            <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/8v5WucBuRe"
+            <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/7y7vXnD846"
                                          target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">RiTF</a>
             </p>
             <iframe class="rounded-3" src="https://discord.com/widget?id=1149939721980624986&theme=dark"
