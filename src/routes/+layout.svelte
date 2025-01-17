@@ -61,7 +61,7 @@
         {
             name: 'Discord',
             icon: 'fab fa-discord',
-            link: 'https://discord.gg/rosesintheflames',
+            link: 'https://discord.gg/7y7vXnD846',
         },
         {
             name: 'Reddit',

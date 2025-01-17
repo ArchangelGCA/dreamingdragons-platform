@@ -95,7 +95,7 @@ export const actions = {
         }
 
         const unsubscribeLink = `https://tales.rosesintheflames.com/settings/updates/unsubscribe?id=${result.data.id}`;
-        const discordLink = 'https://discord.gg/rosesintheflames';
+        const discordLink = 'https://discord.gg/7y7vXnD846';
         const yearCopyright = new Date().getFullYear();
 
         const htmlEmail = `
