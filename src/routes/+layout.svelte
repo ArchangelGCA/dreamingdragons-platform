@@ -277,8 +277,8 @@
                     <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
                         <strong>Ongoing migration!</strong>
                         <!-- Little text with a few details about the maintenance -->
-                        <small class="text-muted d-block">Following some <b>unfortunate events</b> (RiTF hasn't fulfilled terms and conditions of the platform maintainer, scamming him). We're migrating from tales.rosesintheflames.com to tales.archangelgca.eu ! For any question please reach us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a>.</small>
-                        <small class="text-muted d-block">The issue started on: 23/01/2025 10:00AM UTC/GMT+2</small>
+                        <small class="text-muted d-block">Following some <b>unfortunate events</b> (RiTF scammed the dev). We're migrating from tales.rosesintheflames.com to <a href="https://tales.archangelgca.eu">tales.archangelgca.eu</a> ! For any question please reach us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a>.</small>
+                        <small class="text-muted d-block">Issue started on: 23/01/2025 10:00AM UTC/GMT+2</small>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" on:click={() => {maintenance = false}}></button>
                     </div>
                 </div>
