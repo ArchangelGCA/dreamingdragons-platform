@@ -6,7 +6,10 @@ const config = {
   preprocess: vitePreprocess(),
   kit: {
     adapter: adapter({
-      precompress: true,
+      routes: {
+        include: ['/*'],
+        exclude: ['/content/*', '/profile/*', '/search/*'],
+      },
     }),
   }
 };
