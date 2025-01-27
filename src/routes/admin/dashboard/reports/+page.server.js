@@ -33,7 +33,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     let maxUsers = 1000000;
     const pageData = {
         title: 'Admin - Reports',
-        description: 'Admin Reports Dashboard of Roses in The Flames platform.',
+        description: 'Admin Reports Dashboard of DreamingDragons platform.',
         index: false
     }
 

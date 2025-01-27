@@ -35,20 +35,20 @@ export const GET = async ({locals: {supabase}}) => {
                 xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
             ${bookCoverUrlsFiltered.map((book) => `
                 <url>
-                    <loc>https://tales.rosesintheflames.com/content/${book.id}</loc>
+                    <loc>https://tales.archangelgca.eu/content/${book.id}</loc>
                     <image:image>
-                        <image:loc>https://images.rosesintheflames.com/image/${book.cover_url}</image:loc>
+                        <image:loc>https://images.archangelgca.eu/image/${book.cover_url}</image:loc>
                     </image:image>
                 </url>
             `).join('')}
             ${profileAvatarCoverUrlFiltered.map((profile) => `
                 <url>
-                    <loc>https://tales.rosesintheflames.com/profile/${profile.id}</loc>
+                    <loc>https://tales.archangelgca.eu/profile/${profile.id}</loc>
                     <image:image>
-                        <image:loc>https://images.rosesintheflames.com/image/${profile.avatar_url}</image:loc>
+                        <image:loc>https://images.archangelgca.eu/image/${profile.avatar_url}</image:loc>
                     </image:image>
                     <image:image>
-                        <image:loc>https://images.rosesintheflames.com/image/${profile.cover_url}</image:loc>
+                        <image:loc>https://images.archangelgca.eu/image/${profile.cover_url}</image:loc>
                     </image:image>
                 </url>
             `).join('')}

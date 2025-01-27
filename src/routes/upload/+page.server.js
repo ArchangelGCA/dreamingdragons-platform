@@ -91,8 +91,8 @@ export const load = async ({ locals: { supabase, getSession} }) => {
         session,
         books,
         can_upload,
-        title: 'Roses in The Flames - Upload',
-        description: 'Upload your tales and chapters to Roses in The Flames.',
+        title: 'Tales - Upload',
+        description: 'Upload your tales and chapters to DreamingDragons.',
         index: false
     };
 }

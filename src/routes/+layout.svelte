@@ -21,7 +21,7 @@
     let searchTerm = '';
     let latestNotificationTimestamp = notifications.length > 0 ? notifications[0].created_at : null;
     const notifsUpdateInterval = 30000;
-    let maintenance = false;
+    let maintenance = true;
 
     if ($pageStore.url.searchParams.has('q')) {
         searchTerm = $pageStore.url.searchParams.get('q');
@@ -64,16 +64,6 @@
             link: 'https://discord.gg/7y7vXnD846',
         },
         {
-            name: 'Reddit',
-            icon: 'fab fa-reddit',
-            link: 'https://www.reddit.com/r/rosesintheflames',
-        },
-        {
-            name: 'X/Twitter',
-            icon: 'fab fa-x-twitter',
-            link: 'https://x.com/RosesInTheFlame',
-        },
-        {
             name: 'Github',
             icon: 'fab fa-github',
             link: 'https://github.com/ArchangelGCA',
@@ -81,7 +71,7 @@
     ];
 
     const currentYear = new Date().getFullYear(); // Will use this in the footer to automatically update the year
-    const owner = 'Roses in The Flames Official'
+    const owner = 'DreamingDragons'
     const designedBy = 'ArchangelGCA';
     const designedByLink = 'https://archangelgca.eu';
     const tosLink = '/legal/tos'
@@ -180,7 +170,7 @@
         <!-- Logo -->
         <div class="col-2 col-md-3 col-xxl-4">
             <a href="/">
-                <img src={favicon} class="logo" alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
+                <img src={favicon} class="logo rounded-circle" alt="Logo" width="40" height="40" title="Homepage" /> <!-- TODO: Use enhanced logo and use tooltip with position -->
             </a>
         </div>
         <!-- Search -->
@@ -285,10 +275,10 @@
             <div class="row border-top border-light-subtle pt-3 pb-2">
                 <div class="col">
                     <div class="alert alert-warning alert-dismissible fade show mb-0" role="alert">
-                        <strong>Image database maintenance!</strong>
+                        <strong>Ongoing migration!</strong>
                         <!-- Little text with a few details about the maintenance -->
-                        <small class="text-muted d-block">Our storage-api is currently experiencing <b>degraded performance</b>. Uploads may fail and images may be unavailable! For any question please reach us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a>.</small>
-                        <small class="text-muted d-block">The issue started on: 18/10/2024 17:30AM UTC/GMT+2</small>
+                        <small class="text-muted d-block">Following some <b>unfortunate events</b> (RiTF hasn't fulfilled terms and conditions of the platform maintainer, scamming him). We're migrating from tales.rosesintheflames.com to tales.archangelgca.eu ! For any question please reach us on <a href="https://discord.gg/5d5kVrEBzS" target="_blank">Discord</a>.</small>
+                        <small class="text-muted d-block">The issue started on: 23/01/2025 10:00AM UTC/GMT+2</small>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" on:click={() => {maintenance = false}}></button>
                     </div>
                 </div>
@@ -301,7 +291,7 @@
         <div class="col">
             <div class="row">
                 <div class="col text-center pb-1">
-                    <p class="mb-1">Designed for <a class="link-purple text-decoration-none" href="https://rosesintheflames.com" target="_blank" use:tooltip={{...tooltipConfig}} title="Official Website">RiTF</a> by:</p>
+                    <p class="mb-1">Designed for <a class="link-purple text-decoration-none" href="https://www.deviantart.com/dreamingdragons" target="_blank" use:tooltip={{...tooltipConfig}} title="Official Website">DreamingDragons</a> by:</p>
                     <a class="link-purple text-decoration-none" href="{designedByLink}" use:tooltip={{...tooltipConfig}} title="Visit Developer" target="_blank">{designedBy}</a>
                     <!--<UserAvatar url="https://avatars.githubusercontent.com/u/159050591?v=4" username={designedBy} size="25px"/>-->
                 </div>

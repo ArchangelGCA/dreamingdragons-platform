@@ -19,7 +19,7 @@ export const GET = async ({locals: {supabase}}) => {
     if (booksError || chaptersError || profilesError /*|| tagsError*/) {
         // empty books array + profiles
         return await sitemap.response({
-            origin: 'https://tales.rosesintheflames.com',
+            origin: 'https://tales.archangelgca.eu',
             paramValues: {
                 '/content/[book]': [],
                 '/content/[book]/[chapter]': [],
@@ -34,7 +34,7 @@ export const GET = async ({locals: {supabase}}) => {
     }
 
     return await sitemap.response({
-        origin: 'https://tales.rosesintheflames.com',
+        origin: 'https://tales.archangelgca.eu',
         paramValues: {
             '/content/[book]': booksData.map((book) => book.id),
             '/content/[book]/[chapter]': chaptersData.map((chapter) => [chapter.book_id, chapter.id]),

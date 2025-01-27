@@ -81,7 +81,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     return {
         profiles,
         title: 'Admin - Users',
-        description: 'Admin Users Dashboard of Roses in The Flames platform.',
+        description: 'Admin Users Dashboard of DreamingDragons platform.',
         index: false,
     }
 }

@@ -83,7 +83,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     return {
         panic: getActivePanic(panic),
         title: 'Admin - Dashboard',
-        description: 'Admin Dashboard of Roses in The Flames platform.',
+        description: 'Admin Dashboard of DreamingDragons platform.',
         index: false,
     }
 }

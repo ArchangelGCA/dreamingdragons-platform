@@ -138,7 +138,7 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
 
         results.likedBooks = results.likedBooks.filter(book => !book.book.hidden);
         results.title = profile[0].username + " - Profile";
-        results.description = "Profile of " + profile[0].username + " on RiTF, Roses in The Flames";
+        results.description = "Profile of " + profile[0].username + " on DD, DreamingDragons";
         results.imageURL = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? ORIGIN + "/favicon.webp" : profile[0].avatar_url);
         results.logo = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? ORIGIN + "/favicon.webp" : profile[0].avatar_url);
         results.author = profile[0].username;

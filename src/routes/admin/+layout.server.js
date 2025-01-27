@@ -28,8 +28,8 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     }
 
     return {
-        title: 'Roses in The Flames - Admin Dashboard',
-        description: 'Admin Dashboard of Roses in The Flames platform.',
+        title: 'DreamingDragons - Admin Dashboard',
+        description: 'Admin Dashboard of DreamingDragons platform.',
         index: false
     }
 }

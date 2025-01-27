@@ -2,5 +2,5 @@ User-agent: *
 Disallow: /admin/*
 Disallow: /edit/*
 
-Sitemap: https://tales.rosesintheflames.com/sitemap.xml
-Sitemap: https://tales.rosesintheflames.com/imagemap.xml
+Sitemap: https://tales.archangelgca.eu/sitemap.xml
+Sitemap: https://tales.archangelgca.eu/imagemap.xml

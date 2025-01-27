@@ -54,7 +54,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     return {
         content,
         title: 'Admin - Content',
-        description: 'Admin Content Dashboard of Roses in The Flames platform.',
+        description: 'Admin Content Dashboard of DreamingDragons platform.',
         index: false
     }
 }

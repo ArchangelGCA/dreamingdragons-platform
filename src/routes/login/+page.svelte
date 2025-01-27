@@ -15,7 +15,7 @@
     <div class="col">
         <div class="row">
             <div class="col-12 text-center mb-4">
-                <h1 class="h2">🌹 Welcome to Roses in The Flames - Tales!</h1>
+                <h1 class="h2">🌹 Welcome to DreamingDragons - Tales!</h1>
                 {#if view === 'sign_in' || (view === 'magic_link' && !signup)}
                     <p class="h5">😎 Please, login to continue.</p>
                 {:else if (view === 'sign_up' || signup) && view !== 'forgotten_password'}

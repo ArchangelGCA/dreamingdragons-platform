@@ -3,8 +3,8 @@ import { Resend } from 'resend';
 
 export const load = async ({}) => {
     return {
-        title: 'Roses in The Flames - Mailing List',
-        description: 'Subscribe to the official Roses in The Flames mailing list.',
+        title: 'DreamingDragons - Mailing List',
+        description: 'Subscribe to the official DreamingDragons mailing list.',
     }
 }
 
@@ -94,7 +94,7 @@ export const actions = {
             }
         }
 
-        const unsubscribeLink = `https://tales.rosesintheflames.com/settings/updates/unsubscribe?id=${result.data.id}`;
+        const unsubscribeLink = `https://tales.archangelgca.eu/settings/updates/unsubscribe?id=${result.data.id}`;
         const discordLink = 'https://discord.gg/7y7vXnD846';
         const yearCopyright = new Date().getFullYear();
 
@@ -156,7 +156,7 @@ export const actions = {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>Welcome to RiTF Mailing List!</h1>
+                        <h1>Welcome to DD Mailing List!</h1>
                     </div>
                     <div class="content">
                         <h2>You've successfully signup to our mailing list!</h2>
@@ -167,7 +167,7 @@ export const actions = {
                         <p>If you have any issues, please reach us on our <a href="${discordLink}">Discord Server!</a></p>
                     </div>
                     <div class="footer">
-                        <p>&copy; ${yearCopyright} RosesInTheFlames. All rights reserved.</p>
+                        <p>&copy; ${yearCopyright} DreamingDragons. All rights reserved.</p>
                     </div>
                 </div>
             </body>
@@ -175,9 +175,9 @@ export const actions = {
         `;
 
         const sent = await resend.emails.send({
-            from: 'RiTF <mailing@tales.rosesintheflames.com>',
+            from: 'DD <mailing@tales.archangelgca.eu>',
             to: [email],
-            subject: 'Welcome to the mailing list! - Roses in The Flames',
+            subject: 'Welcome to the mailing list! - DreamingDragons',
             html: htmlEmail,
             tags: [
                 {

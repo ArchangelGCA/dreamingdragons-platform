@@ -53,7 +53,7 @@ export const load = async ({ params, locals: { supabase, getSession} }) => {
     return {
         chapter,
         books: bookSearch,
-        title: 'Roses in The Flames - Edit Chapter',
+        title: 'DreamingDragons - Edit Chapter',
         description: 'Edit a chapter.',
         index: false
     };

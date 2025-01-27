@@ -1,6 +1,6 @@
 {
-  "name": "ritf-svelte-new",
-  "version": "0.2.9",
+  "name": "dd-tales-svelte",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "vite dev",

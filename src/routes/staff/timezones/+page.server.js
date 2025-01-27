@@ -31,7 +31,7 @@ export const load = async ({locals: {supabase}}) => {
 
     return {
         timedata,
-        title: 'Roses in The Flames - Staff Timezones',
-        description: 'Roses in The Flames Staff Timezones page. Check the current time of our staff members.'
+        title: 'DreamingDragons - Staff Timezones',
+        description: 'DreamingDragons Staff Timezones page. Check the current time of our staff members.'
     };
 }

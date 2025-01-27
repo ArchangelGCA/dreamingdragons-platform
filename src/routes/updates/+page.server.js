@@ -11,7 +11,7 @@ export const load = async ( { locals: { supabase } }) => {
 
     return {
         updates,
-        title: 'Roses in The Flames - Updates',
-        description: 'Updates and changelogs of the Roses in The Flames platform.'
+        title: 'DreamingDragons - Updates',
+        description: 'Updates and changelogs of the DreamingDragons platform.'
     }
 }
