@@ -1,7 +1,7 @@
 {
-  "name": "Roses In The Flames - Platform",
-  "short_name": "RiTF",
-  "description": "The official platform of Roses in The Flames.",
+  "name": "DreamingDragons - Platform",
+  "short_name": "DD-Tales",
+  "description": "The official platform of DreamingDragons.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
