@@ -1,28 +1,28 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 
 async function loadChapters(supabase, bookId) {
-    const {data: chapters, error: chaptersError} = await supabase
+    const { data: chapters, error: chaptersError } = await supabase
         .from('chapters')
         .select('id, book_id, owner_id, number_ordinal, title')
         .eq('book_id', bookId)
         .order('created_at', { ascending: true });
 
     if (chaptersError) {
-        return Error('Something went wrong, chapters loading error...');
+        throw new Error('Something went wrong, chapters loading error...');
     }
 
     return chapters;
 }
 
 async function loadComments(supabase, session, chapterId) {
-    let {data: comments, error: commentsError} = await supabase
+    let { data: comments, error: commentsError } = await supabase
         .from('comments')
         .select('*, profiles(username, avatar_url)')
         .eq('chapter_id', chapterId)
         .order('created_at', { ascending: false });
 
     if (commentsError) {
-        return Error('Something went wrong, comments loading error...');
+        throw new Error('Something went wrong, comments loading error...');
     }
 
     if (session) {
@@ -53,11 +53,11 @@ async function loadComments(supabase, session, chapterId) {
 }
 
 export const load = async ({ params, locals: { supabase, getSession, image_proxy } }) => {
-    const {session} = await getSession();
+    const { session } = await getSession();
     let isOwner = false;
 
     if (!params.book || !params.chapter) {
-        return errorx(400, "Missing required fields");
+        throw errorx(400, "Missing required fields");
     }
 
     const bookId = params.book;
@@ -65,22 +65,32 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
 
     // FIX for some URLs that have double /content/content and need redirect.
     if ((bookId === 'content' || bookId === 'profile')) {
-        return redirect(302,`/${bookId}/${chapterId}`);
+        throw redirect(302, `/${bookId}/${chapterId}`);
     }
 
-    const {data: chapterContent, error} = await supabase
+    const [
+        chapterContentResult,
+        commentsPromise,
+        chaptersPromise
+    ] = await Promise.all([
+        supabase
             .from('secure_chapter_content_views')
             .select('*, chapter_tags(tags(id, name)), chapter_likes!chapter_id(user_id)')
             .eq('book_id', bookId)
-            .eq('chapter_id', chapterId);
+            .eq('chapter_id', chapterId),
+        loadComments(supabase, session, chapterId),
+        loadChapters(supabase, bookId)
+    ]);
+
+    const { data: chapterContent, error } = chapterContentResult;
 
     if (error) {
         console.error(error);
-        return errorx(500, 'Something went wrong, perhaps the IDs may be invalid...');
+        throw errorx(500, 'Something went wrong, perhaps the IDs may be invalid...');
     }
 
     if (!chapterContent || chapterContent.length === 0) {
-        return errorx(404, "Chapter and/or Content not found, or the owner has removed it...");
+        throw errorx(404, "Chapter and/or Content not found, or the owner has removed it...");
     }
 
     const tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
@@ -93,19 +103,6 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         isOwner = chapterContent[0].owner_id === session.user.id;
     }
 
-    const [comments, chapters] = await Promise.all([
-        loadComments(supabase, session, chapterId),
-        loadChapters(supabase, bookId)
-    ]);
-
-    if (comments instanceof Error) {
-        return errorx(500, comments.message);
-    }
-
-    if (chapters instanceof Error) {
-        return errorx(500, chapters.message);
-    }
-
     if (user_id) {
         is_liked = (chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id));
     }
@@ -116,14 +113,14 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
     // return
     return {
         chapterContent: chapterContent[0],
-        chapters,
+        chapters: chaptersPromise,
         tags,
-        comments,
+        comments: commentsPromise,
         user_id,
         is_liked,
         // For SEO $page.data on +layout etc...
-        title: chapterContent[0].book_title + " - " +  chapterContent[0].title + " by " + chapterContent[0].owner_username,
-        description: chapterContent[0].title +  " by " + chapterContent[0].owner_username + " - " + chapterContent[0].book_title + " on DreamingDragons.",
+        title: chapterContent[0].book_title + " - " + chapterContent[0].title + " by " + chapterContent[0].owner_username,
+        description: chapterContent[0].title + " by " + chapterContent[0].owner_username + " - " + chapterContent[0].book_title + " on DreamingDragons.",
         imageURL: (image_proxy && chapterContent[0].book_cover_url.startsWith(image_proxy)) ? chapterContent[0].book_cover_url : image_proxy + chapterContent[0].book_cover_url + "?width=1024",
         author: chapterContent[0].owner_username,
         name: chapterContent[0].owner_username,

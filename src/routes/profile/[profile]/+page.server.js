@@ -3,11 +3,11 @@ import {ORIGIN} from '$env/static/private';
 
 // Async function to get liked books, from range start to end, from book_likes
 async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
-    const {data, error} = await supabase
+    const { data, error } = await supabase
         .from('book_likes')
         .select('book_id, book!id(id, title, cover_url, owner_id, created_at, hidden, profiles:owner_id(id, username, avatar_url))')
         .eq('user_id', profileId)
-        .order('created_at', {ascending: false})
+        .order('created_at', { ascending: false })
         .range(startRange, endRange);
 
     if (error) throw error;
@@ -16,12 +16,12 @@ async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
 
 // Async function to get books + likes + owner related to them, from range start to end, from book
 async function fetchBooks(startRange, endRange, profileId, supabase) {
-    const {data, error} = await supabase
+    const { data, error } = await supabase
         .from('book')
         .select('id, title, owner_id, cover_url, created_at, book_likes(user_id)')
         .eq('owner_id', profileId)
         .eq('hidden', false)
-        .order('created_at', {ascending: false})
+        .order('created_at', { ascending: false })
         .range(startRange, endRange);
 
     // is_liked for each book
@@ -33,8 +33,8 @@ async function fetchBooks(startRange, endRange, profileId, supabase) {
     return data;
 }
 
-export const load = async ({params, locals: {supabase, getSession}}) => {
-    const {session} = await getSession();
+export const load = async ({ params, locals: { supabase, getSession } }) => {
+    const { session } = await getSession();
     const id = params.profile;
 
     const startRange = 0;
@@ -43,7 +43,7 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
     const results = {
         isFollowing: false,
         isOwner: false,
-    }
+    };
 
     // If there's no id and the user isn't logged in, send to login page
     if (!id && !session) {
@@ -56,35 +56,30 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
 
     if (id) {
         results.id = id;
-        const {data: profile, error: errorTest} = await supabase
-            .from('profiles')
-            .select('*, book!book_owner_id_fkey(id, title, owner_id, cover_url,created_at, hidden, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id,username,avatar_url)), gallery(id, name, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
-            .eq('id', id)
-            .order('created_at', {referencedTable: 'book', ascending: false});
 
-        // Note: Relationships should use nametableofReference!namefield_fkey(data_that_I_want)
-        // Example, I want to get many followers related to a profile, I can use followersLoL!followers_following_id_fkey(data_that_I_want) etc.
-        // The difference between "!" and ":" is that:
-        // The "!" is OneToMany (A profile can have many followers)
-        // The ":" is ManyToOne (A follower can follow many profiles)
+        // Fetch profile and related data concurrently
+        const [profileData, likedBooks] = await Promise.all([
+            supabase
+                .from('profiles')
+                .select('*, book!book_owner_id_fkey(id, title, owner_id, cover_url, created_at, hidden, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id, username, avatar_url)), gallery(id, name, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
+                .eq('id', id)
+                .order('created_at', { referencedTable: 'book', ascending: false }),
+            fetchBooksLiked(startRange, endRange, id, supabase)
+        ]);
+
+        const { data: profile, error: errorTest } = profileData;
 
         if (errorTest) {
             console.error(errorTest);
-            errorx(404, "Profile not found!");
+            throw errorx(404, "Profile not found!");
         }
 
         // Profile not found
         if (!profile || profile.length === 0) {
-
-            // If user is logged in but no profile was found, even if this isn't expected to happen, but this is a solution
-            // nevertheless, we send back the user to the /profile page, that will create the profile if it doesn't exist
-            // and then send it back here.
             if (session && id === session.user.id) {
-                // redirect to /profile
                 return redirect(302, '/profile');
             }
-
-            return errorx(404, "Profile not found");
+            throw errorx(404, "Profile not found");
         }
 
         results.profile = profile[0];
@@ -109,34 +104,21 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
 
         // If there's a session
         if (session) {
-
             results.session = session;
             results.isOwner = results.profile.id === session.user.id;
 
             if (!results.isOwner) {
                 // Check if user is following the profile
-                for (let i = 0; i < results.profile.followers.length; i++) {
-                    if (results.profile.followers[i].follower_id === session.user.id) results.isFollowing = true;
-                }
+                results.isFollowing = results.profile.followers.some(follower => follower.follower_id === session.user.id);
             }
         }
 
         if (results.isOwner || results.profile.show_favourites) {
-
-            // Books liked by user.
-            const likedBooks = await fetchBooksLiked(startRange, endRange, id, supabase);
-
-            if (likedBooks instanceof Error) {
-                console.error(likedBooks);
-                results.likedBooks = [];
-            } else {
-                results.likedBooks = likedBooks;
-            }
+            results.likedBooks = likedBooks.filter(book => !book.book.hidden);
         } else {
             results.likedBooks = [];
         }
 
-        results.likedBooks = results.likedBooks.filter(book => !book.book.hidden);
         results.title = profile[0].username + " - Profile";
         results.description = "Profile of " + profile[0].username + " on DD, DreamingDragons";
         results.imageURL = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? ORIGIN + "/favicon.webp" : profile[0].avatar_url);
@@ -145,19 +127,15 @@ export const load = async ({params, locals: {supabase, getSession}}) => {
         results.name = profile[0].username;
         return results;
     } else { // ID IS NOT SPECIFIED
-
-        // Hacky way, a user not specifying an id will be redirected to their own profile if they're logged in
-        // by /profile page, otherwise they'll go to the login page.
-        // This also helps keeping only one profile creation logic in one place ( /profile ).
         if (session) {
             return redirect(302, '/profile');
         }
     }
 
     /***********************************************/
-    //      END ACTIONS IF AN ID IS SPECIFIED      //
+    //            END ACTIONS WITH ID              //
     /***********************************************/
-}
+};
 
 
 export const actions = {

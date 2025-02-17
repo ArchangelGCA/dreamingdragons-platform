@@ -1,16 +1,17 @@
-import {error as errorx, redirect} from '@sveltejs/kit';
+import { error as errorx } from '@sveltejs/kit';
 import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
 import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import PocketBase from "pocketbase";
+
 async function loadComments(supabase, session, bookId) {
-    let {data: comments, error: commentsError} = await supabase
+    let { data: comments, error: commentsError } = await supabase
         .from('comments')
         .select('*, profiles(username, avatar_url)')
         .eq('book_id', bookId)
         .order('created_at', { ascending: false });
 
     if (commentsError) {
-        return Error('Something went wrong, comments loading error...');
+        throw new Error('Something went wrong, comments loading error...');
     }
 
     if (session) {
@@ -41,28 +42,34 @@ async function loadComments(supabase, session, bookId) {
 }
 
 export const load = async ({ params, locals: { supabase, getSession, image_proxy } }) => {
-    const {session} = await getSession();
+    const { session } = await getSession();
     let isOwner = false;
 
     if (!params.book) {
-        return errorx(400, 'Missing required fields');
+        throw errorx(400, 'Missing required fields');
     }
 
     const bookId = params.book;
     let is_liked = false;
 
-    const { data: bookContent, error: error } = await supabase
-        .from('book')
-        .select('*, profiles!book_owner_id_fkey(id, username, avatar_url), book_likes(*), views(count), book_tags(tags(id, name)), chapters(id, book_id, title, chapter_likes(id, user_id, created_at))')
-        .eq('id', bookId);
+    // Fetch book content and comments in parallel
+    const [bookContentResult, comments] = await Promise.all([
+        supabase
+            .from('book')
+            .select('*, profiles!book_owner_id_fkey(id, username, avatar_url), book_likes(*), views(count), book_tags(tags(id, name)), chapters(id, book_id, title, chapter_likes(id, user_id, created_at))')
+            .eq('id', bookId),
+        loadComments(supabase, session, bookId)
+    ]);
 
-    if (error) {
-        console.error(error);
-        return errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
+    const { data: bookContent, error: bookError } = bookContentResult;
+
+    if (bookError) {
+        console.error(bookError);
+        throw errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
     }
 
     if (!bookContent || bookContent.length === 0) {
-        return errorx(404, "Content not found or removed by the original author.");
+        throw errorx(404, "Content not found or removed by the original author.");
     }
 
     const tags = bookContent[0].book_tags.map(book_tag => book_tag.tags);
@@ -82,8 +89,6 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
             bookContent[0].chapters.forEach((chapter) => chapter.is_liked = chapter.chapter_likes.some(like => like.user_id === user_id));
         }
     }
-
-    const comments = await loadComments(supabase, session, bookId);
 
     bookContent[0].is_owner = isOwner;
     bookContent[0].is_liked = is_liked;

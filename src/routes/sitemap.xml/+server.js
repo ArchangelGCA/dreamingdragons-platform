@@ -28,7 +28,8 @@ export const GET = async ({locals: {supabase}}) => {
             excludeRoutePatterns: [
                 '^/edit.*',
                 '^/admin.*',
-                '^/health.*'
+                '^/health.*',
+                '^/upload/token.*',
             ]
         });
     }
