@@ -1,6 +1,7 @@
 User-agent: *
 Disallow: /admin/*
 Disallow: /edit/*
+Disallow: /upload/token/*
 
 Sitemap: https://tales.archangelgca.eu/sitemap.xml
 Sitemap: https://tales.archangelgca.eu/imagemap.xml
