@@ -1,5 +1,5 @@
 <script>
-    import { PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES } from "$env/static/public";
+    import { PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_CONVERTER_URL } from "$env/static/public";
     import {deserialize} from '$app/forms';
     import {toast} from "@zerodevx/svelte-toast";
     import Editor from '@tinymce/tinymce-svelte';
@@ -74,6 +74,9 @@
     let chaptersNumber = 0;
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
     let isDragging = false;
+    $: isCompressing = false;
+    $: isTooBig = false;
+    $: compressedMessage = '';
 
     $: if (selectedBook) {
         if (books && books.length > 0) {
@@ -192,6 +195,9 @@
             };
             reader.readAsDataURL(file);
             fileName = file.name;
+            // Get image size (bytes) and if it's too big, set isTooBig to true
+            isTooBig = file.size > PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES;
+            compressedMessage = '';
         }
     }
 
@@ -229,6 +235,137 @@
             // Set the files to the input
             document.getElementById('file').files = files;
         }
+    }
+
+    // Function ran on "compress" button call
+    async function compressImage() {
+        if (!isTooBig) {
+            toast.push('Image is not too big', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            return;
+        }
+        if (isCompressing) {
+            toast.push('Already compressing image, please wait...', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            return;
+        }
+
+        isCompressing = true;
+
+        // Get token
+        const token = await getToken();
+        if (!token) {
+            toast.push('Failed to get token', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            isCompressing = false;
+            return;
+        }
+
+        // Get file of type image from image input
+        const file = document.getElementById('file').files[0];
+        if (!file) {
+            toast.push('Error: No image selected', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            isCompressing = false;
+            return;
+        }
+
+        const oldSize = file.size;
+
+        // Create form data and append the image file
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('token', token);
+        formData.enctype = 'multipart/form-data';
+        formData.mode = 'no-cors';
+
+        // Show loading toast
+        const toastId = toast.push('Compressing image...', {
+            duration: 600000,
+            theme: {
+                '--toastBackground': '#ffcc00',
+                '--toastColor': '#000'
+            }
+        });
+
+        // Send POST request to PUBLIC_CONVERTER_URL/image with form data
+        const response = await fetch(PUBLIC_CONVERTER_URL + '/image', {
+            method: 'POST',
+            body: formData,
+        });
+
+        // Remove loading toast
+        toast.pop(toastId);
+        if (!response.ok) {
+            const error = await response.json();
+            toast.push('Failed to compress image: ' + error.message, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            isCompressing = false;
+            return;
+        }
+
+        // Get response data
+        const blob = await response.blob();
+        isTooBig = blob.size > PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES;
+
+        if (!isTooBig) {
+            previewUrl = URL.createObjectURL(blob);
+            const dataTranfer = new DataTransfer();
+            const tempImageFile = new File([blob], file.name, {type: 'image/webp', lastModified: Date.now()});
+            dataTranfer.items.add(tempImageFile);
+            const fileInput = document.getElementById('file');
+            fileInput.files = dataTranfer.files;
+
+            // New size
+            const newSize = blob.size;
+            compressedMessage = '🍀 Image compressed from <b>' + (oldSize / 1024 / 1024).toFixed(2) + 'MB</b> to <b>' + (newSize / 1024 / 1024).toFixed(2) + 'MB</b>';
+
+            // Show success toast
+            toast.push('Image compressed successfully', {
+                theme: {
+                    '--toastBackground': '#4caf50',
+                    '--toastColor': '#fff'
+                }
+            });
+        } else {
+            toast.push('Failed to compress image: Image is still too big', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        }
+        isCompressing = false;
+    }
+
+    async function getToken() {
+        const response = await fetch('/upload/token');
+        if (!response.ok) {
+            console.error('Failed to get token');
+            return null;
+        }
+        const data = await response.json();
+        return data.token;
     }
 
     async function fetchPreviousChapterTags(){
@@ -328,6 +465,15 @@
         event.preventDefault();
 
         if (activeUpload) return;
+        if (isCompressing) {
+            toast.push('Please wait for the image to finish compressing', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            return;
+        }
 
         activeUpload = true;
 
@@ -419,6 +565,8 @@
                 tags = [];
                 previewUrl = '';
                 fileName = '';
+                isTooBig = false;
+                compressedMessage = '';
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -546,7 +694,7 @@
                                 <div class="col px-0">
                                     <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
                                         <div class="row mx-auto mt-1">
-                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center drop-zone" style="min-height: 30vh"
+                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center drop-zone" use:autoAnimate style="min-height: 30vh"
                                                  on:dragover={handleDragOver}
                                                  on:drop={handleDrop}
                                                  on:dragenter={handleDragEnter}
@@ -559,8 +707,20 @@
                                                 {#if previewUrl}
                                                     <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" />
                                                 {/if}
-                                                {#if fileName}
+                                                {#if isTooBig}
+                                                    <span class="text-danger-emphasis text-center too-big mt-1">⚠️ File is too big! Max size is {maxFileSizeMB}</span>
+                                                    <!-- Button to compress image -->
+                                                    {#if !isCompressing}
+                                                        <button type="button" class="btn btn-sm btn-dark animate-button border-0 mt-3 pt-1 w-auto" on:click={compressImage} use:tooltip={{...tooltipConfig}} title="Compress image using our compressor">Compress image</button>
+                                                    {:else}
+                                                        <button type="button" class="btn btn-sm btn-dark mt-3 pt-1 w-auto" disabled use:tooltip={{...tooltipConfig}} title="Compressing image, please wait...">Compressing image...</button>
+                                                    {/if}
+                                                {/if}
+                                                {#if fileName && !isTooBig}
                                                     <span class="text-light text-opacity-75">Selected file: {fileName}</span>
+                                                {/if}
+                                                {#if compressedMessage !== ''}
+                                                    <span class="text-success-emphasis text-opacity-75 mt-2 mb-0">{@html compressedMessage}</span>
                                                 {/if}
                                             </div>
                                             <div class="col-12 px-0">
@@ -783,6 +943,20 @@
 
     .drop-zone.dragging {
         background-color: rgb(47, 0, 89) !important;
+    }
+
+    /* Animated text shadow */
+    .too-big {
+        animation: textShadow 1.5s infinite;
+    }
+
+    @keyframes textShadow {
+        0% {
+            text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 25px #ff0000, 0 0 30px #ff0000, 0 0 35px #ff0000, 0 0 40px #ff0000;
+        }
+        100% {
+            text-shadow: 0 0 10px #ff0000, 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 25px #ff0000, 0 0 30px #ff0000, 0 0 35px #ff0000, 0 0 40px #ff0000, 0 0 45px #ff0000;
+        }
     }
 
     @keyframes Gradient {

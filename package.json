@@ -1,6 +1,6 @@
 {
   "name": "dd-tales-svelte",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -13,24 +13,25 @@
     "@supabase/auth-ui-svelte": "^0.2.9",
     "@supabase/ssr": "^0.5.1",
     "@supabase/supabase-js": "^2.46.1",
-    "@svelte-plugins/tooltips": "^3.0.1",
+    "@svelte-plugins/tooltips": "^3.0.3",
     "@svelte-put/dragscroll": "^3.0.1",
     "@sveltejs/adapter-vercel": "^5.5.3",
-    "@sveltejs/kit": "^2.7.7",
+    "@sveltejs/kit": "^2.17.2",
     "@sveltejs/vite-plugin-svelte": "^3.1.2",
     "@tinymce/tinymce-svelte": "^3.0.0",
     "@zerodevx/svelte-toast": "^0.9.6",
     "bootstrap": "^5.3.3",
+    "install": "^0.13.0",
     "pocketbase": "^0.21.5",
     "resend": "^4.0.1-alpha.0",
-    "sk-seo": "^0.4.3",
-    "super-sitemap": "^0.15.1",
+    "super-sitemap": "^1.0.3",
     "svelte": "^4.2.19",
     "svelte-bricks": "^0.2.1",
     "vite": "^5.4.10"
   },
   "type": "module",
   "dependencies": {
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "uninstall": "^0.0.0"
   }
 }
