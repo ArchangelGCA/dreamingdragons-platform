@@ -61,7 +61,7 @@
         {
             name: 'Discord',
             icon: 'fab fa-discord',
-            link: 'https://discord.gg/7y7vXnD846',
+            link: 'https://discord.gg/u6qFjfDDy2',
         },
         {
             name: 'Github',
