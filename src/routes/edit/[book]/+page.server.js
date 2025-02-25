@@ -228,7 +228,7 @@ export const actions = {
 }
 
 const uploadImage = async (image, cover_id) => {
-    const imageSharp = sharp(await image.arrayBuffer());
+    const imageSharp = sharp(await image.arrayBuffer(), {animated: true});
     const metadata = await imageSharp.metadata();
 
     // Get image res, if more than 5000px, error
