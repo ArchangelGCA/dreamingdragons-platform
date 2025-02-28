@@ -14,25 +14,22 @@
         theme: 'text-center w-auto'
     };
 
-    export let owner_username;
-    export let owner_id;
-    export let book_title;
-    export let book_id;
-    export let book_cover_url;
-    export let owner_avatar_url;
-    export let image_proxy;
+    /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any}} */
+    let {
+        owner_username = $bindable(),
+        owner_id,
+        book_title = $bindable(),
+        book_id,
+        book_cover_url = $bindable(),
+        owner_avatar_url,
+        image_proxy
+    } = $props();
 
     let isDragging = false;
     let dragTimeout;
-
-    $: if (image_proxy) {
-        if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url;
-    } else {
-        console.log('No image proxy');
-    }
-
-    $: if (book_title.length > 45) book_title = book_title.substring(0, 40) + '...';
-    $: if (owner_username.length > 30) owner_username = owner_username.substring(0, 35) + '...';
+    const final_book_cover_url = $derived(image_proxy && !book_cover_url.startsWith(image_proxy) ? image_proxy + book_cover_url : book_cover_url);
+    const final_book_title = $derived(book_title && book_title.length > 45 ? book_title.substring(0, 40) + '...' : book_title);
+    const final_owner_username = $derived(owner_username && owner_username.length > 30 ? owner_username.substring(0, 35) + '...' : owner_username);
 
     // Prevent clicking while dragging.
     function handlePointerDown() {
@@ -67,24 +64,24 @@
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 35vh; overflow: hidden;">
         <img
-                srcset="{book_cover_url + '?width=350&quality=80'} 2x,
-                        {book_cover_url + '?width=500&quality=80'} 1x"
-                src={book_cover_url + '?width=500&quality=80'}
+                srcset="{final_book_cover_url + '?width=350&quality=80'} 2x,
+                        {final_book_cover_url + '?width=500&quality=80'} 1x"
+                src={final_book_cover_url + '?width=500&quality=80'}
                 alt="Book cover"
                 class="w-100 h-100 to-scale"
                 loading="lazy"
                 style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
-    <a href="/content/{book_id}" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
-       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="Content sorted by most recently updated: {book_title}">
+    <a href="/content/{book_id}" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}
+       onpointermove={handlePointerMove} onpointerup={handlePointerUp} onpointerleave={handlePointerLeave} aria-label="Content sorted by most recently updated: {final_book_title}">
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                 <div class="col-12 px-0 px-md-2">
-                    <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap" href="/content/{book_id}"
-                       use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{book_title}</span></button>
-                    <p class="card-text"><small class="text-description"><span><UserAvatarNavbar url={owner_avatar_url} username={owner_username} {image_proxy} size="25px"/></span> <button
+                    <button class="btn btn-link p-0 pb-1 link-light link-custom text-decoration-none text-wrap text-start" href="/content/{book_id}"
+                       use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{final_book_title}</span></button>
+                    <p class="card-text"><small class="text-description"><span><UserAvatarNavbar url={owner_avatar_url} username={final_owner_username} {image_proxy} size="25px"/></span> <button
                             class="btn btn-link p-0 link-light link-custom text-decoration-none" href="/profile/{owner_id}"
-                            use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</button></small></p>
+                            use:tooltip={{...tooltipConfig}} title="Visit profile">{final_owner_username}</button></small></p>
                 </div>
             </div>
         </div>
@@ -130,6 +127,7 @@
     .text-title {
         font-size: 1.2rem;
         font-weight: 400;
+        line-height: 1.2;
     }
 
     .text-description {

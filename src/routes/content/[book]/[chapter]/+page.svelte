@@ -1,51 +1,44 @@
 <script>
+    import { run } from 'svelte/legacy';
+
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
-    import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
     import {onMount} from "svelte";
     import {browser} from "$app/environment";
+    import {invalidateAll} from "$app/navigation";
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
 
     let {
         supabase,
-        comments,
         image_proxy,
         user_id,
-        is_liked,
         tooltipConfig,
         chapterContent,
-        chapters,
-        tags
-    } = data;
+    } = $state(data);
 
-    $: ({
-        comments,
-        chapterContent,
-        user_id,
-        is_liked,
-        chapters,
-        tags
-    } = data)
+    $effect(() => {
+        ({
+            chapterContent,
+            user_id,
+        } = data)
+    });
 
     let likeActionActive = false;
     let reportActionActive = false;
-    let hasPreviousChapter = true;
-    let hasNextChapter = true;
-    let previousChapterId = 0;
-    let nextChapterId = 0;
-    let likes_count;
-    let currentYear;
-    let createdAt;
-    let createdAtFormatted;
-    let createdAtDetailed;
+    let commentsCount = $derived(chapterContent.comments.length);
+    let currentYear = new Date().getFullYear();
+    let createdAt = $derived(new Date(chapterContent.created_at));
+    let createdAtFormatted = $derived(`${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`);
+    let createdAtDetailed = $derived(`${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`);
     let deleteChapterActionActive = false;
-    let reportText = '';
+    let reportText = $state('');
 
     onMount(async () => {
         if (browser) {
@@ -72,9 +65,7 @@
                     ip_address: ip,
                     user_id: user_id
                 }
-                ]).then((error) => {
-                    if (!error) chapterContent.total_views++;
-                });
+                ]);
         } else if (ip){
             // Using only IP address
             await supabase
@@ -83,40 +74,7 @@
                     chapter_id: chapterContent.chapter_id,
                     ip_address: ip
                 }
-                ]).then((error) => {
-                    if (!error) chapterContent.total_views++;
-                });
-        }
-    }
-
-    async function handlePreviousAndNextChapters() {
-        hasPreviousChapter = true;
-        hasNextChapter = true;
-        const { data: chapters, error } = await supabase
-            .from('chapters')
-            .select('id, number_ordinal')
-            .eq('book_id', chapterContent.book_id)
-            .order('number_ordinal');
-
-        if (!error && chapters.length > 0) {
-            const currentIndex = chapters.findIndex(chapter => chapter.number_ordinal === chapterContent.number_ordinal);
-
-            if (currentIndex > 0) {
-                hasPreviousChapter = true;
-                previousChapterId = chapters[currentIndex - 1].id;
-            } else {
-                hasPreviousChapter = false;
-            }
-
-            if (currentIndex < chapters.length - 1) {
-                hasNextChapter = true;
-                nextChapterId = chapters[currentIndex + 1].id;
-            } else {
-                hasNextChapter = false;
-            }
-        } else {
-            hasPreviousChapter = false;
-            hasNextChapter = false;
+                ]);
         }
     }
 
@@ -128,9 +86,9 @@
 
         likeActionActive = true;
         const data = new FormData();
-        data.append('chapterId', chapterContent.chapter_id);
+        data.append('chapterId', chapterContent.id);
 
-        is_liked = !is_liked;
+        chapterContent.is_liked = !chapterContent.is_liked;
 
         const response = await fetch('?/like', {
             method: 'POST',
@@ -140,14 +98,14 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                if (is_liked) {
+                if (chapterContent.is_liked) {
                     toast.push('Chapter liked ❤️', {
                         theme: {
                             '--toastBackground': '#5c00a6',
                             '--toastColor': '#fff',
                         }
                     });
-                    likes_count++;
+                    await invalidateAll();
                 } else {
                     toast.push('Chapter unliked 💔', {
                         theme: {
@@ -155,10 +113,10 @@
                             '--toastColor': '#fff',
                         }
                     });
-                    likes_count--;
+                    await invalidateAll();
                 }
             } else {
-                is_liked = !is_liked;
+                chapterContent.is_liked = !chapterContent.is_liked;
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
@@ -167,7 +125,7 @@
                 });
             }
         } else {
-            is_liked = !is_liked;
+            chapterContent.is_liked = !chapterContent.is_liked;
             toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
@@ -189,7 +147,7 @@
         deleteChapterActionActive = true;
 
         const data = new FormData();
-        data.append('chapterId', chapterContent.chapter_id);
+        data.append('chapterId', chapterContent.id);
 
         const response = await fetch('?/delete_chapter', {
             method: 'POST',
@@ -234,7 +192,7 @@
 
         const formData = new FormData();
         formData.append('book_id', chapterContent.book_id);
-        formData.append('chapter_id', chapterContent.chapter_id);
+        formData.append('chapter_id', chapterContent.id);
         formData.append('report_description', reportText);
 
         const response = await fetch('?/report', {
@@ -276,17 +234,6 @@
 
         reportActionActive = false;
     }
-
-    $: if (chapterContent) {
-        handleView();
-        handlePreviousAndNextChapters();
-        currentYear = new Date().getFullYear();
-        likes_count = chapterContent.likes_count;
-        createdAt = new Date(chapterContent.created_at);
-        createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
-        createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
-        tags.forEach((item) => item.url = `/search?tag=${item.name}`);
-    }
 </script>
 
 <div class="container-xxl">
@@ -302,7 +249,7 @@
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
             <a href="/content/{chapterContent.book_id}" target="_blank" aria-label="Open image in a new page.">
-                <ContentImage src={chapterContent.book_cover_url} alt={chapterContent.book_title} {image_proxy}/>
+                <ContentImage src={chapterContent.book.cover_url} alt={chapterContent.book.title} {image_proxy}/>
             </a>
         </div>
     </div>
@@ -311,18 +258,16 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
-                    <a class="w-auto" href="/profile/{chapterContent.owner_id}" aria-label="Visit author's profile">
-                        <UserAvatar url={chapterContent.owner_avatar_url} username={chapterContent.owner_username} id={chapterContent.owner_id} {image_proxy} size="75px"/>
-                    </a>
+                    <UserAvatar url={chapterContent.profiles.avatar_url} username={chapterContent.profiles.username} id={chapterContent.owner_id} {image_proxy} size="75px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
-                    <h2><a class="link-light link-opacity-75 text-decoration-none" href="/content/{chapterContent.book_id}">{chapterContent.book_title}</a>: {chapterContent.title}</h2>
-                    <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{chapterContent.owner_id}">{chapterContent.owner_username}</a> - <span class="text-muted" use:tooltip={{...tooltipConfig}} title="{createdAtDetailed}">{createdAtFormatted}</span></h6>
-                    {#if tags.length !== 0}
+                    <h2><a class="link-light link-opacity-75 text-decoration-none" href="/content/{chapterContent.book_id}">{chapterContent.book.title}</a>: {chapterContent.title}</h2>
+                    <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{chapterContent.owner_id}">{chapterContent.profiles.username}</a> - <span class="text-muted" use:tooltip={{...tooltipConfig}} title="{createdAtDetailed}">{createdAtFormatted}</span></h6>
+                    {#if chapterContent.tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
-                                {#each tags as tag (tag.id)}
-                                    <a href="{tag.url}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
+                                {#each chapterContent.tags as tag (tag.id)}
+                                    <a href="/search?tag={tag.name}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
                                 {/each}
                             </div>
                         </div>
@@ -336,12 +281,12 @@
         <div class="col">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Likes">
                 <div class="col-auto d-flex align-items-center pe-0">
-                    <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1" on:click={handleHeartClick}>
-                        <i class="fas fa-heart {is_liked ? 'liked' : 'unliked'}"></i>
+                    <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1" onclick={handleHeartClick} aria-label="Like Chapter">
+                        <i class="fas fa-heart {chapterContent.is_liked ? 'liked' : 'unliked'}"></i>
                     </button>
                 </div>
                 <div class="col-auto">
-                    <span class="mt-1">{likes_count}</span>
+                    <span class="mt-1">{chapterContent.chapter_likes.filter(like => like.user_id !== null).length}</span>
                 </div>
             </div>
         </div>
@@ -351,7 +296,7 @@
                     <i class="fas fa-eye"></i>
                 </div>
                 <div class="col-auto mt-1">
-                    <span>{chapterContent.total_views}</span>
+                    <span>{chapterContent.views[0].count}</span>
                 </div>
             </div>
         </div>
@@ -361,7 +306,7 @@
                     <i class="fas fa-comment"></i>
                 </div>
                 <div class="col-auto mt-1">
-                    <span class="">{comments.length}</span>
+                    <span class="">{commentsCount}</span>
                 </div>
             </div>
         </div>
@@ -373,7 +318,7 @@
         </div>
     </div>
     <!-- Previous and Next Chapters buttons -->
-    {#if hasPreviousChapter || hasNextChapter}
+    {#if chapterContent.previousChapter || chapterContent.nextChapter}
         <div class="row justify-content-center text-center mb-3">
             <div class="col-12 col-md-6 col-lg-5">
                 <!-- Chapters navigator -->
@@ -388,12 +333,12 @@
                 <!-- Previous and Next Chapters -->
                 <div class="row justify-content-center text-center">
                     <div class="col-6 px-1" use:autoAnimate>
-                        {#if hasPreviousChapter}
-                            <a href="/content/{chapterContent.book_id}/{previousChapterId}" class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Previous Chapter" data-sveltekit-noscroll>
+                        {#if chapterContent.previousChapter}
+                            <a href="/content/{chapterContent.book_id}/{chapterContent.previousChapter}" class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Previous Chapter" data-sveltekit-noscroll>
                                 <i class="fas fa-chevron-left"></i>
                                 <span class="fs-6">Previous</span>
                             </a>
-                        {:else if hasNextChapter}
+                        {:else if chapterContent.nextChapter}
                             <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled" use:tooltip={{...tooltipConfig}} title="No previous chapters">
                                 <i class="fas fa-chevron-left"></i>
                                 <span class="fs-6">You're here! 😅</span>
@@ -401,12 +346,12 @@
                         {/if}
                     </div>
                     <div class="col-6 px-1" use:autoAnimate>
-                        {#if hasNextChapter}
-                            <a href="/content/{chapterContent.book_id}/{nextChapterId}" class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Next Chapter" data-sveltekit-noscroll>
+                        {#if chapterContent.nextChapter}
+                            <a href="/content/{chapterContent.book_id}/{chapterContent.nextChapter}" class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Next Chapter" data-sveltekit-noscroll>
                                 <span class="fs-6">Next</span>
                                 <i class="fas fa-chevron-right"></i>
                             </a>
-                        {:else if hasPreviousChapter}
+                        {:else if chapterContent.previousChapter}
                             <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled" use:tooltip={{...tooltipConfig}} title="No more chapters">
                                 <span class="fs-6">You're here! 😅</span>
                                 <i class="fas fa-chevron-right"></i>
@@ -428,12 +373,12 @@
         <div class="col-10 col-md-9 pt-2 px-0">
             <p class="text-secondary text-center">
                 <small>
-                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{chapterContent.owner_username}</a> - {chapterContent.book_title} - {chapterContent.title}
+                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{chapterContent.profiles.username}</a> - {chapterContent.book.title} - {chapterContent.title}
                 </small>
             </p>
         </div>
         <div class="col-auto text-center my-auto mt-md-1 px-0">
-            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report" data-bs-toggle="modal" data-bs-target="#reportModal">
+            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report" data-bs-toggle="modal" data-bs-target="#reportModal" aria-label="Report Chapter">
                 <i class="fas fa-flag"></i>
             </button>
         </div>
@@ -446,13 +391,13 @@
             <div class="col-12 px-0">
                 <div class="row justify-content-center pt-1">
                     <div class="col-auto">
-                        <a href="/edit/{chapterContent.book_id}/{chapterContent.chapter_id}" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Edit Chapter">
+                        <a href="/edit/{chapterContent.book_id}/{chapterContent.id}" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Edit Chapter">
                             <i class="fas fa-edit"></i>
                             <span class="fs-6">Edit</span>
                         </a>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Delete Chapter" on:click={handleChapterDelete}>
+                        <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Delete Chapter" onclick={handleChapterDelete}>
                             <i class="fas fa-trash-alt"></i>
                             <span class="fs-6">Delete</span>
                         </button>
@@ -466,7 +411,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} chapterId="{chapterContent.chapter_id}" {image_proxy} />
+    <CommentsSection comments={chapterContent.comments} {supabase} chapterId={chapterContent.id} {image_proxy} />
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
@@ -488,7 +433,7 @@
                             <button type="button" class="btn btn-close-report w-100" data-bs-dismiss="modal">Close</button>
                         </div>
                         <div class="col ps-1 pe-0">
-                            <button type="button" class="btn btn-submit-report w-100" on:click={handleReport}>Submit Report</button>
+                            <button type="button" class="btn btn-submit-report w-100" onclick={handleReport}>Submit Report</button>
                         </div>
                     </div>
                 </div>
@@ -505,9 +450,9 @@
             <div class="row">
                 <div class="col-12">
                     <div class="row row-horizontal flex-nowrap py-2">
-                        {#each chapters as chapter, index (chapter.id)}
+                        {#each chapterContent.chapters as chapter, index (chapter.id)}
                             <div class="col-3 col-md-2 col-lg-1">
-                                <a href="/content/{chapter.book_id}/{chapter.id}" data-sveltekit-noscroll class="btn {chapter.id === chapterContent.chapter_id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index}</a>
+                                <a href="/content/{chapter.book_id}/{chapter.id}" data-sveltekit-noscroll class="btn {chapter.id === chapterContent.id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index}</a>
                             </div>
                         {/each}
                     </div>

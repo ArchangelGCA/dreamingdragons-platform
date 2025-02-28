@@ -56,35 +56,40 @@
         },
     };
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
 
-    let { books, can_upload, tooltipConfig } = data;
+    let { books, can_upload, tooltipConfig } = $state(data);
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
-    let previewUrl = '';
-    let fileName = '';
-    let editorContent = '';
-    let selectedOption = 'book';
-    let inputTag = '';
-    let suggestions = [];
+    let previewUrl = $state('');
+    let fileName = $state('');
+    let editorContent = $state('');
+    let selectedOption = $state('book');
+    let inputTag = $state('');
+    let suggestions = $state([]);
     let activeUpload = false;
-    let editorContentTale = '';
+    let editorContentTale = $state('');
     let activePreviousChapterTags = false;
-    let selectedBook;
-    let chaptersNumber = 0;
+    let selectedBook = $state();
+    let chaptersNumber = $state(0);
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
-    let isDragging = false;
-    $: isCompressing = false;
-    $: isTooBig = false;
-    $: compressedMessage = '';
+    let isDragging = $state(false);
+    let isCompressing = $state(false);
+    
+    let isTooBig = $state(false);
+    
+    let compressedMessage = $state('');
 
-    $: if (selectedBook) {
-        if (books && books.length > 0) {
-            chaptersNumber = books.find(book => book.id === selectedBook).chapters;
+    $effect.pre(() => {
+        if (selectedBook) {
+            if (books && books.length > 0) {
+                chaptersNumber = books.find(book => book.id === selectedBook).chapters;
+            }
         }
-    }
+    });
 
-    let tags = [];
+    let tags = $state([]);
     async function addTag(e) {
         if (e.type === 'click') {
             e.preventDefault();
@@ -179,7 +184,9 @@
         }
     }
 
-    function removeTag(tag) {
+    function removeTag(e) {
+        e.preventDefault();
+        const tag = e.target.value.trim();
         tags = tags.filter(t => t !== tag);
         suggestions = [];
         inputTag = '';
@@ -676,10 +683,10 @@
                 <div class="col-12 text-center">
                     <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
                     <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
-                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create Tale">
+                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}" onclick={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create Tale">
                             <i class="fas fa-book"></i> Tale
                         </button>
-                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter">
+                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'chapter' ? 'active' : ''}" onclick={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter">
                             <i class="fas fa-file-alt"></i> Chapter
                         </button>
                     </div>
@@ -692,17 +699,17 @@
                             </div>
                             <div class="row mt-3 mx-0 justify-content-center">
                                 <div class="col px-0">
-                                    <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
+                                    <form method="POST" enctype="multipart/form-data" action="?/postbook" onsubmit={handleBookUpload}>
                                         <div class="row mx-auto mt-1">
                                             <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center drop-zone" use:autoAnimate style="min-height: 30vh"
-                                                 on:dragover={handleDragOver}
-                                                 on:drop={handleDrop}
-                                                 on:dragenter={handleDragEnter}
-                                                 on:dragleave={handleDragLeave}
+                                                 ondragover={handleDragOver}
+                                                 ondrop={handleDrop}
+                                                 ondragenter={handleDragEnter}
+                                                 ondragleave={handleDragLeave}
                                                  class:dragging={isDragging}
                                                  role="button" aria-label="File upload drop zone" tabindex="0">
                                                 <label for="file" class="form-label" title="Tale image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Image</label>
-                                                <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required/>
+                                                <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" onchange={loadImagePreview} required/>
                                                 <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                                 {#if previewUrl}
                                                     <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" />
@@ -711,7 +718,7 @@
                                                     <span class="text-danger-emphasis text-center too-big mt-1">⚠️ File is too big! Max size is {maxFileSizeMB}</span>
                                                     <!-- Button to compress image -->
                                                     {#if !isCompressing}
-                                                        <button type="button" class="btn btn-sm btn-dark animate-button border-0 mt-3 pt-1 w-auto" on:click={compressImage} use:tooltip={{...tooltipConfig}} title="Compress image using our compressor">Compress image</button>
+                                                        <button type="button" class="btn btn-sm btn-dark animate-button border-0 mt-3 pt-1 w-auto" onclick={compressImage} use:tooltip={{...tooltipConfig}} title="Compress image using our compressor">Compress image</button>
                                                     {:else}
                                                         <button type="button" class="btn btn-sm btn-dark mt-3 pt-1 w-auto" disabled use:tooltip={{...tooltipConfig}} title="Compressing image, please wait...">Compressing image...</button>
                                                     {/if}
@@ -744,12 +751,12 @@
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
-                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
+                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" onclick={removeTag} value={tag}>x</button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
+                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" onkeydown={addTag} onkeyup={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
-                                                        <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
+                                                        <button class="dropdown-item" onclick={addTag} value={suggestion}>{suggestion}</button>
                                                     {/each}
                                                     <!-- Hidden input bind with tags -->
                                                     <input type="hidden" name="tags" value={tags} />
@@ -775,7 +782,7 @@
                             </div>
                             <div class="row mx-auto mt-2 justify-content-center">
                                 <div class="col">
-                                    <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleChapterUpload}>
+                                    <form method="POST" enctype="multipart/form-data" action="?/postchapter" onsubmit={handleChapterUpload}>
                                         <div class="row" use:autoAnimate>
                                             <div class="col-12 rounded-3 mt-1 px-0">
                                                 <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Tale</p>
@@ -806,12 +813,12 @@
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
-                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
+                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" onclick={removeTag} value={tag}>x</button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
+                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" onkeydown={addTag} onkeyup={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
-                                                        <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
+                                                        <button class="dropdown-item" onclick={addTag} value={suggestion}>{suggestion}</button>
                                                     {/each}
                                                     <!-- Hidden input bind with tags -->
                                                     <input type="hidden" name="tags" value={tags} />
@@ -819,7 +826,7 @@
                                             </div>
                                             {#if chaptersNumber > 0}
                                                 <div class="col-12 px-0">
-                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button" on:click|preventDefault={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
+                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button" onclick={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
                                                 </div>
                                             {/if}
                                             <div class="col-12 mb-1 mt-2 px-0">

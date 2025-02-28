@@ -130,7 +130,7 @@
             <div class="card-header">⚠️ Migrate Avatars</div>
             <div class="card-body text-center">
                 <p class="card-text">Migrate avatars from the old system to the new system.</p>
-                <button type="button" class="btn btn-purple disabled" disabled on:click={handleMigrationAvatars}>Migrate Avatars</button>
+                <button type="button" class="btn btn-purple disabled" disabled onclick={handleMigrationAvatars}>Migrate Avatars</button>
             </div>
         </div>
     </div>
@@ -140,7 +140,7 @@
             <div class="card-header">⚠️ Migrate Covers</div>
             <div class="card-body text-center">
                 <p class="card-text">Migrate covers from the old system to the new system.</p>
-                <button type="button" class="btn btn-purple disabled" disabled on:click={handleMigrationCovers}>Migrate Covers</button>
+                <button type="button" class="btn btn-purple disabled" disabled onclick={handleMigrationCovers}>Migrate Covers</button>
             </div>
         </div>
     </div>

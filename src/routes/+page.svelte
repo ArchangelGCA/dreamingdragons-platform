@@ -7,7 +7,8 @@
     import Masonry from "svelte-bricks";
     import {deserialize} from "$app/forms";
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
     let {
         image_proxy,
         books_ordered_by_likes,
@@ -16,24 +17,22 @@
         is_logged,
         followed,
         tooltipConfig
-    } = data;
-    $: ({
-        books_ordered_by_likes,
-        books_ordered_by_created_at,
-        books_ordered_by_latest_chapter,
-        is_logged,
-        followed
-    } = data);
+    } = $state(data);
+    /*run(() => {
+        ({
+            books_ordered_by_likes,
+            books_ordered_by_created_at,
+            books_ordered_by_latest_chapter,
+            is_logged,
+            followed
+        } = data);
+    });*/
     let loading = false;
-    let allContentLoaded = false;
+    let allContentLoaded = $state(false);
     let step = 20;
     let startRange = 0;
     let endRange = step;
-    let width, height;
-
-    if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
-        allContentLoaded = true;
-    }
+    let width = $state(), height = $state();
 
     async function loadMoreContentByCreatedAt() {
         if (loading || allContentLoaded) return;
@@ -122,19 +121,21 @@
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row column-vertical" on:scroll={handleScroll} use:dragscroll={{axis: 'y'}}>
+                <div class="row column-vertical" onscroll={handleScroll} use:dragscroll={{axis: 'y'}}>
                     <div class="col-12 px-0">
                         <Masonry
                                 items={books_ordered_by_created_at}
                                 minColWidth={350}
                                 gap={10}
                                 animate={true}
-                                let:item
+                                
                                 bind:width
                                 bind:height
                         >
-                            <ContentMasonry book={item} {image_proxy}/>
-                        </Masonry>
+                            {#snippet children({ item })}
+                                                        <ContentMasonry book={item} {image_proxy}/>
+                                                                                {/snippet}
+                                                </Masonry>
                     </div>
                     {#if allContentLoaded}
                         <div class="col-12">

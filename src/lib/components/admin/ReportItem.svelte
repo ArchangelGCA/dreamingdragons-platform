@@ -1,14 +1,11 @@
 <script>
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
-    import {createEventDispatcher} from "svelte";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-    export let report;
-    export let image_proxy = '';
+    /** @type {{report: any, image_proxy?: string}} */
+    let { report, closeReport, image_proxy = '' } = $props();
 
-    const dispatch = createEventDispatcher();
-
-    let urlToOpen = '';
+    let urlToOpen = $state('');
 
     if (report.report_type === 'book') {
         urlToOpen = `/content/${report.book_id}`;
@@ -62,7 +59,7 @@
                         '--toastColor': '#fff',
                     },
                 });
-                dispatch('closeReport', report.id);
+                closeReport(report.id);
             } else {
                 toast.push('Failed to close report', {
                     theme: {
@@ -83,15 +80,11 @@
 
         isCloseReportActive = false;
     }
-
-    report.created_at = formatDate(report.created_at);
-
-    $: report.created_at = formatDate(report.created_at);
 </script>
 
 <div class="card bg-black bg-opacity-25 shadow">
     <div class="card-title text-uppercase bg-light bg-opacity-10 p-2 rounded-2 mb-0">
-        {report.report_type} <span class="fs-6 text-muted">{report.created_at}</span>
+        {report.report_type} <span class="fs-6 text-muted">{formatDate(report.created_at)}</span>
         <br>
         <UserAvatarNavbar url={report.profiles.avatar_url} username={report.profiles.username} image_proxy={image_proxy} size="25px" /> <a class="text-warning-emphasis fs-7 text-decoration-none" href="/profile/{report.profiles.id}">{report.profiles.username}</a>
     </div>
@@ -104,7 +97,7 @@
             </div>
             <div class="col-12">
                 {#if !report.is_closed}
-                    <button class="btn btn-danger w-100 mt-2" on:click={handleCloseReport}>
+                    <button class="btn btn-danger w-100 mt-2" onclick={handleCloseReport}>
                         Close Report
                     </button>
                 {:else}

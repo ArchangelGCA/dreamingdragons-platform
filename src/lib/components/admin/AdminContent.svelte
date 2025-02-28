@@ -2,26 +2,24 @@
     import autoAnimate from "@formkit/auto-animate";
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
-    import {createEventDispatcher} from "svelte";
-    export let item;
-
-    const dispatch = createEventDispatcher();
+    /** @type {{item: any}} */
+    let { item, editContent, deleteContent } = $props();
 
     const maxChars = 100;
-    let showFullDescription = false;
+    let showFullDescription = $state(false);
     let deleteBookActionActive = false;
     let deleteChapterActionActive = false;
     let editBookActionActive = false;
-    let sendWarning = false;
-    let warningMessage = '';
-    let editItem = {
+    let sendWarning = $state(false);
+    let warningMessage = $state('');
+    let editItem = $state({
         title: item.title,
         description: item.description,
         cover_url: item.cover_url,
         profiles: {
             username: item.profiles.username
         }
-    };
+    });
 
     function formatDate(date) {
         if (date === null) {
@@ -33,8 +31,6 @@
         }
         return finalDate.toLocaleString();
     }
-
-    item.created_at = formatDate(item.created_at);
 
     function openEditModal() {
         editItem = { ...item };
@@ -87,7 +83,7 @@
 
                 document.getElementById('editModal-' + item.id).style.display = 'none';
 
-                dispatch('editContent', { id: item.id, ...editItem });
+                editContent({ id: item.id, ...editItem });
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -146,7 +142,7 @@
                     }
                 });
 
-                dispatch('delete', item.id);
+                deleteContent(item.id);
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -202,7 +198,7 @@
                     }
                 });
 
-                dispatch('delete', chapter.id);
+                deleteContent(chapter.id);
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -222,8 +218,6 @@
 
         deleteChapterActionActive = false;
     }
-
-    $: item.created_at = formatDate(item.created_at);
 </script>
 
 <div class="card">
@@ -231,7 +225,7 @@
         <img src={item.cover_url} class="card-img-top" alt={item.title} />
     </a>
     <div class="card-body">
-        <h5 class="card-title"><a href="/content/{item.id}" target="_blank"><i class="fas fa-solid fa-link"></i></a> {item.title}</h5>
+        <h5 class="card-title"><a href="/content/{item.id}" target="_blank" aria-label="Open Content"><i class="fas fa-solid fa-link"></i></a> {item.title}</h5>
         <p class="card-text">By: <a href="/profile/{item.profiles.id}" target="_blank">{item.profiles.username}</a></p>
         <p class="card-text" use:autoAnimate>
             {#if showFullDescription}
@@ -241,7 +235,7 @@
                 {#if item.description.length > maxChars}...{/if}
             {/if}
             {#if item.description.length > maxChars}
-                <button class="btn btn-link" on:click={() => showFullDescription = !showFullDescription}>
+                <button class="btn btn-link" onclick={() => showFullDescription = !showFullDescription}>
                     {#if showFullDescription} Show Less {:else} Show More {/if}
                 </button>
             {/if}
@@ -302,7 +296,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-danger" on:click={() => confirmDeleteChapter(chapter)}>Delete</button>
+                                    <button type="button" class="btn btn-danger" onclick={() => confirmDeleteChapter(chapter)}>Delete</button>
                                 </div>
                             </div>
                         </div>
@@ -318,10 +312,10 @@
         </div>
     </div>
     <div class="card-footer">
-        <small class="text-muted">Created at: {item.created_at}</small>
+        <small class="text-muted">Created at: {formatDate(item.created_at)}</small>
         <div class="row mt-1">
             <div class="col-6 text-center">
-                <button class="btn btn-primary btn-sm w-100" on:click={openEditModal} data-bs-toggle="modal" data-bs-target="#editModal-{item.id}">
+                <button class="btn btn-primary btn-sm w-100" onclick={openEditModal} data-bs-toggle="modal" data-bs-target="#editModal-{item.id}">
                     <i class="fas fa-edit"></i> Edit
                 </button>
             </div>
@@ -355,7 +349,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" on:click={confirmDelete}>Delete</button>
+                <button type="button" class="btn btn-danger" onclick={confirmDelete}>Delete</button>
             </div>
         </div>
     </div>
@@ -390,7 +384,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" on:click={saveBookChanges}>Save changes</button>
+                <button type="button" class="btn btn-primary" onclick={saveBookChanges}>Save changes</button>
             </div>
         </div>
     </div>

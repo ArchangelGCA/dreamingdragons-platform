@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 
 export const load = async ({}) => {
     return {
+        index: false,
         title: 'DreamingDragons - Mailing List',
         description: 'Subscribe to the official DreamingDragons mailing list.',
     }

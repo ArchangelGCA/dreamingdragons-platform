@@ -1,4 +1,6 @@
 <script>
+    import { run } from 'svelte/legacy';
+
     import { tooltip } from "@svelte-plugins/tooltips";
 
     const tooltipConfig = {
@@ -13,19 +15,24 @@
         theme: 'text-center w-auto'
     };
 
-    export let owner_username;
-    export let owner_id;
-    export let title;
-    export let book_id;
-    export let book_cover_url;
-    export let description;
-    export let image_proxy;
+    /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any}} */
+    let {
+        owner_username,
+        owner_id,
+        title,
+        book_id,
+        book_cover_url = $bindable(),
+        description,
+        image_proxy
+    } = $props();
 
-    $: if (image_proxy) {
-        if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url + '?width=500&quality=80';
-    } else {
-        console.log('No image proxy');
-    }
+    run(() => {
+        if (image_proxy) {
+            if (!book_cover_url.startsWith(image_proxy)) book_cover_url = image_proxy + book_cover_url + '?width=500&quality=80';
+        } else {
+            console.log('No image proxy');
+        }
+    });
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">

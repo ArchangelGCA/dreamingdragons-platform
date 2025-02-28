@@ -1,22 +1,30 @@
 <script>
+    import { run } from 'svelte/legacy';
+
     import {onMount, onDestroy, tick} from 'svelte';
     import autoAnimate from '@formkit/auto-animate';
     import {browser} from "$app/environment";
 
-    export let stretchFirst = false,
-        gridGap = '0.5em',
-        colWidth = 'minmax(Min(20em, 100%), 1fr)',
-        colWidthMobile = 'minmax(Min(10em, 100%), 1fr)',
-        items = [];
-    let grids = [], masonryElement;
+    let grids = [], masonryElement = $state();
 
     if (masonryElement) masonryElement = masonryElement;
 
-    export let reset = null;
-    $: if (reset || !reset) {
-        // console.log('Resetting masonry layout, reset:', reset);
-        masonryElement = masonryElement;
-    }
+    /** @type {{stretchFirst?: boolean, gridGap?: string, colWidth?: string, colWidthMobile?: string, items?: any, reset?: any, children?: import('svelte').Snippet}} */
+    let {
+        stretchFirst = false,
+        gridGap = '0.5em',
+        colWidth = 'minmax(Min(20em, 100%), 1fr)',
+        colWidthMobile = 'minmax(Min(10em, 100%), 1fr)',
+        items = [],
+        reset = null,
+        children
+    } = $props();
+    run(() => {
+        if (reset || !reset) {
+            // console.log('Resetting masonry layout, reset:', reset);
+            masonryElement = masonryElement;
+        }
+    });
 
     export const refreshLayout = async () => {
         for (const grid of grids) {
@@ -71,20 +79,24 @@
         }
     });
 
-    $: if (masonryElement) {
-        calcGrid([masonryElement]);
-    }
+    run(() => {
+        if (masonryElement) {
+            calcGrid([masonryElement]);
+        }
+    });
 
-    $: if (items) {
-        masonryElement = masonryElement;
-    }
+    run(() => {
+        if (items) {
+            masonryElement = masonryElement;
+        }
+    });
 </script>
 
 <div bind:this={masonryElement}
      class={`__grid--masonry ${stretchFirst ? '__stretch-first' : ''}`}
      style={`--grid-gap: ${gridGap}; --col-width: ${colWidth}; --col-width-mobile: ${colWidthMobile};`}
      use:autoAnimate>
-    <slot></slot>
+    {@render children?.()}
 </div>
 
 <style>

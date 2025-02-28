@@ -13,14 +13,16 @@
         theme: 'text-center w-auto'
     };
 
-    export let url = '';
-    export let username = '';
-    export let id = '';
-    export let size = '100px';
-    export let image_proxy = null;
+    /** @type {{url?: string, username?: string, id?: string, size?: string, image_proxy?: any}} */
+    let {
+        url = '',
+        username = '',
+        id = '',
+        size = '100px',
+        image_proxy = null
+    } = $props();
 
-    //let avatarUrl = '';
-    let isAvatarLoaded = false;
+    let isAvatarLoaded = $derived(url && url !== '');
     let isDragging = false;
     let dragTimeout;
 
@@ -35,11 +37,9 @@
         isAvatarLoaded = false;
     }*/
 
-    $: if (url && url !== ''){
-        isAvatarLoaded = true;
-    } else {
-        isAvatarLoaded = false;
-    }
+    /*$effect(() => {
+        isAvatarLoaded = !!(url && url !== '');
+    });*/
 
     // Prevent clicking while dragging.
     function handlePointerDown() {
@@ -72,8 +72,8 @@
 
 <!-- Circle avatar, using Bootstrap 5 classes -->
 <div class="d-flex justify-content-center">
-    <a href={`/profile/${id}`} class="text-decoration-none" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
-       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="View profile of {username}" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
+    <a href={`/profile/${id}`} class="text-decoration-none" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}
+       onpointermove={handlePointerMove} onpointerup={handlePointerUp} onpointerleave={handlePointerLeave} aria-label="View profile of {username}" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
         {#if !isAvatarLoaded}
             <div class="placeholder-glow" style="width: {size}; height: {size};">
                 <div class="placeholder rounded-circle w-100 h-100"></div>

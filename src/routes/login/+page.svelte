@@ -5,10 +5,11 @@
 
     // For convenience, I'll keep this list of theme variables here: https://github.com/supabase-community/auth-ui/blob/main/packages/shared/src/theming/Themes.ts
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
 
-    $: view = data.view || 'magic_link';
-    $: signup = data.signup || false;
+    let view = $state(data.view || 'magic_link');
+    let signup = $derived(data.signup || false);
 </script>
 
 <div class="row justify-content-center pt-4 pb-3">
@@ -80,40 +81,40 @@
             {/if}
             <div class="col-12 text-center">
                 {#if view === "magic_link"}
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_up"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "sign_up"}>
                         Classic Register
                     </button>
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_in"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "sign_in"}>
                         Classic Login
                     </button>
                 {:else if view === "sign_up"}
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_in"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "sign_in"}>
                         Classic Login
                     </button>
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "magic_link"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "magic_link"}>
                         Modern Login/Register 🪄
                     </button>
-                    <button class="btn btn-link text-danger-emphasis text-decoration-none" on:click={() => view = "forgotten_password"}>
+                    <button class="btn btn-link text-danger-emphasis text-decoration-none" onclick={() => view = "forgotten_password"}>
                         Forgot Password?
                     </button>
                 {:else if view === "sign_in"}
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_up"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "sign_up"}>
                         Classic Register
                     </button>
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "magic_link"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "magic_link"}>
                         Modern Login/Register 🪄
                     </button>
-                    <button class="btn btn-link text-danger-emphasis text-decoration-none" on:click={() => view = "forgotten_password"}>
+                    <button class="btn btn-link text-danger-emphasis text-decoration-none" onclick={() => view = "forgotten_password"}>
                         Forgot Password?
                     </button>
                 {:else if view === "forgotten_password"}
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_in"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "sign_in"}>
                         Classic Login
                     </button>
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "magic_link"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "magic_link"}>
                         Modern login and register 🪄
                     </button>
-                    <button class="btn btn-link text-white text-decoration-none" on:click={() => view = "sign_up"}>
+                    <button class="btn btn-link text-white text-decoration-none" onclick={() => view = "sign_up"}>
                         Classic Register
                     </button>
                 {/if}

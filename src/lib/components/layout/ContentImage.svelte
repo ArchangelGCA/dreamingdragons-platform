@@ -1,11 +1,14 @@
 <script>
-    export let src = null;
-    export let alt = null;
-    export let image_proxy = null;
+    import { run } from 'svelte/legacy';
 
-    $: if (src && src !== '' && image_proxy) {
-        if (!src.startsWith(image_proxy)) src = image_proxy + src + '?width=1920';
-    }
+    /** @type {{src?: any, alt?: any, image_proxy?: any}} */
+    let { src = $bindable(null), alt = null, image_proxy = null } = $props();
+
+    run(() => {
+        if (src && src !== '' && image_proxy) {
+            if (!src.startsWith(image_proxy)) src = image_proxy + src + '?width=1920';
+        }
+    });
 
     //$: isImageLoaded = false;
 </script>

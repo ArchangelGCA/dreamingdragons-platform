@@ -35,7 +35,9 @@ export const load = async ({ params, locals: { supabase, getSession} }) => {
         return;
     }
 
-     const book = bookSearch[0];
+    const book = bookSearch[0];
+    book.tags = book.book_tags.map(tag => tag.tags.name);
+    book.book_tags = [];
 
     return {
         book,
@@ -228,11 +230,11 @@ export const actions = {
 }
 
 const uploadImage = async (image, cover_id) => {
-    const imageSharp = sharp(await image.arrayBuffer());
+    const imageSharp = sharp(await image.arrayBuffer(), {animated: true});
     const metadata = await imageSharp.metadata();
 
     // Get image res, if more than 5000px, error
-    if (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT) {
+    if ((metadata.format === 'gif' && (metadata.pageHeight > PUBLIC_COVER_MAX_HEIGHT || metadata.width > PUBLIC_COVER_MAX_WIDTH)) || (metadata.format !== 'gif' && (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT))) {
         return {
             status: 400,
             body: {

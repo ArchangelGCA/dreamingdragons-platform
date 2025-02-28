@@ -3,11 +3,14 @@
     import autoAnimate from "@formkit/auto-animate";
     import {invalidateAll} from "$app/navigation";
 
-    export let data;
-    let {content, supabase} = data;
-    $: ({content, chapters} = data)
+    /** @type {{data: any}} */
+    let { data } = $props();
+    let {content} = $state(data);
+    $effect.pre(() => {
+        ({content} = data)
+    });
 
-    function formatDate(date) {
+    /*function formatDate(date) {
         if (date === null) {
             return date;
         }
@@ -16,13 +19,7 @@
             return date;
         }
         return finalDate.toLocaleString();
-    }
-
-    // For each item in content, format created_at date
-    content = content.map(item => {
-        item.created_at = formatDate(item.created_at);
-        return item;
-    });
+    }*/
 
     async function handleDelete() {
         await invalidateAll();
@@ -50,7 +47,7 @@
 <div class="row" use:autoAnimate>
     {#each content as item (item.id)}
         <div class="col-12 col-md-6 col-lg-4 mb-4">
-            <AdminContent {item} on:delete={handleDelete} on:editContent={handleEditContent}/>
+            <AdminContent {item} deleteContent={handleDelete} editContent={handleEditContent}/>
         </div>
     {/each}
 </div>

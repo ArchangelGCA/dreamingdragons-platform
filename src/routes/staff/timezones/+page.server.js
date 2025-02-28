@@ -30,6 +30,7 @@ export const load = async ({locals: {supabase}}) => {
     //console.log('timedata', timedata);
 
     return {
+        index: false,
         timedata,
         title: 'DreamingDragons - Staff Timezones',
         description: 'DreamingDragons Staff Timezones page. Check the current time of our staff members.'

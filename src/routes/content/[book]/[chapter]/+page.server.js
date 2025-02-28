@@ -68,24 +68,46 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         throw redirect(302, `/${bookId}/${chapterId}`);
     }
 
-    const [
+    /*const [
         chapterContentResult,
-        commentsPromise,
-        chaptersPromise
+        //commentsPromise,
+        //chaptersPromise
     ] = await Promise.all([
         supabase
-            .from('secure_chapter_content_views')
+            .from('secure_chapter_content_with_comments')
             .select('*, chapter_tags(tags(id, name)), chapter_likes!chapter_id(user_id)')
             .eq('book_id', bookId)
             .eq('chapter_id', chapterId),
-        loadComments(supabase, session, chapterId),
-        loadChapters(supabase, bookId)
-    ]);
+        //loadComments(supabase, session, chapterId),
+        //loadChapters(supabase, bookId)
+    ]);*/
 
-    const { data: chapterContent, error } = chapterContentResult;
+    /*const { data: chapterContent, error } = await supabase
+        .from('secure_chapter_content_with_comments')
+        .select('*, chapter_tags(tags(id, name)), chapter_likes!chapter_id(user_id)')
+        .eq('book_id', bookId)
+        .eq('chapter_id', chapterId);*/
+
+    const { data: chapterContent, error } = await supabase
+        .from('chapters')
+        .select('*, profiles(id, username, avatar_url), book(title, cover_url, owner_id), views(count), chapter_tags(tags(id, name)), chapter_likes(user_id), comments(*, profiles(username, avatar_url))')
+        .eq('id', chapterId)
+        .eq('book_id', bookId);
 
     if (error) {
         console.error(error);
+        throw errorx(500, 'Something went wrong, perhaps the IDs may be invalid...');
+    }
+
+    // Get related chapters (same book)
+    const { data: relatedChapters, error: relatedChaptersError } = await supabase
+        .from('chapters')
+        .select('id, book_id, owner_id, number_ordinal, title, created_at')
+        .eq('book_id', bookId)
+        .order('created_at' , { ascending: true });
+
+    if (relatedChaptersError) {
+        console.error(relatedChaptersError);
         throw errorx(500, 'Something went wrong, perhaps the IDs may be invalid...');
     }
 
@@ -93,37 +115,75 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         throw errorx(404, "Chapter and/or Content not found, or the owner has removed it...");
     }
 
+    chapterContent[0].related_chapters = relatedChapters;
+
     const tags = chapterContent[0].chapter_tags.map(chapter_tag => chapter_tag.tags);
     const user_id = session ? session.user.id : null;
     let is_liked = false;
+    let comments = (chapterContent[0].comments.length > 0 && chapterContent[0].comments[0].id !== null) ? chapterContent[0].comments : [];
+    let chapters = (chapterContent[0].related_chapters.length > 0 && chapterContent[0].related_chapters[0].id !== null) ? chapterContent[0].related_chapters : [];
 
     if (!session) {
         isOwner = false;
     } else {
         isOwner = chapterContent[0].owner_id === session.user.id;
+        comments.forEach(comment => {
+            comment.is_owner = comment.user_id === session.user.id;
+        });
     }
+
+    // Handle comments
+    comments = comments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const commentMap = {};
+
+    for (let comment of comments) {
+        comment.children = [];
+        commentMap[comment.id] = comment;
+    }
+
+    for (let comment of comments) {
+        if (comment.parent_comment_id !== null) {
+            const parent = commentMap[comment.parent_comment_id];
+            if (parent) {
+                parent.children.push(comment);
+            }
+        }
+    }
+
+    comments = comments.filter(comment => comment.parent_comment_id === null);
+    comments = comments.filter(comment => comment.id !== null);
+
+    // Handle chapters
+    chapters = chapters.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    chapterContent[0].comments = comments;
 
     if (user_id) {
         is_liked = (chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id));
     }
 
-    // add isOwner to chapterContent
+    // Get previous and next chapter ids.
+    const sortedChapters = chapters.sort((a, b) => a.number_ordinal - b.number_ordinal);
+    const currentChapterIndex = sortedChapters.findIndex(chapter => chapter.id === chapterContent[0].id);
+    chapterContent[0].previousChapter = currentChapterIndex > 0 ? sortedChapters[currentChapterIndex - 1].id : null;
+    chapterContent[0].nextChapter = currentChapterIndex < sortedChapters.length - 1 ? sortedChapters[currentChapterIndex + 1].id : null;
+
+    // Add content to chapterContent
     chapterContent[0].is_owner = isOwner;
+    chapterContent[0].chapters = chapters;
+    chapterContent[0].tags = tags;
+    chapterContent[0].is_liked = is_liked;
+    chapterContent[0].chapter_tags = [];
 
     // return
     return {
         chapterContent: chapterContent[0],
-        chapters: chaptersPromise,
-        tags,
-        comments: commentsPromise,
         user_id,
-        is_liked,
         // For SEO $page.data on +layout etc...
-        title: chapterContent[0].book_title + " - " + chapterContent[0].title + " by " + chapterContent[0].owner_username,
-        description: chapterContent[0].title + " by " + chapterContent[0].owner_username + " - " + chapterContent[0].book_title + " on DreamingDragons.",
-        imageURL: (image_proxy && chapterContent[0].book_cover_url.startsWith(image_proxy)) ? chapterContent[0].book_cover_url : image_proxy + chapterContent[0].book_cover_url + "?width=1024",
-        author: chapterContent[0].owner_username,
-        name: chapterContent[0].owner_username,
+        title: chapterContent[0].book.title + " - " + chapterContent[0].title + " by " + chapterContent[0].profiles.username,
+        description: chapterContent[0].title + " by " + chapterContent[0].profiles.username + " - " + chapterContent[0].book.title + " on DreamingDragons.",
+        imageURL: (image_proxy && chapterContent[0].book.cover_url.startsWith(image_proxy)) ? chapterContent[0].book.cover_url : image_proxy + chapterContent[0].book.cover_url + "?width=1024",
+        author: chapterContent[0].profiles.username,
+        name: chapterContent[0].profiles.username,
     };
 }
 

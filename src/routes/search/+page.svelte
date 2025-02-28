@@ -6,7 +6,8 @@
     import {deserialize} from "$app/forms";
     import {onMount} from "svelte";
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
     let { searchResults, partialText, image_proxy } = data;
 
     let index = true;
@@ -18,9 +19,9 @@
         };
     });
 
-    let profiles = [];
-    let books = [];
-    let allResultsLoaded = false;
+    let profiles = $state([]);
+    let books = $state([]);
+    let allResultsLoaded = $state(false);
     let loading = false;
     let page = 1;
 

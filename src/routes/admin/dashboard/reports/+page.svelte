@@ -3,10 +3,13 @@
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
 
-    let {openReports, closedReports, image_proxy} = data;
-    $: ({openReports, closedReports} = data);
+    let {openReports, closedReports, image_proxy} = $state(data);
+    $effect(() => {
+        ({openReports, closedReports} = data);
+    });
 </script>
 
 <div class="row mb-2">
@@ -39,7 +42,7 @@
                         <div class="row gy-2" use:autoAnimate>
                             {#each openReports.filter(report => report.report_type === 'book') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} {image_proxy} on:closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} {image_proxy} closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -51,7 +54,7 @@
                         <div class="row gy-2" use:autoAnimate>
                             {#each openReports.filter(report => report.report_type === 'chapter') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} {image_proxy} on:closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} {image_proxy} closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -87,7 +90,7 @@
                             {/if}
                             {#each closedReports.filter(report => report.report_type === 'book') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} on:closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -104,7 +107,7 @@
                             {/if}
                             {#each closedReports.filter(report => report.report_type === 'chapter') as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} on:closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} closeReport={() => {invalidateAll()}}/>
                                 </div>
                             {/each}
                         </div>

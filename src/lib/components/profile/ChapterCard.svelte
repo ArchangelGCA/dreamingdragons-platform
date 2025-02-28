@@ -16,9 +16,15 @@
         theme: 'text-center w-auto'
     };
 
-    export let content, image_proxy, index, user_id;
+    /** @type {{content: any, image_proxy: any, index: any, user_id: any}} */
+    let {
+        content,
+        image_proxy,
+        index,
+    } = $props();
 
     let likeActionActive = false;
+    let finalLinkImage = $derived(image_proxy && !content.chapter_image_url.startsWith(image_proxy) ? image_proxy + content.chapter_image_url + '?width=750&quality=80' : content.chapter_image_url);
 
     function handleMouseEnter(e) {
         e.target.parentElement.querySelector('.to-scale').style.transform = 'scale(1.1)';
@@ -40,8 +46,6 @@
         const data = new FormData();
         data.append('chapterId', content.id);
 
-        content.is_liked = !content.is_liked;
-
         const response = await fetch('?/like_chapter', {
             method: 'POST',
             body: data
@@ -50,8 +54,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200) {
-                if (content.is_liked) {
-                    content.chapter_likes = [...content.chapter_likes, {user_id: user_id}];
+                if (!content.is_liked) {
                     toast.push('Chapter liked ❤️', {
                         theme: {
                             '--toastBackground': '#5c00a6',
@@ -59,7 +62,6 @@
                         }
                     });
                 } else {
-                    content.chapter_likes = content.chapter_likes.filter(like => like.user_id !== user_id);
                     toast.push('Chapter unliked 💔', {
                         theme: {
                             '--toastBackground': '#5c00a6',
@@ -69,8 +71,6 @@
                 }
                 await invalidateAll();
             } else {
-                content.is_liked = !content.is_liked;
-
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
@@ -79,7 +79,7 @@
                 });
             }
         } else {
-            content.is_liked = !content.is_liked;
+            //content.is_liked = !content.is_liked;
 
             toast.push('Error during action (Please login)', {
                 theme: {
@@ -91,21 +91,15 @@
 
         likeActionActive = false;
     }
-
-    $: if (image_proxy){
-        if (!content.chapter_image_url.startsWith(image_proxy)) content.chapter_image_url = image_proxy + content.chapter_image_url + '?width=750&quality=80';
-    } else {
-        console.log('No image proxy');
-    }
 </script>
 
 <div class="card border-0 bg-black bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}}
      title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
-        {#if content.chapter_image_url}
+        {#if finalLinkImage}
             <a href="/content/{content.book_id}/{content.id}">
-                <img src={content.chapter_image_url} alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy"
+                <img src={finalLinkImage} alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy"
                      style="object-fit: cover; position: absolute; top: 0; left: 0;">
                 <div class="chapter-number-over">{index}</div>
             </a>
@@ -113,14 +107,14 @@
             <div class="chapter-number">{content.id}</div>
         {/if}
     </div>
-    <a href="/content/{content.book_id}/{content.id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+    <a href="/content/{content.book_id}/{content.id}" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 ps-3 pb-1 pt-2 mx-0">
                 <div class="col-9 my-auto">
                     <span class="h5 text-light">{content.title}</span>
                 </div>
                 <div class="col-3 mb-1 text-end">
-                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
+                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" onclick={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
                         <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
                             <span class="likes-counter">{content.chapter_likes.length}</span>

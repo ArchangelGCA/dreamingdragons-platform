@@ -454,7 +454,7 @@
             style=" color: #00F; font-family:'Times New Roman', serif; font-style: normal; font-weight: normal; text-decoration: underline; font-size: 10pt;">https://www.ftc.gov/tips-advice/business-center/guidance/childrens-online-</span><a
             href="https://www.ftc.gov/tips-advice/business-center/guidance/childrens-online-privacy-protection-rule-six-step-compliance"
             style=" color: #00F; font-family:'Times New Roman', serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 10pt;"
-            target="_blank"> </a><span
+            target="_blank" aria-label="Something about privacy"> </a><span
             style=" color: #00F; font-family:'Times New Roman', serif; font-style: normal; font-weight: normal; text-decoration: underline; font-size: 10pt;">privacy-protection-rule-six-step-compliance</span>.
         FormSwift and its subsidiaries are in no way responsible for determining whether or not your company is in fact
         compliant with COPPA and takes no responsibility for the use you make of this Privacy Policy or for any

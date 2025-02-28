@@ -2,11 +2,10 @@
     import {onMount} from 'svelte';
     import {browser} from "$app/environment";
 
-    export let username;
-    export let timezone;
-    export let country = '';
+    /** @type {{username: any, timezone: any, country?: string}} */
+    let { username, timezone, country = '' } = $props();
 
-    let time;
+    let time = $state();
     let userLocale = "en-US";
     let is12Hour = true;
 

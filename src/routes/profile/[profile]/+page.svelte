@@ -3,20 +3,36 @@
     import {PUBLIC_DEFAULT_USERNAME} from '$env/static/public';
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
-    import {invalidateAll} from "$app/navigation";
+    import {invalidateAll, onNavigate} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import Masonry from "svelte-bricks";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
 
-    export let data;
-    const {
-        tooltipConfig
-    } = data;
-    $: ({image_proxy, profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, id} = data);
+    /** @type {{data: any}} */
+    let { data } = $props();
+    let {
+        image_proxy,
+        tooltipConfig,
+        profile,
+        likedBooks,
+        total_likes,
+        total_followers,
+        isFollowing,
+        isOwner,
+        id
+    } = $state(data);
 
-    let avatarFound = true;
+    onNavigate(() => {
+        resetVariables();
+    })
+
+    $effect(() => {
+        ({profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, id} = data)
+    });
+
+    let avatarFound = $state(true);
     let booksStart = 0;
     let booksEnd = 40;
     let loadStep = 20;
@@ -26,14 +42,10 @@
     let allBooksLoaded = false;
     let allLikedBooksLoaded = false;
     let followActionActive = false;
-    let show = 'home';
-    let width, height;
+    let show = $state('home');
+    let width = $state(), height = $state();
 
-    let y;
-
-    $: if (id) {
-        resetVariables();
-    }
+    let y = $state();
 
     async function resetVariables() {
         avatarFound = true;
@@ -242,9 +254,17 @@
             if (show === 'home' && !allBooksLoaded) loadMoreBooks();
         }
     }
+    /*run(() => {
+        ({profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, id} = data);
+    });
+    run(() => {
+        if (id) {
+            resetVariables();
+        }
+    });*/
 </script>
 
-<svelte:window on:scroll={handleScroll} bind:scrollY={y}/>
+<svelte:window onscroll={handleScroll} bind:scrollY={y}/>
 
 <div class="container-fluid px-0" style="min-height: 71vh; overflow-x: hidden; overflow-y: hidden">
     <!-- Profile not found error -->
@@ -281,7 +301,7 @@
                             <div class="col-auto">
                                 <img src="{profile.avatar_url}" alt="{profile.username}" loading="lazy"
                                      class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon"
-                                     on:load={() => avatarFound = true} on:error={() => avatarFound = false}>
+                                     onload={() => avatarFound = true} onerror={() => avatarFound = false}>
                             </div>
                         </div>
                     </div>
@@ -303,7 +323,7 @@
                 {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                     <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
                 {:else}
-                    <span class="h1 mt-2 mb-1"><button type="button" class="btn-username" on:click={copyToClipboardId}
+                    <span class="h1 mt-2 mb-1"><button type="button" class="btn-username" onclick={copyToClipboardId}
                                                        use:tooltip={{...tooltipConfig}}
                                                        title="Click to copy profile ID!">{profile.username}</button> <a
                             class="link-purple"
@@ -337,12 +357,12 @@
                             {:else}
                                 {#each profile.followers as follower (follower.follower_id)}
                                     <span class="dropdown-item">
-                                        <UserAvatarNavbar url="{follower.profiles.avatar_url}"
-                                                          username="{follower.profiles.username}" {image_proxy}
+                                        <UserAvatarNavbar url={follower.profiles.avatar_url}
+                                                          username={follower.profiles.username} {image_proxy}
                                                           size="25px" classes="me-2"/>
                                         <a class="link-light text-decoration-none h-100"
                                            href="/profile/{follower.follower_id}"
-                                           on:click={handleVisit}>{follower.profiles.username}</a></span>
+                                           onclick={handleVisit}>{follower.profiles.username}</a></span>
                                 {/each}
                             {/if}
                         </div>
@@ -373,7 +393,7 @@
                     <div class="col-12 col-md-3 px-4">
                         <div class="row justify-content-center">
                             <div class="col-11 col-md-auto px-0">
-                                <button class="btn btn-outline-light w-100 mt-3 mt-md-0 shadow" on:click={handleFollow}
+                                <button class="btn btn-outline-light w-100 mt-3 mt-md-0 shadow" onclick={handleFollow}
                                         data-tooltip="{isFollowing ? '➖ Unfollow' : '➕ Follow'}">
                                     <i class="fas {isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
                                     <span class="ms-1">{isFollowing ? 'Unfollow' : 'Follow'}</span>
@@ -388,14 +408,14 @@
         <div class="row mt-3 justify-content-center text-center">
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'home') ? 'active' : ''}"
-                        on:click={() => show = 'home'}
+                        onclick={() => show = 'home'}
                         data-tooltip="{profile.username + ' Home 🏠'}">Home
                 </button>
             </div>
             {#if profile.show_favourites || isOwner}
                 <div class="col-auto">
                     <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'favourites') ? 'active' : ''}"
-                            on:click={() => show = 'favourites'}
+                            onclick={() => show = 'favourites'}
                             data-tooltip="{isOwner ? 'Owner can always see his favs 😉' : (profile.username + ' Favs 🩷')}"
                     >
                         Favourites
@@ -408,7 +428,7 @@
             {/if}
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'galleries') ? 'active' : ''}"
-                        on:click={() => show = 'galleries'}
+                        onclick={() => show = 'galleries'}
                         data-tooltip="{profile.username + ' Galleries (Coming soon!) 🖼️'}">Galleries
                 </button>
             </div>
@@ -434,12 +454,14 @@
                                 minColWidth={400}
                                 gap={10}
                                 animate={true}
-                                let:item
+                                
                                 bind:width
                                 bind:height
                         >
-                            <ProfileMasonry content={item} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
-                        </Masonry>
+                            {#snippet children({ item })}
+                                                        <ProfileMasonry content={item} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
+                                                                                {/snippet}
+                                                </Masonry>
                     </div>
                 {/if}
             {/if}
@@ -457,12 +479,14 @@
                                 minColWidth={300}
                                 gap={10}
                                 animate={true}
-                                let:item
+                                
                                 bind:width
                                 bind:height
                         >
-                            <ContentMasonry book={item.book} {image_proxy}/>
-                        </Masonry>
+                            {#snippet children({ item })}
+                                                        <ContentMasonry book={item.book} {image_proxy}/>
+                                                                                {/snippet}
+                                                </Masonry>
                     </div>
                 {/if}
             {/if}

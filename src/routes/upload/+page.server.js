@@ -7,11 +7,11 @@ import sharp from 'sharp';
 
 const uploadImage = async (image) => {
 
-    const imageSharp = sharp(await image.arrayBuffer());
+    const imageSharp = sharp(await image.arrayBuffer(), {animated: true});
     const metadata = await imageSharp.metadata();
 
     // Get image res, if more than 5000px, error
-    if (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT) {
+    if ((metadata.format === 'gif' && (metadata.pageHeight > PUBLIC_COVER_MAX_HEIGHT || metadata.width > PUBLIC_COVER_MAX_WIDTH)) || (metadata.format !== 'gif' && (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT))) {
         return {
             status: 400,
             body: {
