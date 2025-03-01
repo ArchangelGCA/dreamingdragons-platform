@@ -25,7 +25,7 @@
     let intervalId;
     let searchTerm = $state('');
     const notifsUpdateInterval = 30000;
-    let maintenance = $state(true);
+    let maintenance = $state(false);
 
     if (page.url.searchParams.has('q')) {
         searchTerm = page.url.searchParams.get('q');
