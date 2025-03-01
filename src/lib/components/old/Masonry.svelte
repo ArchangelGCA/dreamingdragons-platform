@@ -5,9 +5,10 @@
     import autoAnimate from '@formkit/auto-animate';
     import {browser} from "$app/environment";
 
-    let grids = [], masonryElement = $state();
+    let grids = [];
+    let masonryElement = $derived((reset || !reset) && items && masonryElement ? masonryElement : masonryElement )
 
-    if (masonryElement) masonryElement = masonryElement;
+    //if (masonryElement) masonryElement = masonryElement;
 
     /** @type {{stretchFirst?: boolean, gridGap?: string, colWidth?: string, colWidthMobile?: string, items?: any, reset?: any, children?: import('svelte').Snippet}} */
     let {
@@ -19,12 +20,12 @@
         reset = null,
         children
     } = $props();
-    run(() => {
+    /*run(() => {
         if (reset || !reset) {
             // console.log('Resetting masonry layout, reset:', reset);
             masonryElement = masonryElement;
         }
-    });
+    });*/
 
     export const refreshLayout = async () => {
         for (const grid of grids) {
@@ -79,7 +80,7 @@
         }
     });
 
-    run(() => {
+    /*run(() => {
         if (masonryElement) {
             calcGrid([masonryElement]);
         }
@@ -89,15 +90,15 @@
         if (items) {
             masonryElement = masonryElement;
         }
-    });
+    });*/
 </script>
 
-<div bind:this={masonryElement}
+<!--<div bind:this={masonryElement}
      class={`__grid--masonry ${stretchFirst ? '__stretch-first' : ''}`}
      style={`--grid-gap: ${gridGap}; --col-width: ${colWidth}; --col-width-mobile: ${colWidthMobile};`}
      use:autoAnimate>
     {@render children?.()}
-</div>
+</div>-->
 
 <style>
     :global(.__grid--masonry) {
