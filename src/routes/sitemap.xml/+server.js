@@ -45,6 +45,9 @@ export const GET = async ({locals: {supabase}}) => {
         excludeRoutePatterns: [
             '^/edit.*',
             '^/admin.*',
-        ]
+        ],
+        headers: {
+            'Content-Type': 'application/xml'
+        }
     });
 };
