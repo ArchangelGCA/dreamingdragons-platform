@@ -2,21 +2,12 @@ import * as sitemap from 'super-sitemap';
 
 export const GET = async ({locals: {supabase}}) => {
 
-    const [books, chapters, profiles/*, tags*/] = await Promise.all([
-        supabase.from('book').select('id'),
-        supabase.from('chapters').select('id, book_id'),
-        supabase.from('profiles').select('id'),
-        //supabase.from('tags').select('name')
-    ]);
-
-    // Access data and error from each response
-    const { data: booksData, error: booksError } = books;
-    const { data: chaptersData, error: chaptersError } = chapters;
-    const { data: profilesData, error: profilesError } = profiles;
-    // const { data: tagsData, error: tagsError } = tags;
+    const { data, error } = await supabase
+        .from('sitemap_view')
+        .select('*');
 
     // Handle errors if any
-    if (booksError || chaptersError || profilesError /*|| tagsError*/) {
+    if (error) {
         // empty books array + profiles
         return await sitemap.response({
             origin: 'https://tales.archangelgca.eu',
@@ -30,7 +21,10 @@ export const GET = async ({locals: {supabase}}) => {
                 '^/admin.*',
                 '^/health.*',
                 '^/upload/token.*',
-            ]
+            ],
+            headers: {
+                'Content-Type': 'application/xml'
+            }
         });
     }
 
@@ -41,11 +35,11 @@ export const GET = async ({locals: {supabase}}) => {
             '^/admin.*',
         ],
         paramValues: {
-            '/content/[book]': booksData.map((book) => book.id),
-            '/content/[book]/[chapter]': chaptersData.map((chapter) => [chapter.book_id, chapter.id]),
-            '/profile/[profile]': profilesData.map((profile) => profile.id)
+            '/content/[book]': data[0].books,
+            '/content/[book]/[chapter]': data[0].chapters.map((chapter) => [chapter.book_id, chapter.chapter_id]),
+            '/profile/[profile]': data[0].profiles,
         },
-        // additionalPaths: tagsData.map((tag) => `/search?q=${encodeURIComponent(tag.name)}`),
+        additionalPaths: data[0].tags.map((tag) => `/search?q=${encodeURIComponent(tag)}`),
         headers: {
             'Content-Type': 'application/xml'
         }
