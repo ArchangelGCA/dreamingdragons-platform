@@ -10,8 +10,6 @@
     let { data } = $props();
     let { searchResults, partialText, image_proxy } = data;
 
-    let index = true;
-
     onMount(() => {
         window.addEventListener('scroll', handleScroll);
         return () => {
@@ -44,8 +42,6 @@
         });
     } else {
         allResultsLoaded = true;
-        // index to false in seo
-        index = false;
     }
 
     async function loadMoreResults(){
