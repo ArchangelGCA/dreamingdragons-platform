@@ -20,7 +20,7 @@ export const GET = async ({locals: {supabase}}) => {
         `<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
         <url>
-            <loc>https://tales.archangelgca.eu/</loc>
+            <loc>https://tales.archangelgca.eu</loc>
         </url>
         <url>
             <loc>https://tales.archangelgca.eu/legal/privacy-policy</loc>
