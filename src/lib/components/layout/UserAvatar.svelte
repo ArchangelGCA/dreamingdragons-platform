@@ -26,21 +26,6 @@
     let isDragging = false;
     let dragTimeout;
 
-    /*$: if (url && url !== '' && !isAvatarLoaded) {
-        avatarUrl = url;
-        if (image_proxy){
-            if (!avatarUrl.startsWith(image_proxy)) avatarUrl = image_proxy + avatarUrl + '?width=250';
-        }
-        isAvatarLoaded = true;
-    } else if ((!url || url === '') && avatarUrl !== '') {
-        avatarUrl = '';
-        isAvatarLoaded = false;
-    }*/
-
-    /*$effect(() => {
-        isAvatarLoaded = !!(url && url !== '');
-    });*/
-
     // Prevent clicking while dragging.
     function handlePointerDown() {
         isDragging = false;
@@ -79,7 +64,7 @@
                 <div class="placeholder rounded-circle w-100 h-100"></div>
             </div>
         {:else}
-            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url} alt={username} class="rounded-circle avatar-style" width={size} height={size} draggable="false">
+            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url} alt='{username} Avatar' class="rounded-circle avatar-style" width={size} height={size} draggable="false">
         {/if}
     </a>
 </div>

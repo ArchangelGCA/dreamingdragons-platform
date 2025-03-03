@@ -8,22 +8,8 @@
         image_proxy = null
     } = $props();
 
-    let avatarUrl = $derived(url && url !== '' ? url : '');
-    let finalAvatarUrl = $derived(image_proxy && avatarUrl !== null && avatarUrl !== '' && !avatarUrl.startsWith(image_proxy) ? image_proxy + avatarUrl : avatarUrl);
-    let isAvatarLoaded = $derived(url !== '' && url !== null && avatarUrl !== null && avatarUrl !== '' && finalAvatarUrl !== null && finalAvatarUrl !== '');
-
-    /*$effect.pre(() => {
-        if (url && url !== '' && !isAvatarLoaded) {
-            //avatarUrl = url;
-            if (image_proxy){
-                //if (!avatarUrl.startsWith(image_proxy)) avatarUrl = image_proxy + avatarUrl + '?width=250';
-            }
-            isAvatarLoaded = true;
-        } else if ((!url || url === '') && avatarUrl !== '') {
-            //avatarUrl = '';
-            isAvatarLoaded = false;
-        }
-    });*/
+    let finalAvatarUrl = $derived(image_proxy && url !== null && url !== '' && !url.startsWith(image_proxy) ? image_proxy + url + '?width=250': url);
+    let isAvatarLoaded = $derived(url !== '' && url !== null && finalAvatarUrl !== null && finalAvatarUrl !== '');
 </script>
 
 <!-- Circle avatar, using Bootstrap 5 classes -->

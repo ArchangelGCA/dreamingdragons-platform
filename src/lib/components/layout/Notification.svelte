@@ -1,7 +1,11 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
     /** @type {{notification: any, supabase: any, session: any}} */
-    let { notification, supabase, session } = $props();
+    let {
+        notification,
+        supabase,
+        session
+    } = $props();
 
     let dateFormatted = new Date(notification.created_at).toLocaleDateString('en-GB');
 
