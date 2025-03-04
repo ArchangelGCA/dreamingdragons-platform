@@ -1,6 +1,11 @@
 import { PRIVATE_RESEND_API_KEY, PRIVATE_RESEND_AUDIENCE_ID } from '$env/static/private';
 import { Resend } from 'resend';
 
+/** @type {import('@sveltejs/adapter-vercel').Config} */
+export const config = {
+    runtime: 'edge'
+};
+
 export const load = async ({}) => {
     return {
         index: false,
