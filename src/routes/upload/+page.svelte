@@ -72,7 +72,7 @@
     let editorContentTale = $state('');
     let activePreviousChapterTags = false;
     let selectedBook = $state();
-    let chaptersNumber = $state(0);
+    let chaptersNumber = $derived(selectedBook && books && books.length > 0 ? books.find(book => book.id === selectedBook).chapters : 0);
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
     let isDragging = $state(false);
     let isCompressing = $state(false);
@@ -81,13 +81,13 @@
     
     let compressedMessage = $state('');
 
-    $effect.pre(() => {
+    /*$effect.pre(() => {
         if (selectedBook) {
             if (books && books.length > 0) {
                 chaptersNumber = books.find(book => book.id === selectedBook).chapters;
             }
         }
-    });
+    });*/
 
     let tags = $state([]);
     async function addTag(e) {

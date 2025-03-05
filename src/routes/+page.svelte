@@ -18,15 +18,7 @@
         followed,
         tooltipConfig
     } = $state(data);
-    /*run(() => {
-        ({
-            books_ordered_by_likes,
-            books_ordered_by_created_at,
-            books_ordered_by_latest_chapter,
-            is_logged,
-            followed
-        } = data);
-    });*/
+
     let loading = false;
     let allContentLoaded = $state(false);
     let step = 20;

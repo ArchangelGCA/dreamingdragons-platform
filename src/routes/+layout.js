@@ -21,9 +21,7 @@ export const load = async ({ fetch, data, depends, url }) => {
             },
         });
 
-    const {
-        data: { session },
-    } = await supabase.auth.getSession();
+    const session = isBrowser() ? (await supabase.auth.getSession()).data.session : data.session;
 
     const image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
     const tooltipConfig = {
