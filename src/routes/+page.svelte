@@ -1,6 +1,6 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
-    import { dragscroll } from '@svelte-put/dragscroll';
+    import {dragscroll} from '@svelte-put/dragscroll';
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
@@ -8,7 +8,7 @@
     import {deserialize} from "$app/forms";
 
     /** @type {{data: any}} */
-    let { data } = $props();
+    let {data} = $props();
     let {
         image_proxy,
         books_ordered_by_likes,
@@ -120,14 +120,14 @@
                                 minColWidth={350}
                                 gap={10}
                                 animate={true}
-                                
+
                                 bind:width
                                 bind:height
                         >
-                            {#snippet children({ item })}
-                                                        <ContentMasonry book={item} {image_proxy}/>
-                                                                                {/snippet}
-                                                </Masonry>
+                            {#snippet children({item})}
+                                <ContentMasonry book={item} {image_proxy}/>
+                            {/snippet}
+                        </Masonry>
                     </div>
                     {#if allContentLoaded}
                         <div class="col-12">

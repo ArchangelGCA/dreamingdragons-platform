@@ -92,7 +92,7 @@
                 style="height: {size}em; width: {size}em;"
         />
     {:else}
-        <div class="img-thumbnail" style="height: {size}em; width: {size}em;" ></div>
+        <div class="img-thumbnail mx-auto" style="height: {size}em; width: {size}em;" ></div>
     {/if}
     <div class="col-12 text-center mt-1">
         <small class="text-light text-opacity-50">Recommended Max resolution: {PUBLIC_PROFILE_ICON_RESIZE_WIDTH}x{PUBLIC_PROFILE_ICON_RESIZE_WIDTH} - 1:1</small>

@@ -57,6 +57,10 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
     if (id) {
         results.id = id;
 
+        if (id.length !== 36) {
+            throw errorx(404, "Profile not found (invalid ID length)");
+        }
+
         // Fetch profile and related data concurrently
         const [profileData, likedBooks] = await Promise.all([
             supabase

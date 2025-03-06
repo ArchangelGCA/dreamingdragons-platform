@@ -11,7 +11,7 @@
     import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
 
     /** @type {{data: any}} */
-    let { data } = $props();
+    let {data} = $props();
     let {
         image_proxy,
         tooltipConfig,
@@ -61,10 +61,10 @@
         if (likedBooks.length < 40) allLikedBooksLoaded = true;
     }
 
-    async function handleVisit(e) {
+    /*async function handleVisit(e) {
         e.preventDefault();
         window.location.href = e.target.href;
-    }
+    }*/
 
     async function handleFollow(e) {
         e.preventDefault();
@@ -254,25 +254,18 @@
             if (show === 'home' && !allBooksLoaded) loadMoreBooks();
         }
     }
-    /*run(() => {
-        ({profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, id} = data);
-    });
-    run(() => {
-        if (id) {
-            resetVariables();
-        }
-    });*/
+
 </script>
 
 <svelte:window onscroll={handleScroll} bind:scrollY={y}/>
 
-<div class="container-fluid px-0" style="min-height: 71vh; overflow-x: hidden; overflow-y: hidden">
+<div class="container-fluid px-0" style="min-height: 71vh; overflow-x: hidden; overflow-y: hidden" use:autoAnimate>
     <!-- Profile not found error -->
     {#if !profile || profile.length === 0}
         <div class="row justify-content-center">
             <div class="col-12 text-center">
                 <p class="h1 mt-4">Profile not found</p>
-                <i class="fa-solid fa-exclamation-triangle fa-5x text-warning" use:autoAnimate></i>
+                <i class="fa-solid fa-exclamation-triangle fa-5x text-warning"></i>
             </div>
         </div>
     {:else} <!-- Profile found -->
@@ -331,17 +324,17 @@
                             target="_blank"
                             data-tooltip="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"
                             aria-label="Open profile linked website."
-                            ><i
+                    ><i
                             class="fa-solid fa-external-link fa-2xs"></i></a></span>
                 {/if}
             </div>
         </div>
         <div class="row justify-content-center mx-0 mt-3">
             <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
-                <div class="row justify-content-center align-items-center text-center py-3">
-                    <div class="col-4 col-md-3 align-items-center" id="followers" data-bs-toggle="dropdown"
+                <div class="row dropdown justify-content-center align-items-center text-center py-3">
+                    <div class="col-4 col-md-3 align-items-center" id="followers"
                          aria-expanded="false">
-                        <div class="row justify-content-center d-flex align-items-center"
+                        <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="dropdown"
                              use:tooltip={{...tooltipConfig}} title="Followers">
                             <div class="col-auto d-flex align-items-center pe-0">
                                 <i class="fas fa-user"></i>
@@ -356,13 +349,22 @@
                                 <span class="dropdown-item rounded-3">No followers yet</span>
                             {:else}
                                 {#each profile.followers as follower (follower.follower_id)}
-                                    <span class="dropdown-item">
+                                    <!--<span class="dropdown-item">
                                         <UserAvatarNavbar url={follower.profiles.avatar_url}
                                                           username={follower.profiles.username} {image_proxy}
                                                           size="25px" classes="me-2"/>
                                         <a class="link-light text-decoration-none h-100"
                                            href="/profile/{follower.follower_id}"
-                                           onclick={handleVisit}>{follower.profiles.username}</a></span>
+                                           onclick={handleVisit}>{follower.profiles.username}</a></span>-->
+                                    <span>
+                                        <a class="dropdown-item" href="/profile/{follower.follower_id}">
+                                            <UserAvatarNavbar url={follower.profiles.avatar_url}
+                                                              username={follower.profiles.username} {image_proxy}
+                                                              size="25px" classes="me-2"/>
+                                            <span class="link-light text-decoration-none h-100">{follower.profiles.username}</span>
+                                        </a>
+                                    </span>
+
                                 {/each}
                             {/if}
                         </div>
@@ -442,26 +444,20 @@
                         <i class="fa-solid fa-bookmark fa-5x text-warning" use:autoAnimate></i>
                     </div>
                 {:else}
-                    <!--{#each profile.book as content (content.id)}
-                        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <ContentCard {content} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
-                        </div>
-                    {/each}-->
-                    <!-- New Masonry style -->
                     <div class="col-12 mt-0">
                         <Masonry
                                 items={profile.book}
                                 minColWidth={400}
                                 gap={10}
                                 animate={true}
-                                
+
                                 bind:width
                                 bind:height
                         >
-                            {#snippet children({ item })}
-                                                        <ProfileMasonry content={item} {image_proxy} on:invalidate={() => {invalidateAll()}}/>
-                                                                                {/snippet}
-                                                </Masonry>
+                            {#snippet children({item})}
+                                <ProfileMasonry content={item} {image_proxy}/>
+                            {/snippet}
+                        </Masonry>
                     </div>
                 {/if}
             {/if}
@@ -479,14 +475,14 @@
                                 minColWidth={300}
                                 gap={10}
                                 animate={true}
-                                
+
                                 bind:width
                                 bind:height
                         >
-                            {#snippet children({ item })}
-                                                        <ContentMasonry book={item.book} {image_proxy}/>
-                                                                                {/snippet}
-                                                </Masonry>
+                            {#snippet children({item})}
+                                <ContentMasonry book={item.book} {image_proxy}/>
+                            {/snippet}
+                        </Masonry>
                     </div>
                 {/if}
             {/if}
