@@ -439,6 +439,15 @@
         background: rgba(92, 0, 166, 1);
     }
 
+    :global(a) {
+        color: #c400ff;
+        transition: all 0.12s ease-in-out;
+    }
+
+    :global(a:hover) {
+        color: #ff00fb;
+    }
+
     .offcanvas-body::-webkit-scrollbar {
         width: 10px;
         background: #1f002e;

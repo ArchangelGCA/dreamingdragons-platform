@@ -35,6 +35,7 @@
     let isAvatarAccordionOpen = $state(false);
     let isActiveUpdate = false;
     let isActiveShowFavourites = false;
+    let isActiveNewsletter = false;
 
     async function handleProfileUpdate(e){
         e.preventDefault();
@@ -102,6 +103,52 @@
         if (browser) {
             window.localStorage.setItem('analyticsEnabled', analyticsEnabled);
         }
+    }
+
+    async function handleNewsletter(e) {
+        e.preventDefault();
+        if (isActiveNewsletter) return;
+        isActiveNewsletter = true;
+
+        const formData = new FormData();
+        formData.append('newsletter', profile.newsletter ? 'false' : 'true');
+
+        const response = await fetch('?/newsletter', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                        '--toastProgressBackground': '#c800ff',
+                    }
+                });
+            } else {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                        '--toastProgressBackground': '#ff0000',
+                    }
+                });
+            }
+        } else {
+            toast.push('An error occurred while updating your profile.', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                    '--toastProgressBackground': '#ff0000',
+                }
+            });
+        }
+
+        await invalidateAll();
+        isActiveNewsletter = false;
     }
 
     async function handleShowFavourites(e) {
@@ -390,9 +437,17 @@
                                         <!-- Check for showing favourites -->
                                         <div class="form-check form-switch mb-2">
                                             <input class="form-check-input" type="checkbox" id="showFavouritesSwitch" bind:checked={profile.show_favourites} onclick={handleShowFavourites}>
-                                            <label class="form-check label ps-0" for="showFavouritesSwitch">
+                                            <label class="form-check-label ps-0" for="showFavouritesSwitch">
                                                 🌟 Show Favourites
                                                 <i class="fas ms-1 {profile.show_favourites ? 'fa-toggle-on' : 'fa-toggle-off'}" style="color: {profile.show_favourites ? 'green' : 'red'}"></i>
+                                            </label>
+                                        </div>
+                                        <!-- Check for Newsletter -->
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox" id="newsletterSwitch" bind:checked={profile.newsletter} onclick={handleNewsletter}>
+                                            <label class="form-check-label ps-0" for="newsletterSwitch">
+                                                📰 Newsletter
+                                                <i class="fas ms-1 {profile.newsletter ? 'fa-toggle-on' : 'fa-toggle-off'}" style="color: {profile.newsletter ? 'green' : 'red'}"></i>
                                             </label>
                                         </div>
                                         <hr class="my-2">

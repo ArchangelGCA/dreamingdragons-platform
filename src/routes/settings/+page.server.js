@@ -48,7 +48,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
     if (session) {
         const { data: profileData, error } = await supabase
             .from('profiles')
-            .select(`username, full_name, website, avatar_url, cover_url, show_favourites`)
+            .select(`username, full_name, website, avatar_url, cover_url, show_favourites, newsletter`)
             .eq('id', session.user.id)
             .single();
         results.profile = profileData;
@@ -346,12 +346,13 @@ export const actions = {
     },
     updatepassword: async ({ request, locals: { supabase, getSession } }) => {
         const formData = Object.fromEntries(await request.formData());
-        const newPassword = formData.password;
-
         const {session} = await getSession();
+
         if (!session) {
             throw new Error('Unauthorized');
         }
+
+        const newPassword = formData.password;
 
         if (!newPassword) {
             return {
@@ -383,4 +384,48 @@ export const actions = {
             }
         }
     },
+    newsletter: async ({ request, locals: { supabase, getSession } }) => {
+        const formData = Object.fromEntries(await request.formData());
+        const {session} = await getSession();
+
+        if (!session) {
+            throw new Error('Unauthorized');
+        }
+
+        const newsletter = formData.newsletter;
+
+        if (!newsletter) {
+            return {
+                status: 400,
+                body: {
+                    message: 'Newsletter is required'
+                }
+            }
+        }
+
+        const { error } = await supabase
+            .from('profiles')
+            .update({
+                newsletter: newsletter,
+                updated_at: new Date(),
+            })
+            .eq('id', session.user.id);
+
+        if (error) {
+            console.error('Error updating newsletter', error);
+            return {
+                status: 500,
+                body: {
+                    message: 'Error updating newsletter'
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: newsletter === 'true' ? 'Subscribed to Newsletter' : 'Unsubscribed from Newsletter'
+            }
+        }
+    }
 }
