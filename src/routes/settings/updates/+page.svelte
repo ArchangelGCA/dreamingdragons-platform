@@ -43,8 +43,8 @@
         <div class="col">
             <div class="row mt-3">
                 <div class="col">
-                    <h1>DD - Mailing List</h1>
-                    <p>Join our Mailing List! Don't worry, we won't spam you!</p>
+                    <h1>DreamingDragons - Newsletter</h1>
+                    <p>Join our Newsletter! Don't worry, we won't spam you!</p>
                 </div>
             </div>
             <div class="row justify-content-center">

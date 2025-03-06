@@ -52,7 +52,6 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         return errorx(500, "Error fetching panic");
     }
 
-
     return {
         panic: getActivePanic(panic),
         title: 'Admin - Dashboard',

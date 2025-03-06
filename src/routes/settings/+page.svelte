@@ -111,7 +111,7 @@
         isActiveNewsletter = true;
 
         const formData = new FormData();
-        formData.append('newsletter', profile.newsletter ? 'false' : 'true');
+        formData.append('newsletter', !profile.newsletter);
 
         const response = await fetch('?/newsletter', {
             method: 'POST',

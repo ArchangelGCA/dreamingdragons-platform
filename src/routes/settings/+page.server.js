@@ -1,8 +1,18 @@
-import { redirect } from '@sveltejs/kit';
+import {redirect} from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
-import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
-import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH, PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH, PUBLIC_POCKETBASE_URL} from "$env/static/public";
+import {
+    PRIVATE_POCKETBASE_EMAIL,
+    PRIVATE_POCKETBASE_PSW,
+    PRIVATE_RESEND_API_KEY,
+    PRIVATE_RESEND_AUDIENCE_ID
+} from '$env/static/private';
+import {
+    PUBLIC_PROFILE_ICON_RESIZE_WIDTH,
+    PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH,
+    PUBLIC_POCKETBASE_URL
+} from "$env/static/public";
 import sharp from 'sharp';
+import {Resend} from "resend";
 
 const uploadImage = async (image, user_id, old_url) => {
 
@@ -15,7 +25,7 @@ const uploadImage = async (image, user_id, old_url) => {
     await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
 
     // Create image file for FormData
-    const file = new File([image], newImageName, { type: 'image/webp', lastModified: Date.now() });
+    const file = new File([image], newImageName, {type: 'image/webp', lastModified: Date.now()});
 
     // Create FormData
     const formData = new FormData();
@@ -38,7 +48,7 @@ const uploadImage = async (image, user_id, old_url) => {
     return PUBLIC_POCKETBASE_URL + '/api/files/' + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
 }
 
-export const load = async ({ locals: { supabase, getSession } }) => {
+export const load = async ({locals: {supabase, getSession}}) => {
     const {session} = await getSession();
 
     const results = {
@@ -46,7 +56,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
     }
 
     if (session) {
-        const { data: profileData, error } = await supabase
+        const {data: profileData, error} = await supabase
             .from('profiles')
             .select(`username, full_name, website, avatar_url, cover_url, show_favourites, newsletter`)
             .eq('id', session.user.id)
@@ -65,7 +75,7 @@ export const load = async ({ locals: { supabase, getSession } }) => {
 }
 
 export const actions = {
-    update: async ({ request, locals: { supabase, getSession } }) => {
+    update: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
 
         const fullName = formData.fullName;
@@ -86,7 +96,7 @@ export const actions = {
             }
         }
 
-        const { error } = await supabase.from('profiles').upsert({
+        const {error} = await supabase.from('profiles').upsert({
             id: session.user.id,
             full_name: fullName,
             username,
@@ -120,14 +130,14 @@ export const actions = {
             }
         }
     },
-    signout: async ({ locals: { supabase, getSession } }) => {
+    signout: async ({locals: {supabase, getSession}}) => {
         const {session} = await getSession()
         if (session) {
             await supabase.auth.signOut()
             throw redirect(303, '/')
         }
     },
-    profileicon: async ({ request, locals: { supabase, getSession } }) => {
+    profileicon: async ({request, locals: {supabase, getSession}}) => {
         const {session} = await getSession();
 
         if (!session) {
@@ -166,10 +176,10 @@ export const actions = {
         const optimizedImage = await imageSharp
             .rotate()
             .resize(parseInt(PUBLIC_PROFILE_ICON_RESIZE_WIDTH))
-            .webp({ quality: 80 })
+            .webp({quality: 80})
             .toBuffer();
 
-        const { error2, data: profile } = await supabase
+        const {error2, data: profile} = await supabase
             .from('profiles')
             .select('avatar_url')
             .eq('id', session.user.id)
@@ -187,11 +197,11 @@ export const actions = {
         let avatarUrl = await uploadImage(optimizedImage, session.user.id, profile.avatar_url);
 
         // Update the avatar url in profiles table
-        const { error: error3 } = await supabase
+        const {error: error3} = await supabase
             .from('profiles')
             .update({
-            avatar_url: avatarUrl,
-            updated_at: new Date(),
+                avatar_url: avatarUrl,
+                updated_at: new Date(),
             })
             .eq('id', session.user.id);
 
@@ -211,7 +221,7 @@ export const actions = {
             }
         }
     },
-    profilecover: async ({ request, locals: { supabase, getSession } }) => {
+    profilecover: async ({request, locals: {supabase, getSession}}) => {
         const {session} = await getSession();
 
         if (!session) {
@@ -257,11 +267,11 @@ export const actions = {
 
         const optimizedImage = await imageSharp
             .rotate()
-            .webp({ quality: 80 })
+            .webp({quality: 80})
             .toBuffer();
 
         // Get old cover url
-        const { data: profile, error: error2 } = await supabase
+        const {data: profile, error: error2} = await supabase
             .from('profiles')
             .select('cover_url')
             .eq('id', session.user.id)
@@ -280,11 +290,11 @@ export const actions = {
         let coverUrl = await uploadImage(optimizedImage, session.user.id, profile.cover_url);
 
         // Update with new Cover url
-        const { error3 } = await supabase
+        const {error3} = await supabase
             .from('profiles')
             .update({
-            cover_url: coverUrl,
-            updated_at: new Date(),
+                cover_url: coverUrl,
+                updated_at: new Date(),
             })
             .eq('id', session.user.id);
 
@@ -304,7 +314,7 @@ export const actions = {
             }
         }
     },
-    showfavourites: async ({ request, locals: { supabase, getSession } }) => {
+    showfavourites: async ({request, locals: {supabase, getSession}}) => {
         const {session} = await getSession();
 
         if (!session) {
@@ -319,7 +329,7 @@ export const actions = {
         const formData = Object.fromEntries(await request.formData());
         const showFavourites = formData.showFavourites;
 
-        const { error } = await supabase
+        const {error} = await supabase
             .from('profiles')
             .update({
                 show_favourites: showFavourites,
@@ -344,7 +354,7 @@ export const actions = {
             }
         }
     },
-    updatepassword: async ({ request, locals: { supabase, getSession } }) => {
+    updatepassword: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
         const {session} = await getSession();
 
@@ -363,7 +373,7 @@ export const actions = {
             }
         }
 
-        const { error } = await supabase.auth.updateUser({
+        const {error} = await supabase.auth.updateUser({
             password: newPassword,
         });
 
@@ -384,7 +394,7 @@ export const actions = {
             }
         }
     },
-    newsletter: async ({ request, locals: { supabase, getSession } }) => {
+    newsletter: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
         const {session} = await getSession();
 
@@ -403,13 +413,62 @@ export const actions = {
             }
         }
 
-        const { error } = await supabase
+        const {error} = await supabase
             .from('profiles')
             .update({
                 newsletter: newsletter,
                 updated_at: new Date(),
             })
             .eq('id', session.user.id);
+
+        const resend = new Resend(PRIVATE_RESEND_API_KEY);
+
+        // Get list of contacts
+        const {data: contacts, error: contactsError} = await resend.contacts.list({
+            audienceId: PRIVATE_RESEND_AUDIENCE_ID,
+        });
+
+        if (contactsError) {
+            console.error(contactsError);
+            return {
+                status: 500,
+                body: {
+                    message: 'Error fetching contacts'
+                }
+            }
+        }
+
+        // Check if email is already registered
+        const isEmailRegistered = contacts.data.find(contact => contact.email === session.user.email);
+
+        if (isEmailRegistered) {
+            /*if (!newsletter) {
+                console.log('Subscribed to newsletter ' + session.user.email + " " + newsletter);
+                await resend.contacts.update({
+                    audienceId: PRIVATE_RESEND_AUDIENCE_ID,
+                    email: session.user.email,
+                    unsubscribed: false,
+                });
+            } else {
+                console.log('Unsubscribed from newsletter ' + session.user.email + " " + newsletter);
+                await resend.contacts.update({
+                    audienceId: PRIVATE_RESEND_AUDIENCE_ID,
+                    email: session.user.email,
+                    unsubscribed: true,
+                });
+            }*/
+            await resend.contacts.update({
+                audienceId: PRIVATE_RESEND_AUDIENCE_ID,
+                email: session.user.email,
+                unsubscribed: newsletter !== 'true',
+            });
+        } else {
+            await resend.contacts.create({
+                audienceId: PRIVATE_RESEND_AUDIENCE_ID,
+                email: session.user.email,
+                unsubscribed: newsletter !== 'true',
+            });
+        }
 
         if (error) {
             console.error('Error updating newsletter', error);

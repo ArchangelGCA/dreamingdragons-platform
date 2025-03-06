@@ -19,6 +19,7 @@
     $effect(() => {
         ({supabase, session, notifications, tooltipConfig, userData} = data)
     });
+
     $effect(() => {
         const {
             data: {subscription},

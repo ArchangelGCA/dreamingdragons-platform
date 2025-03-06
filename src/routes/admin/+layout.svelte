@@ -38,6 +38,11 @@
                         <i class="fas fa-exchange"></i> Migrations
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {page.url.pathname === '/admin/dashboard/newsletter' ? 'active' : ''}" href="/admin/dashboard/newsletter">
+                        <i class="fas fa-envelope"></i> Newsletter
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>

@@ -8,15 +8,15 @@ export const config = {
 
 export const load = async ({}) => {
     return {
-        index: false,
-        title: 'DreamingDragons - Mailing List',
-        description: 'Subscribe to the official DreamingDragons mailing list.',
+        index: true,
+        title: 'DreamingDragons - Newsletter',
+        description: 'Subscribe to the official DreamingDragons Newsletter.',
     }
 }
 
 
 export const actions = {
-    // Register to mailing list
+    // Register to Newsletter
     subscribe: async ({ request }) => {
         const formData = await request.formData();
         const email = formData.get('email');
@@ -73,7 +73,7 @@ export const actions = {
                     return {
                         status: 200,
                         body: {
-                            message: 'Successfully subscribed to mailing list!'
+                            message: 'Successfully subscribed to Newsletter!'
                         }
                     }
                 }
@@ -95,13 +95,13 @@ export const actions = {
             return {
                 status: 400,
                 body: {
-                    message: 'Failed to subscribe to mailing list!'
+                    message: 'Failed to subscribe to Newsletter!'
                 }
             }
         }
 
         const unsubscribeLink = `https://tales.archangelgca.eu/settings/updates/unsubscribe?id=${result.data.id}`;
-        const discordLink = 'https://discord.gg/7y7vXnD846';
+        const discordLink = 'https://discord.gg/u6qFjfDDy2';
         const yearCopyright = new Date().getFullYear();
 
         const htmlEmail = `
@@ -162,14 +162,14 @@ export const actions = {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>Welcome to DD Mailing List!</h1>
+                        <h1>Welcome to the DreamingDragons Newsletter!</h1>
                     </div>
                     <div class="content">
-                        <h2>You've successfully signup to our mailing list!</h2>
+                        <h2>You've successfully signup to our Newsletter!</h2>
                         <p>If you wish to unsubscribe, please click the button or use the link above: </p>
                         <a href="${unsubscribeLink}" class="button">Unsubscribe</a>
                         <p><a href="${unsubscribeLink}">${unsubscribeLink}</a></p>
-                        <p>Please keep this link safe! it has your <b>unsubscribe code</b>!</p>
+                        <p>Please keep this link safe! It has your <b>unsubscribe code</b>!</p>
                         <p>If you have any issues, please reach us on our <a href="${discordLink}">Discord Server!</a></p>
                     </div>
                     <div class="footer">
@@ -181,9 +181,9 @@ export const actions = {
         `;
 
         const sent = await resend.emails.send({
-            from: 'DD <mailing@tales.archangelgca.eu>',
+            from: 'DD <newsletter@tales.archangelgca.eu>',
             to: [email],
-            subject: 'Welcome to the mailing list! - DreamingDragons',
+            subject: 'Welcome to the Newsletter of DreamingDragons!',
             html: htmlEmail,
             tags: [
                 {
@@ -198,7 +198,7 @@ export const actions = {
         return {
             status: 200,
             body: {
-                message: 'Successfully subscribed to mailing list!'
+                message: 'Successfully subscribed to Newsletter!'
             }
         }
     }

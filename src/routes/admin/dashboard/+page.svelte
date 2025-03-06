@@ -61,7 +61,7 @@
                         '--toastColor': '#fff',
                     }
                 });
-                invalidateAll();
+                await invalidateAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
