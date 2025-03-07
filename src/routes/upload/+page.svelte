@@ -1,13 +1,18 @@
 <script>
-    import { PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_CONVERTER_URL } from "$env/static/public";
+    import {
+        PUBLIC_COVER_MAX_WIDTH,
+        PUBLIC_COVER_MAX_HEIGHT,
+        PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES,
+        PUBLIC_CONVERTER_URL
+    } from "$env/static/public";
     import {deserialize} from '$app/forms';
     import {toast} from "@zerodevx/svelte-toast";
     import Editor from '@tinymce/tinymce-svelte';
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltip} from "@svelte-plugins/tooltips";
 
-    let conf = {
+    /*let conf = {
         skin: 'oxide-dark',
         content_css: 'dark',
         license_key: 'gpl',
@@ -54,12 +59,62 @@
                 }
             });
         },
+    };*/
+
+    let conf = {
+        skin: 'oxide-dark',
+        content_css: 'dark',
+        license_key: 'gpl',
+        block_unsupported_drop: true,
+        branding: false,
+        plugins: 'link autolink wordcount charmap code fullscreen lists searchreplace',
+        default_link_target: '_blank',
+        images_upload_handler: () => Promise.reject({
+            remove: true,
+            message: 'You can\'t upload images in the description.',
+        }),
+        menubar: false,
+        toolbar_mode: 'floating',
+        toolbar: "undo redo | blocks headings | bold italic underline strikethrough | alignment | link code blockquote | bullist numlist | forecolor backcolor | searchreplace",
+        toolbar_groups: {
+            alignment: {
+                icon: 'align-left',
+                tooltip: 'Alignment',
+                items: 'alignleft aligncenter alignright alignjustify'
+            },
+            headings: {
+                icon: 'heading1',
+                tooltip: 'Headings',
+                items: 'p h1 h2 h3 h4 h5 h6'
+            },
+            formatting: {
+                icon: 'bold',
+                tooltip: 'Formatting',
+                items: 'bold italic underline | superscript subscript'
+            }
+        },
+        setup: function (editor) {
+            editor.on('init', function () {
+                const promotionLink = document.querySelector('.tox-promotion-link');
+                if (promotionLink) {
+                    promotionLink.remove();
+                }
+            });
+            editor.ui.registry.addIcon('paragraph', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#000000" viewBox="0 0 256 256"><path d="M208,36H96a68,68,0,0,0,0,136h36v36a12,12,0,0,0,24,0V60h16V208a12,12,0,0,0,24,0V60h12a12,12,0,0,0,0-24ZM132,148H96a44,44,0,0,1,0-88h36Z"></path></svg>')
+            editor.ui.registry.addIcon('search', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-text-search"><path d="M21 6H3"/><path d="M10 12H3"/><path d="M10 18H3"/><circle cx="17" cy="15" r="3"/><path d="m21 19-1.9-1.9"/></svg>')
+            editor.ui.registry.addIcon('heading1', '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#000000" viewBox="0 0 256 256"><path d="M236,112v96a12,12,0,0,1-24,0V134.42L206.66,138a12,12,0,0,1-13.32-20l24-16A12,12,0,0,1,236,112ZM144,44a12,12,0,0,0-12,12v48H52V56a12,12,0,0,0-24,0V176a12,12,0,0,0,24,0V128h80v48a12,12,0,0,0,24,0V56A12,12,0,0,0,144,44Z"></path></svg>')
+            editor.ui.registry.addIcon('link', '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+                '  <path d="M14.8284 12L16.2426 13.4142L19.071 10.5858C20.6331 9.02365 20.6331 6.49099 19.071 4.9289C17.509 3.3668 14.9763 3.3668 13.4142 4.9289L10.5858 7.75732L12 9.17154L14.8284 6.34311C15.6095 5.56206 16.8758 5.56206 17.6568 6.34311C18.4379 7.12416 18.4379 8.39049 17.6568 9.17154L14.8284 12Z" fill="currentColor" />' +
+                '  <path d="M12 14.8285L13.4142 16.2427L10.5858 19.0711C9.02372 20.6332 6.49106 20.6332 4.92896 19.0711C3.36686 17.509 3.36686 14.9764 4.92896 13.4143L7.75739 10.5858L9.1716 12L6.34317 14.8285C5.56212 15.6095 5.56212 16.8758 6.34317 17.6569C7.12422 18.4379 8.39055 18.4379 9.1716 17.6569L12 14.8285Z" fill="currentColor" />' +
+                '  <path d="M14.8285 10.5857C15.219 10.1952 15.219 9.56199 14.8285 9.17147C14.4379 8.78094 13.8048 8.78094 13.4142 9.17147L9.1716 13.4141C8.78107 13.8046 8.78107 14.4378 9.1716 14.8283C9.56212 15.2188 10.1953 15.2188 10.5858 14.8283L14.8285 10.5857Z" fill="currentColor" />' +
+                '</svg>')
+        },
     };
 
     /** @type {{data: any}} */
-    let { data } = $props();
+    let {data} = $props();
 
-    let { books, can_upload, tooltipConfig } = $state(data);
+    let {books, can_upload, tooltipConfig} = $state(data);
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = $state('');
@@ -76,9 +131,9 @@
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
     let isDragging = $state(false);
     let isCompressing = $state(false);
-    
+
     let isTooBig = $state(false);
-    
+
     let compressedMessage = $state('');
 
     /*$effect.pre(() => {
@@ -90,6 +145,7 @@
     });*/
 
     let tags = $state([]);
+
     async function addTag(e) {
         if (e.type === 'click') {
             e.preventDefault();
@@ -174,7 +230,7 @@
                     });
                 }
             } else {
-                toast.push('Error: Tag suggestions failed' , {
+                toast.push('Error: Tag suggestions failed', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
                         '--toastColor': '#fff'
@@ -238,7 +294,7 @@
                 });
                 return;
             }
-            loadImagePreview({ target: { files: [files[0]] } });
+            loadImagePreview({target: {files: [files[0]]}});
             // Set the files to the input
             document.getElementById('file').files = files;
         }
@@ -375,7 +431,7 @@
         return data.token;
     }
 
-    async function fetchPreviousChapterTags(){
+    async function fetchPreviousChapterTags() {
 
         if (activePreviousChapterTags) return;
 
@@ -416,7 +472,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success') {
             if (result.data.status === 200) {
-                if (result.data.body.length <= 0){
+                if (result.data.body.length <= 0) {
                     toast.push('No previous chapters or tags found... ☹️', {
                         theme: {
                             '--toastBackground': '#ff4d4d',
@@ -457,7 +513,7 @@
                 });
             }
         } else {
-            toast.push('Error: Tag suggestions failed' , {
+            toast.push('Error: Tag suggestions failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
                     '--toastColor': '#fff'
@@ -583,7 +639,7 @@
                 });
             }
         } else {
-            toast.push('Error: Upload failed' , {
+            toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
                     '--toastColor': '#fff'
@@ -646,7 +702,7 @@
                 });
             }
         } else {
-            toast.push('Error: Upload failed' , {
+            toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
                     '--toastColor': '#fff'
@@ -665,7 +721,8 @@
             <div class="col-12">
                 <div class="alert alert-danger text-center mt-3 mb-0" role="alert">
                     <p class="h4">You aren't allowed to upload!</p>
-                    <p class="h5">If you think this is an error, please contact us on <a href="{discordLink}">Discord</a>.</p>
+                    <p class="h5">If you think this is an error, please contact us on <a
+                            href="{discordLink}">Discord</a>.</p>
                 </div>
             </div>
         </div>
@@ -675,7 +732,8 @@
         <div class="col">
             <div class="row justify-content-center">
                 <div class="col-12">
-                    <p class="h1 text-center mt-3 mb-0 py-2 bg-light-subtle bg-opacity-25 rounded-4 animate-background">Upload content</p>
+                    <p class="h1 text-center mt-3 mb-0 py-2 bg-light-subtle bg-opacity-25 rounded-4 animate-background">
+                        Upload content</p>
                 </div>
             </div>
             <hr>
@@ -683,10 +741,16 @@
                 <div class="col-12 text-center">
                     <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
                     <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
-                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}" onclick={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create Tale">
+                        <button type="button"
+                                class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}"
+                                onclick={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}}
+                                title="Create Tale">
                             <i class="fas fa-book"></i> Tale
                         </button>
-                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'chapter' ? 'active' : ''}" onclick={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter">
+                        <button type="button"
+                                class="btn btn-lg btn-dark border border-0 {selectedOption === 'chapter' ? 'active' : ''}"
+                                onclick={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}}
+                                title="Create chapter">
                             <i class="fas fa-file-alt"></i> Chapter
                         </button>
                     </div>
@@ -699,28 +763,50 @@
                             </div>
                             <div class="row mt-3 mx-0 justify-content-center">
                                 <div class="col px-0">
-                                    <form method="POST" enctype="multipart/form-data" action="?/postbook" onsubmit={handleBookUpload}>
+                                    <form method="POST" enctype="multipart/form-data" action="?/postbook"
+                                          onsubmit={handleBookUpload}>
                                         <div class="row mx-auto mt-1">
-                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center drop-zone" use:autoAnimate style="min-height: 30vh"
+                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center drop-zone"
+                                                 use:autoAnimate style="min-height: 30vh"
                                                  ondragover={handleDragOver}
                                                  ondrop={handleDrop}
                                                  ondragenter={handleDragEnter}
                                                  ondragleave={handleDragLeave}
                                                  class:dragging={isDragging}
                                                  role="button" aria-label="File upload drop zone" tabindex="0">
-                                                <label for="file" class="form-label" title="Tale image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Image</label>
-                                                <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" onchange={loadImagePreview} required/>
-                                                <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
+                                                <label for="file" class="form-label" title="Tale image"
+                                                       use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i>
+                                                    Image</label>
+                                                <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2"
+                                                       type="file" id="file" name="image" accept="image/*"
+                                                       onchange={loadImagePreview} required/>
+                                                <span class="text-light text-opacity-50"
+                                                      use:tooltip={{...tooltipConfig}}
+                                                      title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}
+                                                    MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}
+                                                    x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                                 {#if previewUrl}
-                                                    <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" />
+                                                    <img src={previewUrl} alt="Preview"
+                                                         class="img-thumbnail mt-2 mb-2 rounded-4"
+                                                         style="max-height: 50vh; width: auto; object-fit: contain"/>
                                                 {/if}
                                                 {#if isTooBig}
                                                     <span class="text-danger-emphasis text-center too-big mt-1">⚠️ File is too big! Max size is {maxFileSizeMB}</span>
                                                     <!-- Button to compress image -->
                                                     {#if !isCompressing}
-                                                        <button type="button" class="btn btn-sm btn-dark animate-button border-0 mt-3 pt-1 w-auto" onclick={compressImage} use:tooltip={{...tooltipConfig}} title="Compress image using our compressor">Compress image</button>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-dark animate-button border-0 mt-3 pt-1 w-auto"
+                                                                onclick={compressImage} use:tooltip={{...tooltipConfig}}
+                                                                title="Compress image using our compressor">Compress
+                                                            image
+                                                        </button>
                                                     {:else}
-                                                        <button type="button" class="btn btn-sm btn-dark mt-3 pt-1 w-auto" disabled use:tooltip={{...tooltipConfig}} title="Compressing image, please wait...">Compressing image...</button>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-dark mt-3 pt-1 w-auto" disabled
+                                                                use:tooltip={{...tooltipConfig}}
+                                                                title="Compressing image, please wait...">Compressing
+                                                            image...
+                                                        </button>
                                                     {/if}
                                                 {/if}
                                                 {#if fileName && !isTooBig}
@@ -731,13 +817,17 @@
                                                 {/if}
                                             </div>
                                             <div class="col-12 px-0">
-                                                <p class="fs-5 text-start mb-1 mt-3 ms-1"><i class="fas fa-book"></i> Title:</p>
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Tale title">
-                                                    <input type="text" class="form-control form-control-custom" name="title" id="title" placeholder="Title" required>
+                                                <p class="fs-5 text-start mb-1 mt-3 ms-1"><i class="fas fa-book"></i>
+                                                    Title:</p>
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}}
+                                                     title="Tale title">
+                                                    <input type="text" class="form-control form-control-custom"
+                                                           name="title" id="title" placeholder="Title" required>
                                                     <label for="title"><i class="fas fa-heading"></i> Title</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Tale description">
+                                            <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}}
+                                                 title="Tale description">
                                                 <div class="col-12 px-0">
                                                     <Editor {conf}
                                                             scriptSrc="tinymce/tinymce.min.js"
@@ -746,27 +836,42 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
-                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
-                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate use:tooltip={{...tooltipConfig}} title="Tip: use a , or press space/enter to add tag">
+                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:
+                                                </p>
+                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1"
+                                                     use:autoAnimate use:tooltip={{...tooltipConfig}}
+                                                     title="Tip: use a , or press space/enter to add tag">
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
-                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" onclick={removeTag} value={tag}>x</button>
+                                                            <button class="button-tags text-danger-emphasis ms-1"
+                                                                    type="button" onclick={removeTag} value={tag}>x
+                                                            </button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" onkeydown={addTag} onkeyup={addTag}/>
+                                                    <input class="input-tags my-auto ms-1" type="text"
+                                                           bind:value={inputTag} placeholder="Add tags"
+                                                           onkeydown={addTag} onkeyup={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
-                                                        <button class="dropdown-item" onclick={addTag} value={suggestion}>{suggestion}</button>
+                                                        <button class="dropdown-item" onclick={addTag}
+                                                                value={suggestion}>{suggestion}</button>
                                                     {/each}
                                                     <!-- Hidden input bind with tags -->
-                                                    <input type="hidden" name="tags" value={tags} />
+                                                    <input type="hidden" name="tags" value={tags}/>
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-1 mt-2 px-0">
                                                 {#if !can_upload}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">You can't upload!</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100"
+                                                            disabled use:tooltip={{...tooltipConfig}}
+                                                            title="Uploads are disabled for your profile!">You can't
+                                                        upload!
+                                                    </button>
                                                 {:else}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100"
+                                                            use:tooltip={{...tooltipConfig}} title="Click to submit">
+                                                        Submit
+                                                    </button>
                                                 {/if}
                                             </div>
                                         </div>
@@ -782,23 +887,32 @@
                             </div>
                             <div class="row mx-auto mt-2 justify-content-center">
                                 <div class="col">
-                                    <form method="POST" enctype="multipart/form-data" action="?/postchapter" onsubmit={handleChapterUpload}>
+                                    <form method="POST" enctype="multipart/form-data" action="?/postchapter"
+                                          onsubmit={handleChapterUpload}>
                                         <div class="row" use:autoAnimate>
                                             <div class="col-12 rounded-3 mt-1 px-0">
-                                                <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Tale</p>
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Target Tale">
-                                                    <select class="form-select form-select-lg form-select-custom" name="book" id="book" bind:value={selectedBook} required>
+                                                <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Tale
+                                                </p>
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}}
+                                                     title="Target Tale">
+                                                    <select class="form-select form-select-lg form-select-custom"
+                                                            name="book" id="book" bind:value={selectedBook} required>
                                                         {#each books as book (book.id)}
-                                                            <option class="option-custom" value={book.id}>{book.title}</option>
+                                                            <option class="option-custom"
+                                                                    value={book.id}>{book.title}</option>
                                                         {/each}
                                                     </select>
                                                     <label for="book"><i class="fas fa-book"></i> Tale</label>
                                                 </div>
                                             </div>
                                             <div class="col-12 rounded-3 mb-2 px-0 mt-2">
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Chapter title">
-                                                    <input type="text" class="form-control form-control-lg form-control-custom" name="title" id="title" placeholder="Title" required>
-                                                    <label for="title" class="form-label"><i class="fas fa-heading"></i> Title</label>
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}}
+                                                     title="Chapter title">
+                                                    <input type="text"
+                                                           class="form-control form-control-lg form-control-custom"
+                                                           name="title" id="title" placeholder="Title" required>
+                                                    <label for="title" class="form-label"><i class="fas fa-heading"></i>
+                                                        Title</label>
                                                 </div>
                                             </div>
                                             <div class="col-12 px-0">
@@ -808,32 +922,51 @@
                                                 />
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
-                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
-                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate use:tooltip={{...tooltipConfig}} title="Tip: use a , or press space/enter to add tag">
+                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:
+                                                </p>
+                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1"
+                                                     use:autoAnimate use:tooltip={{...tooltipConfig}}
+                                                     title="Tip: use a , or press space/enter to add tag">
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
-                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" onclick={removeTag} value={tag}>x</button>
+                                                            <button class="button-tags text-danger-emphasis ms-1"
+                                                                    type="button" onclick={removeTag} value={tag}>x
+                                                            </button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" onkeydown={addTag} onkeyup={addTag}/>
+                                                    <input class="input-tags my-auto ms-1" type="text"
+                                                           bind:value={inputTag} placeholder="Add tags"
+                                                           onkeydown={addTag} onkeyup={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
-                                                        <button class="dropdown-item" onclick={addTag} value={suggestion}>{suggestion}</button>
+                                                        <button class="dropdown-item" onclick={addTag}
+                                                                value={suggestion}>{suggestion}</button>
                                                     {/each}
                                                     <!-- Hidden input bind with tags -->
-                                                    <input type="hidden" name="tags" value={tags} />
+                                                    <input type="hidden" name="tags" value={tags}/>
                                                 </div>
                                             </div>
                                             {#if chaptersNumber > 0}
                                                 <div class="col-12 px-0">
-                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button" onclick={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
+                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button"
+                                                            onclick={fetchPreviousChapterTags}
+                                                            use:tooltip={{...tooltipConfig}}
+                                                            title="Fetch previous chapter tags (if any is found)">Fetch
+                                                        previous chapter tags
+                                                    </button>
                                                 </div>
                                             {/if}
                                             <div class="col-12 mb-1 mt-2 px-0">
                                                 {#if !can_upload}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">Submit</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100"
+                                                            disabled use:tooltip={{...tooltipConfig}}
+                                                            title="Uploads are disabled for your profile!">Submit
+                                                    </button>
                                                 {:else}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100"
+                                                            use:tooltip={{...tooltipConfig}} title="Click to submit">
+                                                        Submit
+                                                    </button>
                                                 {/if}
                                             </div>
                                         </div>
@@ -845,7 +978,11 @@
                 </div>
                 <div class="col-12 mt-3 mb-1 rounded-3">
                     <p class="text-danger-emphasis text-center mb-1">NO AI/NSFW!</p>
-                    <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>
+                    <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos"
+                                                                                                  target="_blank"
+                                                                                                  class="link-secondary text-decoration-none">terms
+                        of service</a> and <a href="/legal/privacy-policy" target="_blank"
+                                              class="link-secondary text-decoration-none">privacy policy</a>.</p>
                 </div>
             </div>
         </div>
@@ -967,14 +1104,26 @@
     }
 
     @keyframes Gradient {
-        0% {background-position: 0 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0 50%;}
+        0% {
+            background-position: 0 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0 50%;
+        }
     }
 
     @keyframes ColorShift {
-        0% {background: #000;}
-        50% {background: rgba(61, 0, 108, 0.45);}
-        100% {background: #000;}
+        0% {
+            background: #000;
+        }
+        50% {
+            background: rgba(61, 0, 108, 0.45);
+        }
+        100% {
+            background: #000;
+        }
     }
 </style>
