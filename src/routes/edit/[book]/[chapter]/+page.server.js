@@ -1,4 +1,5 @@
 import {error as errorx, redirect} from "@sveltejs/kit";
+import {fetchProfiles} from "$lib/utils/gcafetchers.js";
 
 export const load = async ({ params, locals: { supabase, getSession} }) => {
     const {session} = await getSession();
@@ -205,5 +206,18 @@ export const actions = {
                 message: "Chapter edited successfully"
             }
         }
+    },
+    getProfiles: async ({ request, url, locals: { supabase, getSession } }) => {
+        const { session } = await getSession();
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "Unauthorized"
+                }
+            }
+        }
+        const origin = url.origin;
+        return await fetchProfiles({ supabase, origin });
     }
 }

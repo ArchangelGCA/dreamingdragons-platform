@@ -2,8 +2,8 @@ import {redirect} from '@sveltejs/kit'
 import PocketBase from 'pocketbase';
 import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
 import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_COVER_MAX_RESIZE, PUBLIC_POCKETBASE_URL } from "$env/static/public";
-import {generateToken} from "$lib/utils/gcatokens.js";
 import sharp from 'sharp';
+import {fetchProfiles} from "$lib/utils/gcafetchers.js";
 
 const uploadImage = async (image) => {
 
@@ -421,5 +421,18 @@ export const actions = {
             status: 200,
             body: tags
         }
+    },
+    getProfiles: async ({ request, url, locals: { supabase, getSession } }) => {
+        const { session } = await getSession();
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "Unauthorized"
+                }
+            }
+        }
+        const origin = url.origin;
+        return await fetchProfiles({ supabase, origin });
     }
 }

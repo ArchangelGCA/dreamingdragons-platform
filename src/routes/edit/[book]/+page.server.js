@@ -3,6 +3,7 @@ import sharp from "sharp";
 import PocketBase from "pocketbase";
 import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
 import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_COVER_MAX_RESIZE, PUBLIC_POCKETBASE_URL, PUBLIC_POCKETBASE_URL_IMG_API } from "$env/static/public";
+import {fetchProfiles} from "$lib/utils/gcafetchers.js";
 
 export const load = async ({ params, locals: { supabase, getSession} }) => {
     const {session} = await getSession();
@@ -226,6 +227,19 @@ export const actions = {
                 message: "Tale edited successfully"
             }
         }
+    },
+    getProfiles: async ({ request, url, locals: { supabase, getSession } }) => {
+        const { session } = await getSession();
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "Unauthorized"
+                }
+            }
+        }
+        const origin = url.origin;
+        return await fetchProfiles({ supabase, origin });
     }
 }
 
