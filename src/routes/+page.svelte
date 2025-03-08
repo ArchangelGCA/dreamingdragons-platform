@@ -84,7 +84,7 @@
             <span class="h2 text-start fw-bolder" use:tooltip={{...tooltipConfig}} title="Home 🏠">Home</span>
         </div>
 
-        <!-- Start following section -->
+        <!-- Following section -->
         {#if is_logged && followed && followed.length > 0}
             <div class="col-12 pb-1 mt-2">
                 <div class="row justify-content-center bg-purple-gradient rounded-3 mb-1 mt-1 p-1"
@@ -113,7 +113,7 @@
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row column-vertical" onscroll={handleScroll} use:dragscroll={{axis: 'y'}}>
+                <div class="row column-vertical" onscroll={handleScroll}>
                     <div class="col-12 px-0">
                         <Masonry
                                 items={books_ordered_by_created_at}
