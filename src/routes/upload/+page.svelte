@@ -1,87 +1,45 @@
 <script>
-    import { PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES } from "$env/static/public";
+    import {
+        PUBLIC_COVER_MAX_WIDTH,
+        PUBLIC_COVER_MAX_HEIGHT,
+        PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES,
+        PUBLIC_CONVERTER_URL
+    } from "$env/static/public";
     import {deserialize} from '$app/forms';
     import {toast} from "@zerodevx/svelte-toast";
     import Editor from '@tinymce/tinymce-svelte';
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltip} from "@svelte-plugins/tooltips";
+    import {conf} from "$lib/utils/gcatinymce.js"
 
-    let conf = {
-        skin: 'oxide-dark',
-        content_css: 'dark',
-        license_key: 'gpl',
-        block_unsupported_drop: true,
-        branding: false,
-        plugins: 'link autolink wordcount charmap code fullscreen',
-        default_link_target: '_blank',
-        images_upload_handler: () => Promise.reject({
-            remove: true,
-            message: 'You can\'t upload images in the description.',
-        }),
-        toolbar_mode: 'sliding',
-        toolbar: [
-            {
-                name: 'history',
-                items: ['undo', 'redo']
-            },
-            {
-                name: 'links',
-                items: ['link']
-            },
-            {
-                name: 'formatting',
-                items: ['bold', 'italic']
-            },
-            {
-                name: 'alignment',
-                items: ['alignleft', 'aligncenter', 'alignright', 'alignjustify']
-            },
-            {
-                name: 'indentation',
-                items: ['outdent', 'indent']
-            },
-            {
-                name: 'tools',
-                items: ['wordcount', 'charmap', 'code', 'fullscreen']
-            }
-        ],
-        setup: function (editor) {
-            editor.on('init', function () {
-                const promotionLink = document.querySelector('.tox-promotion-link');
-                if (promotionLink) {
-                    promotionLink.remove();
-                }
-            });
-        },
-    };
+    /** @type {{data: any}} */
+    let {data} = $props();
 
-    export let data;
-
-    let { books, can_upload, tooltipConfig } = data;
+    let {books, can_upload, tooltipConfig} = $state(data);
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
-    let previewUrl = '';
-    let fileName = '';
-    let editorContent = '';
-    let selectedOption = 'book';
-    let inputTag = '';
-    let suggestions = [];
+    let previewUrl = $state('');
+    let fileName = $state('');
+    let editorContent = $state('');
+    let selectedOption = $state('book');
+    let inputTag = $state('');
+    let suggestions = $state([]);
     let activeUpload = false;
-    let editorContentTale = '';
+    let editorContentTale = $state('');
     let activePreviousChapterTags = false;
-    let selectedBook;
-    let chaptersNumber = 0;
+    let selectedBook = $state();
+    let chaptersNumber = $derived(selectedBook && books && books.length > 0 ? books.find(book => book.id === selectedBook).chapters : 0);
     let discordLink = 'https://discord.gg/hrrD3KPdTe';
-    let isDragging = false;
+    let isDragging = $state(false);
+    let isCompressing = $state(false);
 
-    $: if (selectedBook) {
-        if (books && books.length > 0) {
-            chaptersNumber = books.find(book => book.id === selectedBook).chapters;
-        }
-    }
+    let isTooBig = $state(false);
 
-    let tags = [];
+    let compressedMessage = $state('');
+
+    let tags = $state([]);
+
     async function addTag(e) {
         if (e.type === 'click') {
             e.preventDefault();
@@ -166,7 +124,7 @@
                     });
                 }
             } else {
-                toast.push('Error: Tag suggestions failed' , {
+                toast.push('Error: Tag suggestions failed', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
                         '--toastColor': '#fff'
@@ -176,7 +134,9 @@
         }
     }
 
-    function removeTag(tag) {
+    function removeTag(e) {
+        e.preventDefault();
+        const tag = e.target.value.trim();
         tags = tags.filter(t => t !== tag);
         suggestions = [];
         inputTag = '';
@@ -192,6 +152,9 @@
             };
             reader.readAsDataURL(file);
             fileName = file.name;
+            // Get image size (bytes) and if it's too big, set isTooBig to true
+            isTooBig = file.size > PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES;
+            compressedMessage = '';
         }
     }
 
@@ -225,13 +188,144 @@
                 });
                 return;
             }
-            loadImagePreview({ target: { files: [files[0]] } });
+            loadImagePreview({target: {files: [files[0]]}});
             // Set the files to the input
             document.getElementById('file').files = files;
         }
     }
 
-    async function fetchPreviousChapterTags(){
+    // Function ran on "compress" button call
+    async function compressImage() {
+        if (!isTooBig) {
+            toast.push('Image is not too big', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            return;
+        }
+        if (isCompressing) {
+            toast.push('Already compressing image, please wait...', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            return;
+        }
+
+        isCompressing = true;
+
+        // Get token
+        const token = await getToken();
+        if (!token) {
+            toast.push('Failed to get token', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            isCompressing = false;
+            return;
+        }
+
+        // Get file of type image from image input
+        const file = document.getElementById('file').files[0];
+        if (!file) {
+            toast.push('Error: No image selected', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            isCompressing = false;
+            return;
+        }
+
+        const oldSize = file.size;
+
+        // Create form data and append the image file
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('token', token);
+        formData.enctype = 'multipart/form-data';
+        formData.mode = 'no-cors';
+
+        // Show loading toast
+        const toastId = toast.push('Compressing image...', {
+            duration: 600000,
+            theme: {
+                '--toastBackground': '#ffcc00',
+                '--toastColor': '#000'
+            }
+        });
+
+        // Send POST request to PUBLIC_CONVERTER_URL/image with form data
+        const response = await fetch(PUBLIC_CONVERTER_URL + '/image', {
+            method: 'POST',
+            body: formData,
+        });
+
+        // Remove loading toast
+        toast.pop(toastId);
+        if (!response.ok) {
+            const error = await response.json();
+            toast.push('Failed to compress image: ' + error.message, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            isCompressing = false;
+            return;
+        }
+
+        // Get response data
+        const blob = await response.blob();
+        isTooBig = blob.size > PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES;
+
+        if (!isTooBig) {
+            previewUrl = URL.createObjectURL(blob);
+            const dataTranfer = new DataTransfer();
+            const tempImageFile = new File([blob], file.name, {type: 'image/webp', lastModified: Date.now()});
+            dataTranfer.items.add(tempImageFile);
+            const fileInput = document.getElementById('file');
+            fileInput.files = dataTranfer.files;
+
+            // New size
+            const newSize = blob.size;
+            compressedMessage = '🍀 Image compressed from <b>' + (oldSize / 1024 / 1024).toFixed(2) + 'MB</b> to <b>' + (newSize / 1024 / 1024).toFixed(2) + 'MB</b>';
+
+            // Show success toast
+            toast.push('Image compressed successfully', {
+                theme: {
+                    '--toastBackground': '#4caf50',
+                    '--toastColor': '#fff'
+                }
+            });
+        } else {
+            toast.push('Failed to compress image: Image is still too big', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+        }
+        isCompressing = false;
+    }
+
+    async function getToken() {
+        const response = await fetch('/upload/token');
+        if (!response.ok) {
+            console.error('Failed to get token');
+            return null;
+        }
+        const data = await response.json();
+        return data.token;
+    }
+
+    async function fetchPreviousChapterTags() {
 
         if (activePreviousChapterTags) return;
 
@@ -272,7 +366,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success') {
             if (result.data.status === 200) {
-                if (result.data.body.length <= 0){
+                if (result.data.body.length <= 0) {
                     toast.push('No previous chapters or tags found... ☹️', {
                         theme: {
                             '--toastBackground': '#ff4d4d',
@@ -313,7 +407,7 @@
                 });
             }
         } else {
-            toast.push('Error: Tag suggestions failed' , {
+            toast.push('Error: Tag suggestions failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
                     '--toastColor': '#fff'
@@ -328,6 +422,15 @@
         event.preventDefault();
 
         if (activeUpload) return;
+        if (isCompressing) {
+            toast.push('Please wait for the image to finish compressing', {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
+            return;
+        }
 
         activeUpload = true;
 
@@ -419,6 +522,8 @@
                 tags = [];
                 previewUrl = '';
                 fileName = '';
+                isTooBig = false;
+                compressedMessage = '';
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -428,7 +533,7 @@
                 });
             }
         } else {
-            toast.push('Error: Upload failed' , {
+            toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
                     '--toastColor': '#fff'
@@ -491,7 +596,7 @@
                 });
             }
         } else {
-            toast.push('Error: Upload failed' , {
+            toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
                     '--toastColor': '#fff'
@@ -510,7 +615,8 @@
             <div class="col-12">
                 <div class="alert alert-danger text-center mt-3 mb-0" role="alert">
                     <p class="h4">You aren't allowed to upload!</p>
-                    <p class="h5">If you think this is an error, please contact us on <a href="{discordLink}">Discord</a>.</p>
+                    <p class="h5">If you think this is an error, please contact us on <a
+                            href="{discordLink}">Discord</a>.</p>
                 </div>
             </div>
         </div>
@@ -520,7 +626,8 @@
         <div class="col">
             <div class="row justify-content-center">
                 <div class="col-12">
-                    <p class="h1 text-center mt-3 mb-0 py-2 bg-light-subtle bg-opacity-25 rounded-4 animate-background">Upload content</p>
+                    <p class="h1 text-center mt-3 mb-0 py-2 bg-light-subtle bg-opacity-25 rounded-4 animate-background">
+                        Upload content</p>
                 </div>
             </div>
             <hr>
@@ -528,10 +635,16 @@
                 <div class="col-12 text-center">
                     <p class="h5 text-secondary-emphasis pb-2">Choose what you want to submit:</p>
                     <div class="btn-group w-100" role="group" aria-label="Book or Chapter">
-                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}" on:click={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}} title="Create Tale">
+                        <button type="button"
+                                class="btn btn-lg btn-dark border border-0 {selectedOption === 'book' ? 'active' : ''}"
+                                onclick={() => selectedOption = 'book'} use:tooltip={{...tooltipConfig}}
+                                title="Create Tale">
                             <i class="fas fa-book"></i> Tale
                         </button>
-                        <button type="button" class="btn btn-lg btn-dark border border-0 {selectedOption === 'chapter' ? 'active' : ''}" on:click={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}} title="Create chapter">
+                        <button type="button"
+                                class="btn btn-lg btn-dark border border-0 {selectedOption === 'chapter' ? 'active' : ''}"
+                                onclick={() => selectedOption = 'chapter'} use:tooltip={{...tooltipConfig}}
+                                title="Create chapter">
                             <i class="fas fa-file-alt"></i> Chapter
                         </button>
                     </div>
@@ -544,33 +657,71 @@
                             </div>
                             <div class="row mt-3 mx-0 justify-content-center">
                                 <div class="col px-0">
-                                    <form method="POST" enctype="multipart/form-data" action="?/postbook" on:submit={handleBookUpload}>
+                                    <form method="POST" enctype="multipart/form-data" action="?/postbook"
+                                          onsubmit={handleBookUpload}>
                                         <div class="row mx-auto mt-1">
-                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center drop-zone" style="min-height: 30vh"
-                                                 on:dragover={handleDragOver}
-                                                 on:drop={handleDrop}
-                                                 on:dragenter={handleDragEnter}
-                                                 on:dragleave={handleDragLeave}
+                                            <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center drop-zone"
+                                                 use:autoAnimate style="min-height: 30vh"
+                                                 ondragover={handleDragOver}
+                                                 ondrop={handleDrop}
+                                                 ondragenter={handleDragEnter}
+                                                 ondragleave={handleDragLeave}
                                                  class:dragging={isDragging}
                                                  role="button" aria-label="File upload drop zone" tabindex="0">
-                                                <label for="file" class="form-label" title="Tale image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Image</label>
-                                                <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} required/>
-                                                <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
+                                                <label for="file" class="form-label" title="Tale image"
+                                                       use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i>
+                                                    Image</label>
+                                                <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2"
+                                                       type="file" id="file" name="image" accept="image/*"
+                                                       onchange={loadImagePreview} required/>
+                                                <span class="text-light text-opacity-50"
+                                                      use:tooltip={{...tooltipConfig}}
+                                                      title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}
+                                                    MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}
+                                                    x{PUBLIC_COVER_MAX_HEIGHT} </span>
                                                 {#if previewUrl}
-                                                    <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" />
+                                                    <img src={previewUrl} alt="Preview"
+                                                         class="img-thumbnail mt-2 mb-2 rounded-4"
+                                                         style="max-height: 50vh; width: auto; object-fit: contain"/>
                                                 {/if}
-                                                {#if fileName}
+                                                {#if isTooBig}
+                                                    <span class="text-danger-emphasis text-center too-big mt-1">⚠️ File is too big! Max size is {maxFileSizeMB}</span>
+                                                    <!-- Button to compress image -->
+                                                    {#if !isCompressing}
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-dark animate-button border-0 mt-3 pt-1 w-auto"
+                                                                onclick={compressImage} use:tooltip={{...tooltipConfig}}
+                                                                title="Compress image using our compressor">Compress
+                                                            image
+                                                        </button>
+                                                    {:else}
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-dark mt-3 pt-1 w-auto" disabled
+                                                                use:tooltip={{...tooltipConfig}}
+                                                                title="Compressing image, please wait...">Compressing
+                                                            image...
+                                                        </button>
+                                                    {/if}
+                                                {/if}
+                                                {#if fileName && !isTooBig}
                                                     <span class="text-light text-opacity-75">Selected file: {fileName}</span>
+                                                {/if}
+                                                {#if compressedMessage !== ''}
+                                                    <span class="text-success-emphasis text-opacity-75 mt-2 mb-0">{@html compressedMessage}</span>
                                                 {/if}
                                             </div>
                                             <div class="col-12 px-0">
-                                                <p class="fs-5 text-start mb-1 mt-3 ms-1"><i class="fas fa-book"></i> Title:</p>
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Tale title">
-                                                    <input type="text" class="form-control form-control-custom" name="title" id="title" placeholder="Title" required>
+                                                <p class="fs-5 text-start mb-1 mt-3 ms-1"><i class="fas fa-book"></i>
+                                                    Title:</p>
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}}
+                                                     title="Tale title">
+                                                    <input type="text" class="form-control form-control-custom"
+                                                           name="title" id="title" placeholder="Title" required>
                                                     <label for="title"><i class="fas fa-heading"></i> Title</label>
                                                 </div>
                                             </div>
-                                            <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Tale description">
+                                            <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}}
+                                                 title="Tale description">
                                                 <div class="col-12 px-0">
                                                     <Editor {conf}
                                                             scriptSrc="tinymce/tinymce.min.js"
@@ -579,27 +730,42 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
-                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
-                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate use:tooltip={{...tooltipConfig}} title="Tip: use a , or press space/enter to add tag">
+                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:
+                                                </p>
+                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1"
+                                                     use:autoAnimate use:tooltip={{...tooltipConfig}}
+                                                     title="Tip: use a , or press space/enter to add tag">
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
-                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
+                                                            <button class="button-tags text-danger-emphasis ms-1"
+                                                                    type="button" onclick={removeTag} value={tag}>x
+                                                            </button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
+                                                    <input class="input-tags my-auto ms-1" type="text"
+                                                           bind:value={inputTag} placeholder="Add tags"
+                                                           onkeydown={addTag} onkeyup={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
-                                                        <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
+                                                        <button class="dropdown-item" onclick={addTag}
+                                                                value={suggestion}>{suggestion}</button>
                                                     {/each}
                                                     <!-- Hidden input bind with tags -->
-                                                    <input type="hidden" name="tags" value={tags} />
+                                                    <input type="hidden" name="tags" value={tags}/>
                                                 </div>
                                             </div>
                                             <div class="col-12 mb-1 mt-2 px-0">
                                                 {#if !can_upload}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">You can't upload!</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100"
+                                                            disabled use:tooltip={{...tooltipConfig}}
+                                                            title="Uploads are disabled for your profile!">You can't
+                                                        upload!
+                                                    </button>
                                                 {:else}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100"
+                                                            use:tooltip={{...tooltipConfig}} title="Click to submit">
+                                                        Submit
+                                                    </button>
                                                 {/if}
                                             </div>
                                         </div>
@@ -615,23 +781,32 @@
                             </div>
                             <div class="row mx-auto mt-2 justify-content-center">
                                 <div class="col">
-                                    <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleChapterUpload}>
+                                    <form method="POST" enctype="multipart/form-data" action="?/postchapter"
+                                          onsubmit={handleChapterUpload}>
                                         <div class="row" use:autoAnimate>
                                             <div class="col-12 rounded-3 mt-1 px-0">
-                                                <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Tale</p>
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Target Tale">
-                                                    <select class="form-select form-select-lg form-select-custom" name="book" id="book" bind:value={selectedBook} required>
+                                                <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Tale
+                                                </p>
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}}
+                                                     title="Target Tale">
+                                                    <select class="form-select form-select-lg form-select-custom"
+                                                            name="book" id="book" bind:value={selectedBook} required>
                                                         {#each books as book (book.id)}
-                                                            <option class="option-custom" value={book.id}>{book.title}</option>
+                                                            <option class="option-custom"
+                                                                    value={book.id}>{book.title}</option>
                                                         {/each}
                                                     </select>
                                                     <label for="book"><i class="fas fa-book"></i> Tale</label>
                                                 </div>
                                             </div>
                                             <div class="col-12 rounded-3 mb-2 px-0 mt-2">
-                                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Chapter title">
-                                                    <input type="text" class="form-control form-control-lg form-control-custom" name="title" id="title" placeholder="Title" required>
-                                                    <label for="title" class="form-label"><i class="fas fa-heading"></i> Title</label>
+                                                <div class="form-floating" use:tooltip={{...tooltipConfig}}
+                                                     title="Chapter title">
+                                                    <input type="text"
+                                                           class="form-control form-control-lg form-control-custom"
+                                                           name="title" id="title" placeholder="Title" required>
+                                                    <label for="title" class="form-label"><i class="fas fa-heading"></i>
+                                                        Title</label>
                                                 </div>
                                             </div>
                                             <div class="col-12 px-0">
@@ -641,32 +816,51 @@
                                                 />
                                             </div>
                                             <div class="col-12 mt-2 px-0 rounded-3">
-                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
-                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate use:tooltip={{...tooltipConfig}} title="Tip: use a , or press space/enter to add tag">
+                                                <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:
+                                                </p>
+                                                <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1"
+                                                     use:autoAnimate use:tooltip={{...tooltipConfig}}
+                                                     title="Tip: use a , or press space/enter to add tag">
                                                     {#each tags as tag}
                                                         <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                                             <span>{tag}</span>
-                                                            <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
+                                                            <button class="button-tags text-danger-emphasis ms-1"
+                                                                    type="button" onclick={removeTag} value={tag}>x
+                                                            </button>
                                                         </div>
                                                     {/each}
-                                                    <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
+                                                    <input class="input-tags my-auto ms-1" type="text"
+                                                           bind:value={inputTag} placeholder="Add tags"
+                                                           onkeydown={addTag} onkeyup={addTag}/>
                                                     {#each suggestions as suggestion (suggestion)}
-                                                        <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
+                                                        <button class="dropdown-item" onclick={addTag}
+                                                                value={suggestion}>{suggestion}</button>
                                                     {/each}
                                                     <!-- Hidden input bind with tags -->
-                                                    <input type="hidden" name="tags" value={tags} />
+                                                    <input type="hidden" name="tags" value={tags}/>
                                                 </div>
                                             </div>
                                             {#if chaptersNumber > 0}
                                                 <div class="col-12 px-0">
-                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button" on:click|preventDefault={fetchPreviousChapterTags} use:tooltip={{...tooltipConfig}} title="Fetch previous chapter tags (if any is found)">Fetch previous chapter tags</button>
+                                                    <button class="btn btn-sm btn-dark mt-2 pt-1 w-100" type="button"
+                                                            onclick={fetchPreviousChapterTags}
+                                                            use:tooltip={{...tooltipConfig}}
+                                                            title="Fetch previous chapter tags (if any is found)">Fetch
+                                                        previous chapter tags
+                                                    </button>
                                                 </div>
                                             {/if}
                                             <div class="col-12 mb-1 mt-2 px-0">
                                                 {#if !can_upload}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" disabled use:tooltip={{...tooltipConfig}} title="Uploads are disabled for your profile!">Submit</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100"
+                                                            disabled use:tooltip={{...tooltipConfig}}
+                                                            title="Uploads are disabled for your profile!">Submit
+                                                    </button>
                                                 {:else}
-                                                    <button type="submit" class="btn btn-lg animate-button w-100" use:tooltip={{...tooltipConfig}} title="Click to submit">Submit</button>
+                                                    <button type="submit" class="btn btn-lg animate-button w-100"
+                                                            use:tooltip={{...tooltipConfig}} title="Click to submit">
+                                                        Submit
+                                                    </button>
                                                 {/if}
                                             </div>
                                         </div>
@@ -678,7 +872,11 @@
                 </div>
                 <div class="col-12 mt-3 mb-1 rounded-3">
                     <p class="text-danger-emphasis text-center mb-1">NO AI/NSFW!</p>
-                    <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>
+                    <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos"
+                                                                                                  target="_blank"
+                                                                                                  class="link-secondary text-decoration-none">terms
+                        of service</a> and <a href="/legal/privacy-policy" target="_blank"
+                                              class="link-secondary text-decoration-none">privacy policy</a>.</p>
                 </div>
             </div>
         </div>
@@ -785,15 +983,41 @@
         background-color: rgb(47, 0, 89) !important;
     }
 
+    /* Animated text shadow */
+    .too-big {
+        animation: textShadow 1.5s infinite;
+    }
+
+    @keyframes textShadow {
+        0% {
+            text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000, 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 25px #ff0000, 0 0 30px #ff0000, 0 0 35px #ff0000, 0 0 40px #ff0000;
+        }
+        100% {
+            text-shadow: 0 0 10px #ff0000, 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 25px #ff0000, 0 0 30px #ff0000, 0 0 35px #ff0000, 0 0 40px #ff0000, 0 0 45px #ff0000;
+        }
+    }
+
     @keyframes Gradient {
-        0% {background-position: 0 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0 50%;}
+        0% {
+            background-position: 0 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0 50%;
+        }
     }
 
     @keyframes ColorShift {
-        0% {background: #000;}
-        50% {background: rgba(61, 0, 108, 0.45);}
-        100% {background: #000;}
+        0% {
+            background: #000;
+        }
+        50% {
+            background: rgba(61, 0, 108, 0.45);
+        }
+        100% {
+            background: #000;
+        }
     }
 </style>

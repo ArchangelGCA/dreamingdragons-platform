@@ -1,17 +1,14 @@
 <script>
-    import { createEventDispatcher } from 'svelte';
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH} from "$env/static/public";
 
-    export let size = 10
-    export let url;
+    /** @type {{size?: number, url: any}} */
+    let { size = 10, url, upload } = $props();
 
-    let avatarUrl = '';
-    let uploading = false;
-    let files;
-
-    const dispatch = createEventDispatcher();
+    let avatarUrl = $derived(url);
+    let uploading = $state(false);
+    let files = $state();
 
     const uploadAvatar = async () => {
         try {
@@ -66,7 +63,6 @@
                 return;
             }
 
-            avatarUrl = '';
             toast.push('Image uploaded successfully', {
                 theme: {
                     '--toastBackground': '#5c00a6',
@@ -74,7 +70,7 @@
                 },
             });
             setTimeout(() => {
-                dispatch('upload');
+                upload();
             }, 100)
         } catch (error) {
             if (error instanceof Error) {
@@ -84,8 +80,6 @@
             uploading = false;
         }
     }
-
-    $: if (url) avatarUrl = url;
 </script>
 
 <div class="col-auto text-center">
@@ -98,7 +92,7 @@
                 style="height: {size}em; width: {size}em;"
         />
     {:else}
-        <div class="img-thumbnail" style="height: {size}em; width: {size}em;" ></div>
+        <div class="img-thumbnail mx-auto" style="height: {size}em; width: {size}em;" ></div>
     {/if}
     <div class="col-12 text-center mt-1">
         <small class="text-light text-opacity-50">Recommended Max resolution: {PUBLIC_PROFILE_ICON_RESIZE_WIDTH}x{PUBLIC_PROFILE_ICON_RESIZE_WIDTH} - 1:1</small>
@@ -114,7 +108,7 @@
                 id="single"
                 accept="image/*"
                 bind:files
-                on:change={uploadAvatar}
+                onchange={uploadAvatar}
                 disabled={uploading}
         />
     </div>

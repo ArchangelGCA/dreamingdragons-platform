@@ -2,7 +2,6 @@
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
-    import {createEventDispatcher} from "svelte";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -16,11 +15,10 @@
         theme: 'text-center w-auto'
     };
 
-    const dispatch = createEventDispatcher();
-
-    export let content;
-    export let image_proxy;
+    /** @type {{content: any, image_proxy: any}} */
+    let { content, image_proxy, invalidateCard } = $props();
     let likeActionActive = false;
+    let finalLinkImage = $derived(image_proxy && !content.cover_url.startsWith(image_proxy) ? image_proxy + content.cover_url + '?width=750&quality=80' : content.cover_url);
 
     function handleMouseEnter(e) {
         e.target.parentElement.querySelector('.to-scale').style.transform = 'scale(1.1)';
@@ -58,7 +56,7 @@
         const result = deserialize(await response.text());
         if (result.type === 'success'){
             if (result.data.status === 200){
-                dispatch('invalidate');
+                invalidateCard();
             } else {
                 content.is_liked = !content.is_liked;
                 content.likes--;
@@ -84,20 +82,14 @@
 
         likeActionActive = false;
     }
-
-    $: if (image_proxy) {
-        if (!content.cover_url.startsWith(image_proxy)) content.cover_url = image_proxy + content.cover_url + '?width=750&quality=80';
-    } else {
-        console.log('No image proxy');
-    }
 </script>
 
 <div class="card border-0 bg-dark bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
-        <img src={content.cover_url} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
+        <img src={finalLinkImage} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
-    <a href="/content/{content.id}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+    <a href="/content/{content.id}" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-3 pb-2 mx-0">
                 <div class="col-9 my-auto">
@@ -105,7 +97,7 @@
                     <!--<p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.owner_username}</a></small></p>-->
                 </div>
                 <div class="col-3 text-end my-auto">
-                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" on:click|stopPropagation={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
+                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" onclick={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
                         <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
                             <span class="likes-counter">{content.likes}</span>

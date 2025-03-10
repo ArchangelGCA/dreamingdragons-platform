@@ -6,71 +6,22 @@
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import Editor from "@tinymce/tinymce-svelte";
+    import {conf} from "$lib/utils/gcatinymce.js"
 
-    let conf = {
-        skin: 'oxide-dark',
-        content_css: 'dark',
-        license_key: 'gpl',
-        block_unsupported_drop: true,
-        branding: false,
-        plugins: 'link autolink wordcount charmap code fullscreen',
-        default_link_target: '_blank',
-        images_upload_handler: () => Promise.reject({
-            remove: true,
-            message: 'You can\'t upload images in the description.',
-        }),
-        toolbar_mode: 'sliding',
-        toolbar: [
-            {
-                name: 'history',
-                items: ['undo', 'redo']
-            },
-            {
-                name: 'links',
-                items: ['link']
-            },
-            {
-                name: 'formatting',
-                items: ['bold', 'italic']
-            },
-            {
-                name: 'alignment',
-                items: ['alignleft', 'aligncenter', 'alignright', 'alignjustify']
-            },
-            {
-                name: 'indentation',
-                items: ['outdent', 'indent']
-            },
-            {
-                name: 'tools',
-                items: ['wordcount', 'charmap', 'code', 'fullscreen']
-            }
-        ],
-        setup: function (editor) {
-            editor.on('init', function () {
-                const promotionLink = document.querySelector('.tox-promotion-link');
-                if (promotionLink) {
-                    promotionLink.remove();
-                }
-            });
-        },
-    };
+    /** @type {{data: any}} */
+    let { data } = $props();
 
-    export let data;
-
-    let { book, supabase, tooltipConfig } = data;
-    $: ({book} = data)
+    let { book, supabase, tooltipConfig } = $state(data);
+    $effect(() => {
+        ({book} = data);
+    });
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
-    let previewUrl = book.cover_url;
-    // fileName is a substring of the initial part of cover_url after the last '/'
-    let fileName = book.cover_url.substring(book.cover_url.lastIndexOf('/') + 1);
-    let tags = book.book_tags.map(tag => tag.tags.name);
-    let title = book.title;
-    let description = book.description;
-    let suggestions = [];
-    let files;
-    let inputTag = '';
+    let previewUrl = $state(null);
+    let fileName = $state(null);
+    let suggestions = $state([]);
+    let files = $state();
+    let inputTag = $state('');
     let editActive = false;
 
     async function handleEdit(event){
@@ -80,7 +31,7 @@
 
         editActive = true;
         const formData = new FormData(event.target);
-        formData.append('description', description);
+        formData.append('description', book.description);
 
         const toastId = toast.push('Uploading...', {
             duration: 600000,
@@ -110,6 +61,7 @@
                         '--toastColor': '#fff'
                     }
                 });
+                await invalidateAll();
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -134,7 +86,7 @@
             e.preventDefault();
             const tag = e.target.value.trim();
             if (tag) {
-                if (tags.includes(tag)) {
+                if (book.tags.includes(tag)) {
                     toast.push('Tag already added', {
                         theme: {
                             '--toastBackground': '#ffcc00',
@@ -143,14 +95,15 @@
                     });
                     return;
                 }
-                tags = [...tags, tag];
+                //tags = [...tags, tag];
+                book.tags.push(tag);
                 e.target.value = '';
                 suggestions = [];
                 inputTag = '';
             }
         } else if (e.key === 'Tab' && suggestions.length > 0) {
             e.preventDefault();
-            if (tags.includes(suggestions[0])) {
+            if (book.tags.includes(suggestions[0])) {
                 toast.push('Tag already added', {
                     theme: {
                         '--toastBackground': '#ffcc00',
@@ -159,14 +112,15 @@
                 });
                 return;
             }
-            tags = [...tags, suggestions[0]];
+            //tags = [...tags, suggestions[0]];
+            book.tags.push(suggestions[0]);
             e.target.value = '';
             suggestions = [];
         } else if (e.key === ' ' || e.key === ',' || e.key === 'Enter') {
             e.preventDefault();
             const tag = e.target.value.trim();
             if (tag) {
-                if (tags.includes(tag)) {
+                if (book.tags.includes(tag)) {
                     toast.push('Tag already added', {
                         theme: {
                             '--toastBackground': '#ffcc00',
@@ -176,7 +130,8 @@
                     e.target.value = '';
                     return;
                 }
-                tags = [...tags, tag];
+                //tags = [...tags, tag];
+                book.tags.push(tag);
                 e.target.value = '';
                 suggestions = [];
             }
@@ -203,7 +158,7 @@
             const result = deserialize(await response.text());
             if (result.type === 'success') {
                 if (result.data.status === 200) {
-                    suggestions = result.data.body.map(tag => tag.name).filter(suggestion => !tags.includes(suggestion));
+                    suggestions = result.data.body.map(tag => tag.name).filter(suggestion => !book.tags.includes(suggestion));
                 } else {
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {
@@ -223,8 +178,11 @@
         }
     }
 
-    function removeTag(tag) {
-        tags = tags.filter(t => t !== tag);
+    function removeTag(e) {
+        // Get value from button
+        const tag = e.target.value;
+        //tags = tags.filter(t => t !== tag);
+        book.tags = book.tags.filter(t => t !== tag);
         suggestions = [];
         inputTag = '';
     }
@@ -251,52 +209,45 @@
     </div>
     <div class="row mt-3 mx-0 justify-content-center text-center">
         <div class="col px-0">
-            <form method="POST" enctype="multipart/form-data" action="?/editbook" on:submit={handleEdit}>
+            <form method="POST" enctype="multipart/form-data" action="?/editbook" onsubmit={handleEdit}>
                 <div class="row mx-auto mt-1">
                     <div class="col-12 mb-2 form-animated-background border border-2 border-dark-subtle p-3 px-2 px-md-3 rounded-3 d-flex flex-column justify-content-center" style="min-height: 30vh">
                         <label for="file" class="form-label" title="Tale image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
-                        <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" on:change={loadImagePreview} bind:files />
+                        <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" onchange={loadImagePreview} bind:files />
                         <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
-                        {#if previewUrl}
-                            <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" />
-                        {/if}
-                        {#if fileName}
-                            <span class="text-light text-opacity-75">Selected file: {fileName}</span>
-                        {/if}
+                        <img src={previewUrl !== null ? previewUrl : book.cover_url} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" />
+                        <span class="text-light text-opacity-75">Selected file: {fileName !== null ? fileName : book.cover_url.substring(book.cover_url.lastIndexOf('/') + 1)}</span>
                     </div>
                     <div class="col-12 px-0">
                         <p class="fs-5 text-start mb-1 mt-3 ms-1"><i class="fas fa-book"></i> Title:</p>
                         <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Tale title">
-                            <input type="text" class="form-control form-control-custom" name="title" id="title" placeholder="Title" bind:value={title} required>
+                            <input type="text" class="form-control form-control-custom" name="title" id="title" placeholder="Title" bind:value={book.title} required>
                             <label for="title"><i class="fas fa-heading"></i> Title</label>
                         </div>
                     </div>
                     <div class="col-12 mt-2 px-0 rounded-3" use:tooltip={{...tooltipConfig}} title="Tale description">
-                        <!--
-                        <textarea class="form-control form-control-custom" name="description" id="description" rows="3" placeholder="Description" bind:value={description} required></textarea>
-                        -->
                         <div class="col-12 px-0">
                             <Editor {conf}
                                     scriptSrc="../tinymce/tinymce.min.js"
-                                    bind:value={description}
+                                    bind:value={book.description}
                             />
                         </div>
                     </div>
                     <div class="col-12 mt-2 px-0 rounded-3">
                         <p class="fs-6 text-start mb-1 ms-1"><i class="fas fa-tags"></i> Tags:</p>
                         <div class="d-flex flex-wrap text-start border border-light-subtle rounded-3 p-1 py-1" use:autoAnimate use:tooltip={{...tooltipConfig}} title="Tip: use a , or press space/enter to add tag">
-                            {#each tags as tag}
+                            {#each book.tags as tag}
                                 <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                     <span>{tag}</span>
-                                    <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
+                                    <button class="button-tags text-danger-emphasis ms-1" type="button" onclick={removeTag} value={tag}>x</button>
                                 </div>
                             {/each}
-                            <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
+                            <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" onkeydown={addTag} onkeyup={addTag}/>
                             {#each suggestions as suggestion (suggestion)}
-                                <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
+                                <button class="dropdown-item" onclick={addTag} value={suggestion}>{suggestion}</button>
                             {/each}
                             <!-- Hidden inputs -->
-                            <input type="hidden" name="tags" value={tags} />
+                            <input type="hidden" name="tags" bind:value={book.tags} />
                             <input type="hidden" name="bookId" value={book.id} />
                         </div>
                     </div>

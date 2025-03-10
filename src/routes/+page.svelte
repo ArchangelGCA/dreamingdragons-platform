@@ -1,13 +1,14 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
-    import { dragscroll } from '@svelte-put/dragscroll';
+    import {dragscroll} from '@svelte-put/dragscroll';
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import Masonry from "svelte-bricks";
     import {deserialize} from "$app/forms";
 
-    export let data;
+    /** @type {{data: any}} */
+    let {data} = $props();
     let {
         image_proxy,
         books_ordered_by_likes,
@@ -16,24 +17,14 @@
         is_logged,
         followed,
         tooltipConfig
-    } = data;
-    $: ({
-        books_ordered_by_likes,
-        books_ordered_by_created_at,
-        books_ordered_by_latest_chapter,
-        is_logged,
-        followed
-    } = data);
+    } = $state(data);
+
     let loading = false;
-    let allContentLoaded = false;
+    let allContentLoaded = $state(false);
     let step = 20;
     let startRange = 0;
     let endRange = step;
-    let width, height;
-
-    if (!books_ordered_by_created_at || books_ordered_by_created_at.length === 0) {
-        allContentLoaded = true;
-    }
+    let width = $state(), height = $state();
 
     async function loadMoreContentByCreatedAt() {
         if (loading || allContentLoaded) return;
@@ -93,7 +84,7 @@
             <span class="h2 text-start fw-bolder" use:tooltip={{...tooltipConfig}} title="Home 🏠">Home</span>
         </div>
 
-        <!-- Start following section -->
+        <!-- Following section -->
         {#if is_logged && followed && followed.length > 0}
             <div class="col-12 pb-1 mt-2">
                 <div class="row justify-content-center bg-purple-gradient rounded-3 mb-1 mt-1 p-1"
@@ -122,18 +113,20 @@
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row column-vertical" on:scroll={handleScroll} use:dragscroll={{axis: 'y'}}>
+                <div class="row column-vertical" onscroll={handleScroll}>
                     <div class="col-12 px-0">
                         <Masonry
                                 items={books_ordered_by_created_at}
                                 minColWidth={350}
                                 gap={10}
                                 animate={true}
-                                let:item
+
                                 bind:width
                                 bind:height
                         >
-                            <ContentMasonry book={item} {image_proxy}/>
+                            {#snippet children({item})}
+                                <ContentMasonry book={item} {image_proxy}/>
+                            {/snippet}
                         </Masonry>
                     </div>
                     {#if allContentLoaded}

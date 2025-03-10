@@ -1,3 +1,8 @@
+/** @type {import('@sveltejs/adapter-vercel').Config} */
+export const config = {
+    runtime: 'edge'
+};
+
 export const load = async ({locals: {supabase}}) => {
 
     const {data: timedata, error } = await supabase
@@ -26,10 +31,8 @@ export const load = async ({locals: {supabase}}) => {
         }
     }
 
-    // TODO: Find reason why this is running twice
-    //console.log('timedata', timedata);
-
     return {
+        index: false,
         timedata,
         title: 'DreamingDragons - Staff Timezones',
         description: 'DreamingDragons Staff Timezones page. Check the current time of our staff members.'

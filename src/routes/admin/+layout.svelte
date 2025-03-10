@@ -1,6 +1,8 @@
 <script>
-    import {page} from "$app/stores";
+    import {page} from "$app/state";
     import autoAnimate from '@formkit/auto-animate';
+    /** @type {{children?: import('svelte').Snippet}} */
+    let { children } = $props();
 
 </script>
 
@@ -12,28 +14,33 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav flex-column w-100 text-center">
                 <li class="nav-item">
-                    <a class="nav-link {$page.url.pathname === '/admin/dashboard' ? 'active' : ''}" href="/admin/dashboard">
+                    <a class="nav-link {page.url.pathname === '/admin/dashboard' ? 'active' : ''}" href="/admin/dashboard">
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {$page.url.pathname === '/admin/dashboard/users' ? 'active' : ''}" href="/admin/dashboard/users">
+                    <a class="nav-link {page.url.pathname === '/admin/dashboard/users' ? 'active' : ''}" href="/admin/dashboard/users">
                         <i class="fas fa-users"></i> Users
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {$page.url.pathname === '/admin/dashboard/content' ? 'active' : ''}" href="/admin/dashboard/content">
+                    <a class="nav-link {page.url.pathname === '/admin/dashboard/content' ? 'active' : ''}" href="/admin/dashboard/content">
                         <i class="fas fa-file-alt"></i> Content
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {$page.url.pathname === '/admin/dashboard/reports' ? 'active' : ''}" href="/admin/dashboard/reports">
+                    <a class="nav-link {page.url.pathname === '/admin/dashboard/reports' ? 'active' : ''}" href="/admin/dashboard/reports">
                         <i class="fas fa-flag"></i> Reports
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {$page.url.pathname === '/admin/dashboard/migrations' ? 'active' : ''}" href="/admin/dashboard/migrations">
+                    <a class="nav-link {page.url.pathname === '/admin/dashboard/migrations' ? 'active' : ''}" href="/admin/dashboard/migrations">
                         <i class="fas fa-exchange"></i> Migrations
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {page.url.pathname === '/admin/dashboard/newsletter' ? 'active' : ''}" href="/admin/dashboard/newsletter">
+                        <i class="fas fa-envelope"></i> Newsletter
                     </a>
                 </li>
             </ul>
@@ -42,7 +49,7 @@
 
     <div class="col-12 col-lg-10 overflow-auto">
         <div class="container py-3" style="height: 100vh" use:autoAnimate>
-            <slot></slot>
+            {@render children?.()}
         </div>
     </div>
 </div>

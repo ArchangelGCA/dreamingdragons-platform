@@ -3,6 +3,7 @@ import sharp from "sharp";
 import PocketBase from "pocketbase";
 import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
 import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_COVER_MAX_RESIZE, PUBLIC_POCKETBASE_URL, PUBLIC_POCKETBASE_URL_IMG_API } from "$env/static/public";
+import {fetchProfiles} from "$lib/utils/gcafetchers.js";
 
 export const load = async ({ params, locals: { supabase, getSession} }) => {
     const {session} = await getSession();
@@ -35,7 +36,9 @@ export const load = async ({ params, locals: { supabase, getSession} }) => {
         return;
     }
 
-     const book = bookSearch[0];
+    const book = bookSearch[0];
+    book.tags = book.book_tags.map(tag => tag.tags.name);
+    book.book_tags = [];
 
     return {
         book,
@@ -224,15 +227,28 @@ export const actions = {
                 message: "Tale edited successfully"
             }
         }
+    },
+    getProfiles: async ({ request, url, locals: { supabase, getSession } }) => {
+        const { session } = await getSession();
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "Unauthorized"
+                }
+            }
+        }
+        const origin = url.origin;
+        return await fetchProfiles({ supabase, origin });
     }
 }
 
 const uploadImage = async (image, cover_id) => {
-    const imageSharp = sharp(await image.arrayBuffer());
+    const imageSharp = sharp(await image.arrayBuffer(), {animated: true});
     const metadata = await imageSharp.metadata();
 
     // Get image res, if more than 5000px, error
-    if (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT) {
+    if ((metadata.format === 'gif' && (metadata.pageHeight > PUBLIC_COVER_MAX_HEIGHT || metadata.width > PUBLIC_COVER_MAX_WIDTH)) || (metadata.format !== 'gif' && (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT))) {
         return {
             status: 400,
             body: {

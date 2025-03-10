@@ -4,11 +4,14 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
 
-    let {panic, tooltipConfig} = data;
-    $: ({panic, tooltipConfig} = data);
-    let isPanicAction = false;
+    let {panic, tooltipConfig} = $state(data);
+    $effect(() => {
+        ({panic, tooltipConfig} = data);
+    });
+    let isPanicAction = $state(false);
 
     async function handlePanic() {
         if (isPanicAction) return;
@@ -58,7 +61,7 @@
                         '--toastColor': '#fff',
                     }
                 });
-                invalidateAll();
+                await invalidateAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -93,7 +96,7 @@
                 <h5 class="card-title">Panic Mode: <span
                         class="{panic.is_active ? 'text-danger' : 'text-warning'}">{panic.is_active ? 'Enabled' : 'Disabled'}</span>
                 </h5>
-                <button class="btn btn-panic {isPanicAction ? 'disabled': ''}" on:click={handlePanic}
+                <button class="btn btn-panic {isPanicAction ? 'disabled': ''}" onclick={handlePanic}
                         use:tooltip={{...tooltipConfig}}
                         title="Toggle panic mode">{panic.is_active ? 'Disable Panic Mode' : 'Enable Panic Mode'}</button>
             </div>

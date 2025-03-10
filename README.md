@@ -15,10 +15,6 @@
 
 ## MANUAL REQUIREMENTS: [OUTDATED]
 - To run the project you must create a `.env` file in the root directory of the project and add the following environment variables:
-    - `PUBLIC_SUPABASE_URL` - The URL of your Supabase project.
-    - `PUBLIC_SUPABASE_ANON_KEY` - The anonymous key of your Supabase project.
-    - `STORJ_SHARE_LINK` - The share link created on Storj.
-    - `STORJ_BUCKET` - The name of the bucket you want to use for storing files.
 - Add to your static folder tinymce, you first [download](https://www.tiny.cloud/get-tiny/) it and then extract the zip, open folders `tinymce/js/tinymce` and move this last subfolder tinymce to `/static`.
 
 #### Example .env: [OUTDATED]

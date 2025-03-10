@@ -4,6 +4,7 @@
     import {toast} from "@zerodevx/svelte-toast";
     import autoAnimate from "@formkit/auto-animate";
     import {deserialize} from "$app/forms";
+    import {invalidateAll} from "$app/navigation";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -17,15 +18,15 @@
         theme: 'text-center w-auto'
     };
 
-    export let profile;
-    export let image_proxy;
+    /** @type {{profile: any, image_proxy: any}} */
+    let { profile, image_proxy } = $props();
     let isWarningActive = false;
     let isSendWarningActive = false;
     let isCanUploadActive = false;
     let isResetAvatarActive = false;
     let isResetCoverActive = false;
-    let warningMessage = '';
-    let finalCoverUrl = '';
+    let warningMessage = $state('');
+    let finalCoverUrl = $derived(profile && profile.cover_url ? profile.cover_url : '');
 
     // Format the date by checking if it is a valid date, if not return the original value
     function formatDate(date) {
@@ -37,14 +38,6 @@
             return date;
         }
         return finalDate.toLocaleString();
-    }
-
-    // Format the date by checking if it is a valid date, if not return the original value
-    profile.created_at = formatDate(profile.created_at);
-    profile.updated_at = formatDate(profile.updated_at);
-
-    if (profile.website === null || profile.website === "") {
-        profile.website = "N/A";
     }
 
     async function deleteNotification(notificationId) {
@@ -95,7 +88,8 @@
                         '--toastIconStroke': 'white'
                     }
                 });
-                profile.notifications = profile.notifications.filter(notification => notification.id !== notificationId);
+                //profile.notifications = profile.notifications.filter(notification => notification.id !== notificationId);
+                await invalidateAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -170,13 +164,14 @@
                     }
                 });
 
-                profile.notifications = [result.data.body.notification, ...profile.notifications];
+                //profile.notifications = [result.data.body.notification, ...profile.notifications];
 
                 document.getElementById(`warningModal-${profile.id}`).style.display = 'none';
                 const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
                 if (modalBackdrop.length > 0) {
                     modalBackdrop[0].remove();
                 }
+                await invalidateAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -250,7 +245,8 @@
                         '--toastIconStroke': 'white'
                     }
                 });
-                profile.can_upload = !profile.can_upload;
+                //profile.can_upload = !profile.can_upload;
+                await invalidateAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -312,13 +308,14 @@
                     }
                 });
 
-                profile.avatar_url = null;
+                //profile.avatar_url = null;
 
                 document.getElementById(`resetAvatarModal-${profile.id}`).style.display = 'none';
                 const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
                 if (modalBackdrop.length > 0) {
                     modalBackdrop[0].remove();
                 }
+                await invalidateAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -380,14 +377,14 @@
                     }
                 });
 
-                profile.cover_url = null;
-                finalCoverUrl = '';
+                //profile.cover_url = null;
 
                 document.getElementById(`resetCoverModal-${profile.id}`).style.display = 'none';
                 const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");
                 if (modalBackdrop.length > 0) {
                     modalBackdrop[0].remove();
                 }
+                await invalidateAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -411,10 +408,6 @@
 
         isResetCoverActive = false;
     }
-
-    $: if (profile && profile.cover_url && finalCoverUrl === '') {
-        finalCoverUrl = profile.cover_url;
-    }
 </script>
 
 <div class="container border {profile.can_upload ? 'border-magenta bg-black bg-opacity-25' : 'border-danger bg-danger bg-opacity-10'} rounded-4 mb-4 p-4 shadow-sm">
@@ -430,7 +423,7 @@
                 <div class="col-12 text-center mt-2">
                     <p class="fs-6 mb-2">ID: {profile.id}
                         <span class="ms-2">
-                            <button class="btn btn-sm btn-outline-secondary" on:click={handleCopyToClipboard}>
+                            <button class="btn btn-sm btn-outline-secondary" onclick={handleCopyToClipboard}>
                                 <i class="fas fa-copy"></i> Copy ID
                             </button>
                         </span>
@@ -453,10 +446,10 @@
                                 <div class="col-12 col-md-6 my-auto">
                                     <p>Full Name: {profile.full_name}</p>
                                     <p>Email: {profile.email}</p>
-                                    <p>Website: {profile.website}</p>
+                                    <p>Website: {profile.website === null || profile.website === "" ? "N/A" : profile.website}</p>
                                     <p>Can Upload: <span class="{profile.can_upload ? 'text-success' : 'text-danger'}">{profile.can_upload}</span></p>
-                                    <p>Created At: {profile.created_at}</p>
-                                    <p>Updated At: {profile.updated_at}</p>
+                                    <p>Created At: {formatDate(profile.created_at)}</p>
+                                    <p>Updated At: {formatDate(profile.updated_at)}</p>
                                 </div>
                                 <div class="col-12 border-top border-primary pt-3 text-center">
                                     <p class="h5">Profile cover: </p>
@@ -487,7 +480,7 @@
                                             <p class="mb-0">{notification.content}</p>
                                             <small class="text-muted">{formatDate(notification.created_at)}</small>
                                         </div>
-                                        <button class="btn btn-outline-danger btn-sm" on:click={() => deleteNotification(notification.id)}>
+                                        <button class="btn btn-outline-danger btn-sm" onclick={() => deleteNotification(notification.id)} aria-label="Delete Warning" use:tooltip={{...tooltipConfig}}>
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -504,7 +497,7 @@
                     </button>
                 </div>
                 <div class="col-12 col-md-6">
-                    <button type="button" class="btn btn-sm w-100 {profile.can_upload ? 'btn-danger' : 'btn-success'}" on:click={handleCanUploadToggle}>
+                    <button type="button" class="btn btn-sm w-100 {profile.can_upload ? 'btn-danger' : 'btn-success'}" onclick={handleCanUploadToggle}>
                         <i class="fas fa-ban"></i> {profile.can_upload ? 'Disable Upload' : 'Enable Upload'}
                     </button>
                 </div>
@@ -548,7 +541,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-warning" on:click={sendWarningMessage}>Send Warning</button>
+                    <button type="button" class="btn btn-warning" onclick={sendWarningMessage}>Send Warning</button>
                 </div>
             </div>
         </div>
@@ -565,7 +558,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-warning" on:click={handleResetAvatar}>Reset Avatar</button>
+                    <button type="button" class="btn btn-warning" onclick={handleResetAvatar}>Reset Avatar</button>
                 </div>
             </div>
         </div>
@@ -582,7 +575,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-warning" on:click={handleResetCover}>Reset Cover</button>
+                    <button type="button" class="btn btn-warning" onclick={handleResetCover}>Reset Cover</button>
                 </div>
             </div>
         </div>

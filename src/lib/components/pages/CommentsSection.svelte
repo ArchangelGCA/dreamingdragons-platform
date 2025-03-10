@@ -3,19 +3,26 @@
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
+    import {invalidateAll} from "$app/navigation";
 
-    export let comments;
-    export let supabase;
-    export let bookId = null;
-    export let chapterId = null;
-    export let image_proxy = null;
+    /** @type {{comments: any, supabase: any, bookId?: any, chapterId?: any, image_proxy?: any}} */
+    let {
+        comments = $bindable(),
+        supabase,
+        bookId = null,
+        chapterId = null,
+        image_proxy = null
+    } = $props();
 
-    let commentText = '';
-    let isTextAreaFocused = false;
+    let commentText = $state('');
+    let isTextAreaFocused = $state(false);
     let commentActionActive = false;
     let avatarsLoaded = true;
 
-    $: commentsCount = comments.length;
+    let commentsCount = $derived(comments.length);
+    /*run(() => {
+        commentsCount = comments.length;
+    });*/
 
     async function handleCommentSubmit() {
         if (commentActionActive) return;
@@ -41,15 +48,15 @@
         if (result.type === 'success'){
             if (result.data.status === 200){
                 commentText = '';
-                commentsCount++;
+                // commentsCount++; // Should be unnecessary due to derived
                 toast.push('Comment added! 📝', {
                     theme: {
                         '--toastBackground': '#5c00a6',
                         '--toastColor': '#fff',
                     }
                 });
-
                 comments = [result.data.body.comment, ...comments];
+                await invalidateAll();
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -95,7 +102,7 @@
         <div class="row">
             <div class="col-12 px-0">
                 <div class="form-floating text-center">
-                    <textarea class="form-control {isTextAreaFocused ? 'bg-purple-opacity-10' : 'bg-purple-opacity-25'}" id="commentInput" placeholder="Write your comment here" maxlength="1000" on:focus={handleFocus} on:blur={handleBlur} bind:value={commentText}></textarea>
+                    <textarea class="form-control {isTextAreaFocused ? 'bg-purple-opacity-10' : 'bg-purple-opacity-25'}" id="commentInput" placeholder="Write your comment here" maxlength="1000" onfocus={handleFocus} onblur={handleBlur} bind:value={commentText}></textarea>
                     <label for="commentInput">Write your comment here...</label>
                 </div>
             </div>
@@ -105,10 +112,10 @@
                 {#if isTextAreaFocused}
                     <div class="row gx-1 comment-buttons mt-2">
                         <div class="col-6">
-                            <button class="btn btn-comment-cancel w-100" type="reset" on:click={resetComment}>Cancel</button>
+                            <button class="btn btn-comment-cancel w-100" type="reset" onclick={resetComment}>Cancel</button>
                         </div>
                         <div class="col-6">
-                            <button class="btn btn-comment w-100 " type="submit" on:click={handleCommentSubmit}>Comment</button>
+                            <button class="btn btn-comment w-100 " type="submit" onclick={handleCommentSubmit}>Comment</button>
                         </div>
                     </div>
                 {/if}

@@ -2,34 +2,7 @@ import {error as errorx} from "@sveltejs/kit";
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import { SUPABASE_SERVICE_ROLE_SECRET_KEY } from '$env/static/private';
 import {createClient} from "@supabase/supabase-js";
-
-async function isAdmin(session, supabase) {
-    if (!session) {
-        return errorx(401, "Unauthorized");
-    }
-
-    /* Role IDs (AS OF NOW):
-    / 2 - moderator
-    / 3 - admin (FULL PERMS)
-    / 4 - staff
-     */
-    const {data: data, error} = await supabase
-        .from('roles_profile')
-        .select('role_id')
-        .eq('user_id', session.user.id)
-        .eq('role_id', 3);
-
-    if (error) {
-        console.error(error);
-        return errorx(500, "Error fetching profile");
-    }
-
-    if (!data || data.length === 0) {
-        return errorx(401, "Unauthorized");
-    }
-
-    return true;
-}
+import {isAdmin} from "$lib/utils/misc.js";
 
 function getActivePanic(panic) {
     if (!panic || panic.length === 0) {
@@ -78,7 +51,6 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         console.error(panicError);
         return errorx(500, "Error fetching panic");
     }
-
 
     return {
         panic: getActivePanic(panic),

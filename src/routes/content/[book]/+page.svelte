@@ -11,25 +11,23 @@
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
     import {browser} from "$app/environment";
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
 
     let {
         supabase,
         image_proxy,
         bookContent,
-        comments,
         user_id,
         tooltipConfig,
-        tags
-    } = data;
+    } = $state(data);
 
-    $: ({
-        comments,
-        user_id,
-        bookContent,
-        comments,
-        tags
-    } = data)
+    $effect(() => {
+        ({
+            user_id,
+            bookContent,
+        } = data)
+    });
 
     onMount(async () => {
         if (browser) {
@@ -37,15 +35,15 @@
         }
     });
 
-    let commentsCount = comments.length;
+    let commentsCount = $derived(bookContent.comments.length);
     let likeActionActive = false;
     let reportActionActive = false;
     let currentYear = new Date().getFullYear();
-    let createdAt = new Date(bookContent.created_at);
-    let createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
-    let createdAtDetailed = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`;
+    let createdAt = $derived(new Date(bookContent.created_at));
+    let createdAtFormatted = $derived(`${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`);
+    let createdAtDetailed = $derived(`${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`);
     let deleteBookActionActive = false;
-    let reportText = '';
+    let reportText = $state('');
 
     async function getClientIp() {
         try {
@@ -273,10 +271,10 @@
                                              href="/profile/{bookContent.owner_id}">{bookContent.profiles.username}</a>
                         - <span class="text-muted" use:tooltip={{...tooltipConfig}}
                                 title="{createdAtDetailed}">{createdAtFormatted}</span></p>
-                    {#if tags.length !== 0}
+                    {#if bookContent.tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
-                                {#each tags as tag (tag.id)}
+                                {#each bookContent.tags as tag (tag.id)}
                                     <a href="/search?tag={tag.name}"
                                        class="badge bg-purple text-light me-1 mb-1 text-decoration-none"
                                        use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
@@ -291,10 +289,10 @@
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
-                 title="Total likes">
+                 title="Likes">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1"
-                            on:click={handleHeartClick}>
+                            onclick={handleHeartClick} aria-label="Like Tale">
                         <i class="fas fa-heart {bookContent.is_liked ? 'liked' : 'unliked'}"></i>
                     </button>
                 </div>
@@ -362,7 +360,7 @@
         </div>
         <div class="col-auto text-center my-auto mt-md-1 px-0">
             <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report"
-                    data-bs-toggle="modal" data-bs-target="#reportModal">
+                    data-bs-toggle="modal" data-bs-target="#reportModal" aria-label="Report tale">
                 <i class="fas fa-flag"></i>
             </button>
         </div>
@@ -384,7 +382,7 @@
                     </div>
                     <div class="col-auto">
                         <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
-                                use:tooltip={{...tooltipConfig}} title="Delete Tale" on:click={handleBookDelete}>
+                                use:tooltip={{...tooltipConfig}} title="Delete Tale" onclick={handleBookDelete}>
                             <i class="fas fa-trash-alt"></i>
                             <span class="fs-6">Delete</span>
                         </button>
@@ -398,7 +396,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection {comments} {supabase} bookId="{bookContent.id}" {image_proxy}/>
+    <CommentsSection comments={bookContent.comments} {supabase} bookId={bookContent.id} {image_proxy}/>
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
@@ -425,7 +423,7 @@
                             </button>
                         </div>
                         <div class="col ps-1 pe-0">
-                            <button type="button" class="btn btn-submit-report w-100" on:click={handleReport}>Submit
+                            <button type="button" class="btn btn-submit-report w-100" onclick={handleReport}>Submit
                                 Report
                             </button>
                         </div>

@@ -2,15 +2,13 @@
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import { PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH } from "$env/static/public"
-    import {createEventDispatcher} from "svelte";
 
-    export let url;
+    /** @type {{url: any}} */
+    let { url, uploadComplete } = $props();
 
-    const dispatch = createEventDispatcher();
-
-    let coverUrl = '';
-    let uploading = false;
-    let files;
+    let coverUrl = $derived(url && url !== '' ? url : '');
+    let uploading = $state(false);
+    let files = $state();
 
     async function uploadCover() {
         try {
@@ -73,7 +71,7 @@
                     '--toastText': '#868686',
                 },
             });
-            dispatch('upload');
+            uploadComplete();
         } catch (error) {
             if (error instanceof Error) {
                 alert(error.message);
@@ -81,10 +79,6 @@
         } finally {
             uploading = false;
         }
-    }
-
-    $: if (url && url !== '') {
-        coverUrl = url;
     }
 </script>
 
@@ -111,7 +105,7 @@
                 id="cover"
                 accept="image/*"
                 bind:files
-                on:change={uploadCover}
+                onchange={uploadCover}
                 disabled={uploading}
         />
     </div>

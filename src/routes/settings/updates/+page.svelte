@@ -1,11 +1,13 @@
 <script>
+
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
 
-    let email = '';
-    let activeEvent = false;
-    let resultAction = '';
-    async function handleSubscribe(){
+    let email = $state('');
+    let activeEvent = $state(false);
+    let resultAction = $state('');
+    async function handleSubscribe(e){
+        e.preventDefault();
 
         if(activeEvent) return;
         if (email === '') {
@@ -41,8 +43,8 @@
         <div class="col">
             <div class="row mt-3">
                 <div class="col">
-                    <h1>DD - Mailing List</h1>
-                    <p>Join our Mailing List! Don't worry, we won't spam you!</p>
+                    <h1>DreamingDragons - Newsletter</h1>
+                    <p>Join our Newsletter! Don't worry, we won't spam you!</p>
                 </div>
             </div>
             <div class="row justify-content-center">
@@ -50,7 +52,7 @@
                     <label class="form-label col-form-label-lg" for="email">Email</label>
                     <input class="form-control form-control-lg form-control-custom" type="email" placeholder="Email" bind:value={email} required>
                     <div id="emailHelp" class="form-text text-start">We won't share your email with anyone.</div>
-                    <button class="btn btn-lg custom-button w-100 mt-2 {activeEvent ? 'disabled' : ''}" on:click|preventDefault={handleSubscribe}>{activeEvent ? 'Running...' : 'Subscribe'}</button>
+                    <button class="btn btn-lg custom-button w-100 mt-2 {activeEvent ? 'disabled' : ''}" onclick={handleSubscribe}>{activeEvent ? 'Running...' : 'Subscribe'}</button>
                     {#if resultAction !== ''}
                         <div class="alert alert-{resultAction.type} mt-3 mb-0" role="alert">
                             {resultAction.message}

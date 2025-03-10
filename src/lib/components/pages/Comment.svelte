@@ -7,9 +7,8 @@
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import {invalidateAll} from "$app/navigation";
 
-    export let comment;
-    export let supabase;
-    export let image_proxy;
+    /** @type {{comment: any, supabase: any, image_proxy: any}} */
+    let { comment, supabase, image_proxy } = $props();
 
     const tooltipConfig = {
         animation: 'fade',
@@ -22,9 +21,9 @@
         },
         theme: 'text-center w-auto'
     };
-    let replyContent = '';
-    let isHovering = false;
-    let isReplyVisible = false;
+    let replyContent = $state('');
+    let isHovering = $state(false);
+    let isReplyVisible = $state(false);
     let isReplyActionActive = false;
 
     async function deleteComment() {
@@ -143,7 +142,7 @@
     const createdAtFormatted = `${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()}`;
 </script>
 
-<div class="row mb-2 rounded-3 comment-element py-1" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave} role="none">
+<div class="row mb-2 rounded-3 comment-element py-1" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave} role="none">
     <div class="col-auto">
         <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.user_id} {image_proxy} size="50px" />
     </div>
@@ -153,14 +152,14 @@
     </div>
     {#if comment.is_owner}
         <div class="col-2 col-md-auto pe-md-0 my-auto">
-                <button type="button" class="btn btn-sm btn-danger btn-delete {isHovering ? 'show' : ''}" on:click={deleteComment} title="Delete Comment" use:tooltip={{...tooltipConfig}}>
-                    <i class="fas fa-trash"></i>
-                </button>
+            <button type="button" class="btn btn-sm btn-danger btn-delete {isHovering ? 'show' : ''}" onclick={deleteComment} title="Delete Comment" use:tooltip={{...tooltipConfig}} aria-label="Delete Comment">
+                <i class="fas fa-trash"></i>
+            </button>
         </div>
     {/if}
     {#if isReplyVisible}
         <div class="col-12 col-md-auto my-2 my-md-auto">
-            <button class="btn btn-sm btn-reply w-100" type="button" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}"  title="Reply to Comment" use:tooltip={{...tooltipConfig}}>
+            <button class="btn btn-sm btn-reply w-100" type="button" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}"  title="Reply to Comment" use:tooltip={{...tooltipConfig}} aria-label="Reply to Comment">
                 <i class="fas fa-reply"></i>
             </button>
         </div>
@@ -169,10 +168,10 @@
         <div class="col-12 my-2 mt-1 mt-md-3">
             <div class="input-group">
                 <input type="text" bind:value={replyContent} placeholder="Reply to comment..." class="form-control form-control-reply">
-                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}" aria-label="Cancel Reply" use:tooltip={{...tooltipConfig}} title="Cancel">
                     <i class="fas fa-times px-2"></i>
                 </button>
-                <button type="button" class="btn btn-sm btn-reply" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}" on:click={addReply}>
+                <button type="button" class="btn btn-sm btn-reply" data-bs-toggle="collapse" data-bs-target="#commentReplyInput-{comment.id}" aria-expanded="false" aria-controls="commentReplyInput-{comment.id}" onclick={addReply} aria-label="Send Reply" use:tooltip={{...tooltipConfig}} title="Submit">
                     <i class="fas fa-paper-plane px-2"></i>
                 </button>
             </div>

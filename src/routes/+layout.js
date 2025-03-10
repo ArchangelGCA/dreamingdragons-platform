@@ -21,9 +21,7 @@ export const load = async ({ fetch, data, depends, url }) => {
             },
         });
 
-    const {
-        data: { session },
-    } = await supabase.auth.getSession();
+    const session = isBrowser() ? (await supabase.auth.getSession()).data.session : data.session;
 
     const image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
     const tooltipConfig = {
@@ -44,41 +42,31 @@ export const load = async ({ fetch, data, depends, url }) => {
     let notifs = [];
 
     if (session) {
-        const {data: notifs, error} = await supabase
-            .from('notifications')
-            .select('*')
-            .eq('recipient_id', session.user.id)
-            .order('created_at', {ascending: false})
-            .range(0, 20);
 
-        if (error) {
-            console.error(error)
-            return {
-                status: 500,
-                body: {
-                    message: error.message,
-                },
-            }
-        }
-
-        const { data: user, errorProfiles } = await supabase
+        const { data, error} = await supabase
             .from('profiles')
-            .select('id, username, avatar_url')
+            .select('id, username, avatar_url, notifications!recipient_id(*)')
             .eq('id', session.user.id)
             .single();
 
-        if (errorProfiles) {
-            console.error(errorProfiles)
+        if (error) {
+            console.error(error);
             return {
                 status: 500,
                 body: {
-                    message: errorProfiles.message,
-                },
+                    message: error.message
+                }
             }
         }
 
-        userData = user;
+        notifs = data.notifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 20);
         notifications = notifs;
+
+        userData = {
+            id: data.id,
+            username: data.username,
+            avatar_url: data.avatar_url,
+        };
     }
 
     return {

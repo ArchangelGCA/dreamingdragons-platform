@@ -5,66 +5,18 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
+    import {conf} from "$lib/utils/gcatinymce.js";
 
-    let conf = {
-        skin: 'oxide-dark',
-        content_css: 'dark',
-        license_key: 'gpl',
-        block_unsupported_drop: true,
-        branding: false,
-        plugins: 'link autolink wordcount charmap code fullscreen',
-        default_link_target: '_blank',
-        images_upload_handler: () => Promise.reject({
-            remove: true,
-            message: 'You can\'t upload images in the description.',
-        }),
-        toolbar_mode: 'sliding',
-        toolbar: [
-            {
-                name: 'history',
-                items: ['undo', 'redo']
-            },
-            {
-                name: 'links',
-                items: ['link']
-            },
-            {
-                name: 'formatting',
-                items: ['bold', 'italic']
-            },
-            {
-                name: 'alignment',
-                items: ['alignleft', 'aligncenter', 'alignright', 'alignjustify']
-            },
-            {
-                name: 'indentation',
-                items: ['outdent', 'indent']
-            },
-            {
-                name: 'tools',
-                items: ['wordcount', 'charmap', 'code', 'fullscreen']
-            }
-        ],
-        setup: function (editor) {
-            editor.on('init', function () {
-                const promotionLink = document.querySelector('.tox-promotion-link');
-                if (promotionLink) {
-                    promotionLink.remove();
-                }
-            });
-        },
-    };
-
-
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
     const { chapter, books, supabase, tooltipConfig } = data;
 
-    let editorContent = chapter.text;
-    let tags = chapter.chapter_tags.map(tag => tag.tags.name);
-    let suggestions = [];
-    let inputTag = '';
+    let editorContent = $state(chapter.text);
+    let tags = $state(chapter.chapter_tags.map(tag => tag.tags.name));
+    let suggestions = $state([]);
+    let inputTag = $state('');
     let editActive = false;
-    let title = chapter.title;
+    let title = $state(chapter.title);
 
     async function handleEdit(event){
         event.preventDefault();
@@ -216,7 +168,8 @@
         }
     }
 
-    function removeTag(tag) {
+    function removeTag(e) {
+        const tag = e.target.value;
         tags = tags.filter(t => t !== tag);
         suggestions = [];
         inputTag = '';
@@ -231,7 +184,7 @@
     </div>
     <div class="row mt-3 mx-0 justify-content-center text-center">
         <div class="col px-0">
-            <form method="POST" enctype="multipart/form-data" action="?/postchapter" on:submit={handleEdit}>
+            <form method="POST" enctype="multipart/form-data" action="?/postchapter" onsubmit={handleEdit}>
                 <div class="row">
                     <div class="col-12 rounded-3 px-0">
                         <p class="fs-5 text-start mb-1 ms-1"><i class="fas fa-book"></i> Tale</p>
@@ -266,12 +219,12 @@
                             {#each tags as tag}
                                 <div class="badge tag-custom rounded-4 pe-2 my-auto me-1">
                                     <span>{tag}</span>
-                                    <button class="button-tags text-danger-emphasis ms-1" type="button" on:click|preventDefault={() => removeTag(tag)}>x</button>
+                                    <button class="button-tags text-danger-emphasis ms-1" type="button" onclick={removeTag} value={tag}>x</button>
                                 </div>
                             {/each}
-                            <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" on:keydown={addTag} on:keyup={addTag}/>
+                            <input class="input-tags my-auto ms-1" type="text" bind:value={inputTag} placeholder="Add tags" onkeydown={addTag} onkeyup={addTag}/>
                             {#each suggestions as suggestion (suggestion)}
-                                <button class="dropdown-item" on:click|preventDefault={addTag} value={suggestion}>{suggestion}</button>
+                                <button class="dropdown-item" onclick={addTag} value={suggestion}>{suggestion}</button>
                             {/each}
                             <!-- Hidden inputs -->
                             <input type="hidden" name="tags" value={tags} />

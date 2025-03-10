@@ -49,7 +49,7 @@
 
     <h1 style="padding-left: 5pt;text-indent: 0pt;text-align: left;">6. DATA PROTECTION (GDPR COMPLIANCE)</h1>
     <p style="padding-top: 11pt;padding-left: 5pt;text-indent: 0pt;text-align: justify;">
-        We comply with the General Data Protection Regulation (GDPR). For details on how we collect, use, and protect your personal data, please refer to our <a href="/privacy-policy">Privacy Policy</a>.
+        We comply with the General Data Protection Regulation (GDPR). For details on how we collect, use, and protect your personal data, please refer to our <a href="/legal/privacy-policy">Privacy Policy</a>.
     </p>
     <p style="text-indent: 0pt;text-align: left;"><br></p>
 

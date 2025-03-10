@@ -1,39 +1,81 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_IMAGE_PROXY_URL } from '$env/static/public';
-import { createServerClient } from "@supabase/ssr";
+import {PUBLIC_IMAGE_PROXY_URL, PUBLIC_SUPABASE_ANON_KEY, PUBLIC_SUPABASE_URL} from '$env/static/public';
+import {SUPABASE_JWT_SECRET} from '$env/static/private';
+import {createServerClient} from "@supabase/ssr";
+import * as jose from 'jose';
 
-export const handle = async ({ event, resolve }) => {
-    event.locals.supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, {
-        cookies: {
-            getAll: () => event.cookies.getAll(),
-            setAll: (cookiesToSet) => {
-                cookiesToSet.forEach(({ name, value, options }) => {
-                    event.cookies.set(name, value, { ...options, path: '/' })
-                })
+export const handle = async ({event, resolve}) => {
+    event.locals.supabase = createServerClient(
+        PUBLIC_SUPABASE_URL,
+        PUBLIC_SUPABASE_ANON_KEY,
+        {
+            cookies: {
+                getAll: () => event.cookies.getAll(),
+                setAll: (cookiesToSet) => {
+                    cookiesToSet.forEach(({name, value, options}) => {
+                        event.cookies.set(name, value, {...options, path: '/'})
+                    })
+                },
             },
-        },
-    });
+        });
 
     /**
      * A convenience helper so we can just call await getSession() instead const { data: { session } } = await supabase.auth.getSession()
      */
-    event.locals.getSession = async () => {
-        const {data: { session }} = await event.locals.supabase
+    /*event.locals.getSession = async () => {
+        const {data: {session}} = await event.locals.supabase
             .auth
             .getSession();
         if (!session) {
-            return { session: null, user: null }
+            return {session: null, user: null}
         }
 
-        const {data: { user }, error} = await event.locals.supabase
+        const {data: {user}, error} = await event.locals.supabase
             .auth
             .getUser();
         if (error) {
-            return { session: null, user: null }
+            return {session: null, user: null}
         }
 
         delete session.user;
 
-        return { session: Object.assign({}, session, { user }), user };
+        return {session: Object.assign({}, session, {user}), user};
+    }*/
+
+    event.locals.getSession = async () => {
+        const {
+            data: { session },
+        } = await event.locals.supabase.auth.getSession();
+
+        if (!session) return {session: null};
+
+        try {
+            const { payload: decoded } = await jose.jwtVerify(session.access_token, new TextEncoder().encode(SUPABASE_JWT_SECRET))
+
+            return {
+                access_token: session.access_token,
+                refresh_token: session.refresh_token,
+                expires_at: decoded.exp,
+                expires_in: decoded.exp - Math.round(Date.now() / 1000),
+                token_type: 'bearer',
+                session: {
+                    user: {
+                        app_metadata: decoded.app_metadata ?? {},
+                        aud: 'authenticated',
+                        created_at: '',
+                        id: decoded.sub,
+                        email: decoded.email,
+                        phone: decoded.phone,
+                        user_metadata: {
+                        //    avatar_url: decoded.user_metadata?.avatar_url,
+                        //    nickname: decoded.user_metadata?.nickname,
+                        },
+                        is_anonymous: decoded.is_anonymous
+                    }
+                }
+            };
+        } catch (err) {
+            return null;
+        }
     }
 
     /** Image proxy in locals */

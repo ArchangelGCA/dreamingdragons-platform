@@ -1,8 +1,8 @@
 <script>
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
 
     let { updates } = data;
-    $: ({updates} = data);
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };

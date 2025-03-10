@@ -1,24 +1,15 @@
 <script>
-    export let url = '';
-    export let username = '';
-    export let size = '100px';
+    /** @type {{url?: string, username?: string, size?: string, classes?: string, image_proxy?: any}} */
+    let {
+        url = '',
+        username = '',
+        size = '100px',
+        classes = '',
+        image_proxy = null
+    } = $props();
 
-    export let classes = '';
-    export let image_proxy = null;
-
-    let avatarUrl = '';
-    let isAvatarLoaded = false;
-
-    $: if (url && url !== '' && !isAvatarLoaded) {
-        avatarUrl = url;
-        if (image_proxy){
-            if (!avatarUrl.startsWith(image_proxy)) avatarUrl = image_proxy + avatarUrl + '?width=250';
-        }
-        isAvatarLoaded = true;
-    } else if ((!url || url === '') && avatarUrl !== '') {
-        avatarUrl = '';
-        isAvatarLoaded = false;
-    }
+    let finalAvatarUrl = $derived(image_proxy && url !== null && url !== '' && !url.startsWith(image_proxy) ? image_proxy + url + '?width=250': url);
+    let isAvatarLoaded = $derived(url !== '' && url !== null && finalAvatarUrl !== null && finalAvatarUrl !== '');
 </script>
 
 <!-- Circle avatar, using Bootstrap 5 classes -->
@@ -27,7 +18,7 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 {:else}
-    <img src={avatarUrl} alt='{username} avatar' class="rounded-circle avatar {classes}" width={size} height={size}>
+    <img src={finalAvatarUrl} alt='{username} avatar' class="rounded-circle avatar {classes}" width={size} height={size}>
 {/if}
 
 <style>

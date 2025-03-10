@@ -13,33 +13,18 @@
         theme: 'text-center w-auto'
     };
 
-    export let url = '';
-    export let username = '';
-    export let id = '';
-    export let size = '100px';
-    export let image_proxy = null;
+    /** @type {{url?: string, username?: string, id?: string, size?: string, image_proxy?: any}} */
+    let {
+        url = '',
+        username = '',
+        id = '',
+        size = '100px',
+        image_proxy = null
+    } = $props();
 
-    //let avatarUrl = '';
-    let isAvatarLoaded = false;
+    let isAvatarLoaded = $derived(url && url !== '');
     let isDragging = false;
     let dragTimeout;
-
-    /*$: if (url && url !== '' && !isAvatarLoaded) {
-        avatarUrl = url;
-        if (image_proxy){
-            if (!avatarUrl.startsWith(image_proxy)) avatarUrl = image_proxy + avatarUrl + '?width=250';
-        }
-        isAvatarLoaded = true;
-    } else if ((!url || url === '') && avatarUrl !== '') {
-        avatarUrl = '';
-        isAvatarLoaded = false;
-    }*/
-
-    $: if (url && url !== ''){
-        isAvatarLoaded = true;
-    } else {
-        isAvatarLoaded = false;
-    }
 
     // Prevent clicking while dragging.
     function handlePointerDown() {
@@ -72,14 +57,14 @@
 
 <!-- Circle avatar, using Bootstrap 5 classes -->
 <div class="d-flex justify-content-center">
-    <a href={`/profile/${id}`} class="text-decoration-none" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
-       on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="View profile of {username}" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
+    <a href={`/profile/${id}`} class="text-decoration-none" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}
+       onpointermove={handlePointerMove} onpointerup={handlePointerUp} onpointerleave={handlePointerLeave} aria-label="View profile of {username}" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
         {#if !isAvatarLoaded}
             <div class="placeholder-glow" style="width: {size}; height: {size};">
                 <div class="placeholder rounded-circle w-100 h-100"></div>
             </div>
         {:else}
-            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url} alt={username} class="rounded-circle avatar-style" width={size} height={size} draggable="false">
+            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url} alt='{username} Avatar' class="rounded-circle avatar-style" width={size} height={size} draggable="false">
         {/if}
     </a>
 </div>

@@ -1,9 +1,12 @@
 <script>
     import AdminUser from "$lib/components/admin/AdminUser.svelte";
 
-    export let data;
-    let {profiles, supabase, image_proxy} = data;
-    $: ({profiles, supabase} = data);
+    /** @type {{data: any}} */
+    let { data } = $props();
+    let {profiles, image_proxy} = $state(data);
+    $effect(() => {
+        ({profiles} = data);
+    });
 </script>
 
 <div class="row mb-2">

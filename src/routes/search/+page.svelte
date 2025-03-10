@@ -6,10 +6,9 @@
     import {deserialize} from "$app/forms";
     import {onMount} from "svelte";
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
     let { searchResults, partialText, image_proxy } = data;
-
-    let index = true;
 
     onMount(() => {
         window.addEventListener('scroll', handleScroll);
@@ -18,9 +17,9 @@
         };
     });
 
-    let profiles = [];
-    let books = [];
-    let allResultsLoaded = false;
+    let profiles = $state([]);
+    let books = $state([]);
+    let allResultsLoaded = $state(false);
     let loading = false;
     let page = 1;
 
@@ -43,8 +42,6 @@
         });
     } else {
         allResultsLoaded = true;
-        // index to false in seo
-        index = false;
     }
 
     async function loadMoreResults(){
@@ -152,7 +149,7 @@
                                 </div>
                             </div>
                         {:else}
-                            <div class="row g-3 justify-content-center">
+                            <div class="row g-3 justify-content-center" use:autoAnimate>
                                 {#each books as book (book.book_id)}
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                                         <BookSearch owner_username={book.owner_username} owner_id={book.owner_id} title={book.book_title} book_id={book.book_id} description={book.book_description} book_cover_url={book.book_cover_url} {image_proxy}/>

@@ -14,21 +14,15 @@
         theme: 'text-center w-auto'
     };
 
-    export let book;
-    export let image_proxy;
+    /** @type {{book: any, image_proxy: any}} */
+    let { book = $bindable(), image_proxy } = $props();
 
     let width = 500;
     let isDragging = false;
     let dragTimeout;
-
-    $: if (image_proxy) {
-        if (!book.cover_url.startsWith(image_proxy)) book.cover_url = image_proxy + book.cover_url;
-    } else {
-        console.log('No image proxy');
-    }
-
-    $: if (book.title.length > 20) book.title = book.title.substring(0, 18) + '...';
-    $: if (book.profiles.username.length > 16) book.profiles.username = book.profiles.username.substring(0, 15) + '...';
+    let finalLinkImage = $derived(image_proxy && !book.cover_url.startsWith(image_proxy) ? image_proxy + book.cover_url : book.cover_url);
+    let finalBookTitle = $derived(book.title.length > 20 ? book.title.substring(0, 18) + '...' : book.title);
+    let finalUsername = $derived(book.profiles.username.length > 16 ? book.profiles.username.substring(0, 15) + '...' : book.profiles.username);
 
     // Prevent clicking while dragging.
     function handlePointerDown() {
@@ -61,14 +55,14 @@
 
 <div>
     <div class="card border-0">
-        <a href="/content/{book.id}" draggable="false" on:click={handleClick} on:pointerdown={handlePointerDown}
-           on:pointermove={handlePointerMove} on:pointerup={handlePointerUp} on:pointerleave={handlePointerLeave} aria-label="Content: {book.title}">
+        <a href="/content/{book.id}" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}
+           onpointermove={handlePointerMove} onpointerup={handlePointerUp} onpointerleave={handlePointerLeave} aria-label="Content: {finalBookTitle}">
             <div class="card-img">
                 <!-- 1x is for desktop, 2x is for mobile -->
                 <img
-                        srcset="{book.cover_url + `?width=${width}&quality=80`} 2x,
-                        {book.cover_url + `?width=${width}&quality=80`} 1x"
-                        src={book.cover_url + `?width=${width}&quality=80`}
+                        srcset="{finalLinkImage + `?width=${width}&quality=80`} 2x,
+                        {finalLinkImage + `?width=${width}&quality=80`} 1x"
+                        src={finalLinkImage + `?width=${width}&quality=80`}
                         alt="Book cover"
                         class="img-fluid rounded-3"
                         width={width}
@@ -78,12 +72,12 @@
                 <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                     <div class="col-12 px-0 px-md-2">
                         <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap" href="/content/{book.id}"
-                           use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{book.title}</span></button>
+                           use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{finalBookTitle}</span></button>
                         <p class="card-text"><small class="text-description"><span>
                             <UserAvatarNavbar url={book.profiles.avatar_url} username={book.profiles.username} {image_proxy} size="25px"/>
                         </span> <button
                                 class="btn btn-link p-0 link-light link-custom text-decoration-none" href="/profile/{book.profiles.id}"
-                                use:tooltip={{...tooltipConfig}} title="Visit profile">{book.profiles.username}</button></small></p>
+                                use:tooltip={{...tooltipConfig}} title="Visit profile">{finalUsername}</button></small></p>
                     </div>
                 </div>
             </div>

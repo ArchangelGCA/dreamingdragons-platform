@@ -1,20 +1,25 @@
 <script>
-    import {onMount} from "svelte";
+    import {onMount, untrack} from "svelte";
     import StaffTime from "$lib/components/profile/StaffTime.svelte";
     import {browser} from "$app/environment";
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
     let { timedata } = data;
-    let time = new Date();
-    let userLocale = "en-US";
-    let is12Hour = true;
+    let time = $state(new Date());
+    let userLocale = $state("en-US");
+    let is12Hour = $state(true);
 
-    if (browser){
-        userLocale = navigator.language;
-        is12Hour = new Intl.DateTimeFormat(userLocale, {hour: '2-digit'}).formatToParts(new Date()).find(x => x.type === 'dayPeriod') !== undefined;
-    }
+    $effect(() => {
+        if (browser){
+            untrack(() => {
+                userLocale = navigator.language;
+                is12Hour = new Intl.DateTimeFormat(userLocale, {hour: '2-digit'}).formatToParts(new Date()).find(x => x.type === 'dayPeriod') !== undefined;
+            });
+        }
+    })
 
-    $: date = time.toLocaleString(userLocale, {
+    let date = $derived(time.toLocaleString(userLocale, {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -22,7 +27,7 @@
         minute: '2-digit',
         second: '2-digit',
         hour12: is12Hour
-    });
+    }));
 
     onMount(() => {
         const interval = setInterval(() => {

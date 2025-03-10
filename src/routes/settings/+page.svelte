@@ -9,7 +9,7 @@
     import {browser} from "$app/environment";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
-    let analyticsEnabled;
+    let analyticsEnabled = $state();
 
     onMount(() => {
         if (browser) {
@@ -17,32 +17,28 @@
         }
     });
 
-    export let data;
+    /** @type {{data: any}} */
+    let { data } = $props();
 
-    let {session, supabase, profile, tooltipConfig} = data;
-    $: ({session, supabase, profile, tooltipConfig} = data);
+    let {session, profile = { full_name: '', username: '', website: '', avatar_url: '', cover_url: ''}, tooltipConfig} = $state(data);
+    $effect(() => {
+        ({session, profile, tooltipConfig} = data);
+    });
 
-    let avatarUrl = '';
-    let coverUrl = '';
-    let loading = false;
-    let password = '';
-    let loadingPassword = false;
-    let isAccordionOpen = false;
-    let isCoverAccordionOpen = false;
-    let isAvatarAccordionOpen = false;
+    let avatarUrl = $derived(profile ? profile.avatar_url : '');
+    let coverUrl = $derived(profile ? profile.cover_url : '');
+    let loading = $state(false);
+    let password = $state('');
+    let loadingPassword = $state(false);
+    let isAccordionOpen = $state(false);
+    let isCoverAccordionOpen = $state(false);
+    let isAvatarAccordionOpen = $state(false);
     let isActiveUpdate = false;
     let isActiveShowFavourites = false;
-    if (!profile) {
-        profile = {
-            full_name: '',
-            username: '',
-            website: '',
-            avatar_url: '',
-            cover_url: ''
-        };
-    }
+    let isActiveNewsletter = false;
 
     async function handleProfileUpdate(e){
+        e.preventDefault();
         if (isActiveUpdate) return;
         isActiveUpdate = true;
 
@@ -50,6 +46,74 @@
         const formData = new FormData(e.target);
 
         const response = await fetch('?/update', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = deserialize(await response.text());
+        if (result.type === 'success'){
+            if (result.data.status === 200){
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#5c00a6',
+                        '--toastColor': '#fff',
+                        '--toastProgressBackground': '#c800ff',
+                    }
+                });
+                await invalidateAll();
+            } else {
+                toast.push(result.data.body.message, {
+                    theme: {
+                        '--toastBackground': '#f44336',
+                        '--toastColor': '#fff',
+                        '--toastProgressBackground': '#ff0000',
+                    }
+                });
+            }
+        } else {
+            toast.push('An error occurred while updating your profile.', {
+                theme: {
+                    '--toastBackground': '#f44336',
+                    '--toastColor': '#fff',
+                    '--toastProgressBackground': '#ff0000',
+                }
+            });
+        }
+        isActiveUpdate = false;
+    }
+
+    const handleSignOut = () => {
+        loading = true
+        return async ({update}) => {
+            loading = false;
+            toast.push('You have been signed out!', {
+                theme: {
+                    '--toastBackground': '#029fcc',
+                    '--toastProgressBackground': '#38d971',
+                    '--toastProgressText': '#ffffff',
+                    '--toastText': '#868686',
+                },
+            });
+            update();
+        };
+    };
+
+    async function handleAnalytics() {
+        analyticsEnabled = !analyticsEnabled;
+        if (browser) {
+            window.localStorage.setItem('analyticsEnabled', analyticsEnabled);
+        }
+    }
+
+    async function handleNewsletter(e) {
+        e.preventDefault();
+        if (isActiveNewsletter) return;
+        isActiveNewsletter = true;
+
+        const formData = new FormData();
+        formData.append('newsletter', !profile.newsletter);
+
+        const response = await fetch('?/newsletter', {
             method: 'POST',
             body: formData
         });
@@ -82,34 +146,13 @@
                 }
             });
         }
-        invalidateAll();
-        isActiveUpdate = false;
+
+        await invalidateAll();
+        isActiveNewsletter = false;
     }
 
-    const handleSignOut = () => {
-        loading = true
-        return async ({update}) => {
-            loading = false;
-            toast.push('You have been signed out!', {
-                theme: {
-                    '--toastBackground': '#029fcc',
-                    '--toastProgressBackground': '#38d971',
-                    '--toastProgressText': '#ffffff',
-                    '--toastText': '#868686',
-                },
-            });
-            update();
-        };
-    };
-
-    async function handleAnalytics() {
-        analyticsEnabled = !analyticsEnabled;
-        if (browser) {
-            window.localStorage.setItem('analyticsEnabled', analyticsEnabled);
-        }
-    }
-
-    async function handleShowFavourites() {
+    async function handleShowFavourites(e) {
+        e.preventDefault();
         if (isActiveShowFavourites) return;
         isActiveShowFavourites = true;
 
@@ -150,10 +193,12 @@
             });
         }
 
+        await invalidateAll();
         isActiveShowFavourites = false;
     }
 
-    async function handlePasswordUpdate(){
+    async function handlePasswordUpdate(e){
+        e.preventDefault();
         if (loadingPassword) return;
 
         if (!confirm('Are you sure you want to change your password?')) return;
@@ -179,6 +224,7 @@
                     }
                 });
                 password = '';
+                await invalidateAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -199,11 +245,6 @@
         }
 
         loadingPassword = false;
-    }
-
-    $: if (profile) {
-        avatarUrl = profile.avatar_url;
-        coverUrl = profile.cover_url;
     }
 </script>
 
@@ -232,7 +273,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#avatarCollapse" aria-expanded={isAvatarAccordionOpen}
                                             aria-controls="avatarCollapse"
-                                            on:click={() => isAvatarAccordionOpen = !isAvatarAccordionOpen}
+                                            onclick={() => isAvatarAccordionOpen = !isAvatarAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Avatar Settings">
                                         {#if !avatarUrl}<i class="fas fa-user me-2"></i>
                                         {:else}
@@ -247,7 +288,7 @@
                                         <form class="form" method="post" action="?/update">
                                             <div class="row justify-content-center">
                                                 <Avatar url={avatarUrl} size={10}
-                                                        on:upload={() => {invalidateAll()}}/>
+                                                        upload={() => {invalidateAll()}}/>
                                             </div>
                                         </form>
                                     </div>
@@ -266,7 +307,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#profileCollapse" aria-expanded={isAccordionOpen}
                                             aria-controls="profileCollapse"
-                                            on:click={() => isAccordionOpen = !isAccordionOpen}
+                                            onclick={() => isAccordionOpen = !isAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Profile Settings">
                                         <i class="fas fa-id-card me-2"></i>Details
                                     </button>
@@ -274,7 +315,7 @@
                                 <div id="profileCollapse" class="accordion-collapse collapse"
                                      aria-labelledby="profileHeading" data-bs-parent="#profileAccordion">
                                     <div class="accordion-body">
-                                        <form class="form" method="post" action="?/update" on:submit|preventDefault={handleProfileUpdate}>
+                                        <form class="form" method="post" action="?/update" onsubmit={handleProfileUpdate}>
                                             <div class="row">
                                                 <div class="col-12 mb-3">
                                                     <label for="email" class="form-label">Email 📧</label>
@@ -316,7 +357,7 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <h3 class="text-center">Security</h3>
-                                                <form class="form" method="post" action="?/updatepassword" on:submit|preventDefault={handlePasswordUpdate}>
+                                                <form class="form" method="post" action="?/updatepassword" onsubmit={handlePasswordUpdate}>
                                                     <div class="mb-3">
                                                         <p class="h5">Change Password:</p>
                                                     </div>
@@ -355,7 +396,7 @@
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                             data-bs-target="#coverCollapse" aria-expanded={isCoverAccordionOpen}
                                             aria-controls="avatarCollapse"
-                                            on:click={() => isCoverAccordionOpen = !isCoverAccordionOpen}
+                                            onclick={() => isCoverAccordionOpen = !isCoverAccordionOpen}
                                             use:tooltip={{...tooltipConfig}} title="Cover Settings">
                                         {#if !coverUrl}<i class="fas fa-portrait me-2"></i>
                                         {:else}
@@ -367,7 +408,7 @@
                                 <div id="coverCollapse" class="accordion-collapse collapse"
                                      aria-labelledby="coverHeading" data-bs-parent="#coverAccordion">
                                     <div class="accordion-body">
-                                        <Cover url={coverUrl} on:upload={() => {invalidateAll()}}/>
+                                        <Cover url={coverUrl} uploadComplete={() => {invalidateAll()}}/>
                                     </div>
                                 </div>
                             </div>
@@ -395,10 +436,18 @@
                                     {#if session}
                                         <!-- Check for showing favourites -->
                                         <div class="form-check form-switch mb-2">
-                                            <input class="form-check-input" type="checkbox" id="showFavouritesSwitch" bind:checked={profile.show_favourites} on:click={handleShowFavourites}>
-                                            <label class="form-check label ps-0" for="showFavouritesSwitch">
+                                            <input class="form-check-input" type="checkbox" id="showFavouritesSwitch" bind:checked={profile.show_favourites} onclick={handleShowFavourites}>
+                                            <label class="form-check-label ps-0" for="showFavouritesSwitch">
                                                 🌟 Show Favourites
                                                 <i class="fas ms-1 {profile.show_favourites ? 'fa-toggle-on' : 'fa-toggle-off'}" style="color: {profile.show_favourites ? 'green' : 'red'}"></i>
+                                            </label>
+                                        </div>
+                                        <!-- Check for Newsletter -->
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input" type="checkbox" id="newsletterSwitch" bind:checked={profile.newsletter} onclick={handleNewsletter}>
+                                            <label class="form-check-label ps-0" for="newsletterSwitch">
+                                                📰 Newsletter
+                                                <i class="fas ms-1 {profile.newsletter ? 'fa-toggle-on' : 'fa-toggle-off'}" style="color: {profile.newsletter ? 'green' : 'red'}"></i>
                                             </label>
                                         </div>
                                         <hr class="my-2">
@@ -413,7 +462,7 @@
                                     </div>
                                     <div class="form-check form-switch mb-2">
                                         <input class="form-check-input" type="checkbox" id="analyticsSwitch"
-                                               bind:checked={analyticsEnabled} on:click={handleAnalytics}>
+                                               bind:checked={analyticsEnabled} onclick={handleAnalytics}>
                                         <label class="form-check-label" for="analyticsSwitch">
                                             📈 Analytics
                                             <i class={analyticsEnabled ? 'fas fa-toggle-on ms-2' : 'fas fa-toggle-off ms-1'}

@@ -1,15 +1,18 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
-    export let notification;
-    export let supabase;
-    export let session;
-
+    /** @type {{notification: any, supabase: any, session: any}} */
+    let {
+        notification,
+        supabase,
+        session
+    } = $props();
 
     let dateFormatted = new Date(notification.created_at).toLocaleDateString('en-GB');
 
-    let hasTriggered = false;
+    let watched = $state(notification.watched);
+    let hasTriggered = $state(false);
     let observer;
-    let isNew = !notification.watched;
+    let isNew = $state(!notification.watched);
 
     onMount(() => {
         let element = document.querySelector('.notification');
@@ -37,7 +40,7 @@
             return;
         }
 
-        if (!notification || notification.watched) {
+        if (!notification || watched) {
             return;
         }
 
@@ -51,7 +54,7 @@
         if (error) {
             console.error(error);
         } else {
-            notification.watched = true;
+            watched = true;
         }
     }
 
@@ -60,7 +63,7 @@
     }
 </script>
 
-<button class="w-100" style="all: unset" on:click={handleNotificationClick}>
+<div class="w-100" style="all: unset; cursor: pointer" onclick={handleNotificationClick} role="button" tabindex="0" onkeydown="{e => e.key === 'Enter' && handleNotificationClick()}">
     <div class="row border border-light-subtle rounded-3 p-2 mb-2 bg-black bg-opacity-10 notification {isNew ? 'new' : ''} {hasTriggered ? 'blink' : ''}" id="{notification.id}">
         <div class="col">
             <p class="fs-6 my-auto">
@@ -81,7 +84,7 @@
             <p class="fs-6 text-start text-muted text-date my-auto">{dateFormatted}</p>
         </div>
     </div>
-</button>
+</div>
 
 <style>
 
