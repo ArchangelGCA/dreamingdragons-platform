@@ -9,7 +9,7 @@
         return new Date(dateString).toLocaleDateString(undefined, options);
     }
 
-    // Second variant of fomatdate with only hours and minutes
+    // Second variant of formatdate with only hours and minutes
     const formatTime = (dateString) => {
         const options = { hour: 'numeric', minute: 'numeric'};
         return new Date(dateString).toLocaleTimeString(undefined, options);
@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1 class="text-center mb-4 bg-animated-gradient py-2 rounded-4">🚀 Website Updates</h1>
-            <p class="text-center mb-4">Here we will share all changelogs and updates made to the website.</p>
+            <p class="text-center mb-4">DreamingDragons Tales Platform Updates</p>
             {#each updates as update}
                 <div class="card mb-3">
                     <div class="card-body">

@@ -107,7 +107,7 @@
 
         <!-- Start newest content section -->
         <div class="col-12 mt-3 mb-2">
-            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.2.1</span></p>
+            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.2.2</span></p>
         </div>
         <div class="col-12">
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}

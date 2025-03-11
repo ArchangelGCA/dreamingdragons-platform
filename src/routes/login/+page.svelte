@@ -27,18 +27,18 @@
                     <p class="h5">🔒 Please, recover your password.</p>
                 {/if}
             </div>
-            <div class="col-12 text-center">
+            <!--<div class="col-12 text-center">
                 <p class="h1">Authentication</p>
-            </div>
+            </div>-->
         </div>
         <div class="row justify-content-center">
             <div class="col-12 text-center" use:autoAnimate>
                 {#if finalView === 'magic_link'}
                     <p class="h5">Modern <span class="text-login">Login</span>/<span class="text-register">Register</span> with <span class="text-magic-link"> Magic Link</span> 🪄</p>
                 {:else if finalView === 'sign_up'}
-                    <p class="h5">Classic <span class="text-register">Register</span></p>
+                    <p class="h5">Classic <span class="text-register">Register</span> with <span class="text-magic-link">Email and Password</span> 🔐</p>
                 {:else if finalView === 'sign_in'}
-                    <p class="h5">Classic <span class="text-login">Login</span></p>
+                    <p class="h5">Classic <span class="text-login">Login</span> with <span class="text-magic-link">Email and Password</span> 🔐</p>
                 {:else if finalView === 'forgotten_password'}
                     <p class="h5 text-danger-emphasis">Password Recovery</p>
                 {/if}

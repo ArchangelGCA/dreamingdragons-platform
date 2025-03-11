@@ -201,9 +201,8 @@
     <div class="row navbar-container py-2">
         <!-- Logo -->
         <div class="col-2 col-md-3 col-xxl-4">
-            <a href="/">
+            <a href="/" aria-label="DreamingDragons - Home" title="Homepage">
                 <img src={favicon} class="logo rounded-circle" alt="Logo" width="40" height="40" title="Homepage"/>
-                <!-- TODO: Use enhanced logo and use tooltip with position -->
             </a>
         </div>
         <!-- Search -->
@@ -253,7 +252,7 @@
                 <div class="col-auto">
                     <div class="dropdown">
                         <button class="btn btn-transparent py-0 pt-1 ps-0 pe-1" type="button" id="profileDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profile dropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profile Menu Button"
                                 use:autoAnimate>
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                                 <i class="fa-solid fa-user py-2 pb-2 mb-1 px-2 border border-2 border-light border-opacity-25 rounded-3"></i>
@@ -269,6 +268,10 @@
                                     <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i
                                             class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a>
                                     </li>
+                                {:else}
+                                    <li class="text-center">
+                                        <p class="fs-6 text-muted mb-1">Not logged in...</p>
+                                    </li>
                                 {/if}
                             {:else}
                                 <li class="text-center">
@@ -280,7 +283,7 @@
                                     </a>
                                 </li>
                             {/if}
-                            <li><a class="dropdown-item {page.url.pathname.startsWith('/settings') ? 'active' : ''}"
+                            <li><a class="dropdown-item {page.url.pathname.startsWith('/settings') ? 'active' : ''} {!session ? 'mb-1' : ''}"
                                    href="/settings"><i
                                     class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a>
                             </li>
@@ -299,7 +302,7 @@
                                         class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i>
                                     Logout</a></li>
                             {:else}
-                                <li><a class="dropdown-item register-button rounded-3 py-2" href="/login?signup=true"><i
+                                <li><a class="dropdown-item register-button rounded-3 py-2 my-1" href="/login?signup=true"><i
                                         class="fa-solid fa-user-plus border-end border-light-subtle pe-1"></i> Register</a>
                                 </li>
                                 <li><a class="dropdown-item" href="/login"><i
