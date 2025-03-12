@@ -344,18 +344,10 @@
                             </div>
                         </div>
                         <div class="dropdown-menu ms-md-5 py-1" aria-labelledby="followers">
-                            <!-- TODO: Fix positioning -->
                             {#if !profile.followers || profile.followers.length === 0}
                                 <span class="dropdown-item rounded-3">No followers yet</span>
                             {:else}
                                 {#each profile.followers as follower (follower.follower_id)}
-                                    <!--<span class="dropdown-item">
-                                        <UserAvatarNavbar url={follower.profiles.avatar_url}
-                                                          username={follower.profiles.username} {image_proxy}
-                                                          size="25px" classes="me-2"/>
-                                        <a class="link-light text-decoration-none h-100"
-                                           href="/profile/{follower.follower_id}"
-                                           onclick={handleVisit}>{follower.profiles.username}</a></span>-->
                                     <span>
                                         <a class="dropdown-item" href="/profile/{follower.follower_id}">
                                             <UserAvatarNavbar url={follower.profiles.avatar_url}

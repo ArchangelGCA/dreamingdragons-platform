@@ -3,13 +3,14 @@
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import {invalidateAll} from "$app/navigation";
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import autoAnimate from '@formkit/auto-animate';
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
     import {browser} from "$app/environment";
+    import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -33,7 +34,12 @@
         if (browser) {
             await getClientIp().then((ip) => handleView(ip));
         }
+        await mentionTooltip(supabase);
     });
+
+    onDestroy(async () => {
+        await removeMentionListener();
+    })
 
     let commentsCount = $derived(bookContent.comments.length);
     let likeActionActive = false;
@@ -240,6 +246,7 @@
 
         reportActionActive = false;
     }
+
 </script>
 
 <div class="container-xxl">

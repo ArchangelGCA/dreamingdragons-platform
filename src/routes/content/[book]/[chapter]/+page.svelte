@@ -1,6 +1,4 @@
 <script>
-    import { run } from 'svelte/legacy';
-
     import { tooltip } from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
@@ -8,9 +6,10 @@
     import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentImage from "$lib/components/layout/ContentImage.svelte";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import {browser} from "$app/environment";
     import {invalidateAll} from "$app/navigation";
+    import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -44,7 +43,12 @@
         if (browser) {
             await getClientIp().then((ip) => handleView(ip));
         }
+        await mentionTooltip(supabase);
     });
+
+    onDestroy(async () => {
+        await removeMentionListener();
+    })
 
     async function getClientIp() {
         try {
