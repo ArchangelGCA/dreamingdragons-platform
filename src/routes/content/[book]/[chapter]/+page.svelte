@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltip} from "@svelte-plugins/tooltips";
     import {toast} from "@zerodevx/svelte-toast";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
@@ -12,7 +12,7 @@
     import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
 
     /** @type {{data: any}} */
-    let { data } = $props();
+    let {data} = $props();
 
     let {
         supabase,
@@ -53,14 +53,16 @@
     async function getClientIp() {
         try {
             const response = await fetch('https://api.ipify.org?format=json');
-            return await response.json().then((data) => {return data.ip});
+            return await response.json().then((data) => {
+                return data.ip
+            });
         } catch (error) {
             console.error('Error fetching IP address:', error);
             return null;
         }
     }
 
-    async function handleView(ip = null){
+    async function handleView(ip = null) {
         if (user_id && ip) {
             await supabase
                 .from('views')
@@ -70,7 +72,8 @@
                     user_id: user_id
                 }
                 ]);
-        } else if (ip){
+
+        } else if (ip) {
             // Using only IP address
             await supabase
                 .from('views')
@@ -100,8 +103,8 @@
         });
 
         const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
                 if (chapterContent.is_liked) {
                     toast.push('Chapter liked ❤️', {
                         theme: {
@@ -141,7 +144,7 @@
         likeActionActive = false;
     }
 
-    async function handleChapterDelete(){
+    async function handleChapterDelete() {
 
         if (deleteChapterActionActive) return;
         if (!chapterContent.is_owner) return;
@@ -160,8 +163,8 @@
 
         const result = deserialize(await response.text());
 
-        if (result.type === 'success'){
-            if (result.data.status === 200){
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
                 toast.push('Chapter ' + chapterContent.title + ' deleted! 🗑️', {
                     theme: {
                         '--toastBackground': '#5c00a6',
@@ -189,7 +192,7 @@
         deleteChapterActionActive = false;
     }
 
-    async function handleReport(){
+    async function handleReport() {
         if (reportActionActive) return;
 
         reportActionActive = true;
@@ -205,8 +208,8 @@
         });
 
         const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
                 toast.push('Report submitted! 🚩', {
                     theme: {
                         '--toastBackground': '#5c00a6',
@@ -244,7 +247,8 @@
     <!-- Shortcut button -->
     <div class="row justify-content-center my-2">
         <div class="col-12 text-center px-0">
-            <a href="#title" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2" use:tooltip={{...tooltipConfig}} title="Go to Text" aria-label="Go to text">
+            <a href="#title" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2"
+               use:tooltip={{...tooltipConfig}} title="Go to Text" aria-label="Go to text">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
@@ -262,16 +266,24 @@
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
-                    <UserAvatar url={chapterContent.profiles.avatar_url} username={chapterContent.profiles.username} id={chapterContent.owner_id} {image_proxy} size="75px"/>
+                    <UserAvatar url={chapterContent.profiles.avatar_url} username={chapterContent.profiles.username}
+                                id={chapterContent.owner_id} {image_proxy} size="75px"/>
                 </div>
                 <div class="col-9 col-md-10 text-center my-auto">
-                    <h2><a class="link-light link-opacity-75 text-decoration-none" href="/content/{chapterContent.book_id}">{chapterContent.book.title}</a>: {chapterContent.title}</h2>
-                    <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none" href="/profile/{chapterContent.owner_id}">{chapterContent.profiles.username}</a> - <span class="text-muted" use:tooltip={{...tooltipConfig}} title="{createdAtDetailed}">{createdAtFormatted}</span></h6>
+                    <h2><a class="link-light link-opacity-75 text-decoration-none"
+                           href="/content/{chapterContent.book_id}">{chapterContent.book.title}</a>: {chapterContent.title}
+                    </h2>
+                    <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none"
+                                           href="/profile/{chapterContent.owner_id}">{chapterContent.profiles.username}</a>
+                        - <span class="text-muted" use:tooltip={{...tooltipConfig}}
+                                title="{createdAtDetailed}">{createdAtFormatted}</span></h6>
                     {#if chapterContent.tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
                                 {#each chapterContent.tags as tag (tag.id)}
-                                    <a href="/search?tag={tag.name}" class="badge bg-purple text-light me-1 mb-1 text-decoration-none" use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
+                                    <a href="/search?tag={tag.name}"
+                                       class="badge bg-purple text-light me-1 mb-1 text-decoration-none"
+                                       use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
                                 {/each}
                             </div>
                         </div>
@@ -283,9 +295,11 @@
     <!-- Stats -->
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 mb-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Likes">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
+                 title="Likes">
                 <div class="col-auto d-flex align-items-center pe-0">
-                    <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1" onclick={handleHeartClick} aria-label="Like Chapter">
+                    <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1"
+                            onclick={handleHeartClick} aria-label="Like Chapter">
                         <i class="fas fa-heart {chapterContent.is_liked ? 'liked' : 'unliked'}"></i>
                     </button>
                 </div>
@@ -295,7 +309,8 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Views">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
+                 title="Views">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-eye"></i>
                 </div>
@@ -305,7 +320,8 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}} title="Comments">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
+                 title="Comments">
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-comment"></i>
                 </div>
@@ -328,7 +344,8 @@
                 <!-- Chapters navigator -->
                 <div class="row justify-content-center mb-2">
                     <div class="col-12 px-1">
-                        <button class="btn btn-chapters-navigator w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPageNavigation" aria-controls="offcanvasPageNavigation">
+                        <button class="btn btn-chapters-navigator w-100" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasPageNavigation" aria-controls="offcanvasPageNavigation">
                             <i class="fas fa-list"></i>
                             <span class="fs-6">Chapters</span>
                         </button>
@@ -338,12 +355,15 @@
                 <div class="row justify-content-center text-center">
                     <div class="col-6 px-1" use:autoAnimate>
                         {#if chapterContent.previousChapter}
-                            <a href="/content/{chapterContent.book_id}/{chapterContent.previousChapter}" class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Previous Chapter" data-sveltekit-noscroll>
+                            <a href="/content/{chapterContent.book_id}/{chapterContent.previousChapter}"
+                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}}
+                               title="Previous Chapter" data-sveltekit-noscroll>
                                 <i class="fas fa-chevron-left"></i>
                                 <span class="fs-6">Previous</span>
                             </a>
                         {:else if chapterContent.nextChapter}
-                            <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled" use:tooltip={{...tooltipConfig}} title="No previous chapters">
+                            <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled"
+                                  use:tooltip={{...tooltipConfig}} title="No previous chapters">
                                 <i class="fas fa-chevron-left"></i>
                                 <span class="fs-6">You're here! 😅</span>
                             </span>
@@ -351,12 +371,15 @@
                     </div>
                     <div class="col-6 px-1" use:autoAnimate>
                         {#if chapterContent.nextChapter}
-                            <a href="/content/{chapterContent.book_id}/{chapterContent.nextChapter}" class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Next Chapter" data-sveltekit-noscroll>
+                            <a href="/content/{chapterContent.book_id}/{chapterContent.nextChapter}"
+                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}}
+                               title="Next Chapter" data-sveltekit-noscroll>
                                 <span class="fs-6">Next</span>
                                 <i class="fas fa-chevron-right"></i>
                             </a>
                         {:else if chapterContent.previousChapter}
-                            <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled" use:tooltip={{...tooltipConfig}} title="No more chapters">
+                            <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled"
+                                  use:tooltip={{...tooltipConfig}} title="No more chapters">
                                 <span class="fs-6">You're here! 😅</span>
                                 <i class="fas fa-chevron-right"></i>
                             </span>
@@ -377,12 +400,16 @@
         <div class="col-10 col-md-9 pt-2 px-0">
             <p class="text-secondary text-center">
                 <small>
-                    &copy; {currentYear} <a class="link-secondary text-decoration-none" href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}} title="Profile">{chapterContent.profiles.username}</a> - {chapterContent.book.title} - {chapterContent.title}
+                    &copy; {currentYear} <a class="link-secondary text-decoration-none"
+                                            href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}}
+                                            title="Profile">{chapterContent.profiles.username}</a>
+                    - {chapterContent.book.title} - {chapterContent.title}
                 </small>
             </p>
         </div>
         <div class="col-auto text-center my-auto mt-md-1 px-0">
-            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report" data-bs-toggle="modal" data-bs-target="#reportModal" aria-label="Report Chapter">
+            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report"
+                    data-bs-toggle="modal" data-bs-target="#reportModal" aria-label="Report Chapter">
                 <i class="fas fa-flag"></i>
             </button>
         </div>
@@ -395,13 +422,16 @@
             <div class="col-12 px-0">
                 <div class="row justify-content-center pt-1">
                     <div class="col-auto">
-                        <a href="/edit/{chapterContent.book_id}/{chapterContent.id}" class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Edit Chapter">
+                        <a href="/edit/{chapterContent.book_id}/{chapterContent.id}"
+                           class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
+                           use:tooltip={{...tooltipConfig}} title="Edit Chapter">
                             <i class="fas fa-edit"></i>
                             <span class="fs-6">Edit</span>
                         </a>
                     </div>
                     <div class="col-auto">
-                        <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}} title="Delete Chapter" onclick={handleChapterDelete}>
+                        <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
+                                use:tooltip={{...tooltipConfig}} title="Delete Chapter" onclick={handleChapterDelete}>
                             <i class="fas fa-trash-alt"></i>
                             <span class="fs-6">Delete</span>
                         </button>
@@ -415,7 +445,7 @@
     {/if}
 
     <!-- Comments section -->
-    <CommentsSection comments={chapterContent.comments} {supabase} chapterId={chapterContent.id} {image_proxy} />
+    <CommentsSection comments={chapterContent.comments} {supabase} chapterId={chapterContent.id} {image_proxy}/>
 
     <!-- Modals section -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
@@ -423,21 +453,28 @@
             <div class="modal-content border border-black text-light bg-purple-dark">
                 <div class="modal-header border-bottom border-black">
                     <h5 class="modal-title" id="reportModalLabel">Report Content</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                 </div>
                 <div class="modal-body pb-0">
                     <div class="mb-3">
                         <label for="reportText" class="form-label">Report Text</label>
-                        <textarea class="form-control bg-dark bg-opacity-10 text-light" id="reportText" rows="3" maxlength="1000" placeholder="Is this AI? Or NSFW/Mature Content? These are examples of content that can and should be reported ⚠️!" bind:value={reportText}></textarea>
+                        <textarea class="form-control bg-dark bg-opacity-10 text-light" id="reportText" rows="3"
+                                  maxlength="1000"
+                                  placeholder="Is this AI? Or NSFW/Mature Content? These are examples of content that can and should be reported ⚠️!"
+                                  bind:value={reportText}></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
                     <div class="row w-100">
                         <div class="col ps-0 pe-1">
-                            <button type="button" class="btn btn-close-report w-100" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-close-report w-100" data-bs-dismiss="modal">Close
+                            </button>
                         </div>
                         <div class="col ps-1 pe-0">
-                            <button type="button" class="btn btn-submit-report w-100" onclick={handleReport}>Submit Report</button>
+                            <button type="button" class="btn btn-submit-report w-100" onclick={handleReport}>Submit
+                                Report
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -445,10 +482,12 @@
         </div>
     </div>
     <!-- Bottom offcanvas chapters navigation -->
-    <div class="offcanvas offcanvas-bottom h-auto border-top-purple" tabindex="-1" id="offcanvasPageNavigation" aria-labelledby="offcanvasPageNavigationLabel">
+    <div class="offcanvas offcanvas-bottom h-auto border-top-purple" tabindex="-1" id="offcanvasPageNavigation"
+         aria-labelledby="offcanvasPageNavigationLabel">
         <div class="offcanvas-header bg-black bg-opacity-75 pb-0">
             <h5 id="offcanvasPageNavigationLabel">Chapters navigator</h5>
-            <button type="button" class="btn-close text-reset me-md-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <button type="button" class="btn-close text-reset me-md-3" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
         </div>
         <div class="offcanvas-body bg-black bg-opacity-75 pt-1 pt-md-2">
             <div class="row">
@@ -456,7 +495,8 @@
                     <div class="row row-horizontal flex-nowrap py-2">
                         {#each chapterContent.chapters as chapter, index (chapter.id)}
                             <div class="col-3 col-md-2 col-lg-1">
-                                <a href="/content/{chapter.book_id}/{chapter.id}" data-sveltekit-noscroll class="btn {chapter.id === chapterContent.id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index}</a>
+                                <a href="/content/{chapter.book_id}/{chapter.id}" data-sveltekit-noscroll
+                                   class="btn {chapter.id === chapterContent.id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index}</a>
                             </div>
                         {/each}
                     </div>
@@ -646,14 +686,26 @@
     }
 
     @keyframes heart-pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); }
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
     }
 
     @keyframes heart-unpulse {
-        0% { transform: scale(0.8); }
-        50% { transform: scale(1); }
-        100% { transform: scale(0.8); }
+        0% {
+            transform: scale(0.8);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0.8);
+        }
     }
 </style>

@@ -13,7 +13,7 @@
     import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
 
     /** @type {{data: any}} */
-    let { data } = $props();
+    let {data} = $props();
 
     let {
         supabase,
@@ -72,11 +72,9 @@
                     ip_address: ip,
                     user_id: user_id
                 }
-                ]).then((error) => {
-                    if (!error) {
-                        bookContent.views.count++;
-                    }
-                });
+                ]);
+
+            if (!error) bookContent.views.count++;
         } else if (ip) {
             // Using only IP address
             await supabase
@@ -85,11 +83,8 @@
                     book_id: bookContent.id,
                     ip_address: ip
                 }
-                ]).then((error) => {
-                    if (!error) {
-                        bookContent.views.count++;
-                    }
-                });
+                ]);
+
         }
     }
 
@@ -261,7 +256,7 @@
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
             <a href="{bookContent.cover_url}" target="_blank" aria-label="Open image in new page." use:autoAnimate>
-                <ContentImage src={bookContent.cover_url} alt={bookContent.title} {image_proxy} />
+                <ContentImage src={bookContent.cover_url} alt={bookContent.title} {image_proxy}/>
             </a>
         </div>
     </div>
@@ -347,7 +342,7 @@
                 <div class="row justify-content-evely gy-3 mx-0">
                     {#each bookContent.chapters as chapter, index (chapter.id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <ChapterCard content={chapter} index={index + 1} {image_proxy} {user_id} />
+                            <ChapterCard content={chapter} index={index + 1} {image_proxy} {user_id}/>
                         </div>
                     {/each}
                 </div>

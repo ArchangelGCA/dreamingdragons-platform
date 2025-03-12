@@ -191,8 +191,8 @@
             <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/5mVFmCBx5q"
                                          target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">DreamingDragons</a>
             </p>
-            <iframe class="rounded-3" src="https://discord.com/widget?id=1054013154822205450&theme=dark"
-                    title="DreamingDragons Discord" width="350" height="500" allowtransparency="true"
+            <iframe class="rounded-3" src="https://discord.com/widget?id=1054013154822205450&theme=dark" title="DreamingDragons Discord Widget" width="350" height="500"
+                    allowtransparency="true" frameborder="0"
                     sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
     </div>

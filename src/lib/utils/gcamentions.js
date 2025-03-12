@@ -26,7 +26,7 @@ export async function mentionTooltip(supabase) {
  * Private function async tooltips
  * */
 export async function listenerMentions(e, supabase) {
-    // Hacky way to keep support of older mentions "workarounds".
+    // Hacky way to keep support of older mentions "workarounds" (such as @mentions with a link attached).
     if (e.target.tagName === 'A' && e.target.href.includes('profile/') && !e.target.hasAttribute('data-mention-id') && e.target.innerText.startsWith('@')) {
         const userId = e.target.href.split('profile/')[1];
         e.target.setAttribute('data-mention-id', userId);
@@ -88,6 +88,12 @@ export async function listenerMentions(e, supabase) {
             document.querySelectorAll('.mention-tooltip').forEach((el) => el.remove());
         });
 
+        // On click, destroy
+        e.target.addEventListener('click', () => {
+            tooltip.remove();
+            document.querySelectorAll('.mention-tooltip').forEach((el) => el.remove());
+        });
+
         e.target.addEventListener('mousemove', (ev) => {
             tooltip.style.top = ev.pageY + 'px';
             tooltip.style.left = ev.pageX + 'px';
@@ -102,4 +108,12 @@ export async function removeMentionListener() {
     if (abortController) {
         abortController.abort();
     }
+    await removeMentionTooltips();
+}
+
+/**
+ * Remove all mention tooltips.
+ */
+export async function removeMentionTooltips() {
+    if (browser) document.querySelectorAll('.mention-tooltip').forEach((el) => el.remove());
 }
