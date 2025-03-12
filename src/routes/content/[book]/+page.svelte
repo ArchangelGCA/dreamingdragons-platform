@@ -73,8 +73,6 @@
                     user_id: user_id
                 }
                 ]);
-
-            if (!error) bookContent.views.count++;
         } else if (ip) {
             // Using only IP address
             await supabase
@@ -84,7 +82,6 @@
                     ip_address: ip
                 }
                 ]);
-
         }
     }
 
