@@ -343,7 +343,7 @@
                                 <span class="">{total_followers}</span>
                             </div>
                         </div>
-                        <div class="dropdown-menu ms-md-5 py-1" aria-labelledby="followers">
+                        <div class="dropdown-menu ms-md-5 py-1 border-0 followers-container" aria-labelledby="followers">
                             {#if !profile.followers || profile.followers.length === 0}
                                 <span class="dropdown-item rounded-3">No followers yet</span>
                             {:else}
@@ -505,6 +505,14 @@
         background-color: rgba(43, 0, 73, 0.95);
     }
 
+    .dropdown-item:active {
+        background-color: rgba(43, 0, 73, 0.95);
+    }
+
+    .dropdown-item:focus {
+        background-color: rgba(43, 0, 73, 0.95);
+    }
+
     .link-purple {
         color: #7d00dd;
         transition: color 0.3s;
@@ -565,5 +573,27 @@
 
     .btn-username:hover {
         color: #7d00dd;
+    }
+
+    .followers-container {
+        overflow-y: auto;
+        max-height: 300px;
+        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    .followers-container::-webkit-scrollbar {
+        width: 10px;
+        background-color: #1f002e;
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    .followers-container::-webkit-scrollbar-thumb {
+        background: #5b0083;
+        border-radius: 20px;
+    }
+
+    .followers-container::-webkit-scrollbar-thumb:hover {
+        background: #6e00a1;
     }
 </style>
