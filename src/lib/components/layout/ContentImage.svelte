@@ -8,15 +8,20 @@
     } = $props();
 
     let finalImageUrl = $derived(image_proxy && src && src !== '' && !src.startsWith(image_proxy) ? image_proxy + src + '?width=' + size : src);
-    let isImageLoaded = $derived(src && src !== '');
+    let isImageLoaded = $state(false);
+
+    function handleImageLoad() {
+        isImageLoaded = true;
+    }
 </script>
 
 {#if !isImageLoaded}
     <div class="placeholder-glow" style="height: 82vh">
         <div class="placeholder bg-light-subtle rounded-4 w-100 h-100"></div>
     </div>
+    <img src={finalImageUrl} {alt} class="img-fluid rounded-4" style="max-height: 82vh; display: {isImageLoaded ? 'content' : 'none'}" onload={handleImageLoad}>
 {:else}
-    <img src={finalImageUrl} {alt} class="img-fluid rounded-4" style="max-height: 82vh">
+    <img src={finalImageUrl} {alt} class="img-fluid rounded-4" style="max-height: 82vh; display: {isImageLoaded ? 'content' : 'none'}" onload={handleImageLoad}>
 {/if}
 
 <!--
