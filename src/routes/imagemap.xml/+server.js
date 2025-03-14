@@ -33,6 +33,36 @@ export const GET = async ({locals: {supabase}}) => {
         `<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
                 xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        <url>
+            <loc>https://tales.archangelgca.eu</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/legal/privacy-policy</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/legal/tos</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/login</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/search</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/settings</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/settings/updates</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/staff/timezones</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/updates</loc>
+        </url>
+        <url>
+            <loc>https://tales.archangelgca.eu/upload</loc>
+        </url>
             ${bookCoverUrlsFiltered.map((book) => `
                 <url>
                     <loc>https://tales.archangelgca.eu/content/${book.id}</loc>
