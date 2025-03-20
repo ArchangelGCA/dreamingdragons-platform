@@ -6,6 +6,7 @@
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
     import {deserialize} from "$app/forms";
+    import autoAnimate from '@formkit/auto-animate';
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -114,7 +115,7 @@
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row column-vertical" onscroll={handleScroll}>
+                <div class="row column-vertical" onscroll={handleScroll} use:autoAnimate>
                     <Masonry
                             items={books_ordered_by_created_at}
                             {minColWidth}
