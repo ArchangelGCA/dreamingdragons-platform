@@ -24,7 +24,8 @@
     let step = 20;
     let startRange = 0;
     let endRange = step;
-    let width = $state(), height = $state();
+    let width = $state(0), height = $state(0);
+    let [minColWidth, gap] = [350, 10];
 
     async function loadMoreContentByCreatedAt() {
         if (loading || allContentLoaded) return;
@@ -117,12 +118,12 @@
                     <div class="col-12 px-0">
                         <Masonry
                                 items={books_ordered_by_created_at}
-                                minColWidth={350}
-                                gap={10}
+                                {minColWidth}
+                                {gap}
                                 animate={true}
 
-                                bind:width
-                                bind:height
+                                bind:masonryWidth={width}
+                                bind:masonryHeight={height}
                         >
                             {#snippet children({item})}
                                 <ContentMasonry book={item} {image_proxy}/>

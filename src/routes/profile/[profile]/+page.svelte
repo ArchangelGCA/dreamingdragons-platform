@@ -43,7 +43,8 @@
     let allLikedBooksLoaded = false;
     let followActionActive = false;
     let show = $state('home');
-    let width = $state(), height = $state();
+    let width = $state(0), height = $state(0);
+    let [minColWidth, gap] = [350, 10];
 
     let y = $state();
 
@@ -439,12 +440,12 @@
                     <div class="col-12 mt-0">
                         <Masonry
                                 items={profile.book}
-                                minColWidth={400}
-                                gap={10}
+                                {minColWidth}
+                                {gap}
                                 animate={true}
 
-                                bind:width
-                                bind:height
+                                bind:masonryWidth={width}
+                                bind:masonryHeight={height}
                         >
                             {#snippet children({item})}
                                 <ProfileMasonry content={item} {image_proxy}/>
@@ -464,8 +465,8 @@
                         <Masonry
                                 items={likedBooks}
                                 idKey="book_id"
-                                minColWidth={300}
-                                gap={10}
+                                {minColWidth}
+                                {gap}
                                 animate={true}
 
                                 bind:width
