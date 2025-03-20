@@ -1,4 +1,4 @@
-export const load = async ( { params, url, locals: { supabase, /*getSession,*/ } }) => {
+export const load = async ( { url, locals: { supabase, /*getSession,*/ } }) => {
     const query = url.searchParams.get('q');
     const tags = url.searchParams.get('tag');
     let empty = [];
@@ -37,7 +37,7 @@ export const load = async ( { params, url, locals: { supabase, /*getSession,*/ }
 }
 
 export const actions = {
-    loadmore: async ({request, url, locals: {supabase}}) => {
+    loadmore: async ({request, locals: {supabase}}) => {
         const formData = Object.fromEntries(await request.formData());
 
         const page = formData.page ? parseInt(formData.page) : 0;

@@ -4,7 +4,7 @@
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
-    import Masonry from "svelte-bricks";
+    import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
     import {deserialize} from "$app/forms";
 
     /** @type {{data: any}} */
@@ -108,28 +108,27 @@
 
         <!-- Start newest content section -->
         <div class="col-12 mt-3 mb-2">
-            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.2.2</span></p>
+            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.3.2</span></p>
         </div>
         <div class="col-12">
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
                 <div class="row column-vertical" onscroll={handleScroll}>
-                    <div class="col-12 px-0">
-                        <Masonry
-                                items={books_ordered_by_created_at}
-                                {minColWidth}
-                                {gap}
-                                animate={true}
+                    <Masonry
+                            items={books_ordered_by_created_at}
+                            {minColWidth}
+                            {gap}
+                            animate={true}
+                            class="col-12 px-0"
 
-                                bind:masonryWidth={width}
-                                bind:masonryHeight={height}
-                        >
-                            {#snippet children({item})}
-                                <ContentMasonry book={item} {image_proxy}/>
-                            {/snippet}
-                        </Masonry>
-                    </div>
+                            bind:masonryWidth={width}
+                            bind:masonryHeight={height}
+                    >
+                        {#snippet children({item})}
+                            <ContentMasonry book={item} {image_proxy}/>
+                        {/snippet}
+                    </Masonry>
                     {#if allContentLoaded}
                         <div class="col-12">
                             <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All Content loaded!⚠️</p>

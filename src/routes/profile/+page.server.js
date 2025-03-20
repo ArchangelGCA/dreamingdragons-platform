@@ -1,7 +1,7 @@
 import { PUBLIC_DEFAULT_NAME, PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
 import {error as errorx, redirect} from "@sveltejs/kit";
 
-export const load = async ( { params, locals: { supabase, getSession } }) => {
+export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();
 
     if (session) {

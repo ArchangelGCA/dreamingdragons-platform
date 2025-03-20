@@ -225,7 +225,7 @@ export const actions = {
             }
         }
     },
-    follow: async ({request, locals: {supabase, getSession}}) => { // TODO: Refactor to use rules directly on database.
+    follow: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
         const {session} = await getSession();
 
@@ -422,7 +422,7 @@ export const actions = {
             }
         }
     },
-    books: async ({request, locals: {supabase, getSession}}) => { // using fetchBooks function
+    books: async ({request, locals: {supabase}}) => {
         const formData = Object.fromEntries(await request.formData());
 
         let startRange = formData.startRange;

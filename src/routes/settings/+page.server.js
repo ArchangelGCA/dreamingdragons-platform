@@ -442,21 +442,6 @@ export const actions = {
         const isEmailRegistered = contacts.data.find(contact => contact.email === session.user.email);
 
         if (isEmailRegistered) {
-            /*if (!newsletter) {
-                console.log('Subscribed to newsletter ' + session.user.email + " " + newsletter);
-                await resend.contacts.update({
-                    audienceId: PRIVATE_RESEND_AUDIENCE_ID,
-                    email: session.user.email,
-                    unsubscribed: false,
-                });
-            } else {
-                console.log('Unsubscribed from newsletter ' + session.user.email + " " + newsletter);
-                await resend.contacts.update({
-                    audienceId: PRIVATE_RESEND_AUDIENCE_ID,
-                    email: session.user.email,
-                    unsubscribed: true,
-                });
-            }*/
             await resend.contacts.update({
                 audienceId: PRIVATE_RESEND_AUDIENCE_ID,
                 email: session.user.email,

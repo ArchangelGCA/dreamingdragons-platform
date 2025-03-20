@@ -6,7 +6,7 @@
     import {invalidateAll, onNavigate} from "$app/navigation";
     import {toast} from "@zerodevx/svelte-toast";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-    import Masonry from "svelte-bricks";
+    import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
 

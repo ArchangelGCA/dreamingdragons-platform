@@ -30,7 +30,6 @@
     "resend": "^4.1.2",
     "super-sitemap": "^1.0.3",
     "svelte": "^5.20.5",
-    "svelte-bricks": "^0.3.1",
     "vite": "^6.2.0"
   },
   "type": "module",

@@ -1,9 +1,7 @@
 import {error as errorx, redirect} from "@sveltejs/kit";
-import sharp from "sharp";
-import PocketBase from "pocketbase";
-import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
-import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_COVER_MAX_RESIZE, PUBLIC_POCKETBASE_URL, PUBLIC_POCKETBASE_URL_IMG_API } from "$env/static/public";
+import {PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_POCKETBASE_URL_IMG_API } from "$env/static/public";
 import {fetchProfiles} from "$lib/utils/gcafetchers.js";
+import {uploadImage} from "$lib/utils/misc.js";
 
 export const load = async ({ params, locals: { supabase, getSession} }) => {
     const {session} = await getSession();
@@ -228,7 +226,7 @@ export const actions = {
             }
         }
     },
-    getProfiles: async ({ request, url, locals: { supabase, getSession } }) => {
+    getProfiles: async ({ url, locals: { supabase, getSession } }) => {
         const { session } = await getSession();
         if (!session) {
             return {
@@ -241,56 +239,4 @@ export const actions = {
         const origin = url.origin;
         return await fetchProfiles({ supabase, origin });
     }
-}
-
-const uploadImage = async (image, cover_id) => {
-    const imageSharp = sharp(await image.arrayBuffer(), {animated: true});
-    const metadata = await imageSharp.metadata();
-
-    // Get image res, if more than 5000px, error
-    if ((metadata.format === 'gif' && (metadata.pageHeight > PUBLIC_COVER_MAX_HEIGHT || metadata.width > PUBLIC_COVER_MAX_WIDTH)) || (metadata.format !== 'gif' && (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT))) {
-        return {
-            status: 400,
-            body: {
-                message: `Image too big (max ${PUBLIC_COVER_MAX_WIDTH}x${PUBLIC_COVER_MAX_HEIGHT})`
-            }
-        }
-    }
-
-    // Pass PUBLIC_COVER_MAX_RESIZE to INT
-    const resize = parseInt(PUBLIC_COVER_MAX_RESIZE);
-
-    // Resize the image
-    let resizedImageSharp = imageSharp
-        .rotate()
-        .resize(resize, resize, {
-        fit: sharp.fit.inside,
-        withoutEnlargement: true
-    });
-
-    // convert image to webp
-    const buffer = await resizedImageSharp
-        .webp({ quality: 80 })
-        .toBuffer();
-
-    // Assign to image a random name
-    const random = Math.random().toString(36).substring(2, 15);
-    const newImageName = `${random}.webp`;
-
-    const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-    await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
-
-    const file = new File([buffer], newImageName, { type: 'image/webp', lastModified: Date.now() });
-
-    const formData = new FormData();
-    formData.append('image', file);
-
-    const createdRecord = await pb.collection('media').create(formData);
-
-    // delete old image cover_id
-    await pb.collection('media').delete(cover_id);
-
-    pb.authStore.clear();
-
-    return PUBLIC_POCKETBASE_URL + '/api/files/' + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
 }
