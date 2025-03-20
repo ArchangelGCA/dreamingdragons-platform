@@ -19,7 +19,7 @@
     <div class="placeholder-glow" style="height: 82vh">
         <div class="placeholder bg-light-subtle rounded-4 w-100 h-100"></div>
     </div>
-    <img src={finalImageUrl} {alt} class="img-fluid rounded-4" style="max-height: 82vh;" onload={handleImageLoad}>
+    <img src={finalImageUrl} {alt} class="img-fluid rounded-4" style="width: 1px; height: 1px" onload={handleImageLoad}>
 {:else}
     <img src={finalImageUrl} {alt} class="img-fluid rounded-4" style="max-height: 82vh;">
 {/if}
