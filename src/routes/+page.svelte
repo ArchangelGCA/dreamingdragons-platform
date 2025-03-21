@@ -108,14 +108,14 @@
         <!-- End following section -->
 
         <!-- Start newest content section -->
-        <div class="col-12 mt-3 mb-2">
+        <div class="col-12 mt-3">
             <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.3.2</span></p>
         </div>
         <div class="col-12">
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
-                <div class="row column-vertical" onscroll={handleScroll} use:autoAnimate>
+                <div class="row column-vertical pt-2" onscroll={handleScroll} use:autoAnimate>
                     <Masonry
                             items={books_ordered_by_created_at}
                             {minColWidth}

@@ -1,8 +1,9 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "@zerodevx/svelte-toast";
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltip} from "@svelte-plugins/tooltips";
     import {invalidateAll} from "$app/navigation";
+    import autoAnimate from "@formkit/auto-animate";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -17,11 +18,12 @@
     };
 
     /** @type {{content: any, image_proxy: any}} */
-    let { content = $bindable(), image_proxy } = $props();
+    let {content = $bindable(), image_proxy} = $props();
     // let width = 500;
     let likeActionActive = false;
     let finalLinkImage = $derived(image_proxy && !content.cover_url.startsWith(image_proxy) ? image_proxy + content.cover_url + '?width=750&quality=80' : content.cover_url);
     let finalBookTitle = $derived(content.title.length > 35 ? content.title.substring(0, 35) + '...' : content.title);
+    let isImageLoaded = $state(false);
 
     async function handleHeartClick(e) {
         e.preventDefault();
@@ -42,8 +44,8 @@
         });
 
         const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
+        if (result.type === 'success') {
+            if (result.data.status === 200) {
                 toast.push(!content.is_liked ? 'Tale Liked ❤️' : 'Tale Unliked 💔', {
                     theme: {
                         '--toastBackground': 'rgba(92,0,166,0.9)',
@@ -75,21 +77,38 @@
 <div>
     <div class="card border-0">
         <a href="/content/{content.id}">
-            <div class="card-img">
-                <img
-                        src={finalLinkImage}
-                        alt="Book cover"
-                        class="img-fluid rounded-3"
-                >
+            <div class="card-img" use:autoAnimate>
+                {#if !isImageLoaded}
+                    <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
+                        <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
+                            <img
+                                    src={finalLinkImage}
+                                    alt="Book cover"
+                                    class="card-img"
+                                    style="width: 1px; height: 1px;"
+                                    onload={() => isImageLoaded = true}
+                            >
+                        </div>
+                    </div>
+                {:else}
+                    <img
+                            src={finalLinkImage}
+                            alt="Book cover"
+                            class="img-fluid rounded-3"
+                    >
+                {/if}
             </div>
             <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
                 <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                     <div class="col-9 my-auto">
-                        <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap" href="/content/{content.id}"
-                           use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{finalBookTitle}</span></button>
+                        <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap"
+                                href="/content/{content.id}"
+                                use:tooltip={{...tooltipConfig}} title="Click to view"><span
+                                class="text-title">{finalBookTitle}</span></button>
                     </div>
                     <div class="col-3 text-center">
-                        <button class="btn btn-link text-decoration-none p-0 w-auto" onclick={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
+                        <button class="btn btn-link text-decoration-none p-0 w-auto" onclick={handleHeartClick}
+                                use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
                         <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
                             <span class="likes-counter">{content.likes}</span>
@@ -129,9 +148,9 @@
         opacity: 0;
     }
 
-    .overlay-custom:hover{
+    .overlay-custom:hover {
         opacity: 1 !important;
-        backdrop-filter: brightness(1.2) ;
+        backdrop-filter: brightness(1.2);
     }
 
     .custom-overlay-content {
@@ -191,14 +210,26 @@
     }
 
     @keyframes heart-pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); }
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
     }
 
     @keyframes heart-unpulse {
-        0% { transform: scale(0.8); }
-        50% { transform: scale(1); }
-        100% { transform: scale(0.8); }
+        0% {
+            transform: scale(0.8);
+        }
+        50% {
+            transform: scale(1);
+        }
+        100% {
+            transform: scale(0.8);
+        }
     }
 </style>

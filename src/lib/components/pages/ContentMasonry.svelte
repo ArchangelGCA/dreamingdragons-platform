@@ -1,6 +1,7 @@
 <script>
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import autoAnimate from "@formkit/auto-animate";
 
     const tooltipConfig = {
         animation: 'fade',
@@ -15,69 +16,61 @@
     };
 
     /** @type {{book: any, image_proxy: any}} */
-    let { book = $bindable(), image_proxy } = $props();
+    let {book = $bindable(), image_proxy} = $props();
 
     let width = 500;
-    let isDragging = false;
-    let dragTimeout;
     let finalLinkImage = $derived(image_proxy && !book.cover_url.startsWith(image_proxy) ? image_proxy + book.cover_url : book.cover_url);
     let finalBookTitle = $derived(book.title.length > 20 ? book.title.substring(0, 18) + '...' : book.title);
     let finalUsername = $derived(book.profiles.username.length > 16 ? book.profiles.username.substring(0, 15) + '...' : book.profiles.username);
+    let isImageLoaded = $state(false);
 
-    // Prevent clicking while dragging.
-    function handlePointerDown() {
-        isDragging = false;
-        clearTimeout(dragTimeout);
-    }
-
-    function handlePointerMove() {
-        isDragging = true;
-    }
-
-    function handlePointerUp() {
-        dragTimeout = setTimeout(() => {
-            isDragging = false;
-        }, 100);
-    }
-
-    function handlePointerLeave() {
-        dragTimeout = setTimeout(() => {
-            isDragging = false;
-        }, 100);
-    }
-
-    function handleClick(event) {
-        if (isDragging) {
-            event.preventDefault();
-        }
-    }
 </script>
 
 <div>
     <div class="card border-0">
-        <a href="/content/{book.id}" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}
-           onpointermove={handlePointerMove} onpointerup={handlePointerUp} onpointerleave={handlePointerLeave} aria-label="Content: {finalBookTitle}">
-            <div class="card-img">
-                <!-- 1x is for desktop, 2x is for mobile -->
-                <img
-                        srcset="{finalLinkImage + `?width=${width}&quality=80`} 2x,
-                        {finalLinkImage + `?width=${width}&quality=80`} 1x"
-                        src={finalLinkImage + `?width=${width}&quality=80`}
-                        alt="Book cover"
-                        class="img-fluid rounded-3"
-                        width={width}
-                >
+        <a href="/content/{book.id}" aria-label="Content: {finalBookTitle}">
+            <!-- 1x is for desktop, 2x is for mobile -->
+            <div class="card-img" use:autoAnimate>
+                {#if !isImageLoaded}
+                    <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
+                        <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
+                            <img
+                                    srcset="{finalLinkImage + `?width=${width}&quality=80`} 2x,
+                            {finalLinkImage + `?width=${width}&quality=80`} 1x"
+                                    src={finalLinkImage + `?width=${width}&quality=80`}
+                                    alt="Cover: {finalBookTitle}"
+                                    style="width: 1px; height: 1px;"
+                                    onload={() => isImageLoaded = true}
+                            >
+                        </div>
+                    </div>
+                {:else}
+                    <img
+                            srcset="{finalLinkImage + `?width=${width}&quality=80`} 2x,
+                            {finalLinkImage + `?width=${width}&quality=80`} 1x"
+                            src={finalLinkImage + `?width=${width}&quality=80`}
+                            alt="Cover: {finalBookTitle}"
+                            class="img-fluid rounded-3"
+                            width={width}
+                    >
+                {/if}
             </div>
             <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
                 <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                     <div class="col-12 px-0 px-md-2">
-                        <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap" href="/content/{book.id}"
-                           use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{finalBookTitle}</span></button>
+                        <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap"
+                                href="/content/{book.id}"
+                                use:tooltip={{...tooltipConfig}} title="Click to view"><span
+                                class="text-title">{finalBookTitle}</span></button>
                         <p class="card-text"><small class="text-description"><span>
-                            <UserAvatarNavbar url={book.profiles.avatar_url} username={book.profiles.username} {image_proxy} size="25px"/>
-                        </span> <button
-                                class="btn btn-link p-0 link-light link-custom text-decoration-none" href="/profile/{book.profiles.id}"
-                                use:tooltip={{...tooltipConfig}} title="Visit profile">{finalUsername}</button></small></p>
+                            <UserAvatarNavbar url={book.profiles.avatar_url} username={book.profiles.username}
+                                              {image_proxy} size="25px"/>
+                        </span>
+                            <button
+                                    class="btn btn-link p-0 link-light link-custom text-decoration-none"
+                                    href="/profile/{book.profiles.id}"
+                                    use:tooltip={{...tooltipConfig}} title="Visit profile">{finalUsername}</button>
+                        </small></p>
                     </div>
                 </div>
             </div>

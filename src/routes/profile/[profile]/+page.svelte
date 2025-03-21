@@ -62,11 +62,6 @@
         if (likedBooks.length < 40) allLikedBooksLoaded = true;
     }
 
-    /*async function handleVisit(e) {
-        e.preventDefault();
-        window.location.href = e.target.href;
-    }*/
-
     async function handleFollow(e) {
         e.preventDefault();
 
