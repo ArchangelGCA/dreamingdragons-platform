@@ -15,6 +15,10 @@
     /** @type {any} */
     let next = $state(item.initial)
     let prev = $state(item.initial)
+    let cprops = $derived(item.component ? (() => {
+        const {props = {}, sendIdTo} = item.component
+        return {...props, ...(sendIdTo && {[sendIdTo]: item.id})}
+    })() : {});
     let paused = $state(false)
     /** @type {any} */
     let unlisten
@@ -71,14 +75,6 @@
             prev = progress.current
             paused = false
             progress.set(next).then(autoclose)
-        }
-    });
-
-
-    $effect.pre(() => {
-        if (item.component) {
-            const {props = {}, sendIdTo} = item.component
-            cprops = {...props, ...(sendIdTo && {[sendIdTo]: item.id})}
         }
     });
 
