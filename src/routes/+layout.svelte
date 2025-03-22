@@ -1,10 +1,10 @@
 <script>
-    import '$lib/css/global.css';
-    import {invalidateAll} from '$app/navigation'
+    import "$lib/css/global.css";
+    import {invalidateAll} from "$app/navigation";
     import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";
-    import {SvelteToast} from '@zerodevx/svelte-toast';
-    import autoAnimate from '@formkit/auto-animate';
+    import {SvelteToast} from "$lib/components/svelte-toast";
+    import autoAnimate from "@formkit/auto-animate";
     import Notification from "$lib/components/layout/Notification.svelte";
     import {tooltip} from "@svelte-plugins/tooltips";
     import {page} from '$app/state';
@@ -191,9 +191,9 @@
     }
 </script>
 
-<Seo/>
+<Seo />
 
-<SvelteToast/>
+<SvelteToast />
 
 <div class="container-fluid bg-black bg-opacity-50" style="max-width: 100%; overflow-x: hidden">
 

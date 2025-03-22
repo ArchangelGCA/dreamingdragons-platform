@@ -1,5 +1,5 @@
 <script>
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import { tooltip } from "@svelte-plugins/tooltips";
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";

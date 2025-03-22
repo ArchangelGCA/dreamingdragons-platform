@@ -1,7 +1,7 @@
 <script>
     import autoAnimate from "@formkit/auto-animate";
     import {deserialize} from "$app/forms";
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     /** @type {{item: any}} */
     let { item, editContent, deleteContent } = $props();
 

@@ -95,14 +95,14 @@
 </div>
 
 <style>
-    :where(div.masonry) {
+    :where(:global(div.masonry)) {
         display: flex;
         justify-content: center;
         overflow-wrap: anywhere;
         box-sizing: border-box;
     }
 
-    :where(div.masonry div.col-id) {
+    :where(:global(div.masonry div.col-id)) {
         display: grid;
         height: max-content;
         width: 100%;

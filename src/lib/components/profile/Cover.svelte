@@ -1,6 +1,6 @@
 <script>
     import {deserialize} from "$app/forms";
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import { PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH } from "$env/static/public"
 
     /** @type {{url: any}} */

@@ -1,5 +1,5 @@
 <script>
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
     import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH} from "$env/static/public";
 

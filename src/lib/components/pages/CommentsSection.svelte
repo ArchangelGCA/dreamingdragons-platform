@@ -2,7 +2,7 @@
     import Comment from "$lib/components/pages/Comment.svelte";
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import {invalidateAll} from "$app/navigation";
 
     /** @type {{comments: any, supabase: any, bookId?: any, chapterId?: any, image_proxy?: any}} */

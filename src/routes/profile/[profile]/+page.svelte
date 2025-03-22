@@ -4,7 +4,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
     import {invalidateAll, onNavigate} from "$app/navigation";
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";

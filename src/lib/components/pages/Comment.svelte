@@ -1,6 +1,6 @@
 <script>
     import { tooltip } from "@svelte-plugins/tooltips";
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import Comment from "$lib/components/pages/Comment.svelte";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';

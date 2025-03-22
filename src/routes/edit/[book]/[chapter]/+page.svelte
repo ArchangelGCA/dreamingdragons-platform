@@ -1,6 +1,6 @@
 <script>
     import Editor from "@tinymce/tinymce-svelte";
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
     import { tooltip } from "@svelte-plugins/tooltips";
     import autoAnimate from '@formkit/auto-animate';

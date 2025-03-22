@@ -1,7 +1,7 @@
 <script>
     import {deserialize, enhance} from '$app/forms';
     import Avatar from '$lib/components/profile/Avatar.svelte';
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import {tooltip} from "@svelte-plugins/tooltips";
     import Cover from "$lib/components/profile/Cover.svelte";
     import {invalidateAll} from "$app/navigation";

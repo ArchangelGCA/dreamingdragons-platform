@@ -1,6 +1,6 @@
 {
   "name": "dd-tales-svelte",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -22,7 +22,6 @@
     "@sveltejs/kit": "^2.17.3",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tinymce/tinymce-svelte": "^3.0.0",
-    "@zerodevx/svelte-toast": "^0.9.6",
     "bootstrap": "^5.3.3",
     "install": "^0.13.0",
     "jose": "^6.0.8",

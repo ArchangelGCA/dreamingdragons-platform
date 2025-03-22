@@ -1,7 +1,7 @@
 <script>
     import {tooltip} from "@svelte-plugins/tooltips";
     import {deserialize} from "$app/forms";
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
     import {onDestroy, onMount} from "svelte";
     import {invalidateAll} from "$app/navigation";

@@ -1,5 +1,5 @@
 <script>
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     /** @type {{report: any, image_proxy?: string}} */

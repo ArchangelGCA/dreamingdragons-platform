@@ -1,6 +1,6 @@
 <script>
     import {deserialize} from "$app/forms";
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import {tooltip} from "@svelte-plugins/tooltips";
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";

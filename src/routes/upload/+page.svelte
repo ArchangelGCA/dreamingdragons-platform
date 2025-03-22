@@ -6,7 +6,7 @@
         PUBLIC_CONVERTER_URL
     } from "$env/static/public";
     import {deserialize} from '$app/forms';
-    import {toast} from "@zerodevx/svelte-toast";
+    import {toast} from "$lib/components/svelte-toast";
     import Editor from '@tinymce/tinymce-svelte';
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
