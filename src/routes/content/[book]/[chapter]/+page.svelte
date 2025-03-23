@@ -496,7 +496,7 @@
                         {#each chapterContent.chapters as chapter, index (chapter.id)}
                             <div class="col-3 col-md-2 col-lg-1">
                                 <a href="/content/{chapter.book_id}/{chapter.id}" data-sveltekit-noscroll
-                                   class="btn {chapter.id === chapterContent.id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index}</a>
+                                   class="btn {chapter.id === chapterContent.id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index + 1}</a>
                             </div>
                         {/each}
                     </div>
