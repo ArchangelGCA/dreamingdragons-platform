@@ -4,7 +4,7 @@
     import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH} from "$env/static/public";
 
     /** @type {{size?: number, url: any}} */
-    let { size = 10, url, upload } = $props();
+    let {size = 10, url, upload} = $props();
 
     let avatarUrl = $derived(url);
     let uploading = $state(false);
@@ -82,37 +82,38 @@
     }
 </script>
 
-<div class="col-auto text-center">
-    {#if avatarUrl}
-        <img
-                src={avatarUrl}
-                alt={avatarUrl ? 'Avatar' : 'No image'}
-                loading="lazy"
-                class="avatar image"
-                style="height: {size}em; width: {size}em;"
-        />
-    {:else}
-        <div class="img-thumbnail mx-auto" style="height: {size}em; width: {size}em;" ></div>
-    {/if}
-    <div class="col-12 text-center mt-1">
-        <small class="text-light text-opacity-50">Recommended Max resolution: {PUBLIC_PROFILE_ICON_RESIZE_WIDTH}x{PUBLIC_PROFILE_ICON_RESIZE_WIDTH} - 1:1</small>
+<div class="row">
+    <div class="col-auto text-center">
+        {#if avatarUrl}
+            <img
+                    src={avatarUrl}
+                    alt={avatarUrl ? 'Avatar' : 'No image'}
+                    loading="lazy"
+                    class="avatar image rounded-circle"
+                    style="height: {size}em; width: {size}em;"
+            />
+        {:else}
+            <div class="img-thumbnail mx-auto" style="height: {size}em; width: {size}em;"></div>
+        {/if}
     </div>
-    <input type="hidden" name="avatarUrl" value={url} />
-
-    <div class="text-center" style="min-width: {size}em;">
-        <label class="btn btn-purple w-100 mt-1" for="single">
-            {uploading ? 'Uploading ...' : 'Upload'}
+    <div class="col-auto my-auto">
+        <label class="btn btn-purple px-2 py-2 rounded-3" for="single" style="font-size: 0.9em;">
+            <i class="fa-solid fa-camera mx-1"></i> {uploading ? 'Uploading ...' : 'Change Avatar'}
         </label>
         <input class="d-none"
-                type="file"
-                id="single"
-                accept="image/*"
-                bind:files
-                onchange={uploadAvatar}
-                disabled={uploading}
+               type="file"
+               id="single"
+               accept="image/*"
+               bind:files
+               onchange={uploadAvatar}
+               disabled={uploading}
         />
+        <br>
+        <small class="text-light text-opacity-50" style="font-size: 0.75em;">Recommended: {PUBLIC_PROFILE_ICON_RESIZE_WIDTH}x{PUBLIC_PROFILE_ICON_RESIZE_WIDTH}px</small>
+        <input type="hidden" name="avatarUrl" value={url}/>
     </div>
 </div>
+
 <style>
     .btn-purple {
         background-color: #5c00a6;

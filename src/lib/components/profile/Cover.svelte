@@ -85,10 +85,10 @@
 <div class="row justify-content-center">
     <div class="col-12 text-center">
         {#if coverUrl}
-            <img src={coverUrl} alt="Cover" class="img-fluid" style="max-height: 50vh;" />
+            <img src={coverUrl} alt="Cover" class="img-fluid rounded-2" style="max-height: 50vh;" />
         {:else}
             <div class="alert alert-info">
-                <p class="mb-0">No custom cover uploaded yet.</p>
+                <p class="mb-0">You haven't setup a cover, yet!</p>
             </div>
         {/if}
     </div>
