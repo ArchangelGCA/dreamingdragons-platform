@@ -34,9 +34,6 @@
     let loading = $state(false);
     let password = $state('');
     let loadingPassword = $state(false);
-    let isAccordionOpen = $state(false);
-    let isCoverAccordionOpen = $state(false);
-    let isAvatarAccordionOpen = $state(false);
     let isActiveUpdate = false;
     let isActiveShowFavourites = false;
     let isActiveNewsletter = false;
@@ -258,117 +255,133 @@
             <p class="h2 fw-bolder">Settings</p>
         </div>
     </div>
-    <!-- Avatar -->
-    <div class="row mt-2 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4">
-        <div class="col-12">
-            <p class="h4 fw-bold mb-0">Profile Picture</p>
-            <p class="text-muted">Update your profile picture</p>
-        </div>
-        <div class="col-12">
-            <div class="row justify-content-center">
-                <form class="form" method="post" action="?/update">
-                    <Avatar url={avatarUrl} size={6}
-                            upload={() => {invalidateAll()}}/>
-                </form>
+    {#if !session}
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-danger" role="alert">
+                    You are not logged in. Please <a href="/login">login</a> to view more settings.
+                </div>
             </div>
         </div>
-    </div>
-    <!-- Cover -->
-    <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
-        <div class="col-12">
-            <p class="h4 fw-bold mb-0">Cover Picture</p>
-            <p class="text-muted">Update your cover picture</p>
-        </div>
-        <div class="col-12">
-            <div class="row justify-content-center">
-                <Cover url={coverUrl} uploadComplete={() => {invalidateAll()}}/>
+    {/if}
+
+    {#if session}
+        <!-- Avatar -->
+        <div class="row mt-2 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4">
+
+            <div class="col-12">
+                <p class="h4 fw-bold mb-0">Profile Picture</p>
+                <p class="text-muted">Update your profile picture</p>
+            </div>
+            <div class="col-12">
+                <div class="row justify-content-center">
+                    <form class="form" method="post" action="?/update">
+                        <Avatar url={avatarUrl} size={6}
+                                upload={() => {invalidateAll()}}/>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- Account details - Profile -->
-    <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 pb-2 mt-3">
-        <div class="col-12">
-            <p class="h4 fw-bold mb-0">Account Details</p>
-            <p class="text-muted">Update your account details</p>
-        </div>
-        <div class="col-12 mt-2">
-            <form class="form" method="post" action="?/update" onsubmit={handleProfileUpdate}>
-                <div class="row gy-1">
-                    <div class="col-12 mb-3">
-                        <label for="email" class="form-label">Email 📧</label>
-                        <input id="email" type="text" bind:value={session.user.email} disabled
-                               class="form-control"/>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <label for="fullName" class="form-label">Full Name 🪧</label>
-                        <input id="fullName" name="fullName" type="text" bind:value={profile.full_name}
-                               class="form-control"/>
-                        <input type="hidden" name="fullName" value={profile.full_name}/>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <label for="username" class="form-label">Username<span class="text-danger-emphasis">*</span> 🪟</label>
-                        <input id="username" name="username" type="text" bind:value={profile.username}
-                               class="form-control"/>
-                        <input type="hidden" name="username" value={profile.username}/>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <label for="website" class="form-label">Website 🌐</label>
-                        <input id="website" name="website" type="url" bind:value={profile.website}
-                               class="form-control"/>
-                        <input type="hidden" name="website" value={profile.website}/>
-                    </div>
-                    <div class="col-12 mb-3">
-                        <input
-                                type="submit"
-                                class="btn btn-purple"
-                                value={loading ? 'Loading...' : 'Save'}
-                                disabled={loading}
-                        />
-                    </div>
+        <!-- Cover -->
+        <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
+            <div class="col-12">
+                <p class="h4 fw-bold mb-0">Cover Picture</p>
+                <p class="text-muted">Update your cover picture</p>
+            </div>
+            <div class="col-12">
+                <div class="row justify-content-center">
+                    <Cover url={coverUrl} uploadComplete={() => {invalidateAll()}}/>
                 </div>
-            </form>
+            </div>
         </div>
-    </div>
-    <!-- Security -->
-    <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
-        <div class="col-12">
-            <p class="h4 fw-bold mb-0">Security</p>
-            <p class="text-muted">Manage your password and security settings</p>
-        </div>
-        <!-- Collapse Password Button -->
-        <div class="col-12 mt-2">
-            <button class="btn btn-purple pb-1 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#passwordCollapse" aria-expanded="false" aria-controls="collapseExample">
-                Change Password
-            </button>
-        </div>
-        <div class="collapse" id="passwordCollapse">
-            <!-- Warning saying to make sure to use strong password -->
-            <div class="col-12 mt-3">
-                <div class="alert alert-warning" role="alert">
-                    Make sure to use a strong password that you haven't used before.
-                </div>
+        <!-- Account details - Profile -->
+        <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 pb-2 mt-3">
+            <div class="col-12">
+                <p class="h4 fw-bold mb-0">Account Details</p>
+                <p class="text-muted">Update your account details</p>
             </div>
             <div class="col-12 mt-2">
-                <form class="form" method="post" action="?/updatepassword" onsubmit={handlePasswordUpdate}>
+                <form class="form" method="post" action="?/update" onsubmit={handleProfileUpdate}>
                     <div class="row gy-1">
-                        <div class="col-12 mb-2">
-                            <label for="password" class="form-label">New Password 🔒</label>
-                            <input id="password" name="password" type="password" class="form-control" bind:value={password}/>
+                        <div class="col-12 mb-3">
+                            <label for="email" class="form-label">Email 📧</label>
+                            <input id="email" type="text" bind:value={session.user.email} disabled
+                                   class="form-control"/>
                         </div>
-                        <div class="col-12">
+                        <div class="col-12 mb-3">
+                            <label for="fullName" class="form-label">Full Name 🪧</label>
+                            <input id="fullName" name="fullName" type="text" bind:value={profile.full_name}
+                                   class="form-control"/>
+                            <input type="hidden" name="fullName" value={profile.full_name}/>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="username" class="form-label">Username<span class="text-danger-emphasis">*</span>
+                                🪟</label>
+                            <input id="username" name="username" type="text" bind:value={profile.username}
+                                   class="form-control"/>
+                            <input type="hidden" name="username" value={profile.username}/>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="website" class="form-label">Website 🌐</label>
+                            <input id="website" name="website" type="url" bind:value={profile.website}
+                                   class="form-control"/>
+                            <input type="hidden" name="website" value={profile.website}/>
+                        </div>
+                        <div class="col-12 mb-3">
                             <input
                                     type="submit"
                                     class="btn btn-purple"
-                                    value={loadingPassword ? 'Loading...' : 'Update Password'}
-                                    disabled={loadingPassword}
+                                    value={loading ? 'Loading...' : 'Save'}
+                                    disabled={loading}
                             />
                         </div>
-                        <input type="hidden" name="password" value={password}/>
                     </div>
                 </form>
             </div>
         </div>
-    </div>
+        <!-- Security -->
+        <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
+            <div class="col-12">
+                <p class="h4 fw-bold mb-0">Security</p>
+                <p class="text-muted">Manage your password and security settings</p>
+            </div>
+            <!-- Collapse Password Button -->
+            <div class="col-12 mt-2">
+                <button class="btn btn-purple pb-1 rounded-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#passwordCollapse" aria-expanded="false" aria-controls="collapseExample">
+                    Change Password
+                </button>
+            </div>
+            <div class="collapse" id="passwordCollapse">
+                <!-- Warning saying to make sure to use strong password -->
+                <div class="col-12 mt-3">
+                    <div class="alert alert-warning" role="alert">
+                        Make sure to use a strong password that you haven't used before.
+                    </div>
+                </div>
+                <div class="col-12 mt-2">
+                    <form class="form" method="post" action="?/updatepassword" onsubmit={handlePasswordUpdate}>
+                        <div class="row gy-1">
+                            <div class="col-12 mb-2">
+                                <label for="password" class="form-label">New Password 🔒</label>
+                                <input id="password" name="password" type="password" class="form-control"
+                                       bind:value={password}/>
+                            </div>
+                            <div class="col-12">
+                                <input
+                                        type="submit"
+                                        class="btn btn-purple"
+                                        value={loadingPassword ? 'Loading...' : 'Update Password'}
+                                        disabled={loadingPassword}
+                                />
+                            </div>
+                            <input type="hidden" name="password" value={password}/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {/if}
     <!-- Privacy Settings -->
     <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
         <div class="col-12">
@@ -376,35 +389,40 @@
             <p class="text-muted">Manage your privacy settings</p>
         </div>
         <div class="col-12 mt-2">
-            <div class="row justify-content-between mb-2 my-auto">
-                <div class="col-auto my-auto">
-                    <span class="fw-semibold">Show Favorites</span>
-                </div>
-                <div class="col-auto">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input fs-5" type="checkbox" id="showFavouritesSwitch" bind:checked={profile.show_favourites} onclick={handleShowFavourites}>
-                        <input type="hidden" name="showFavourites" value={profile.show_favourites}/>
+            {#if session}
+                <div class="row justify-content-between mb-2 my-auto">
+                    <div class="col-auto my-auto">
+                        <span class="fw-semibold">Show Favorites</span>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input fs-5" type="checkbox" id="showFavouritesSwitch"
+                                   bind:checked={profile.show_favourites} onclick={handleShowFavourites}>
+                            <input type="hidden" name="showFavourites" value={profile.show_favourites}/>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row justify-content-between mb-2">
-                <div class="col-auto my-auto">
-                    <span class="fw-semibold">Newsletter</span>
-                </div>
-                <div class="col-auto">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input fs-5" type="checkbox" id="newsletterSwitch" bind:checked={profile.newsletter} onclick={handleNewsletter}>
-                        <input type="hidden" name="newsletter" value={profile.newsletter}/>
+                <div class="row justify-content-between mb-2">
+                    <div class="col-auto my-auto">
+                        <span class="fw-semibold">Newsletter</span>
+                    </div>
+                    <div class="col-auto">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input fs-5" type="checkbox" id="newsletterSwitch"
+                                   bind:checked={profile.newsletter} onclick={handleNewsletter}>
+                            <input type="hidden" name="newsletter" value={profile.newsletter}/>
+                        </div>
                     </div>
                 </div>
-            </div>
+            {/if}
             <div class="row justify-content-between mb-2">
                 <div class="col-auto my-auto">
                     <span class="fw-semibold">Necessary Cookies</span>
                 </div>
                 <div class="col-auto">
                     <div class="form-check form-switch">
-                        <input class="form-check-input fs-5" type="checkbox" id="necessaryCookiesSwitch" checked disabled>
+                        <input class="form-check-input fs-5" type="checkbox" id="necessaryCookiesSwitch" checked
+                               disabled>
                     </div>
                 </div>
             </div>
@@ -414,34 +432,40 @@
                 </div>
                 <div class="col-auto">
                     <div class="form-check form-switch">
-                        <input class="form-check-input fs-5" type="checkbox" id="analyticsSwitch" bind:checked={analyticsEnabled} onclick={handleAnalytics}>
+                        <input class="form-check-input fs-5" type="checkbox" id="analyticsSwitch"
+                               bind:checked={analyticsEnabled} onclick={handleAnalytics}>
                         <input type="hidden" name="analyticsEnabled" value={analyticsEnabled}/>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Logout -->
-    <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
-        <div class="col-12">
-            <p class="h4 fw-bold mb-0">Logout</p>
-            <p class="text-muted">Sign out of your account</p>
-        </div>
-        <div class="col-12 mt-2">
-            <form class="form" method="post" action="?/logout" onsubmit={handleSignOut}>
-                <div class="row gy-1">
-                    <div class="col-12">
-                        <input
-                                type="submit"
-                                class="btn btn-logout"
-                                value="{loading ? 'Loading...' : 'Logout'}"
-                                disabled={loading}
-                        />
+    {#if session}
+        <!-- Logout -->
+        <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
+            <div class="col-12">
+                <p class="h4 fw-bold mb-0">Logout</p>
+                <p class="text-muted">Sign out of your account</p>
+            </div>
+            <div class="col-12 mt-2">
+                <form class="form" method="post" action="?/logout" onsubmit={handleSignOut}>
+                    <div class="row gy-1">
+                        <div class="col-12">
+                            <label class="btn btn-logout" for="logout">
+                                <i class="fa-solid fa-right-from-bracket me-1"></i> {loading ? 'Loading ...' : 'Logout'}
+                            </label>
+                            <input
+                                    class="d-none"
+                                    type="submit"
+                                    id="logout"
+                                    disabled={loading}
+                            />
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
+    {/if}
 </div>
 
 <style>

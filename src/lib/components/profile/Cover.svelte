@@ -82,6 +82,7 @@
     }
 </script>
 
+<!-- TODO: Improve design with planned UI/UX -->
 <div class="row justify-content-center">
     <div class="col-12 text-center">
         {#if coverUrl}
@@ -89,6 +90,10 @@
         {:else}
             <div class="alert alert-info">
                 <p class="mb-0">You haven't setup a cover, yet!</p>
+            </div>
+            <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
+                <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
+                </div>
             </div>
         {/if}
     </div>
