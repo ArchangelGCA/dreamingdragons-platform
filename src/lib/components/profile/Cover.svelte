@@ -1,14 +1,16 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
-    import { PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH } from "$env/static/public"
+    import {PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} from "$env/static/public"
+    import autoAnimate from "@formkit/auto-animate";
 
     /** @type {{url: any}} */
-    let { url, uploadComplete } = $props();
+    let {url, uploadComplete} = $props();
 
     let coverUrl = $derived(url && url !== '' ? url : '');
     let uploading = $state(false);
     let files = $state();
+    let isImageLoaded = $state(false);
 
     async function uploadCover() {
         try {
@@ -82,37 +84,55 @@
     }
 </script>
 
-<!-- TODO: Improve design with planned UI/UX -->
 <div class="row justify-content-center">
     <div class="col-12 text-center">
-        {#if coverUrl}
-            <img src={coverUrl} alt="Cover" class="img-fluid rounded-2" style="max-height: 50vh;" />
-        {:else}
-            <div class="alert alert-info">
-                <p class="mb-0">You haven't setup a cover, yet!</p>
+        <div class="card border border-0 bg-transparent">
+            <div class="position-relative cover-wrapper" use:autoAnimate>
+                {#if coverUrl}
+                    <div class="image-container" use:autoAnimate>
+                        {#if !isImageLoaded}
+                            <div class="bg-dark placeholder-glow m-0 p-0">
+                                <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
+                                    <img src={coverUrl} alt="Cover" class="img-fluid rounded-2" onload={() => isImageLoaded = true}/>
+                                </div>
+                            </div>
+                        {:else}
+                            <img src={coverUrl} alt="Cover" class="img-fluid rounded-2"/>
+                        {/if}
+                        <div class="overlay-content">
+                            <label class="btn btn-purple p-2" for="cover">
+                                <i class="fa-solid fa-image me-1"></i> {uploading ? 'Uploading ...' : 'Change Cover'}
+                            </label>
+                        </div>
+                    </div>
+                {:else}
+                    <div class="alert alert-info">
+                        <p class="mb-0">You haven't setup a cover, yet!</p>
+                    </div>
+                    <div class="bg-dark bg-opacity-25 placeholder-glow m-0 p-0" style="height: 25vh;">
+                        <div class="placeholder bg-light-subtle rounded-3 w-100 h-100"></div>
+                    </div>
+                    <div class="overlay-content">
+                        <label class="btn btn-purple p-2" for="cover">
+                            <i class="fa-solid fa-image me-1"></i> {uploading ? 'Uploading ...' : 'Change Cover'}
+                        </label>
+                    </div>
+                {/if}
+                <input type="hidden" name="coverUrl" value={url}/>
+                <input class="d-none"
+                       type="file"
+                       id="cover"
+                       accept="image/*"
+                       bind:files
+                       onchange={uploadCover}
+                       disabled={uploading}
+                />
             </div>
-            <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
-                <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
-                </div>
-            </div>
-        {/if}
+        </div>
     </div>
     <div class="col-12 text-center mt-1">
-        <small class="text-light text-opacity-50">Recommended Max resolution: {PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH}x{PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} - 16:9</small>
-    </div>
-    <input type="hidden" name="coverUrl" value={url} />
-    <div class="col-12">
-        <label class="btn btn-purple w-100 mt-1" for="cover">
-            {uploading ? 'Uploading ...' : 'Upload'}
-        </label>
-        <input class="d-none"
-                type="file"
-                id="cover"
-                accept="image/*"
-                bind:files
-                onchange={uploadCover}
-                disabled={uploading}
-        />
+        <small class="text-light text-opacity-50">Recommended Max resolution: {PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH}
+            x{PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} - 16:9</small>
     </div>
 </div>
 
@@ -124,5 +144,26 @@
 
     .btn-purple:hover {
         background-color: #4a0086;
+    }
+
+    .cover-wrapper {
+        overflow: hidden;
+    }
+
+    .image-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .cover-wrapper img {
+        object-fit: contain;
+        max-height: 50vh;
+        display: block;
+    }
+
+    .overlay-content {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
     }
 </style>

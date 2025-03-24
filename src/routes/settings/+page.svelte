@@ -268,18 +268,15 @@
     {#if session}
         <!-- Avatar -->
         <div class="row mt-2 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4">
-
             <div class="col-12">
                 <p class="h4 fw-bold mb-0">Profile Picture</p>
                 <p class="text-muted">Update your profile picture</p>
             </div>
             <div class="col-12">
-                <div class="row justify-content-center">
-                    <form class="form" method="post" action="?/update">
-                        <Avatar url={avatarUrl} size={6}
-                                upload={() => {invalidateAll()}}/>
-                    </form>
-                </div>
+                <form class="form" method="post" action="?/update">
+                    <Avatar url={avatarUrl} size={6}
+                            upload={() => {invalidateAll()}}/>
+                </form>
             </div>
         </div>
         <!-- Cover -->
@@ -289,9 +286,7 @@
                 <p class="text-muted">Update your cover picture</p>
             </div>
             <div class="col-12">
-                <div class="row justify-content-center">
-                    <Cover url={coverUrl} uploadComplete={() => {invalidateAll()}}/>
-                </div>
+                <Cover url={coverUrl} uploadComplete={() => {invalidateAll()}}/>
             </div>
         </div>
         <!-- Account details - Profile -->
