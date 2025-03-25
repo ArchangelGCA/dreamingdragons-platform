@@ -283,7 +283,7 @@
         <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
             <div class="col-12">
                 <p class="h4 fw-bold mb-0">Cover Picture</p>
-                <p class="text-muted">Update your cover picture</p>
+                <p class="text-muted">Update your profile cover image</p>
             </div>
             <div class="col-12">
                 <Cover url={coverUrl} uploadComplete={() => {invalidateAll()}}/>
@@ -381,7 +381,7 @@
     <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
         <div class="col-12">
             <p class="h4 fw-bold mb-0">Privacy Settings</p>
-            <p class="text-muted">Manage your privacy settings</p>
+            <p class="text-muted">Manage your privacy preferences</p>
         </div>
         <div class="col-12 mt-2">
             {#if session}
@@ -440,7 +440,7 @@
         <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
             <div class="col-12">
                 <p class="h4 fw-bold mb-0">Logout</p>
-                <p class="text-muted">Sign out of your account</p>
+                <p class="text-muted">Sign out from your account</p>
             </div>
             <div class="col-12 mt-2">
                 <form class="form" method="post" action="?/logout" onsubmit={handleSignOut}>
