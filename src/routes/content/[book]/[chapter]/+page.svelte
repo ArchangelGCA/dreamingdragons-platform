@@ -10,6 +10,7 @@
     import {browser} from "$app/environment";
     import {invalidateAll} from "$app/navigation";
     import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
+    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -303,8 +304,30 @@
                         <i class="fas fa-heart {chapterContent.is_liked ? 'liked' : 'unliked'}"></i>
                     </button>
                 </div>
-                <div class="col-auto">
-                    <span class="mt-1">{chapterContent.chapter_likes.filter(like => like.user_id !== null).length}</span>
+                <div class="col-auto dropdown-center">
+                    <span class="btn btn-link text-light text-decoration-none p-0 border-0 mt-1"
+                            data-bs-toggle="dropdown"
+                            aria-label="Show users who liked"
+                            aria-expanded="false">
+                        {chapterContent.chapter_likes.filter(like => like.user_id !== null).length}
+                    </span>
+                    <ul class="dropdown-menu bg-purple-dark border-0 likes-container">
+                        {#if chapterContent.chapter_likes && chapterContent.chapter_likes.length > 0}
+                            {#each chapterContent.chapter_likes as like (like.id)}
+                                <li>
+                                    <a class="dropdown-item" href="/profile/{like.user_id}">
+                                        <span>
+                                            <UserAvatarNavbar url={like.profiles.avatar_url}
+                                                              username={like.profiles.username} {image_proxy}
+                                                              size="25px" classes="me-2"/><span>{like.profiles.username}</span>
+                                        </span>
+                                    </a>
+                                </li>
+                            {/each}
+                        {:else}
+                            <li><span class="dropdown-item text-light text-opacity-50">No likes yet</span></li>
+                        {/if}
+                    </ul>
                 </div>
             </div>
         </div>
@@ -683,6 +706,40 @@
     .unliked:hover {
         color: #bd135a;
         transform: scale(1);
+    }
+
+    .dropdown-item:hover {
+        background-color: rgba(31, 0, 51, 0.95);
+    }
+
+    .dropdown-item:active {
+        background-color: rgba(31, 0, 51, 0.95);
+    }
+
+    .dropdown-item:focus {
+        background-color: rgba(31, 0, 51, 0.95);
+    }
+
+    .likes-container {
+        overflow-y: auto;
+        max-height: 300px;
+        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    }
+
+    .likes-container::-webkit-scrollbar {
+        width: 10px;
+        background-color: #1f002e;
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+    }
+
+    .likes-container::-webkit-scrollbar-thumb {
+        background: #5b0083;
+        border-radius: 20px;
+    }
+
+    .likes-container::-webkit-scrollbar-thumb:hover {
+        background: #6e00a1;
     }
 
     @keyframes heart-pulse {

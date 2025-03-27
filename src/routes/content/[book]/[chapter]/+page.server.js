@@ -1,57 +1,5 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 
-async function loadChapters(supabase, bookId) {
-    const { data: chapters, error: chaptersError } = await supabase
-        .from('chapters')
-        .select('id, book_id, owner_id, number_ordinal, title')
-        .eq('book_id', bookId)
-        .order('created_at', { ascending: true });
-
-    if (chaptersError) {
-        throw new Error('Something went wrong, chapters loading error...');
-    }
-
-    return chapters;
-}
-
-async function loadComments(supabase, session, chapterId) {
-    let { data: comments, error: commentsError } = await supabase
-        .from('comments')
-        .select('*, profiles(username, avatar_url)')
-        .eq('chapter_id', chapterId)
-        .order('created_at', { ascending: false });
-
-    if (commentsError) {
-        throw new Error('Something went wrong, comments loading error...');
-    }
-
-    if (session) {
-        comments.forEach(comment => {
-            comment.is_owner = comment.user_id === session.user.id;
-        });
-    }
-
-    const commentMap = {};
-
-    for (let comment of comments) {
-        comment.children = [];
-        commentMap[comment.id] = comment;
-    }
-
-    for (let comment of comments) {
-        if (comment.parent_comment_id !== null) {
-            const parent = commentMap[comment.parent_comment_id];
-            if (parent) {
-                parent.children.push(comment);
-            }
-        }
-    }
-
-    comments = comments.filter(comment => comment.parent_comment_id === null);
-
-    return comments;
-}
-
 export const load = async ({ params, locals: { supabase, getSession, image_proxy } }) => {
     const { session } = await getSession();
     let isOwner = false;
@@ -68,29 +16,9 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         throw redirect(302, `/${bookId}/${chapterId}`);
     }
 
-    /*const [
-        chapterContentResult,
-        //commentsPromise,
-        //chaptersPromise
-    ] = await Promise.all([
-        supabase
-            .from('secure_chapter_content_with_comments')
-            .select('*, chapter_tags(tags(id, name)), chapter_likes!chapter_id(user_id)')
-            .eq('book_id', bookId)
-            .eq('chapter_id', chapterId),
-        //loadComments(supabase, session, chapterId),
-        //loadChapters(supabase, bookId)
-    ]);*/
-
-    /*const { data: chapterContent, error } = await supabase
-        .from('secure_chapter_content_with_comments')
-        .select('*, chapter_tags(tags(id, name)), chapter_likes!chapter_id(user_id)')
-        .eq('book_id', bookId)
-        .eq('chapter_id', chapterId);*/
-
     const { data: chapterContent, error } = await supabase
         .from('chapters')
-        .select('*, profiles(id, username, avatar_url), book(title, cover_url, owner_id), views(count), chapter_tags(tags(id, name)), chapter_likes(user_id), comments(*, profiles(username, avatar_url))')
+        .select('*, profiles(id, username, avatar_url), book(title, cover_url, owner_id), views(count), chapter_tags(tags(id, name)), chapter_likes(user_id, created_at, profiles(username, avatar_url)), comments(*, profiles(username, avatar_url))')
         .eq('id', chapterId)
         .eq('book_id', bookId);
 
@@ -157,9 +85,10 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
     chapters = chapters.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     chapterContent[0].comments = comments;
 
-    if (user_id) {
-        is_liked = (chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id));
-    }
+    if (user_id) is_liked = (chapterContent[0].chapter_likes.length > 0 && chapterContent[0].chapter_likes.find(like => like.user_id === user_id));
+
+    // Sorts chapter_likes
+    if (chapterContent[0].chapter_likes.length > 0) chapterContent[0].chapter_likes = chapterContent[0].chapter_likes.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
     // Get previous and next chapter ids.
     const sortedChapters = chapters.sort((a, b) => a.number_ordinal - b.number_ordinal);

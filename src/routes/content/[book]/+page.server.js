@@ -3,44 +3,6 @@ import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/pr
 import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import PocketBase from "pocketbase";
 
-async function loadComments(supabase, session, bookId) {
-    let { data: comments, error: commentsError } = await supabase
-        .from('comments')
-        .select('*, profiles(username, avatar_url)')
-        .eq('book_id', bookId)
-        .order('created_at', { ascending: false });
-
-    if (commentsError) {
-        throw new Error('Something went wrong, comments loading error...');
-    }
-
-    if (session) {
-        comments.forEach(comment => {
-            comment.is_owner = comment.user_id === session.user.id;
-        });
-    }
-
-    const commentMap = {};
-
-    for (let comment of comments) {
-        comment.children = [];
-        commentMap[comment.id] = comment;
-    }
-
-    for (let comment of comments) {
-        if (comment.parent_comment_id !== null) {
-            const parent = commentMap[comment.parent_comment_id];
-            if (parent) {
-                parent.children.push(comment);
-            }
-        }
-    }
-
-    comments = comments.filter(comment => comment.parent_comment_id === null);
-
-    return comments;
-}
-
 export const load = async ({ params, locals: { supabase, getSession, image_proxy } }) => {
     const { session } = await getSession();
     let isOwner = false;
@@ -52,25 +14,9 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
     const bookId = params.book;
     let is_liked = false;
 
-    // Fetch book content and comments in parallel
-    /*const [bookContentResult, comments] = await Promise.all([
-        supabase
-            .from('book')
-            .select('*, profiles!book_owner_id_fkey(id, username, avatar_url), book_likes(*), views(count), book_tags(tags(id, name)), chapters(id, book_id, title, chapter_likes(id, user_id, created_at)), comments(*, profiles(username, avatar_url))')
-            .eq('id', bookId),
-        loadComments(supabase, session, bookId)
-    ]);
-
-    const { data: bookContent, error: bookError } = bookContentResult;
-
-    if (bookError) {
-        console.error(bookError);
-        throw errorx(500, 'Something went wrong, perhaps the ID may be invalid...');
-    }*/
-
     const { data: bookContent, error: bookError } = await supabase
         .from('book')
-        .select('*, profiles!book_owner_id_fkey(id, username, avatar_url), book_likes(*), views(count), book_tags(tags(id, name)), chapters(id, book_id, title, chapter_likes(id, user_id, created_at)), comments(*, profiles(username, avatar_url))')
+        .select('*, profiles!book_owner_id_fkey(id, username, avatar_url), book_likes(*, profiles(username, avatar_url)), views(count), book_tags(tags(id, name)), chapters(id, book_id, title, chapter_likes(id, user_id, created_at)), comments(*, profiles(username, avatar_url))')
         .eq('id', bookId);
 
     if (bookError) {
@@ -122,6 +68,9 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         is_liked = bookContent[0].book_likes.some(like => like.user_id === user_id);
         bookContent[0].chapters.forEach((chapter) => chapter.is_liked = chapter.chapter_likes.some(like => like.user_id === user_id));
     }
+
+    // Sorts book likes by created_at date if any is found
+    if (bookContent[0].book_likes.length > 0) bookContent[0].book_likes = bookContent[0].book_likes.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
     bookContent[0].is_owner = isOwner;
     bookContent[0].is_liked = is_liked;
