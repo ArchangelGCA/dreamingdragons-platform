@@ -12,13 +12,14 @@
     import {deserialize} from "$app/forms";
     import Seo from "$lib/components/seo/Seo.svelte";
     import {browser} from "$app/environment";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{data: any, children?: import('svelte').Snippet}} */
     let {data, children} = $props();
 
-    let {supabase, session, image_proxy, notifications, tooltipConfig, userData} = $state(data);
+    let {supabase, session, image_proxy, notifications, userData} = $state(data);
     $effect(() => {
-        ({supabase, session, notifications, tooltipConfig, userData} = data)
+        ({supabase, session, notifications, userData} = data)
     });
 
     $effect(() => {

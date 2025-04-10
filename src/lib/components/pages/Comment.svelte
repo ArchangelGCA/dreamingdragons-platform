@@ -1,5 +1,6 @@
 <script>
     import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {toast} from "$lib/components/svelte-toast";
     import Comment from "$lib/components/pages/Comment.svelte";
     import {deserialize} from "$app/forms";
@@ -10,17 +11,6 @@
     /** @type {{comment: any, supabase: any, image_proxy: any}} */
     let { comment, supabase, image_proxy } = $props();
 
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
     let replyContent = $state('');
     let isHovering = $state(false);
     let isReplyVisible = $state(false);

@@ -3,13 +3,14 @@
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import {conf} from "$lib/utils/gcatinymce.js";
 
     /** @type {{data: any}} */
     let { data } = $props();
-    const { chapter, books, supabase, tooltipConfig } = data;
+    const { chapter, books } = data;
 
     let editorContent = $state(chapter.text);
     let tags = $state(chapter.chapter_tags.map(tag => tag.tags.name));

@@ -4,18 +4,7 @@
     import {tooltip} from "@svelte-plugins/tooltips";
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{content: any, image_proxy: any}} */
     let {content = $bindable(), image_proxy} = $props();

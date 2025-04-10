@@ -1,5 +1,6 @@
 <script>
     import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
@@ -19,7 +20,6 @@
         supabase,
         image_proxy,
         user_id,
-        tooltipConfig,
         chapterContent,
     } = $state(data);
 
@@ -266,10 +266,10 @@
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
+                <a href={"/profile/" + chapterContent.owner_id} class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
                     <UserAvatar url={chapterContent.profiles.avatar_url} username={chapterContent.profiles.username}
-                                id={chapterContent.owner_id} {image_proxy} size="75px"/>
-                </div>
+                                id={chapterContent.owner_id} {image_proxy} link={false} size="75px"/>
+                </a>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <h2><a class="link-light link-opacity-75 text-decoration-none"
                            href="/content/{chapterContent.book_id}">{chapterContent.book.title}</a>: {chapterContent.title}

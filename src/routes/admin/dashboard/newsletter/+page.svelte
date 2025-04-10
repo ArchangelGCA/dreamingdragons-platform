@@ -4,64 +4,13 @@
     import autoAnimate from "@formkit/auto-animate";
 
     let {data} = $props();
-    let {audience, image_proxy} = $derived(data);
+    let {audience} = $derived(data);
 
     let isAdding = $state(false);
     let isFetchingUsers = $state(false);
     let users = $state(null);
     let progress = $state(-1);
     let delay = 300;
-
-    /* Fields of audience array objects:
-    {
-      id: 'bfbebb22-43e2-49fc-9eae-ea848434a60e',
-      email: 'Reece.Verzello@gmail.com',
-      first_name: null,
-      last_name: null,
-      created_at: '2024-11-08 00:08:34.071187+00',
-      unsubscribed: false
-     }
-     */
-
-    /* Fields of user object in users array:
-    {
-    "id": "eb38a43e-87cb-4f07-a0c4-7fcaf763a2a3",
-    "username": "ralbinohamster",
-    "aud": "authenticated",
-    "role": "authenticated",
-    "email": "ralbinohammel@gmail.com",
-    "email_confirmed_at": "2025-03-02T21:48:46.544388Z",
-    "phone": "",
-    "confirmed_at": "2025-03-02T21:48:46.544388Z",
-    "recovery_sent_at": "2025-03-03T06:17:45.982086Z",
-    "last_sign_in_at": "2025-03-03T06:17:55.303191Z",
-    "app_metadata": {
-        "provider": "discord",
-        "providers": [
-            "discord"
-        ]
-    },
-    "user_metadata": {
-        "avatar_url": "https://cdn.discordapp.com/avatars/818472552036565033/0467925f982b296d6a2a7c6ef95ef10d.png",
-        "custom_claims": {
-            "global_name": "Ralbinohamster"
-        },
-        "email": "ralbinohammel@gmail.com",
-        "email_verified": true,
-        "full_name": "ralbinohamster",
-        "iss": "https://discord.com/api",
-        "name": "ralbinohamster#0",
-        "phone_verified": false,
-        "picture": "https://cdn.discordapp.com/avatars/818472552036565033/0467925f982b296d6a2a7c6ef95ef10d.png",
-        "provider_id": "818472552036565033",
-        "sub": "818472552036565033"
-    },
-    "identities": null,
-    "created_at": "2025-03-02T21:48:46.535726Z",
-    "updated_at": "2025-03-03T06:17:55.306941Z",
-    "is_anonymous": false
-    }
-     */
 
     async function handleAdd(e) {
         e.preventDefault();

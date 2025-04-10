@@ -2,18 +2,7 @@
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import autoAnimate from "@formkit/auto-animate";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{book: any, image_proxy: any}} */
     let {book = $bindable(), image_proxy} = $props();

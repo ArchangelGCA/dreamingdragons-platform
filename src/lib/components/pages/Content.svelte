@@ -1,18 +1,7 @@
 <script>
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any}} */
     let {

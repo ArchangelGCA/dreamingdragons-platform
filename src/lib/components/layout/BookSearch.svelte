@@ -1,19 +1,7 @@
 <script>
-    import { run } from 'svelte/legacy';
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     import { tooltip } from "@svelte-plugins/tooltips";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
 
     /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any}} */
     let {

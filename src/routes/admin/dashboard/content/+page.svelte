@@ -10,17 +10,6 @@
         ({content} = data)
     });
 
-    /*function formatDate(date) {
-        if (date === null) {
-            return date;
-        }
-        const finalDate = new Date(date);
-        if (finalDate === "Invalid Date" || isNaN(finalDate)) {
-            return date;
-        }
-        return finalDate.toLocaleString();
-    }*/
-
     async function handleDelete() {
         await invalidateAll();
         const modalBackdrop = document.getElementsByClassName("modal-backdrop fade show");

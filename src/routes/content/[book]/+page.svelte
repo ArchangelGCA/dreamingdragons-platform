@@ -1,5 +1,6 @@
 <script>
     import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
     import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
@@ -21,7 +22,6 @@
         image_proxy,
         bookContent,
         user_id,
-        tooltipConfig,
     } = $state(data);
 
     $effect(() => {
@@ -261,10 +261,10 @@
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <div class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
-                    <UserAvatar url={bookContent.profiles.avatar_url} username={bookContent.profiles.username}
-                                id={bookContent.owner_id} {image_proxy} size="75px"/>
-                </div>
+                <a href={"/profile/" + bookContent.owner_id} class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
+                        <UserAvatar url={bookContent.profiles.avatar_url} username={bookContent.profiles.username}
+                                    id={bookContent.owner_id} {image_proxy} link={false} size="75px"/>
+                </a>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.title}</p>
                     <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none"

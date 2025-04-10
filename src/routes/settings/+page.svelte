@@ -3,6 +3,7 @@
     import Avatar from '$lib/components/profile/Avatar.svelte';
     import {toast} from "$lib/components/svelte-toast";
     import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import Cover from "$lib/components/profile/Cover.svelte";
     import {invalidateAll} from "$app/navigation";
     import {onMount} from "svelte";
@@ -23,10 +24,9 @@
     let {
         session,
         profile = {full_name: '', username: '', website: '', avatar_url: '', cover_url: ''},
-        tooltipConfig
     } = $state(data);
     $effect(() => {
-        ({session, profile, tooltipConfig} = data);
+        ({session, profile} = data);
     });
 
     let avatarUrl = $derived(profile ? profile.avatar_url : '');

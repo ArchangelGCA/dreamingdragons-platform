@@ -12,11 +12,12 @@
     import autoAnimate from '@formkit/auto-animate';
     import {tooltip} from "@svelte-plugins/tooltips";
     import {conf} from "$lib/utils/gcatinymce.js"
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{data: any}} */
     let {data} = $props();
 
-    let {books, can_upload, tooltipConfig} = $state(data);
+    let {books, can_upload} = $state(data);
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
     let previewUrl = $state('');

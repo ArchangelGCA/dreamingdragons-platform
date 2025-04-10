@@ -7,6 +7,7 @@
     import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -17,7 +18,6 @@
         books_ordered_by_latest_chapter,
         is_logged,
         followed,
-        tooltipConfig
     } = $state(data);
 
     let loading = false;
@@ -97,10 +97,10 @@
                 </div>
                 <div class="row row-horizontal flex-nowrap ps-1 pe-1 gx-3 gx-md-4" use:dragscroll={{axis: 'x'}}>
                     {#each followed as follow (follow.id)}
-                        <div class="col-auto py-2">
+                        <a class="col-auto py-2" href="/profile/{follow.id}">
                             <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {image_proxy}
-                                        size="50px"/>
-                        </div>
+                                        size="50px" link={false}/>
+                        </a>
                     {/each}
                 </div>
             </div>

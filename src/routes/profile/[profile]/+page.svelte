@@ -1,5 +1,6 @@
 <script>
     import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {PUBLIC_DEFAULT_USERNAME} from '$env/static/public';
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
@@ -14,7 +15,6 @@
     let {data} = $props();
     let {
         image_proxy,
-        tooltipConfig,
         profile,
         likedBooks,
         total_likes,

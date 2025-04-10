@@ -3,6 +3,7 @@
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
     import { tooltip } from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import Editor from "@tinymce/tinymce-svelte";
@@ -11,7 +12,7 @@
     /** @type {{data: any}} */
     let { data } = $props();
 
-    let { book, supabase, tooltipConfig } = $state(data);
+    let { book } = $state(data);
     $effect(() => {
         ({book} = data);
     });

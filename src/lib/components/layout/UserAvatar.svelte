@@ -1,17 +1,6 @@
 <script>
-    import { tooltip } from "@svelte-plugins/tooltips";
-
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto'
-    };
+    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{url?: string, username?: string, id?: string, size?: string, image_proxy?: any}} */
     let {
@@ -19,7 +8,8 @@
         username = '',
         id = '',
         size = '100px',
-        image_proxy = null
+        image_proxy = null,
+        link = true
     } = $props();
 
     let isAvatarLoaded = $derived(url && url !== '');
@@ -56,17 +46,31 @@
 </script>
 
 <!-- Circle avatar, using Bootstrap 5 classes -->
-<div class="d-flex justify-content-center">
-    <a href={`/profile/${id}`} class="text-decoration-none" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}
-       onpointermove={handlePointerMove} onpointerup={handlePointerUp} onpointerleave={handlePointerLeave} aria-label="View profile of {username}" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
+<div class="d-flex justify-content-center" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
+    {#if link}
+        <a href={`/profile/${id}`} class="text-decoration-none" draggable="false"
+           aria-label="View profile of {username}">
+            {#if !isAvatarLoaded}
+                <div class="placeholder-glow" style="width: {size}; height: {size};">
+                    <div class="placeholder rounded-circle w-100 h-100"></div>
+                </div>
+            {:else}
+                <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url}
+                     alt='{username} Avatar' class="rounded-circle avatar-style" width={size} height={size}
+                     draggable="false">
+            {/if}
+        </a>
+    {:else}
         {#if !isAvatarLoaded}
             <div class="placeholder-glow" style="width: {size}; height: {size};">
                 <div class="placeholder rounded-circle w-100 h-100"></div>
             </div>
         {:else}
-            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url} alt='{username} Avatar' class="rounded-circle avatar-style" width={size} height={size} draggable="false">
+            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url}
+                 alt='{username} Avatar' class="rounded-circle avatar-style" width={size} height={size}
+                 draggable="false">
         {/if}
-    </a>
+    {/if}
 </div>
 
 <style>
