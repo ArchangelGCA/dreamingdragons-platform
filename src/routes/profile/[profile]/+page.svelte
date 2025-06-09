@@ -253,6 +253,12 @@
 
 </script>
 
+<svelte:head>
+    {#if profile && profile.id}
+        <link rel="alternate" type="application/rss+xml" title="{profile.username}'s Activity Feed" href="/rss/profile/{profile.id}.xml" />
+    {/if}
+</svelte:head>
+
 <svelte:window onscroll={handleScroll} bind:scrollY={y}/>
 
 <div class="container-fluid px-0" style="min-height: 71vh; overflow-x: hidden; overflow-y: hidden" use:autoAnimate>

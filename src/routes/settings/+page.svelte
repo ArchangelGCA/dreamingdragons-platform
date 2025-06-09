@@ -1,14 +1,11 @@
 <script>
-    import {deserialize, enhance} from '$app/forms';
+    import {deserialize} from '$app/forms';
     import Avatar from '$lib/components/profile/Avatar.svelte';
     import {toast} from "$lib/components/svelte-toast";
-    import {tooltip} from "@svelte-plugins/tooltips";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import Cover from "$lib/components/profile/Cover.svelte";
     import {invalidateAll} from "$app/navigation";
     import {onMount} from "svelte";
     import {browser} from "$app/environment";
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
 
     let analyticsEnabled = $state();
 
