@@ -1,3 +1,5 @@
+export const prerender = true;
+
 export const GET = async ({locals: {supabase}}) => {
 
     const {data, error} = await supabase
