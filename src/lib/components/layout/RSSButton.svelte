@@ -1,10 +1,8 @@
 <script>
     import { tooltip } from "@svelte-plugins/tooltips";
     import { tooltipConfig } from "$lib/utils/gcacommons.js";
-    import { toast } from "$lib/components/svelte-toast";
-
-    /** @type {string} */
-    let { rssUrl, label = "RSS Feed", classes = "", size = "md" } = $props();
+    import { toast } from "$lib/components/svelte-toast";    /** @type {string} */
+    let { rssUrl, label = "RSS Feed", classes = "", size = "md", compact = false } = $props();
 
     function handleRSSClick() {
         // Open RSS feed in a new tab
@@ -27,14 +25,17 @@
 </script>
 
 <button 
-    class="btn btn-outline-warning {sizeClasses[size]} rss-btn {classes}"
+    class="btn {compact ? 'btn-link text-warning text-decoration-none border-0 p-1' : `btn-outline-warning ${sizeClasses[size]}`} rss-btn {classes}"
     onclick={handleRSSClick}
     use:tooltip={{...tooltipConfig}} 
     title="{label} - Subscribe to updates"
     aria-label="{label}"
+    style={compact ? 'font-size: 0.9rem; opacity: 0.8;' : ''}
 >
     <i class="fas fa-rss"></i>
-    <span class="ms-1 rss-text">{label}</span>
+    {#if !compact}
+        <span class="ms-1 rss-text">{label}</span>
+    {/if}
 </button>
 
 <style>
@@ -53,6 +54,14 @@
     
     .rss-btn:focus {
         box-shadow: 0 0 0 0.2rem rgba(255, 102, 0, 0.25);
+    }
+    
+    /* Compact variant styles */
+    .btn-link.rss-btn:hover {
+        color: #ff6600 !important;
+        background-color: transparent;
+        border-color: transparent;
+        transform: scale(1.1);
     }
       @media (max-width: 576px) {
         .rss-text {

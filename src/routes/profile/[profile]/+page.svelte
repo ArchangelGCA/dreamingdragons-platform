@@ -10,6 +10,8 @@
     import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
+    import ShareButton from "$lib/components/layout/ShareButton.svelte";
+    import RSSButton from "$lib/components/layout/RSSButton.svelte";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -255,7 +257,8 @@
 
 <svelte:head>
     {#if profile && profile.id}
-        <link rel="alternate" type="application/rss+xml" title="{profile.username}'s Activity Feed" href="/rss/profile/{profile.id}.xml" />
+        <link rel="alternate" type="application/rss+xml" title="{profile.username}'s Activity Feed"
+              href="/rss/profile/{profile.id}.xml"/>
     {/if}
 </svelte:head>
 
@@ -272,10 +275,25 @@
         </div>
     {:else} <!-- Profile found -->
         <div class="row justify-content-center">
-            <div class="col-12">
-                {#if profile.avatar_url === ''}
-                    <div class="rounded-bottom-5"
+            <div class="col-12">                {#if profile.avatar_url === ''}
+                    <div class="rounded-bottom-5 position-relative"
                          style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                        <!-- Share and RSS buttons in top right corner -->
+                        <div class="position-absolute top-0 end-0 p-3">
+                            <div class="d-flex gap-2">
+                                <ShareButton
+                                    url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/profile/${profile.id}`}
+                                    title="{profile.username}'s Profile"
+                                    description="Check out {profile.username}'s amazing content on DreamingDragons!"
+                                    compact={true}
+                                />
+                                <RSSButton
+                                    rssUrl="/rss/profile/{profile.id}.xml"
+                                    label="RSS"
+                                    compact={true}
+                                />
+                            </div>
+                        </div>
                         <div class="row justify-content-center align-items-end" style="height: 100%;">
                             <div class="col-auto">
                             </div>
@@ -288,10 +306,25 @@
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                    </div>
-                {:else}
-                    <div class="rounded-bottom-5 shadow-sm"
+                    </div>                {:else}
+                    <div class="rounded-bottom-5 shadow-sm position-relative"
                          style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({profile.cover_url ? profile.cover_url : profile.avatar_url}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                        <!-- Share and RSS buttons in top right corner -->
+                        <div class="position-absolute top-0 end-0 p-3">
+                            <div class="d-flex gap-2">
+                                <ShareButton
+                                    url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/profile/${profile.id}`}
+                                    title="{profile.username}'s Profile"
+                                    description="Check out {profile.username}'s amazing content on DreamingDragons!"
+                                    compact={true}
+                                />
+                                <RSSButton
+                                    rssUrl="/rss/profile/{profile.id}.xml"
+                                    label="RSS"
+                                    compact={true}
+                                />
+                            </div>
+                        </div>
                         <div class="row justify-content-center align-items-end" style="height: 100%;">
                             <div class="col-auto">
                                 <img src="{profile.avatar_url}" alt="{profile.username}" loading="lazy"
@@ -345,7 +378,8 @@
                                 <span class="">{total_followers}</span>
                             </div>
                         </div>
-                        <div class="dropdown-menu ms-md-5 py-1 border-0 followers-container" aria-labelledby="followers">
+                        <div class="dropdown-menu ms-md-5 py-1 border-0 followers-container"
+                             aria-labelledby="followers">
                             {#if !profile.followers || profile.followers.length === 0}
                                 <span class="dropdown-item rounded-3">No followers yet</span>
                             {:else}
@@ -373,8 +407,7 @@
                                 <span class="">{total_likes}</span>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-4 col-md-3">
+                    </div>                    <div class="col-4 col-md-3">
                         <div class="row justify-content-center d-flex align-items-center"
                              data-tooltip="Joined: {new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}"
                         >

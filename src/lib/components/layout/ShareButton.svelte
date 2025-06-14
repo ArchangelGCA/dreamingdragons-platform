@@ -5,7 +5,7 @@
     import { browser } from "$app/environment";
 
     /** @type {string} */
-    let { url, title = "Check this out!", description = "", classes = "" } = $props();
+    let { url, title = "Check this out!", description = "", classes = "", compact = false } = $props();
 
     let showDropdown = $state(false);const shareOptions = [
         {
@@ -115,12 +115,13 @@
 
 <div class="share-dropdown position-relative d-inline-block {classes}">
     <button 
-        class="btn btn-link text-light text-decoration-none p-0 border-0 share-btn"
+        class="btn btn-link text-light text-decoration-none border-0 share-btn {compact ? 'p-1' : 'p-0'}"
         onclick={toggleDropdown}
         use:tooltip={{...tooltipConfig}} 
         title="Share"
         aria-label="Share content"
         aria-expanded={showDropdown}
+        style={compact ? 'font-size: 0.9rem; opacity: 0.8;' : ''}
     >
         <i class="fas fa-share-alt"></i>
     </button>
@@ -195,5 +196,24 @@
         .dropdown-menu .btn span {
             font-size: 0.65rem;
         }
+    }
+      :global(.share-dropdown.compact) {
+        font-size: 0.75rem;
+    }
+
+    :global(.share-dropdown.compact .dropdown-menu) {
+        min-width: 150px;
+    }
+
+    :global(.share-dropdown.compact .dropdown-menu .btn) {
+        padding: 6px 3px;
+    }
+
+    :global(.share-dropdown.compact .dropdown-menu .btn i) {
+        font-size: 0.7rem;
+    }
+
+    :global(.share-dropdown.compact .dropdown-menu .btn span) {
+        font-size: 0.6rem;
     }
 </style>
