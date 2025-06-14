@@ -13,6 +13,7 @@
     import {browser} from "$app/environment";
     import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import ShareButton from "$lib/components/layout/ShareButton.svelte";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -261,9 +262,10 @@
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <a href={"/profile/" + bookContent.owner_id} class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
-                        <UserAvatar url={bookContent.profiles.avatar_url} username={bookContent.profiles.username}
-                                    id={bookContent.owner_id} {image_proxy} link={false} size="75px"/>
+                <a href={"/profile/" + bookContent.owner_id}
+                   class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
+                    <UserAvatar url={bookContent.profiles.avatar_url} username={bookContent.profiles.username}
+                                id={bookContent.owner_id} {image_proxy} link={false} size="75px"/>
                 </a>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.title}</p>
@@ -297,7 +299,9 @@
                     </button>
                 </div>
                 <div class="col-auto dropdown-center">
-                    <span class="btn btn-link text-light text-decoration-none p-0 border-0 mt-1" data-bs-toggle="dropdown" aria-label="Show users who liked" aria-expanded="false">{bookContent.book_likes.length}</span>
+                    <span class="btn btn-link text-light text-decoration-none p-0 border-0 mt-1"
+                          data-bs-toggle="dropdown" aria-label="Show users who liked"
+                          aria-expanded="false">{bookContent.book_likes.length}</span>
                     <ul class="dropdown-menu bg-purple-dark border-0 likes-container">
                         {#if bookContent.book_likes && bookContent.book_likes.length > 0}
                             {#each bookContent.book_likes as like (like.id)}
@@ -306,7 +310,8 @@
                                         <span>
                                             <UserAvatarNavbar url={like.profiles.avatar_url}
                                                               username={like.profiles.username} {image_proxy}
-                                                              size="25px" classes="me-2"/><span>{like.profiles.username}</span>
+                                                              size="25px"
+                                                              classes="me-2"/><span>{like.profiles.username}</span>
                                         </span>
                                     </a>
                                 </li>
@@ -338,6 +343,24 @@
                 <div class="col-auto mt-1">
                     <span class="">{commentsCount}</span>
                 </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row justify-content-center d-flex align-items-center">
+                <div class="col-auto d-flex align-items-center pe-2">
+                    <ShareButton
+                            url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/content/${bookContent.id}`}
+                            title="{bookContent.title} by {bookContent.profiles.username}"
+                            description="Check out this amazing tale on DreamingDragons!"
+                    />
+                </div>
+                <!--<div class="col-auto d-flex align-items-center">
+                    <RSSButton
+                            rssUrl="/rss/content/{bookContent.id}.xml"
+                            label="Book RSS"
+                            size="sm"
+                    />
+                </div>-->
             </div>
         </div>
     </div>

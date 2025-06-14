@@ -195,9 +195,9 @@
     }
 </script>
 
-<Seo />
+<Seo/>
 
-<SvelteToast />
+<SvelteToast/>
 
 <div class="container-fluid bg-black bg-opacity-50" style="max-width: 100%; overflow-x: hidden">
 
@@ -287,9 +287,11 @@
                                     </a>
                                 </li>
                             {/if}
-                            <li><a class="dropdown-item {page.url.pathname.startsWith('/settings') ? 'active' : ''} {!session ? 'mb-1' : ''}"
+                            <li>
+                                <a class="dropdown-item {page.url.pathname.startsWith('/settings') ? 'active' : ''} {!session ? 'mb-1' : ''}"
                                    href="/settings"><i
-                                    class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i> Settings</a>
+                                        class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i>
+                                    Settings</a>
                             </li>
                             {#if session}
                                 <li>
@@ -301,12 +303,16 @@
                             <li><a class="dropdown-item {page.url.pathname.startsWith('/updates') ? 'active' : ''}"
                                    href="/updates"><i class="fas fa-newspaper border-end border-light-subtle pe-2"></i>
                                 Updates</a></li>
+                            <li><a class="dropdown-item" href="/rss.xml" target="_blank" rel="noopener noreferrer"><i
+                                    class="fas fa-rss border-end border-light-subtle pe-2" style="color: #ff6600;"></i>
+                                RSS Feed</a></li>
                             {#if session}
                                 <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i
                                         class="fa-solid fa-arrow-right-from-bracket border-end border-light-subtle pe-2"></i>
                                     Logout</a></li>
                             {:else}
-                                <li><a class="dropdown-item register-button rounded-3 py-2 my-1" href="/login?signup=true"><i
+                                <li><a class="dropdown-item register-button rounded-3 py-2 my-1"
+                                       href="/login?signup=true"><i
                                         class="fa-solid fa-user-plus border-end border-light-subtle pe-1"></i> Register</a>
                                 </li>
                                 <li><a class="dropdown-item" href="/login"><i

@@ -12,6 +12,8 @@
     import {invalidateAll} from "$app/navigation";
     import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import ShareButton from "$lib/components/layout/ShareButton.svelte";
+    import RSSButton from "$lib/components/layout/RSSButton.svelte";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -266,7 +268,8 @@
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <a href={"/profile/" + chapterContent.owner_id} class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
+                <a href={"/profile/" + chapterContent.owner_id}
+                   class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
                     <UserAvatar url={chapterContent.profiles.avatar_url} username={chapterContent.profiles.username}
                                 id={chapterContent.owner_id} {image_proxy} link={false} size="75px"/>
                 </a>
@@ -306,9 +309,9 @@
                 </div>
                 <div class="col-auto dropdown-center">
                     <span class="btn btn-link text-light text-decoration-none p-0 border-0 mt-1"
-                            data-bs-toggle="dropdown"
-                            aria-label="Show users who liked"
-                            aria-expanded="false">
+                          data-bs-toggle="dropdown"
+                          aria-label="Show users who liked"
+                          aria-expanded="false">
                         {chapterContent.chapter_likes.filter(like => like.user_id !== null).length}
                     </span>
                     <ul class="dropdown-menu bg-purple-dark border-0 likes-container">
@@ -319,7 +322,8 @@
                                         <span>
                                             <UserAvatarNavbar url={like.profiles.avatar_url}
                                                               username={like.profiles.username} {image_proxy}
-                                                              size="25px" classes="me-2"/><span>{like.profiles.username}</span>
+                                                              size="25px"
+                                                              classes="me-2"/><span>{like.profiles.username}</span>
                                         </span>
                                     </a>
                                 </li>
@@ -350,6 +354,24 @@
                 </div>
                 <div class="col-auto mt-1">
                     <span class="">{commentsCount}</span>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row justify-content-center d-flex align-items-center">
+                <div class="col-auto d-flex align-items-center pe-2">
+                    <ShareButton
+                            url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/content/${chapterContent.book_id}/${chapterContent.id}`}
+                            title="{chapterContent.book.title}: {chapterContent.title}"
+                            description="Read this chapter on DreamingDragons!"
+                    />
+                </div>
+                <div class="col-auto d-flex align-items-center">
+                    <RSSButton
+                            rssUrl="/rss/content/{chapterContent.book_id}.xml"
+                            label="Book RSS"
+                            size="sm"
+                    />
                 </div>
             </div>
         </div>
