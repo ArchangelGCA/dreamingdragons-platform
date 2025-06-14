@@ -1,19 +1,19 @@
-import { 
-    generateRSSFeed, 
+import {
+    generateRSSFeed,
     generateBookRSSItem,
     FEEDS,
-    SITE_URL 
+    SITE_URL
 } from '$lib/utils/rss.js';
 
 export const prerender = false;
 
-export const GET = async ({ locals: { supabase } }) => {
+export const GET = async ({locals: {supabase}}) => {
     try {
-        const { data: books, error } = await supabase
+        const {data: books, error} = await supabase
             .from('book')
             .select('id, title, owner_id, created_at, profiles!book_owner_id_fkey(username)')
             .eq('hidden', false)
-            .order('created_at', { ascending: false })
+            .order('created_at', {ascending: false})
             .limit(50);
 
         if (error) {
@@ -23,11 +23,11 @@ export const GET = async ({ locals: { supabase } }) => {
 
         // Generate RSS items
         const rssItems = (books || []).map(book => generateBookRSSItem(book));
-
         const feed = generateRSSFeed(
             FEEDS.BOOKS.title,
             FEEDS.BOOKS.description,
             SITE_URL,
+            `${SITE_URL}/rss/content/books.xml`,
             rssItems
         );
 
@@ -40,11 +40,11 @@ export const GET = async ({ locals: { supabase } }) => {
 
     } catch (error) {
         console.error('Error generating books RSS feed:', error);
-        
         const emptyFeed = generateRSSFeed(
             FEEDS.BOOKS.title,
             FEEDS.BOOKS.description,
             SITE_URL,
+            `${SITE_URL}/rss/content/books.xml`,
             []
         );
 

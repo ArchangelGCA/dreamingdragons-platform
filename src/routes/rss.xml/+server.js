@@ -1,27 +1,27 @@
-import {
-    generateRSSFeed,
-    generateBookRSSItem,
+import { 
+    generateRSSFeed, 
+    generateBookRSSItem, 
     generateChapterRSSItem,
     FEEDS,
-    SITE_URL
+    SITE_URL 
 } from '$lib/utils/rss.js';
 
 export const prerender = false;
 
-export const GET = async ({locals: {supabase}}) => {
+export const GET = async ({ locals: { supabase } }) => {
     try {
         const [booksResult, chaptersResult] = await Promise.all([
             supabase
                 .from('book')
                 .select('id, title, owner_id, created_at, profiles!book_owner_id_fkey(username)')
                 .eq('hidden', false)
-                .order('created_at', {ascending: false})
+                .order('created_at', { ascending: false })
                 .limit(25),
-
+                
             supabase
                 .from('chapters')
                 .select('id, title, book_id, owner_id, created_at, book!chapters_book_id_fkey(id, title), profiles!chapters_owner_id_fkey(username)')
-                .order('created_at', {ascending: false})
+                .order('created_at', { ascending: false })
                 .limit(25)
         ]);
 
@@ -37,10 +37,10 @@ export const GET = async ({locals: {supabase}}) => {
         const chapters = chaptersResult.data || [];
 
         const allItems = [
-            ...books.map(book => ({...book, type: 'book'})),
-            ...chapters.map(chapter => ({...chapter, type: 'chapter'}))
+            ...books.map(book => ({ ...book, type: 'book' })),
+            ...chapters.map(chapter => ({ ...chapter, type: 'chapter' }))
         ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-            .slice(0, 50);
+         .slice(0, 50);
 
         // Generate RSS items
         const rssItems = allItems.map(item => {
@@ -50,11 +50,12 @@ export const GET = async ({locals: {supabase}}) => {
                 return generateChapterRSSItem(item);
             }
         });
+
         const feed = generateRSSFeed(
             FEEDS.CONTENT.title,
             FEEDS.CONTENT.description,
             SITE_URL,
-            `${SITE_URL}/rss/content.xml`,
+            `${SITE_URL}/rss.xml`,
             rssItems
         );
 
@@ -66,12 +67,13 @@ export const GET = async ({locals: {supabase}}) => {
         });
 
     } catch (error) {
-        console.error('Error generating RSS feed:', error);
+        console.error('Error generating main RSS feed:', error);
+        
         const emptyFeed = generateRSSFeed(
             FEEDS.CONTENT.title,
             FEEDS.CONTENT.description,
             SITE_URL,
-            `${SITE_URL}/rss/content.xml`,
+            `${SITE_URL}/rss.xml`,
             []
         );
 

@@ -5,3 +5,9 @@ Disallow: /upload/token/*
 
 Sitemap: https://tales.archangelgca.eu/sitemap.xml
 Sitemap: https://tales.archangelgca.eu/imagemap.xml
+
+# RSS Feeds
+# https://tales.archangelgca.eu/rss.xml
+# https://tales.archangelgca.eu/rss/content.xml
+# https://tales.archangelgca.eu/rss/content/books.xml
+# https://tales.archangelgca.eu/rss/content/chapters.xml
