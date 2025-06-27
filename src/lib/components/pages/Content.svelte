@@ -78,59 +78,58 @@
 </div>
 
 <style>
-    .overlay-custom {
-        transition: 0.15s all ease-in-out;
-        opacity: 0;
+    .card .link-custom {
+        color: var(--bs-light) !important;
     }
 
-    .overlay-custom:hover{
-        opacity: 1 !important;
-        backdrop-filter: brightness(1.2) ;
+    .card .link-custom:hover {
+        color: hsl(333, 79%, 50%) !important;
     }
 
-    .custom-overlay-content {
-        background: radial-gradient(circle at center, rgba(92, 0, 166, 0.6) 0%, rgb(92, 0, 166) 100%);
-    }
-
-    .to-scale {
-        transition: transform 0.12s ease-in;
-    }
-
-    .card {
-        box-shadow: 0 0 0 0 rgba(92, 0, 166, 0.75);
-        transition: 0.1s all ease-in-out;
-    }
-
-    .card:hover {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
-    }
-
-    .link-custom {
-        color: rgba(248, 249, 250) !important;
-    }
-
-    .link-custom:hover {
-        color: rgb(211, 26, 103) !important;
-    }
-
-    .text-title {
+    .card .text-title {
         font-size: 1.2rem;
         font-weight: 400;
         line-height: 1.2;
     }
 
-    .text-description {
+    .card .text-description {
         font-size: 0.9rem;
-        color: rgba(248, 249, 250, 0.8) !important;
+        color: hsla(210, 17%, 98%, 0.8) !important;
     }
 
-    /* On mobile, text-description should be even smaller */
+    .card .to-scale {
+        transition: transform 0.12s ease-in;
+    }
+
+    .card.border-0 {
+        box-shadow: 0 0 0 0 hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.75);
+        transition: 0.1s all ease-in-out;
+    }
+
+    .card.border-0:hover {
+        box-shadow: 0 0 0.6rem 0.25rem hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.75);
+    }
+
+    .overlay-custom {
+        transition: 0.15s all ease-in-out;
+        opacity: 0;
+    }
+
+    .overlay-custom:hover {
+        opacity: 1 !important;
+        backdrop-filter: brightness(1.2);
+    }
+
+    .custom-overlay-content {
+        background: radial-gradient(circle at center, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.6) 0%, var(--primary-color) 100%);
+    }
+
     @media (max-width: 768px) {
-        .text-description {
+        .card .text-description {
             font-size: 0.8rem;
         }
 
-        .text-title {
+        .card .text-title {
             font-size: 0.9rem;
         }
     }
