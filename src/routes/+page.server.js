@@ -1,4 +1,5 @@
 import {error as errorx} from '@sveltejs/kit';
+import {ORIGIN} from '$env/static/private';
 
 export const load = async ( { locals: { supabase, getSession } }) => {
     const { session } = await getSession();
@@ -80,7 +81,14 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     const results = {
         books_ordered_by_likes,
         books_ordered_by_created_at,
-        books_ordered_by_latest_chapter
+        books_ordered_by_latest_chapter,
+        title: 'DreamingDragons - Discover Amazing Stories & Art',
+        description: 'Explore a community of storytellers and artists on DreamingDragons. Discover new books, chapters, and creative content from talented creators.',
+        imageURL: ORIGIN + '/favicon-192.webp',
+        siteName: 'DreamingDragons',
+        type: 'website',
+        author: 'DreamingDragons Community',
+        name: 'DreamingDragons Platform'
     }
 
     if (!session) { // GUESTS

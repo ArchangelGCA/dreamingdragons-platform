@@ -1,5 +1,5 @@
 import { error as errorx } from '@sveltejs/kit';
-import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
+import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW, ORIGIN } from '$env/static/private';
 import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import PocketBase from "pocketbase";
 
@@ -84,9 +84,13 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         // For SEO $page.data on +layout etc...
         title: bookContent[0].title + " by " + bookContent[0].profiles.username,
         description: "Content by " + bookContent[0].profiles.username + " - " + bookContent[0].title + " on DreamingDragons.",
-        imageURL: (image_proxy && bookContent[0].cover_url.startsWith(image_proxy)) ? bookContent[0].cover_url : image_proxy + bookContent[0].cover_url + "?width=1024",
+        imageURL: bookContent[0].cover_url.startsWith('http') ? 
+            bookContent[0].cover_url + "?width=1024" : 
+            (image_proxy ? image_proxy + bookContent[0].cover_url + "?width=1024" : ORIGIN + bookContent[0].cover_url + "?width=1024"),
         author: bookContent[0].profiles.username,
         name: bookContent[0].profiles.username,
+        type: "article",
+        siteName: "DreamingDragons"
     };
 }
 

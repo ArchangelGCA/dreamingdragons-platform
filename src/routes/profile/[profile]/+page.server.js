@@ -124,11 +124,17 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         }
 
         results.title = profile[0].username + " - Profile";
-        results.description = "Profile of " + profile[0].username + " on DD, DreamingDragons";
-        results.imageURL = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? ORIGIN + "/favicon.webp" : profile[0].avatar_url);
-        results.logo = (profile[0].avatar_url === "" || profile[0].avatar_url === null ? ORIGIN + "/favicon.webp" : profile[0].avatar_url);
+        results.description = "Profile of " + profile[0].username + " on DreamingDragons";
+        results.imageURL = (profile[0].avatar_url === "" || profile[0].avatar_url === null) ? 
+            ORIGIN + "/favicon-192.webp" :
+            (profile[0].avatar_url.startsWith('http') ? profile[0].avatar_url : ORIGIN + profile[0].avatar_url);
+        results.logo = (profile[0].avatar_url === "" || profile[0].avatar_url === null) ? 
+            ORIGIN + "/favicon.svg" :
+            (profile[0].avatar_url.startsWith('http') ? profile[0].avatar_url : ORIGIN + profile[0].avatar_url);
         results.author = profile[0].username;
         results.name = profile[0].username;
+        results.type = "profile";
+        results.siteName = "DreamingDragons";
         return results;
     } else { // ID IS NOT SPECIFIED
         if (session) {

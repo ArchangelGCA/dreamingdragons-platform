@@ -1,4 +1,5 @@
 import {PUBLIC_IMAGE_PROXY_URL} from "$env/static/public";
+import {ORIGIN} from '$env/static/private';
 
 export const load = async ({locals: {getSession}, cookies, url}) => {
     const {session} = await getSession();
@@ -14,11 +15,12 @@ export const load = async ({locals: {getSession}, cookies, url}) => {
         keywords: 'stories, art, community, dreamingdragons',
         canonical: url.origin + url.pathname,
         siteName: 'DreamingDragons',
-        imageURL: `${url.origin}/favicon-192.webp`,
-        logo: `${url.origin}/favicon.svg`,
+        imageURL: ORIGIN + '/favicon-192.webp',
+        logo: ORIGIN + '/favicon.svg',
+        type: 'website',
         twitter: true,
         openGraph: true,
         schemaOrg: true,
-        socials: ['https://discord.gg/u6qFjfDDy2', 'https://github.com/ArchangelGCA', 'https://www.deviantart.com/groups/dreamingdragons', 'https://www.deviantart.com/archangelgca'],
+        socials: ['https://discord.gg/u6qFjfDDy2', 'https://github.com/ArchangelGCA', 'https://www.deviantart.com/groups/dreamingdragons', 'https://www.deviantart.com/archangelgca', "https://dreamingdragons.net"],
     };
 };

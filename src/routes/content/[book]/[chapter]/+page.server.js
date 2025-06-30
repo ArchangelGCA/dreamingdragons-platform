@@ -1,4 +1,5 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
+import {ORIGIN} from '$env/static/private';
 
 export const load = async ({ params, locals: { supabase, getSession, image_proxy } }) => {
     const { session } = await getSession();
@@ -110,9 +111,13 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         // For SEO $page.data on +layout etc...
         title: chapterContent[0].book.title + " - " + chapterContent[0].title + " by " + chapterContent[0].profiles.username,
         description: chapterContent[0].title + " by " + chapterContent[0].profiles.username + " - " + chapterContent[0].book.title + " on DreamingDragons.",
-        imageURL: (image_proxy && chapterContent[0].book.cover_url.startsWith(image_proxy)) ? chapterContent[0].book.cover_url : image_proxy + chapterContent[0].book.cover_url + "?width=1024",
+        imageURL: chapterContent[0].book.cover_url.startsWith('http') ? 
+            chapterContent[0].book.cover_url + "?width=1024" : 
+            (image_proxy ? image_proxy + chapterContent[0].book.cover_url + "?width=1024" : ORIGIN + chapterContent[0].book.cover_url + "?width=1024"),
         author: chapterContent[0].profiles.username,
         name: chapterContent[0].profiles.username,
+        type: "article",
+        siteName: "DreamingDragons"
     };
 }
 

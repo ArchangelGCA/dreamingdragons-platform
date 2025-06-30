@@ -104,10 +104,15 @@
         {/if}
         {#if finalImageURL !== ""}
             <meta property="og:image" content="{finalImageURL}">
+            <meta property="og:image:width" content="1200">
+            <meta property="og:image:height" content="630">
+            <meta property="og:image:alt" content="{finalTitle}">
         {/if}
         {#if finalLogo !== ""}
             <meta property="og:logo" content="{finalLogo}">
         {/if}
+        <!-- Discord-specific meta tags -->
+        <meta property="og:locale" content="en_US">
     {/if}
     {#if finalTwitter}
         {#if finalTitle !== ""}
@@ -121,6 +126,10 @@
         {/if}
         {#if finalImageURL !== ""}
             <meta name="twitter:image" content="{finalImageURL}">
+            <meta name="twitter:image:alt" content="{finalTitle}">
+        {/if}
+        {#if finalSiteName !== ""}
+            <meta name="twitter:site" content="@DreamingDragons">
         {/if}
     {/if}
     {@render children?.()}
