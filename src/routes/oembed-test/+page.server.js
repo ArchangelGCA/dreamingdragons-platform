@@ -4,7 +4,7 @@ import {ORIGIN} from '$env/static/private';
 export async function load({url}) {
 
     // Test URL for oEmbed discovery
-    const testUrl = `${ORIGIN}/content/1375`;
+    const testUrl = `${ORIGIN}/content/1345`;
 
     return {
         title: 'oEmbed Test Page',
