@@ -117,7 +117,8 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         author: chapterContent[0].profiles.username,
         name: chapterContent[0].profiles.username,
         type: "article",
-        siteName: "DreamingDragons"
+        siteName: "DreamingDragons",
+        oembed: true
     };
 }
 

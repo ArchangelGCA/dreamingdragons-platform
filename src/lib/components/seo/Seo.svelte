@@ -1,5 +1,5 @@
 <script>
-    import { page } from "$app/state";
+    import {page} from "$app/state";
 
     /**
      * @type {{
@@ -20,7 +20,8 @@
      * schemaOrg?: boolean,
      * schemaType?: string[],
      * socials?: string[],
-     * jsonld?: Record<string, any>
+     * jsonld?: Record<string, any>,
+     * oembed?: boolean
      * }}
      * */
     let {
@@ -41,38 +42,50 @@
         schemaType = page.data.schemaType ?? ['Person', 'Organization'],
         socials = page.data.socials ?? [],
         jsonld = page.data.jsonld ?? {},
+        oembed = page.data.oembed ?? false,
         children
     } = $props();
 
     // WORKAROUND TO ENSURE REACTIVITY
-    let finalTitle = $derived(page.data.title ?? title), finalDescription = $derived(page.data.description ?? description),
-        finalKeywords = $derived(page.data.keywords ?? keywords), finalCanonical = $derived(page.data.canonical ?? canonical),
-        finalSiteName = $derived(page.data.siteName ?? siteName), finalImageURL = $derived(page.data.imageURL ?? imageURL),
+    let finalTitle = $derived(page.data.title ?? title),
+        finalDescription = $derived(page.data.description ?? description),
+        finalKeywords = $derived(page.data.keywords ?? keywords),
+        finalCanonical = $derived(page.data.canonical ?? canonical),
+        finalSiteName = $derived(page.data.siteName ?? siteName),
+        finalImageURL = $derived(page.data.imageURL ?? imageURL),
         finalLogo = $derived(page.data.logo ?? logo), finalType = $derived(page.data.type ?? type),
         finalAuthor = $derived(page.data.author ?? author), finalName = $derived(page.data.name ?? name);
     let finalIndex = $derived(page.data.index ?? index), finalTwitter = $derived(page.data.twitter ?? twitter),
-        finalOpenGraph = $derived(page.data.openGraph ?? openGraph), finalSchemaOrg = $derived(page.data.schemaOrg ?? schemaOrg);
-    let finalSchemaType = $derived(page.data.schemaType ?? schemaType), finalSocials = $derived(page.data.socials ?? socials),
-        finalJsonld = $derived(page.data.jsonld ?? jsonld);
+        finalOpenGraph = $derived(page.data.openGraph ?? openGraph),
+        finalSchemaOrg = $derived(page.data.schemaOrg ?? schemaOrg);
+    let finalSchemaType = $derived(page.data.schemaType ?? schemaType),
+        finalSocials = $derived(page.data.socials ?? socials),
+        finalJsonld = $derived(page.data.jsonld ?? jsonld), finalOembed = $derived(page.data.oembed ?? oembed);
 
     let LdScript = $derived(`<script type="application/ld+json">${JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": finalSchemaType.length > 1 ? finalSchemaType : finalSchemaType[0],
-        "name": finalName,
-        "url": page.url.origin,
-        "image": finalImageURL,
-        "logo": {
-            "@type": "ImageObject",
-            "url": finalLogo,
-            "width": 48,
-            "height": 48
-        },
-        "sameAs": finalSocials
-        , ...finalJsonld}
+            "@context": "https://schema.org",
+            "@type": finalSchemaType.length > 1 ? finalSchemaType : finalSchemaType[0],
+            "name": finalName,
+            "url": page.url.origin,
+            "image": finalImageURL,
+            "logo": {
+                "@type": "ImageObject",
+                "url": finalLogo,
+                "width": 48,
+                "height": 48
+            },
+            "sameAs": finalSocials
+            , ...finalJsonld
+        }
     )}${'<'}/script>`);
 </script>
 <svelte:head>
     {#if finalTitle !== ""}
+        {#if finalOembed}
+            <link rel="alternate" type="application/json+oembed"
+                  href="{page.url.origin}/oembed?url={encodeURIComponent(page.url.href)}&format=json"
+                  title="{finalTitle}">
+        {/if}
         {#if finalImageURL}
             <meta name="robots" content={finalIndex ? "index, follow, max-image-preview:large" : "noindex"}>
         {:else}
@@ -113,6 +126,9 @@
         {/if}
         <!-- Discord-specific meta tags -->
         <meta property="og:locale" content="en_US">
+        {#if finalType === "article"}
+            <meta property="article:author" content="{finalAuthor}">
+        {/if}
     {/if}
     {#if finalTwitter}
         {#if finalTitle !== ""}

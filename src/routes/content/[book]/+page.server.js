@@ -90,7 +90,8 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         author: bookContent[0].profiles.username,
         name: bookContent[0].profiles.username,
         type: "article",
-        siteName: "DreamingDragons"
+        siteName: "DreamingDragons",
+        oembed: true
     };
 }
 
