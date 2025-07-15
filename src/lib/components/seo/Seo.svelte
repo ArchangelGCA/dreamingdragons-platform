@@ -117,8 +117,6 @@
         {/if}
         {#if finalImageURL !== ""}
             <meta property="og:image" content="{finalImageURL}">
-            <meta property="og:image:width" content="1200">
-            <meta property="og:image:height" content="630">
             <meta property="og:image:alt" content="{finalTitle}">
         {/if}
         {#if finalLogo !== ""}
