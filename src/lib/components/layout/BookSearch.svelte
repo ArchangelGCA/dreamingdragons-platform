@@ -21,7 +21,24 @@
     </div>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
-        <img src={image_proxy && !book_cover_url.startsWith(image_proxy) ? image_proxy + book_cover_url + '?width=500&quality=80' : book_cover_url} alt="Cover of {title}" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
+        {#if image_proxy && !book_cover_url.startsWith(image_proxy)}
+            {@const baseUrl = image_proxy + book_cover_url}
+            <img 
+                srcset="{baseUrl}?width=750&quality=80 2x, {baseUrl}?width=500&quality=80 1x"
+                src="{baseUrl}?width=500&quality=80" 
+                alt="Cover of {title}" 
+                class="w-100 h-100 to-scale" 
+                loading="lazy" 
+                style="object-fit: cover; position: absolute; top: 0; left: 0;">
+        {:else}
+            {@const optimizedUrl = book_cover_url && book_cover_url.startsWith('http') ? book_cover_url : book_cover_url}
+            <img 
+                src={optimizedUrl + (optimizedUrl.includes('?') ? '&' : '?') + 'width=500&quality=80'}
+                alt="Cover of {title}" 
+                class="w-100 h-100 to-scale" 
+                loading="lazy" 
+                style="object-fit: cover; position: absolute; top: 0; left: 0;">
+        {/if}
     </div>
     <a href="/content/{book_id}">
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">

@@ -276,22 +276,23 @@
         </div>
     {:else} <!-- Profile found -->
         <div class="row justify-content-center">
-            <div class="col-12">                {#if profile.avatar_url === ''}
+            <div class="col-12">
+                {#if profile.avatar_url === ''}
                     <div class="rounded-bottom-5 position-relative"
                          style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                         <!-- Share and RSS buttons in top right corner -->
                         <div class="position-absolute top-0 end-0 p-3">
                             <div class="d-flex gap-2">
                                 <ShareButton
-                                    url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/profile/${profile.id}`}
-                                    title="{profile.username}'s Profile"
-                                    description="Check out {profile.username}'s amazing content on DreamingDragons!"
-                                    compact={true}
+                                        url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/profile/${profile.id}`}
+                                        title="{profile.username}'s Profile"
+                                        description="Check out {profile.username}'s amazing content on DreamingDragons!"
+                                        compact={true}
                                 />
                                 <RSSButton
-                                    rssUrl="/rss/profile/{profile.id}.xml"
-                                    label="RSS"
-                                    compact={true}
+                                        rssUrl="/rss/profile/{profile.id}.xml"
+                                        label="RSS"
+                                        compact={true}
                                 />
                             </div>
                         </div>
@@ -307,30 +308,45 @@
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                    </div>                {:else}
+                    </div>
+                {:else}
+                    {@const backgroundImageUrl = profile.cover_url ? profile.cover_url : profile.avatar_url}
+                    {@const
+                        optimizedBackgroundUrl = image_proxy && backgroundImageUrl && !backgroundImageUrl.startsWith(image_proxy) ? image_proxy + backgroundImageUrl : backgroundImageUrl}
                     <div class="rounded-bottom-5 shadow-sm position-relative"
-                         style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({profile.cover_url ? profile.cover_url : profile.avatar_url}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                         style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({optimizedBackgroundUrl}?quality=80), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                         <!-- Share and RSS buttons in top right corner -->
                         <div class="position-absolute top-0 end-0 p-3">
                             <div class="d-flex gap-2">
                                 <ShareButton
-                                    url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/profile/${profile.id}`}
-                                    title="{profile.username}'s Profile"
-                                    description="Check out {profile.username}'s amazing content on DreamingDragons!"
-                                    compact={true}
+                                        url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/profile/${profile.id}`}
+                                        title="{profile.username}'s Profile"
+                                        description="Check out {profile.username}'s amazing content on DreamingDragons!"
+                                        compact={true}
                                 />
                                 <RSSButton
-                                    rssUrl="/rss/profile/{profile.id}.xml"
-                                    label="RSS"
-                                    compact={true}
+                                        rssUrl="/rss/profile/{profile.id}.xml"
+                                        label="RSS"
+                                        compact={true}
                                 />
                             </div>
                         </div>
                         <div class="row justify-content-center align-items-end" style="height: 100%;">
                             <div class="col-auto">
-                                <img src="{profile.avatar_url}" alt="{profile.username}" loading="lazy"
-                                     class="rounded-circle bg-dark shadow" width="150px" height="150px" id="profileIcon"
-                                     onload={() => avatarFound = true} onerror={() => avatarFound = false}>
+                                {#if profile.avatar_url}
+                                    {@const
+                                        optimizedAvatarUrl = image_proxy && profile.avatar_url && !profile.avatar_url.startsWith(image_proxy) ? image_proxy + profile.avatar_url : profile.avatar_url}
+                                    <img src="{optimizedAvatarUrl}?width=600&quality=80" alt="{profile.username}"
+                                         loading="lazy"
+                                         class="rounded-circle bg-dark shadow" width="150px" height="150px"
+                                         id="profileIcon"
+                                         onload={() => avatarFound = true} onerror={() => avatarFound = false}>
+                                {:else}
+                                    <img src="/favicon.webp" alt="{profile.username}" loading="lazy"
+                                         class="rounded-circle bg-dark shadow" width="150px" height="150px"
+                                         id="profileIcon"
+                                         onload={() => avatarFound = true} onerror={() => avatarFound = false}>
+                                {/if}
                             </div>
                         </div>
                     </div>
@@ -408,7 +424,8 @@
                                 <span class="">{total_likes}</span>
                             </div>
                         </div>
-                    </div>                    <div class="col-4 col-md-3">
+                    </div>
+                    <div class="col-4 col-md-3">
                         <div class="row justify-content-center d-flex align-items-center"
                              data-tooltip="Joined: {new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}"
                         >
@@ -532,12 +549,24 @@
                                             {#if gallery.gallery_books.length > 0}
                                                 <div class="preview-stack">
                                                     {#each gallery.gallery_books.slice(0, 4) as gb, i}
-                                                        <img 
-                                                            src={gb.book.cover_url || '/favicon.webp'} 
-                                                            alt="Tale cover"
-                                                            class="preview-book"
-                                                            style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
-                                                        />
+                                                        {#if !gb.book.cover_url}
+                                                            <img
+                                                                    src="/favicon.webp"
+                                                                    alt="Tale cover"
+                                                                    class="preview-book"
+                                                                    style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
+                                                            />
+                                                        {:else}
+                                                            {@const
+                                                                optimizedSrc = image_proxy && !gb.book.cover_url.startsWith(image_proxy) ? image_proxy + gb.book.cover_url : gb.book.cover_url}
+                                                            <img
+                                                                    src={optimizedSrc + '?width=300&quality=80'}
+                                                                    alt="Tale cover"
+                                                                    class="preview-book"
+                                                                    style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
+                                                                    loading="lazy"
+                                                            />
+                                                        {/if}
                                                     {/each}
                                                 </div>
                                             {:else}
@@ -561,13 +590,13 @@
                                     </a>
                                     {#if session && gallery.owner_id === session.user.id}
                                         <div class="gallery-edit-overlay">
-                                            <a 
-                                                href="/settings/galleries?gallery={gallery.id}"
-                                                class="btn-edit-gallery"
-                                                use:tooltip={{...tooltipConfig}} 
-                                                title="Edit Gallery"
-                                                aria-label="Edit Gallery"
-                                                onclick={(e) => e.stopPropagation()}
+                                            <a
+                                                    href="/settings/galleries?gallery={gallery.id}"
+                                                    class="btn-edit-gallery"
+                                                    use:tooltip={{...tooltipConfig}}
+                                                    title="Edit Gallery"
+                                                    aria-label="Edit Gallery"
+                                                    onclick={(e) => e.stopPropagation()}
                                             >
                                                 <i class="fas fa-edit"></i>
                                             </a>
@@ -679,9 +708,9 @@
     }
 
     .gallery-card-profile {
-        background: linear-gradient(135deg, 
-            hsla(var(--primary-hue), 20%, 15%, 0.8),
-            hsla(var(--primary-hue), 15%, 20%, 0.6)
+        background: linear-gradient(135deg,
+        hsla(var(--primary-hue), 20%, 15%, 0.8),
+        hsla(var(--primary-hue), 15%, 20%, 0.6)
         );
         border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
         border-radius: 16px;
@@ -698,10 +727,10 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(135deg, 
-            hsla(var(--primary-hue), 60%, 50%, 0.1) 0%,
-            transparent 50%,
-            hsla(var(--primary-hue), 40%, 60%, 0.05) 100%
+        background: linear-gradient(135deg,
+        hsla(var(--primary-hue), 60%, 50%, 0.1) 0%,
+        transparent 50%,
+        hsla(var(--primary-hue), 40%, 60%, 0.05) 100%
         );
         opacity: 0;
         transition: opacity 0.3s ease;
@@ -723,9 +752,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(45deg, 
-            hsla(var(--primary-hue), 20%, 10%, 0.8),
-            hsla(var(--primary-hue), 15%, 15%, 0.6)
+        background: linear-gradient(45deg,
+        hsla(var(--primary-hue), 20%, 10%, 0.8),
+        hsla(var(--primary-hue), 15%, 15%, 0.6)
         );
         position: relative;
         overflow: hidden;
@@ -856,9 +885,9 @@
     }
 
     .btn-edit-gallery:hover {
-        background: linear-gradient(135deg, 
-            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)), 
-            hsl(290, 100%, 70%)
+        background: linear-gradient(135deg,
+        hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)),
+        hsl(290, 100%, 70%)
         );
         transform: translateY(-2px) scale(1.05);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
@@ -871,21 +900,21 @@
             grid-template-columns: 1fr;
             gap: 1rem;
         }
-        
+
         .gallery-preview-profile {
             height: 160px;
         }
-        
+
         .preview-stack {
             width: 100px;
             height: 140px;
         }
-        
+
         .preview-book {
             width: 70px;
             height: 100px;
         }
-        
+
         .preview-empty-profile {
             width: 70px;
             height: 100px;

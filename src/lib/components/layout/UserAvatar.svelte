@@ -55,9 +55,16 @@
                     <div class="placeholder rounded-circle w-100 h-100"></div>
                 </div>
             {:else}
-                <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url}
-                     alt='{username} Avatar' class="rounded-circle avatar-style" width={size} height={size}
-                     draggable="false">
+                {@const baseUrl = !url.startsWith(image_proxy) ? image_proxy + url : url}
+                <img 
+                    srcset="{baseUrl}?width=375 2x, {baseUrl}?width=250 1x"
+                    src="{baseUrl}?width=250"
+                    alt='{username} Avatar' 
+                    class="rounded-circle avatar-style" 
+                    width={size} 
+                    height={size}
+                    loading="lazy"
+                    draggable="false">
             {/if}
         </a>
     {:else}
@@ -66,9 +73,16 @@
                 <div class="placeholder rounded-circle w-100 h-100"></div>
             </div>
         {:else}
-            <img src={!url.startsWith(image_proxy) ? (image_proxy + url + '?width=250') : url}
-                 alt='{username} Avatar' class="rounded-circle avatar-style" width={size} height={size}
-                 draggable="false">
+            {@const baseUrl = !url.startsWith(image_proxy) ? image_proxy + url : url}
+            <img 
+                srcset="{baseUrl}?width=375 2x, {baseUrl}?width=250 1x"
+                src="{baseUrl}?width=250"
+                alt='{username} Avatar' 
+                class="rounded-circle avatar-style" 
+                width={size} 
+                height={size}
+                loading="lazy"
+                draggable="false">
         {/if}
     {/if}
 </div>

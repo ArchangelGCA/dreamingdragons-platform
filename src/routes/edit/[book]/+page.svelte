@@ -12,9 +12,9 @@
     /** @type {{data: any}} */
     let { data } = $props();
 
-    let { book } = $state(data);
+    let { book, image_proxy } = $state(data);
     $effect(() => {
-        ({book} = data);
+        ({book, image_proxy} = data);
     });
 
     const maxFileSizeMB = PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES / 1024 / 1024;
@@ -216,7 +216,12 @@
                         <label for="file" class="form-label" title="Tale image" use:tooltip={{...tooltipConfig}}><i class="fas fa-image"></i> Cover</label>
                         <input class="form-control form-control-lg bg-dark bg-opacity-50 mb-2" type="file" id="file" name="image" accept="image/*" onchange={loadImagePreview} bind:files />
                         <span class="text-light text-opacity-50" use:tooltip={{...tooltipConfig}} title="Max size: {maxFileSizeMB}MB">Max upload size: {maxFileSizeMB}MB - Max resolution: {PUBLIC_COVER_MAX_WIDTH}x{PUBLIC_COVER_MAX_HEIGHT} </span>
-                        <img src={previewUrl !== null ? previewUrl : book.cover_url} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" />
+                        {#if previewUrl !== null}
+                            <img src={previewUrl} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" loading="lazy" />
+                        {:else}
+                            {@const optimizedCoverUrl = image_proxy && book.cover_url && !book.cover_url.startsWith(image_proxy) ? image_proxy + book.cover_url : book.cover_url}
+                            <img src={optimizedCoverUrl + '?width=800&quality=80'} alt="Preview" class="img-thumbnail mt-2 mb-2 rounded-4" style="max-height: 50vh; width: auto; object-fit: contain" loading="lazy" />
+                        {/if}
                         <span class="text-light text-opacity-75">Selected file: {fileName !== null ? fileName : book.cover_url.substring(book.cover_url.lastIndexOf('/') + 1)}</span>
                     </div>
                     <div class="col-12 px-0">

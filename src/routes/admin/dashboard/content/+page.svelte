@@ -5,9 +5,9 @@
 
     /** @type {{data: any}} */
     let { data } = $props();
-    let {content} = $state(data);
+    let {content, image_proxy} = $state(data);
     $effect.pre(() => {
-        ({content} = data)
+        ({content, image_proxy} = data)
     });
 
     async function handleDelete() {
@@ -36,7 +36,7 @@
 <div class="row" use:autoAnimate>
     {#each content as item (item.id)}
         <div class="col-12 col-md-6 col-lg-4 mb-4">
-            <AdminContent {item} deleteContent={handleDelete} editContent={handleEditContent}/>
+            <AdminContent {item} {image_proxy} deleteContent={handleDelete} editContent={handleEditContent}/>
         </div>
     {/each}
 </div>

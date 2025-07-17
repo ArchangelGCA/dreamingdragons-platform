@@ -2,8 +2,8 @@
     import autoAnimate from "@formkit/auto-animate";
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
-    /** @type {{item: any}} */
-    let { item, editContent, deleteContent } = $props();
+    /** @type {{item: any, image_proxy: any}} */
+    let { item, image_proxy, editContent, deleteContent } = $props();
 
     const maxChars = 100;
     let showFullDescription = $state(false);
@@ -222,7 +222,12 @@
 
 <div class="card">
     <a href="/content/{item.id}" target="_blank">
-        <img src={item.cover_url} class="card-img-top" alt={item.title} />
+        {#if item.cover_url}
+            {@const optimizedCoverUrl = image_proxy && item.cover_url && !item.cover_url.startsWith(image_proxy) ? image_proxy + item.cover_url : item.cover_url}
+            <img src={optimizedCoverUrl + '?width=400&quality=80'} class="card-img-top" alt={item.title} loading="lazy" />
+        {:else}
+            <img src="/favicon.webp" class="card-img-top" alt={item.title} loading="lazy" />
+        {/if}
     </a>
     <div class="card-body">
         <h5 class="card-title"><a href="/content/{item.id}" target="_blank" aria-label="Open Content"><i class="fas fa-solid fa-link"></i></a> {item.title}</h5>

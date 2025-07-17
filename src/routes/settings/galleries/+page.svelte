@@ -21,6 +21,16 @@
         return `${image_proxy}${url}?width=${width}&quality=${quality}`;
     }
 
+    function getOptimizedImageSrcSet(url, baseWidth = 300, quality = 80) {
+        if (!url || url === '') return '/favicon.webp';
+        const baseUrl = image_proxy && !url.startsWith(image_proxy) ? image_proxy + url : url;
+        
+        return {
+            src: `${baseUrl}?width=${baseWidth}&quality=${quality}`,
+            srcset: `${baseUrl}?width=${Math.round(baseWidth * 1.5)}&quality=${quality} 2x, ${baseUrl}?width=${baseWidth}&quality=${quality} 1x`
+        };
+    }
+
     let selectedGallery = $state(null);
     let selectedGalleryId = $state(null);
     let newGallery = $state({id: null, name: '', description: ''});
@@ -366,12 +376,16 @@
                                 {#if gallery.gallery_books.length > 0}
                                     <div class="preview-images">
                                         {#each gallery.gallery_books.slice(0, 3) as gb, i}
+                                            {@const imageData = getOptimizedImageSrcSet(gb.book.cover_url, 120, 85)}
                                             <img
-                                                    src={getOptimizedImageUrl(gb.book.cover_url, 100)}
+                                                    srcset={imageData.srcset}
+                                                    src={imageData.src}
                                                     alt="Book cover preview"
                                                     class="preview-img"
                                                     style="z-index: {3-i}; transform: translateX({i * -8}px)"
                                                     loading="lazy"
+                                                    width="60"
+                                                    height="80"
                                             />
                                         {/each}
                                     </div>
@@ -485,10 +499,12 @@
                                     <div class="book-item" transition:scale={{ duration: 200 }} role="gridcell">
                                         <div class="book-cover-container">
                                             {#if !imageLoadingStates[book.id]}
-                                                <div class="placeholder-glow">
+                                                {@const imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
+                                                <div class="placeholder-glow" use:autoAnimate>
                                                     <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
                                                         <img
-                                                                src={getOptimizedImageUrl(book.cover_url)}
+                                                                srcset={imageData.srcset}
+                                                                src={imageData.src}
                                                                 alt="Cover for {book.title}"
                                                                 class="book-cover"
                                                                 loading="lazy"
@@ -498,11 +514,14 @@
                                                     </div>
                                                 </div>
                                             {:else}
+                                                {@const imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
                                                 <img
-                                                        src={getOptimizedImageUrl(book.cover_url)}
+                                                        srcset={imageData.srcset}
+                                                        src={imageData.src}
                                                         alt="Cover for {book.title}"
                                                         class="book-cover"
                                                         loading="lazy"
+                                                        width="250"
                                                 />
                                             {/if}
                                             <div class="book-overlay">
@@ -579,10 +598,12 @@
                                     >
                                         <div class="book-cover-container">
                                             {#if !imageLoadingStates[`add-${book.id}`]}
-                                                <div class="placeholder-glow">
+                                                {@const imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
+                                                <div class="placeholder-glow" use:autoAnimate>
                                                     <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
                                                         <img
-                                                                src={getOptimizedImageUrl(book.cover_url)}
+                                                                srcset={imageData.srcset}
+                                                                src={imageData.src}
                                                                 alt="Cover for {book.title}"
                                                                 class="book-cover"
                                                                 loading="lazy"
@@ -592,11 +613,14 @@
                                                     </div>
                                                 </div>
                                             {:else}
+                                                {@const imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
                                                 <img
-                                                        src={getOptimizedImageUrl(book.cover_url)}
+                                                        srcset={imageData.srcset}
+                                                        src={imageData.src}
                                                         alt="Cover for {book.title}"
                                                         class="book-cover"
                                                         loading="lazy"
+                                                        width="250"
                                                 />
                                             {/if}
                                             <div class="book-overlay add-overlay">

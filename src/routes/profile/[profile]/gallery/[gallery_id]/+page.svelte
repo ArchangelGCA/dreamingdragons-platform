@@ -5,7 +5,7 @@
     import { tooltipConfig } from "$lib/utils/gcacommons.js";
 
     let {data} = $props();
-    let {gallery, session} = $state(data);
+    let {gallery, session, image_proxy} = $state(data);
     let width = $state(0), height = $state(0);
     let [minColWidth, gap] = [350, 10];
 
@@ -35,7 +35,7 @@
                 {/if}
                 <div class="gallery-stats">
                     <span class="stat-item">
-                        <i class="fas fa-book me-1"></i>
+                        <i class="fas fa-book me-2"></i>
                         {books.length} {books.length === 1 ? 'tale' : 'tales'}
                     </span>
                 </div>
@@ -68,7 +68,7 @@
                      bind:masonryHeight={height}
             >
                 {#snippet children({item})}
-                    <ContentMasonry book={item}/>
+                    <ContentMasonry book={item} {image_proxy}/>
                 {/snippet}
             </Masonry>
         {:else}

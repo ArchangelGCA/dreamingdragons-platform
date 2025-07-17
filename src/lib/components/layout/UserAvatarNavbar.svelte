@@ -8,8 +8,14 @@
         image_proxy = null
     } = $props();
 
-    let finalAvatarUrl = $derived(image_proxy && url !== null && url !== '' && !url.startsWith(image_proxy) ? image_proxy + url + '?width=250': url);
+    let finalAvatarUrl = $derived(image_proxy && url !== null && url !== '' && !url.startsWith(image_proxy) ? image_proxy + url : url);
     let isAvatarLoaded = $derived(url !== '' && url !== null && finalAvatarUrl !== null && finalAvatarUrl !== '');
+    
+    let avatarSrcSet = $derived.by(() => {
+        if (!isAvatarLoaded) return '';
+        const baseUrl = finalAvatarUrl;
+        return `${baseUrl}?width=375 2x, ${baseUrl}?width=250 1x`;
+    });
 </script>
 
 <!-- Circle avatar, using Bootstrap 5 classes -->
@@ -18,7 +24,14 @@
         <span class="visually-hidden">Loading...</span>
     </div>
 {:else}
-    <img src={finalAvatarUrl} alt='{username} avatar' class="rounded-circle avatar {classes}" width={size} height={size}>
+    <img 
+        srcset={avatarSrcSet}
+        src="{finalAvatarUrl}?width=250"
+        alt='{username} avatar' 
+        class="rounded-circle avatar {classes}" 
+        width={size} 
+        height={size}
+        loading="lazy">
 {/if}
 
 <style>
