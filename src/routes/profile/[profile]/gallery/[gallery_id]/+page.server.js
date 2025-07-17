@@ -1,6 +1,7 @@
 import { error as errorx } from '@sveltejs/kit';
 
-export const load = async ({ params, locals: { supabase } }) => {
+export const load = async ({ params, locals: { supabase, getSession } }) => {
+    const { session } = await getSession();
     const { gallery_id } = params;
 
     const { data: gallery, error } = await supabase
@@ -21,6 +22,7 @@ export const load = async ({ params, locals: { supabase } }) => {
 
     return {
         gallery,
+        session,
         title: `${gallery.name} - Gallery`,
         description: gallery.description
     };

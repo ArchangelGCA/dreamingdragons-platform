@@ -23,6 +23,7 @@
         total_followers,
         isFollowing,
         isOwner,
+        session,
         id
     } = $state(data);
 
@@ -31,7 +32,7 @@
     })
 
     $effect(() => {
-        ({profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, id} = data)
+        ({profile, likedBooks, total_likes, total_followers, isFollowing, isOwner, session, id} = data)
     });
 
     let avatarFound = $state(true);
@@ -526,36 +527,52 @@
                         <div class="galleries-grid">
                             {#each profile.gallery as gallery (gallery.id)}
                                 <div class="gallery-card-profile">
-                                    <div class="gallery-preview-profile">
-                                        {#if gallery.gallery_books.length > 0}
-                                            <div class="preview-stack">
-                                                {#each gallery.gallery_books.slice(0, 4) as gb, i}
-                                                    <img 
-                                                        src={gb.book.cover_url || '/favicon.webp'} 
-                                                        alt="Tale cover"
-                                                        class="preview-book"
-                                                        style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
-                                                    />
-                                                {/each}
-                                            </div>
-                                        {:else}
-                                            <div class="preview-empty-profile">
-                                                <i class="fas fa-images"></i>
-                                            </div>
-                                        {/if}
-                                    </div>
-                                    <div class="gallery-info-profile">
-                                        <h5 class="gallery-title-profile">
-                                            <a href="/profile/{profile.id}/gallery/{gallery.id}" class="gallery-link">{gallery.name}</a>
-                                        </h5>
-                                        <p class="gallery-description-profile">{gallery.description || 'No description'}</p>
-                                        <div class="gallery-meta-profile">
-                                            <span class="book-count">
-                                                <i class="fas fa-book me-2"></i>
-                                                {gallery.gallery_books.length} {gallery.gallery_books.length === 1 ? 'tale' : 'tales'}
-                                            </span>
+                                    <a href="/profile/{profile.id}/gallery/{gallery.id}" class="gallery-card-link">
+                                        <div class="gallery-preview-profile">
+                                            {#if gallery.gallery_books.length > 0}
+                                                <div class="preview-stack">
+                                                    {#each gallery.gallery_books.slice(0, 4) as gb, i}
+                                                        <img 
+                                                            src={gb.book.cover_url || '/favicon.webp'} 
+                                                            alt="Tale cover"
+                                                            class="preview-book"
+                                                            style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
+                                                        />
+                                                    {/each}
+                                                </div>
+                                            {:else}
+                                                <div class="preview-empty-profile">
+                                                    <i class="fas fa-images"></i>
+                                                </div>
+                                            {/if}
                                         </div>
-                                    </div>
+                                        <div class="gallery-info-profile">
+                                            <h5 class="gallery-title-profile">
+                                                {gallery.name}
+                                            </h5>
+                                            <p class="gallery-description-profile">{gallery.description || 'No description'}</p>
+                                            <div class="gallery-meta-profile">
+                                                <span class="book-count">
+                                                    <i class="fas fa-book me-2"></i>
+                                                    {gallery.gallery_books.length} {gallery.gallery_books.length === 1 ? 'tale' : 'tales'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    {#if session && gallery.owner_id === session.user.id}
+                                        <div class="gallery-edit-overlay">
+                                            <a 
+                                                href="/settings/galleries?gallery={gallery.id}"
+                                                class="btn-edit-gallery"
+                                                use:tooltip={{...tooltipConfig}} 
+                                                title="Edit Gallery"
+                                                aria-label="Edit Gallery"
+                                                onclick={(e) => e.stopPropagation()}
+                                            >
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    {/if}
                                 </div>
                             {/each}
                         </div>
@@ -762,33 +779,7 @@
         margin: 0 0 0.75rem 0;
         font-size: 1.25rem;
         font-weight: 600;
-    }
-
-    .gallery-link {
         color: var(--text-color);
-        text-decoration: none;
-        transition: all 0.3s ease;
-        position: relative;
-    }
-
-    .gallery-link::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: linear-gradient(90deg, var(--primary-color), hsl(290, 100%, 60%));
-        transition: width 0.3s ease;
-    }
-
-    .gallery-link:hover {
-        color: var(--primary-color);
-        text-decoration: none;
-    }
-
-    .gallery-link:hover::after {
-        width: 100%;
     }
 
     .gallery-description-profile {
@@ -819,6 +810,60 @@
         padding: 0.5rem 1rem;
         border-radius: 20px;
         border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
+    }
+
+    .gallery-card-link {
+        color: inherit;
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .gallery-card-link:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .gallery-edit-overlay {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 10;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .gallery-card-profile:hover .gallery-edit-overlay {
+        opacity: 1;
+    }
+
+    .btn-edit-gallery {
+        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        font-size: 0.9rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-edit-gallery:hover {
+        background: linear-gradient(135deg, 
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)), 
+            hsl(290, 100%, 70%)
+        );
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        color: white;
+        text-decoration: none;
     }
 
     @media (max-width: 768px) {

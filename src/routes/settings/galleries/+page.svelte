@@ -13,6 +13,7 @@
     let userBooks = $derived(data.userBooks || []);
     let profile = $derived(data.profile);
     let image_proxy = $derived(data.image_proxy);
+    let galleryParam = $derived(data.galleryParam);
 
     function getOptimizedImageUrl(url, width = 300, quality = 80) {
         if (!url || url === '') return '/favicon.webp';
@@ -60,6 +61,15 @@
         }
 
         window.addEventListener('keydown', handleKeydown);
+
+        // Check for gallery parameter from server data
+        if (galleryParam && galleries.length > 0) {
+            const galleryId = parseInt(galleryParam, 10);
+            const targetGallery = galleries.find(g => g.id === galleryId);
+            if (targetGallery) {
+                selectGallery(targetGallery);
+            }
+        }
 
         return () => {
             window.removeEventListener('keydown', handleKeydown);
@@ -418,7 +428,7 @@
                         <div class="gallery-stats-quick">
                             <div class="stat-quick">
                                 <i class="fas fa-book"></i>
-                                <span>{selectedGallery.gallery_books.length} books</span>
+                                <span>{selectedGallery.gallery_books.length} {selectedGallery.gallery_books.length && selectedGallery.gallery_books.length >= 2 ? "tales" : "tale"}</span>
                             </div>
                             <div class="stat-quick">
                                 <i class="fas fa-calendar"></i>

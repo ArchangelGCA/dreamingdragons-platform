@@ -1,6 +1,6 @@
 import { error as errorx, redirect } from '@sveltejs/kit';
 
-export const load = async ({locals: {supabase, getSession}, parent}) => {
+export const load = async ({locals: {supabase, getSession}, parent, url}) => {
     const {session} = await getSession();
     if (!session) {
         throw redirect(303, '/login');
@@ -44,11 +44,15 @@ export const load = async ({locals: {supabase, getSession}, parent}) => {
         throw errorx(500, 'Error fetching user books');
     }
 
+    // Get gallery parameter from URL
+    const galleryParam = url.searchParams.get('gallery');
+
     return {
         profile,
         galleries,
         userBooks,
-        image_proxy
+        image_proxy,
+        galleryParam
     };
 };
 

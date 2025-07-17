@@ -1,13 +1,16 @@
 <script>
     import Masonry from '$lib/components/sveltebricks/Masonry.svelte';
     import ContentMasonry from '$lib/components/pages/ContentMasonry.svelte';
+    import { tooltip } from "@svelte-plugins/tooltips";
+    import { tooltipConfig } from "$lib/utils/gcacommons.js";
 
     let {data} = $props();
-    let {gallery} = $state(data);
+    let {gallery, session} = $state(data);
     let width = $state(0), height = $state(0);
     let [minColWidth, gap] = [350, 10];
 
     let books = $derived(gallery.gallery_books.map(gb => gb.book));
+    let isOwner = $derived(session && gallery.owner_id === session.user.id);
 </script>
 
 <svelte:head>
@@ -37,6 +40,20 @@
                     </span>
                 </div>
             </div>
+            {#if isOwner}
+                <div class="gallery-actions">
+                    <a 
+                        href="/settings/galleries?gallery={gallery.id}"
+                        class="btn-edit-gallery-header"
+                        use:tooltip={{...tooltipConfig}} 
+                        title="Edit Gallery"
+                        aria-label="Edit Gallery"
+                    >
+                        <i class="fas fa-edit me-2"></i>
+                        Edit Gallery
+                    </a>
+                </div>
+            {/if}
         </div>
     </div>
 
@@ -162,6 +179,36 @@
         max-width: 600px;
     }
 
+    .gallery-actions {
+        margin-left: auto;
+    }
+
+    .btn-edit-gallery-header {
+        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
+        font-size: 0.95rem;
+    }
+
+    .btn-edit-gallery-header:hover {
+        background: linear-gradient(135deg, 
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)), 
+            hsl(290, 100%, 70%)
+        );
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
     .gallery-stats {
         display: flex;
         gap: 1.5rem;
@@ -231,6 +278,18 @@
 
         .gallery-stats {
             justify-content: center;
+        }
+
+        .gallery-actions {
+            margin-left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-edit-gallery-header {
+            width: auto;
+            min-width: 160px;
         }
     }
 </style>
