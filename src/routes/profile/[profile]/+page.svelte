@@ -458,7 +458,7 @@
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'galleries') ? 'active' : ''}"
                         onclick={() => show = 'galleries'}
-                        data-tooltip="{profile.username + ' Galleries (Coming soon!) 🖼️'}">Galleries
+                        data-tooltip="{profile.username + ' Galleries 🖼️'}">Galleries
                 </button>
             </div>
         </div>
@@ -513,11 +513,31 @@
                     </div>
                 {/if}
             {/if}
-            <!-- Coming soon, galleries -->
             {#if show === "galleries"}
-                <div class="col mt-4 text-center">
-                    <p class="h1">Coming soon... 🖼️</p>
-                </div>
+                {#if !profile.gallery || profile.gallery.length === 0}
+                    <div class="col mt-4 text-center">
+                        <p class="h1">No galleries yet... 🖼️</p>
+                        {#if isOwner}
+                            <a href="/settings/galleries" class="btn btn-purple mt-2">Create one!</a>
+                        {/if}
+                    </div>
+                {:else}
+                    <div class="col-12">
+                        <div class="row">
+                            {#each profile.gallery as gallery (gallery.id)}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card bg-dark text-white">
+                                        <div class="card-body">
+                                            <h5 class="card-title"><a href="/profile/{profile.id}/gallery/{gallery.id}" class="text-white stretched-link">{gallery.name}</a></h5>
+                                            <p class="card-text">{gallery.description}</p>
+                                            <p class="card-text"><small class="text-muted">{gallery.gallery_books.length} items</small></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            {/each}
+                        </div>
+                    </div>
+                {/if}
             {/if}
         </div>
     {/if}

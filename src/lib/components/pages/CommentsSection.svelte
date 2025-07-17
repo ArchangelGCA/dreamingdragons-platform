@@ -20,9 +20,6 @@
     let avatarsLoaded = true;
 
     let commentsCount = $derived(comments.length);
-    /*run(() => {
-        commentsCount = comments.length;
-    });*/
 
     async function handleCommentSubmit() {
         if (commentActionActive) return;

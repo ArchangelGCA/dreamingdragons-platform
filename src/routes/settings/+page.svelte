@@ -334,6 +334,18 @@
         <!-- Security -->
         <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
             <div class="col-12">
+                <p class="h4 fw-bold mb-0">Galleries</p>
+                <p class="text-muted">Manage your galleries</p>
+            </div>
+            <div class="col-12 mt-2">
+                <a href="/settings/galleries" class="btn btn-purple text-decoration-none pb-1 rounded-3">
+                    Manage Galleries
+                </a>
+            </div>
+        </div>
+        <!-- Security -->
+        <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
+            <div class="col-12">
                 <p class="h4 fw-bold mb-0">Security</p>
                 <p class="text-muted">Manage your password and security settings</p>
             </div>
