@@ -489,12 +489,12 @@
                     <div class="books-section" use:autoAnimate>
                         <h3 class="section-title">
                             <i class="fas fa-book me-2"></i>
-                            Books in Gallery
+                            Tales in Gallery
                             <span class="count-badge">{selectedGallery.gallery_books.length}</span>
                         </h3>
 
                         {#if selectedGallery.gallery_books.length > 0}
-                            <div class="books-grid" role="grid" aria-label="Books in gallery">
+                            <div class="books-grid" role="grid" aria-label="Tales in gallery">
                                 {#each selectedGallery.gallery_books.map(gb => gb.book) as book (book.id)}
                                     <div class="book-item" transition:scale={{ duration: 200 }} role="gridcell">
                                         <div class="book-cover-container">
@@ -583,7 +583,7 @@
                                 </div>
                             </div>
 
-                            <div class="books-grid" role="grid" aria-label="Available books to add">
+                            <div class="books-grid" role="grid" aria-label="Available tales to add">
                                 {#each availableBooks as book (book.id)}
                                     <button
                                             class="book-item add-book-item"
