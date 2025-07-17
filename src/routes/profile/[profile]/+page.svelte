@@ -523,14 +523,37 @@
                     </div>
                 {:else}
                     <div class="col-12">
-                        <div class="row">
+                        <div class="galleries-grid">
                             {#each profile.gallery as gallery (gallery.id)}
-                                <div class="col-md-4 mb-4">
-                                    <div class="card bg-dark text-white">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><a href="/profile/{profile.id}/gallery/{gallery.id}" class="text-white stretched-link">{gallery.name}</a></h5>
-                                            <p class="card-text">{gallery.description}</p>
-                                            <p class="card-text"><small class="text-muted">{gallery.gallery_books.length} items</small></p>
+                                <div class="gallery-card-profile">
+                                    <div class="gallery-preview-profile">
+                                        {#if gallery.gallery_books.length > 0}
+                                            <div class="preview-stack">
+                                                {#each gallery.gallery_books.slice(0, 4) as gb, i}
+                                                    <img 
+                                                        src={gb.book.cover_url || '/favicon.webp'} 
+                                                        alt="Tale cover"
+                                                        class="preview-book"
+                                                        style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
+                                                    />
+                                                {/each}
+                                            </div>
+                                        {:else}
+                                            <div class="preview-empty-profile">
+                                                <i class="fas fa-images"></i>
+                                            </div>
+                                        {/if}
+                                    </div>
+                                    <div class="gallery-info-profile">
+                                        <h5 class="gallery-title-profile">
+                                            <a href="/profile/{profile.id}/gallery/{gallery.id}" class="gallery-link">{gallery.name}</a>
+                                        </h5>
+                                        <p class="gallery-description-profile">{gallery.description || 'No description'}</p>
+                                        <div class="gallery-meta-profile">
+                                            <span class="book-count">
+                                                <i class="fas fa-book me-2"></i>
+                                                {gallery.gallery_books.length} {gallery.gallery_books.length === 1 ? 'tale' : 'tales'}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -630,25 +653,197 @@
         color: #7d00dd;
     }
 
-    .followers-container {
-        overflow-y: auto;
-        max-height: 300px;
-        box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    /* Modern Gallery Cards for Profile */
+    .galleries-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
     }
 
-    .followers-container::-webkit-scrollbar {
-        width: 10px;
-        background-color: #1f002e;
-        border-top-right-radius: 15px;
-        border-bottom-right-radius: 15px;
+    .gallery-card-profile {
+        background: linear-gradient(135deg, 
+            hsla(var(--primary-hue), 20%, 15%, 0.8),
+            hsla(var(--primary-hue), 15%, 20%, 0.6)
+        );
+        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(10px);
+        position: relative;
     }
 
-    .followers-container::-webkit-scrollbar-thumb {
-        background: #5b0083;
+    .gallery-card-profile::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, 
+            hsla(var(--primary-hue), 60%, 50%, 0.1) 0%,
+            transparent 50%,
+            hsla(var(--primary-hue), 40%, 60%, 0.05) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+
+    .gallery-card-profile:hover::before {
+        opacity: 1;
+    }
+
+    .gallery-card-profile:hover {
+        transform: translateY(-8px);
+        border-color: hsla(var(--primary-hue), 60%, 60%, 0.6);
+        box-shadow: 0 20px 40px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2);
+    }
+
+    .gallery-preview-profile {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(45deg, 
+            hsla(var(--primary-hue), 20%, 10%, 0.8),
+            hsla(var(--primary-hue), 15%, 15%, 0.6)
+        );
+        position: relative;
+        overflow: hidden;
+    }
+
+    .preview-stack {
+        position: relative;
+        width: 120px;
+        height: 160px;
+    }
+
+    .preview-book {
+        position: absolute;
+        width: 80px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid hsla(var(--primary-hue), 30%, 50%, 0.3);
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .gallery-card-profile:hover .preview-book {
+        transform: translateX(0) translateY(0) rotate(0deg) !important;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .preview-empty-profile {
+        width: 80px;
+        height: 120px;
+        background: hsla(var(--primary-hue), 15%, 25%, 0.6);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed hsla(var(--primary-hue), 30%, 50%, 0.4);
+    }
+
+    .preview-empty-profile i {
+        font-size: 2rem;
+        color: hsla(var(--primary-hue), 30%, 60%, 0.6);
+    }
+
+    .gallery-info-profile {
+        padding: 1.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .gallery-title-profile {
+        margin: 0 0 0.75rem 0;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .gallery-link {
+        color: var(--text-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .gallery-link::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary-color), hsl(290, 100%, 60%));
+        transition: width 0.3s ease;
+    }
+
+    .gallery-link:hover {
+        color: var(--primary-color);
+        text-decoration: none;
+    }
+
+    .gallery-link:hover::after {
+        width: 100%;
+    }
+
+    .gallery-description-profile {
+        color: hsla(var(--primary-hue), 30%, 70%, 0.8);
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .gallery-meta-profile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .book-count {
+        color: hsla(var(--primary-hue), 50%, 70%, 0.9);
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        background: hsla(var(--primary-hue), 30%, 25%, 0.4);
+        padding: 0.5rem 1rem;
         border-radius: 20px;
+        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
     }
 
-    .followers-container::-webkit-scrollbar-thumb:hover {
-        background: #6e00a1;
+    @media (max-width: 768px) {
+        .galleries-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .gallery-preview-profile {
+            height: 160px;
+        }
+        
+        .preview-stack {
+            width: 100px;
+            height: 140px;
+        }
+        
+        .preview-book {
+            width: 70px;
+            height: 100px;
+        }
+        
+        .preview-empty-profile {
+            width: 70px;
+            height: 100px;
+        }
     }
 </style>

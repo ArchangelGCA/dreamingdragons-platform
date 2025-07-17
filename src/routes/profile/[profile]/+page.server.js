@@ -65,7 +65,7 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         const [profileData, likedBooks] = await Promise.all([
             supabase
                 .from('profiles')
-                .select('*, book!book_owner_id_fkey(id, title, owner_id, cover_url, created_at, hidden, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id, username, avatar_url)), gallery(id, name, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
+                .select('*, book!book_owner_id_fkey(id, title, owner_id, cover_url, created_at, hidden, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id, username, avatar_url)), gallery(id, name, description, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
                 .eq('id', id)
                 .order('created_at', { referencedTable: 'book', ascending: false }),
             fetchBooksLiked(startRange, endRange, id, supabase)

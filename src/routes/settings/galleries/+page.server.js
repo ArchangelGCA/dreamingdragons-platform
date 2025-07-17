@@ -1,10 +1,12 @@
 import { error as errorx, redirect } from '@sveltejs/kit';
 
-export const load = async ({locals: {supabase, getSession}}) => {
+export const load = async ({locals: {supabase, getSession}, parent}) => {
     const {session} = await getSession();
     if (!session) {
         throw redirect(303, '/login');
     }
+
+    const { image_proxy } = await parent();
 
     const { data: profile, error: profileError } = await supabase
         .from('profiles')
@@ -23,7 +25,7 @@ export const load = async ({locals: {supabase, getSession}}) => {
 
     const { data: galleries, error: galleriesError } = await supabase
         .from('gallery')
-        .select('*, gallery_books(*, book(id, title))')
+        .select('*, gallery_books(*, book(id, title, cover_url))')
         .eq('owner_id', session.user.id);
 
     if (galleriesError) {
@@ -33,7 +35,7 @@ export const load = async ({locals: {supabase, getSession}}) => {
 
     const { data: userBooks, error: booksError } = await supabase
         .from('book')
-        .select('id, title')
+        .select('id, title, cover_url')
         .eq('owner_id', session.user.id)
         .eq('hidden', false);
 
@@ -45,7 +47,8 @@ export const load = async ({locals: {supabase, getSession}}) => {
     return {
         profile,
         galleries,
-        userBooks
+        userBooks,
+        image_proxy
     };
 };
 
