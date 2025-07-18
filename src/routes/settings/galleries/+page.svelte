@@ -4,6 +4,8 @@
     import {toast} from '$lib/components/svelte-toast/index.js';
     import {deserialize} from '$app/forms';
     import autoAnimate from "@formkit/auto-animate";
+    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     import {fly, scale} from 'svelte/transition';
 
@@ -24,7 +26,7 @@
     function getOptimizedImageSrcSet(url, baseWidth = 300, quality = 80) {
         if (!url || url === '') return '/favicon.webp';
         const baseUrl = image_proxy && !url.startsWith(image_proxy) ? image_proxy + url : url;
-        
+
         return {
             src: `${baseUrl}?width=${baseWidth}&quality=${quality}`,
             srcset: `${baseUrl}?width=${Math.round(baseWidth * 1.5)}&quality=${quality} 2x, ${baseUrl}?width=${baseWidth}&quality=${quality} 1x`
@@ -329,7 +331,7 @@
     <title>Manage Galleries - {profile.username}</title>
 </svelte:head>
 
-<div class="container p-1 p-lg-2 mb-4">
+<div class="container-xxl p-2 p-lg-3 mb-4">
     <div class="text-center mb-5 mt-3">
         <h1 class="galleries-title mb-2">
             <i class="fas fa-images me-3"></i>
@@ -338,373 +340,431 @@
         <p class="galleries-subtitle mb-0">Organize and showcase your creative works</p>
     </div>
 
-    <div class="galleries-layout">
+    <div class="row g-4">
         <!-- Sidebar - Galleries List -->
-        <div class="galleries-sidebar">
-            <button
-                    class="btn btn-create-gallery mb-1"
-                    onclick={() => selectGallery(null)}
-                    type="button"
-            >
-                <i class="fas fa-plus me-2"></i>
-                <span>Create New Gallery</span>
-            </button>
+        <div class="col-12 col-lg-4 col-xl-3">
+            <div class="galleries-sidebar card border-0 shadow-sm rounded-4">
+                <div class="card-body p-3">
+                    <button
+                            class="btn btn-primary w-100 mb-3 d-flex align-items-center justify-content-center"
+                            onclick={() => selectGallery(null)}
+                            type="button"
+                    >
+                        <i class="fas fa-plus me-2"></i>
+                        <span>Create New Gallery</span>
+                    </button>
 
-            <div class="galleries-list pt-3" use:autoAnimate>
-                {#if galleries.length === 0}
-                    <div class="empty-state text-center py-4">
-                        <i class="fas fa-images fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">No galleries yet</p>
-                        <small class="text-muted">Create your first gallery to get started</small>
+                    <div class="galleries-list pt-2" use:autoAnimate>
+                        {#if galleries.length === 0}
+                            <div class="empty-state text-center py-4">
+                                <i class="fas fa-images fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No galleries yet</p>
+                                <small class="text-muted">Create your first gallery to get started</small>
+                            </div>
+                        {:else}
+                            {#each galleries as gallery (gallery.id)}
+                                <button
+                                        class="gallery-card btn w-100 text-start p-3 mb-3 border-0 shadow-sm"
+                                        class:active={selectedGallery?.id === gallery.id}
+                                        onclick={() => selectGallery(gallery)}
+                                        transition:scale={{ duration: 200, delay: galleries.indexOf(gallery) * 50 }}
+                                        aria-label="Select gallery {gallery.name}"
+                                        type="button"
+                                >
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="gallery-name fw-semibold mb-0">{gallery.name}</h6>
+                                        <span class="badge bg-purple rounded-pill">{gallery.gallery_books.length}</span>
+                                    </div>
+                                    <p class="gallery-description text-muted small mb-3">{gallery.description || 'No description'}</p>
+                                    <div class="gallery-preview d-flex justify-content-center">
+                                        {#if gallery.gallery_books.length > 0}
+                                            <div class="preview-images">
+                                                {#each gallery.gallery_books.slice(0, 3) as gb, i}
+                                                    {@const
+                                                        imageData = getOptimizedImageSrcSet(gb.book.cover_url, 120, 85)}
+                                                    <img
+                                                            srcset={imageData.srcset}
+                                                            src={imageData.src}
+                                                            alt="Book cover preview"
+                                                            class="preview-img rounded"
+                                                            style="z-index: {3-i}; transform: translateX({i * -8}px)"
+                                                            loading="lazy"
+                                                            width="60"
+                                                            height="80"
+                                                    />
+                                                {/each}
+                                            </div>
+                                        {:else}
+                                            <div class="preview-empty bg-light rounded d-flex align-items-center justify-content-center">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        {/if}
+                                    </div>
+                                </button>
+                            {/each}
+                        {/if}
                     </div>
-                {:else}
-                    {#each galleries as gallery (gallery.id)}
-                        <button
-                                class="gallery-card"
-                                class:active={selectedGallery?.id === gallery.id}
-                                onclick={() => selectGallery(gallery)}
-                                transition:scale={{ duration: 200, delay: galleries.indexOf(gallery) * 50 }}
-                                aria-label="Select gallery {gallery.name}"
-                                type="button"
-                        >
-                            <div class="gallery-card-header">
-                                <h5 class="gallery-name">{gallery.name}</h5>
-                                <span class="gallery-count">{gallery.gallery_books.length}</span>
-                            </div>
-                            <p class="gallery-description">{gallery.description || 'No description'}</p>
-                            <div class="gallery-preview">
-                                {#if gallery.gallery_books.length > 0}
-                                    <div class="preview-images">
-                                        {#each gallery.gallery_books.slice(0, 3) as gb, i}
-                                            {@const imageData = getOptimizedImageSrcSet(gb.book.cover_url, 120, 85)}
-                                            <img
-                                                    srcset={imageData.srcset}
-                                                    src={imageData.src}
-                                                    alt="Book cover preview"
-                                                    class="preview-img"
-                                                    style="z-index: {3-i}; transform: translateX({i * -8}px)"
-                                                    loading="lazy"
-                                                    width="60"
-                                                    height="80"
-                                            />
-                                        {/each}
-                                    </div>
-                                {:else}
-                                    <div class="preview-empty">
-                                        <i class="fas fa-image"></i>
-                                    </div>
-                                {/if}
-                            </div>
-                        </button>
-                    {/each}
-                {/if}
+                </div>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="galleries-main">
-            {#if selectedGallery}
-                <div class="gallery-details" transition:fly={{ x: 20, duration: 300 }}>
-                    <div class="gallery-details-header">
-                        <div>
-                            <h2 class="details-title">
-                                <i class="fas fa-edit me-2"></i>
-                                Manage Gallery: <span class="gallery-name-highlight">{selectedGallery.name}</span>
-                            </h2>
-                            <p class="details-subtitle">Customize your gallery settings and content</p>
-                        </div>
-                        <div class="header-actions">
-                            <button
-                                    class="btn btn-back-to-create"
-                                    onclick={() => selectGallery(null)}
-                                    data-tooltip="Back to Create Gallery"
-                                    aria-label="Back to create gallery"
-                                    type="button"
-                            >
-                                <i class="fas fa-plus"></i>
-                            </button>
-                            <button
-                                    class="btn btn-delete-gallery"
-                                    onclick={(e) => {
-                                    e.preventDefault();
-                                    handleDeleteGallery();
-                                }}
-                                    data-tooltip="Delete Gallery"
-                                    aria-label="Delete gallery"
-                                    type="button"
-                            >
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <form class="gallery-form" onsubmit={handleSaveGallery}>
-                        <div class="gallery-stats-quick">
-                            <div class="stat-quick">
-                                <i class="fas fa-book"></i>
-                                <span>{selectedGallery.gallery_books.length} {selectedGallery.gallery_books.length && selectedGallery.gallery_books.length >= 2 ? "tales" : "tale"}</span>
+        <div class="col-12 col-lg-8 col-xl-9">
+            <div class="galleries-main card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    {#if selectedGallery}
+                        <div class="gallery-details" transition:fly={{ x: 20, duration: 300 }}>
+                            <div class="d-flex justify-content-between align-items-start mb-4 pb-3 border-bottom border-muted">
+                                <div>
+                                    <h2 class="h3 fw-bold mb-2">
+                                        <i class="fas fa-edit me-2"></i>
+                                        Manage Gallery: <span
+                                            class="gallery-name-highlight">{selectedGallery.name}</span>
+                                    </h2>
+                                    <p class="text-muted mb-0">Customize your gallery settings and content</p>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button
+                                            class="btn btn-primary btn-sm"
+                                            onclick={() => selectGallery(null)}
+                                            use:tooltip={{...tooltipConfig}}
+                                            title="Back to Create Gallery"
+                                            aria-label="Back to create gallery"
+                                            type="button"
+                                    >
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <button
+                                            class="btn btn-danger btn-sm"
+                                            onclick={(e) => {
+                                        e.preventDefault();
+                                        handleDeleteGallery();
+                                    }}
+                                            use:tooltip={{...tooltipConfig}}
+                                            title="Delete Gallery"
+                                            aria-label="Delete gallery"
+                                            type="button"
+                                    >
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="stat-quick">
-                                <i class="fas fa-calendar"></i>
-                                <span>Created {new Date(selectedGallery.created_at || Date.now()).toLocaleDateString()}</span>
-                            </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="galleryName" class="form-label">Gallery Name</label>
-                            <input
-                                    type="text"
-                                    class="form-control"
-                                    id="galleryName"
-                                    bind:value={selectedGallery.name}
-                                    placeholder="Enter gallery name..."
-                                    required
-                            />
-                        </div>
-                        <div class="form-group">
-                            <label for="galleryDescription" class="form-label">Description</label>
-                            <textarea
-                                    class="form-control"
-                                    id="galleryDescription"
-                                    rows="3"
-                                    bind:value={selectedGallery.description}
-                                    placeholder="Describe your gallery..."
-                            ></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-save-gallery" disabled={isLoading}>
-                            {#if isLoading}
-                                <i class="fas fa-spinner fa-spin me-2"></i>
-                                Saving...
-                            {:else}
-                                <i class="fas fa-save me-2"></i>
-                                Save Changes
-                            {/if}
-                        </button>
-                    </form>
-
-                    <div class="section-divider">
-                        <span>Gallery Content</span>
-                    </div>
-
-                    <div class="books-section" use:autoAnimate>
-                        <h3 class="section-title">
-                            <i class="fas fa-book me-2"></i>
-                            Tales in Gallery
-                            <span class="count-badge">{selectedGallery.gallery_books.length}</span>
-                        </h3>
-
-                        {#if selectedGallery.gallery_books.length > 0}
-                            <div class="books-grid" role="grid" aria-label="Tales in gallery">
-                                {#each selectedGallery.gallery_books.map(gb => gb.book) as book (book.id)}
-                                    <div class="book-item" transition:scale={{ duration: 200 }} role="gridcell">
-                                        <div class="book-cover-container">
-                                            {#if !imageLoadingStates[book.id]}
-                                                {@const imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
-                                                <div class="placeholder-glow" use:autoAnimate>
-                                                    <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
-                                                        <img
-                                                                srcset={imageData.srcset}
-                                                                src={imageData.src}
-                                                                alt="Cover for {book.title}"
-                                                                class="book-cover"
-                                                                loading="lazy"
-                                                                style="width: 1px; height: 1px;"
-                                                                onload={() => imageLoadingStates[book.id] = true}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            {:else}
-                                                {@const imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
-                                                <img
-                                                        srcset={imageData.srcset}
-                                                        src={imageData.src}
-                                                        alt="Cover for {book.title}"
-                                                        class="book-cover"
-                                                        loading="lazy"
-                                                        width="250"
-                                                />
-                                            {/if}
-                                            <div class="book-overlay">
-                                                <button
-                                                        class="btn btn-remove-book"
-                                                        onclick={(e) => {
-                                                        e.preventDefault();
-                                                        handleRemoveBook(book.id);
-                                                    }}
-                                                        data-tooltip="Remove from gallery"
-                                                        aria-label="Remove {book.title} from gallery"
-                                                        type="button"
-                                                        disabled={isLoading}
-                                                >
-                                                    {#if isLoading}
-                                                        <i class="fas fa-spinner fa-spin"></i>
-                                                    {:else}
-                                                        <i class="fas fa-times"></i>
-                                                    {/if}
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div class="book-info">
-                                            <h6 class="book-title">{book.title}</h6>
+                            <form class="gallery-form" onsubmit={handleSaveGallery}>
+                                <div class="row mb-4 p-3 bg-light bg-opacity-10 rounded">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center text-muted">
+                                            <i class="fas fa-book text-purple me-2"></i>
+                                            <span>{selectedGallery.gallery_books.length} {selectedGallery.gallery_books.length && selectedGallery.gallery_books.length >= 2 ? "tales" : "tale"}</span>
                                         </div>
                                     </div>
-                                {/each}
-                            </div>
-                        {:else}
-                            <div class="empty-gallery">
-                                <i class="fas fa-images fa-3x mb-3"></i>
-                                <h4>Empty Gallery</h4>
-                                <p>This gallery doesn't have any Tale yet. Add some from the selection below.</p>
-                            </div>
-                        {/if}
-                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center text-muted">
+                                            <i class="fas fa-calendar text-purple me-2"></i>
+                                            <span>Created {new Date(selectedGallery.created_at || Date.now()).toLocaleDateString()}</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-                    <div class="section-divider">
-                        <span>Add Content</span>
-                    </div>
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <label for="galleryName" class="form-label fw-semibold">Gallery Name</label>
+                                        <input
+                                                type="text"
+                                                class="form-control"
+                                                id="galleryName"
+                                                bind:value={selectedGallery.name}
+                                                placeholder="Enter gallery name..."
+                                                required
+                                        />
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <label for="galleryDescription"
+                                               class="form-label fw-semibold">Description</label>
+                                        <textarea
+                                                class="form-control"
+                                                id="galleryDescription"
+                                                rows="3"
+                                                bind:value={selectedGallery.description}
+                                                placeholder="Describe your gallery..."
+                                        ></textarea>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" disabled={isLoading}>
+                                    {#if isLoading}
+                                        <i class="fas fa-spinner fa-spin me-2"></i>
+                                        Saving...
+                                    {:else}
+                                        <i class="fas fa-save me-2"></i>
+                                        Save Changes
+                                    {/if}
+                                </button>
+                            </form>
 
-                    <div class="add-books-section">
-                        <h3 class="section-title">
-                            <i class="fas fa-plus-circle me-2"></i>
-                            Add Tales to Gallery
-                        </h3>
-
-                        {#if userBooks.filter(ub => !selectedGallery.gallery_books.some(gb => gb.book_id === ub.id)).length > 0}
-                            <div class="search-books-container">
-                                <div class="form-group">
-                                    <label for="searchBooks" class="form-label">Search Tales</label>
-                                    <input
-                                            type="text"
-                                            class="form-control"
-                                            id="searchBooks"
-                                            oninput={handleSearchInput}
-                                            placeholder="Search your tales to add..."
-                                    />
+                            <div class="section-header d-flex align-items-center justify-content-center my-4">
+                                <div class="flex-grow-1">
+                                    <hr>
+                                </div>
+                                <span class="px-3 text-muted fw-semibold small text-uppercase">Gallery Content</span>
+                                <div class="flex-grow-1">
+                                    <hr>
                                 </div>
                             </div>
 
-                            <div class="books-grid" role="grid" aria-label="Available tales to add">
-                                {#each availableBooks as book (book.id)}
-                                    <button
-                                            class="book-item add-book-item"
-                                            onclick={(e) => {
-                                            e.preventDefault();
-                                            handleAddBook(book.id);
-                                        }}
-                                            aria-label="Add {book.title} to gallery"
-                                            type="button"
-                                            role="gridcell"
-                                            disabled={isLoading}
-                                    >
-                                        <div class="book-cover-container">
-                                            {#if !imageLoadingStates[`add-${book.id}`]}
-                                                {@const imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
-                                                <div class="placeholder-glow" use:autoAnimate>
-                                                    <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
-                                                        <img
-                                                                srcset={imageData.srcset}
-                                                                src={imageData.src}
-                                                                alt="Cover for {book.title}"
-                                                                class="book-cover"
-                                                                loading="lazy"
-                                                                style="width: 1px; height: 1px;"
-                                                                onload={() => imageLoadingStates[`add-${book.id}`] = true}
-                                                        />
+                            <div class="books-section" use:autoAnimate>
+                                <h3 class="h5 d-flex align-items-center justify-content-between mb-3">
+                                <span>
+                                    <i class="fas fa-book me-2"></i>
+                                    Tales in Gallery
+                                </span>
+                                    <span class="badge bg-purple">{selectedGallery.gallery_books.length}</span>
+                                </h3>
+
+                                {#if selectedGallery.gallery_books.length > 0}
+                                    <div class="row g-3" role="grid" aria-label="Tales in gallery">
+                                        {#each selectedGallery.gallery_books.map(gb => gb.book) as book (book.id)}
+                                            <div class="col-6 col-md-4 col-lg-3" transition:scale={{ duration: 200 }}
+                                                 role="gridcell">
+                                                <div class="book-item card border-0 shadow-sm h-100 rounded-4">
+                                                    <div class="book-cover-container position-relative">
+                                                        {#if !imageLoadingStates[book.id]}
+                                                            {@const
+                                                                imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
+                                                            <div class="placeholder-glow" use:autoAnimate>
+                                                                <div class="placeholder bg-light rounded-top w-100 h-100">
+                                                                    <img
+                                                                            srcset={imageData.srcset}
+                                                                            src={imageData.src}
+                                                                            alt="Cover for {book.title}"
+                                                                            class="book-cover card-img-top"
+                                                                            loading="lazy"
+                                                                            style="width: 1px; height: 1px;"
+                                                                            onload={() => imageLoadingStates[book.id] = true}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        {:else}
+                                                            {@const
+                                                                imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
+                                                            <img
+                                                                    srcset={imageData.srcset}
+                                                                    src={imageData.src}
+                                                                    alt="Cover for {book.title}"
+                                                                    class="book-cover card-img-top"
+                                                                    loading="lazy"
+                                                                    width="250"
+                                                            />
+                                                        {/if}
+                                                        <div class="book-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-end justify-content-end p-2 opacity-0">
+                                                            <button
+                                                                    class="btn btn-danger btn-sm rounded-circle"
+                                                                    onclick={(e) => {
+                                                                e.preventDefault();
+                                                                handleRemoveBook(book.id);
+                                                            }}
+                                                                    use:tooltip={{...tooltipConfig}}
+                                                                    title="Remove from gallery"
+                                                                    aria-label="Remove {book.title} from gallery"
+                                                                    type="button"
+                                                                    disabled={isLoading}
+                                                            >
+                                                                {#if isLoading}
+                                                                    <i class="fas fa-spinner fa-spin"></i>
+                                                                {:else}
+                                                                    <i class="fas fa-times"></i>
+                                                                {/if}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-body p-2">
+                                                        <h6 class="book-title card-title small m-2">{book.title}</h6>
                                                     </div>
                                                 </div>
-                                            {:else}
-                                                {@const imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
-                                                <img
-                                                        srcset={imageData.srcset}
-                                                        src={imageData.src}
-                                                        alt="Cover for {book.title}"
-                                                        class="book-cover"
-                                                        loading="lazy"
-                                                        width="250"
-                                                />
-                                            {/if}
-                                            <div class="book-overlay add-overlay">
-                                                <div class="add-icon">
-                                                    {#if isLoading}
-                                                        <i class="fas fa-spinner fa-spin"></i>
-                                                    {:else}
-                                                        <i class="fas fa-plus"></i>
-                                                    {/if}
+                                            </div>
+                                        {/each}
+                                    </div>
+                                {:else}
+                                    <div class="empty-gallery text-center py-5">
+                                        <i class="fas fa-images fa-3x mb-3 text-muted"></i>
+                                        <h4 class="h5">Empty Gallery</h4>
+                                        <p class="text-muted">This gallery doesn't have any Tale yet. Add some from the
+                                            selection below.</p>
+                                    </div>
+                                {/if}
+                            </div>
+
+                            <div class="section-header d-flex align-items-center justify-content-center my-4">
+                                <div class="flex-grow-1">
+                                    <hr>
+                                </div>
+                                <span class="px-3 text-muted fw-semibold small text-uppercase">Add Content</span>
+                                <div class="flex-grow-1">
+                                    <hr>
+                                </div>
+                            </div>
+
+                            <div class="add-books-section">
+                                <h3 class="h5 d-flex align-items-center mb-3">
+                                    <i class="fas fa-plus-circle me-2"></i>
+                                    Add Tales to Gallery
+                                </h3>
+
+                                {#if userBooks.filter(ub => !selectedGallery.gallery_books.some(gb => gb.book_id === ub.id)).length > 0}
+                                    <div class="search-books-container mb-4">
+                                        <label for="searchBooks" class="form-label fw-semibold">Search Tales</label>
+                                        <input
+                                                type="text"
+                                                class="form-control"
+                                                id="searchBooks"
+                                                oninput={handleSearchInput}
+                                                placeholder="Search your tales to add..."
+                                        />
+                                    </div>
+
+                                    <div class="row g-3" role="grid" aria-label="Available tales to add">
+                                        <div class="row g-3" role="grid" aria-label="Available tales to add">
+                                            {#each availableBooks as book (book.id)}
+                                                <div class="col-6 col-md-4 col-lg-3">
+                                                    <button
+                                                            class="book-item add-book-item btn p-0 w-100 border-0"
+                                                            onclick={(e) => {
+                                                    e.preventDefault();
+                                                    handleAddBook(book.id);
+                                                }}
+                                                            aria-label="Add {book.title} to gallery"
+                                                            type="button"
+                                                            role="gridcell"
+                                                            disabled={isLoading}
+                                                    >
+                                                        <div class="card border-0 shadow-sm h-100 rounded-4">
+                                                            <div class="book-cover-container position-relative">
+                                                                {#if !imageLoadingStates[`add-${book.id}`]}
+                                                                    {@const
+                                                                        imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
+                                                                    <div class="placeholder-glow" use:autoAnimate>
+                                                                        <div class="placeholder bg-light rounded-top w-100 h-100">
+                                                                            <img
+                                                                                    srcset={imageData.srcset}
+                                                                                    src={imageData.src}
+                                                                                    alt="Cover for {book.title}"
+                                                                                    class="book-cover card-img-top"
+                                                                                    loading="lazy"
+                                                                                    style="width: 1px; height: 1px;"
+                                                                                    onload={() => imageLoadingStates[`add-${book.id}`] = true}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                {:else}
+                                                                    {@const
+                                                                        imageData = getOptimizedImageSrcSet(book.cover_url, 250, 85)}
+                                                                    <img
+                                                                            srcset={imageData.srcset}
+                                                                            src={imageData.src}
+                                                                            alt="Cover for {book.title}"
+                                                                            class="book-cover card-img-top"
+                                                                            loading="lazy"
+                                                                            width="250"
+                                                                    />
+                                                                {/if}
+                                                                <div class="book-overlay add-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center opacity-0">
+                                                                    <div class="add-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center">
+                                                                        {#if isLoading}
+                                                                            <i class="fas fa-spinner fa-spin"></i>
+                                                                        {:else}
+                                                                            <i class="fas fa-plus"></i>
+                                                                        {/if}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-body p-2">
+                                                                <h6 class="book-title card-title small m-2 text-start">{book.title}</h6>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                </div>
+                                            {/each}
+                                        </div>
+
+                                        {#if availableBooks.length === 0 && searchBooks !== ''}
+                                            <div class="col-12">
+                                                <div class="no-search-results text-center py-4">
+                                                    <i class="fas fa-search fa-2x mb-2 text-muted"></i>
+                                                    <p class="text-muted">No tales found matching "{searchBooks}"</p>
+                                                    <button
+                                                            class="btn btn-secondary btn-sm"
+                                                            onclick={() => searchBooks = ''}
+                                                            type="button"
+                                                    >
+                                                        Clear Search
+                                                    </button>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="book-info">
-                                            <h6 class="book-title">{book.title}</h6>
-                                        </div>
-                                    </button>
-                                {/each}
-                            </div>
-
-                            {#if availableBooks.length === 0 && searchBooks !== ''}
-                                <div class="no-search-results">
-                                    <i class="fas fa-search fa-2x mb-2 text-muted"></i>
-                                    <p>No tales found matching "{searchBooks}"</p>
-                                    <button
-                                            class="btn btn-secondary btn-sm"
-                                            onclick={() => searchBooks = ''}
-                                            type="button"
-                                    >
-                                        Clear Search
-                                    </button>
-                                </div>
-                            {/if}
-                        {:else}
-                            <div class="no-books-available">
-                                <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
-                                <p>All your tales are already in this gallery!</p>
-                            </div>
-                        {/if}
-                    </div>
-                </div>
-            {:else}
-                <div class="create-gallery-section" transition:fly={{ x: 20, duration: 300 }}>
-                    <div class="create-gallery-content">
-                        <div class="create-gallery-icon">
-                            <i class="fas fa-images"></i>
-                        </div>
-                        <h2 class="create-title">Create a New Gallery</h2>
-                        <p class="create-subtitle">Start organizing your creative works into beautiful collections</p>
-
-                        <form class="create-gallery-form" onsubmit={handleSaveGallery}>
-                            <div class="form-group">
-                                <label for="newGalleryName" class="form-label">Gallery Name</label>
-                                <input
-                                        type="text"
-                                        class="form-control"
-                                        id="newGalleryName"
-                                        bind:value={newGallery.name}
-                                        placeholder="Enter a creative name for your gallery..."
-                                        required
-                                />
-                            </div>
-                            <div class="form-group">
-                                <label for="newGalleryDescription" class="form-label">Description</label>
-                                <textarea
-                                        class="form-control"
-                                        id="newGalleryDescription"
-                                        rows="3"
-                                        bind:value={newGallery.description}
-                                        placeholder="What's this gallery about? Describe the theme or collection..."
-                                ></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-create-new" disabled={isLoading}>
-                                {#if isLoading}
-                                    <i class="fas fa-spinner fa-spin me-2"></i>
-                                    Creating...
+                                        {/if}
+                                    </div>
                                 {:else}
-                                    <i class="fas fa-magic me-2"></i>
-                                    Create Gallery
+                                    <div class="no-books-available text-center py-4">
+                                        <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
+                                        <p class="text-muted">All your tales are already in this gallery!</p>
+                                    </div>
                                 {/if}
-                            </button>
-                        </form>
-                    </div>
+                            </div>
+                        </div>
+                    {:else}
+                        <div class="create-gallery-section text-center py-5" transition:fly={{ x: 20, duration: 300 }}>
+                            <div class="create-gallery-content mx-auto" style="max-width: 500px;">
+                                <div class="create-gallery-icon mb-4">
+                                    <i class="fas fa-images display-1 text-purple"></i>
+                                </div>
+                                <h2 class="h3 fw-bold mb-3">Create a New Gallery</h2>
+                                <p class="text-muted mb-4 fs-5">Start organizing your creative works into beautiful
+                                    collections</p>
+
+                                <form class="create-gallery-form text-start" onsubmit={handleSaveGallery}>
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <label for="newGalleryName" class="form-label fw-semibold">Gallery
+                                                Name</label>
+                                            <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="newGalleryName"
+                                                    bind:value={newGallery.name}
+                                                    placeholder="Enter a creative name for your gallery..."
+                                                    required
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <label for="newGalleryDescription" class="form-label fw-semibold">Description</label>
+                                            <textarea
+                                                    class="form-control"
+                                                    id="newGalleryDescription"
+                                                    rows="3"
+                                                    bind:value={newGallery.description}
+                                                    placeholder="What's this gallery about? Describe the theme or collection..."
+                                            ></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary btn-lg" disabled={isLoading}>
+                                            {#if isLoading}
+                                                <i class="fas fa-spinner fa-spin me-2"></i>
+                                                Creating...
+                                            {:else}
+                                                <i class="fas fa-magic me-2"></i>
+                                                Create Gallery
+                                            {/if}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    {/if}
                 </div>
-            {/if}
+            </div>
         </div>
     </div>
 </div>
@@ -725,75 +785,52 @@
         font-size: 1.1rem;
     }
 
-    .galleries-layout {
-        display: grid;
-        grid-template-columns: 350px 1fr;
-        gap: 2rem;
-        max-width: 1400px;
-        margin: 0 auto;
-    }
-
     .galleries-sidebar {
-        background: hsla(var(--primary-hue), 20%, 15%, 0.6);
-        border-radius: 16px;
-        padding: 1.5rem;
-        height: fit-content;
-        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.2);
+        background: hsla(var(--primary-hue), 20%, 15%, 0.6) !important;
+        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.2) !important;
         backdrop-filter: blur(10px);
     }
 
-    .btn-create-gallery {
-        width: 100%;
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 45%));
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 1rem 1.5rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 45%)) !important;
+        border: none !important;
         box-shadow: 0 4px 20px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
 
-    .btn-create-gallery:hover {
+    .btn-primary:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 25px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.4);
-        background: linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 5%)), hsl(290, 100%, 50%));
+        background: linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 5%)), hsl(290, 100%, 50%)) !important;
     }
 
-    .galleries-list {
-        max-height: 70vh;
-        overflow-y: auto;
-        padding-right: 0.5rem;
+    .bg-purple {
+        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 45%)) !important;
     }
 
-    .galleries-list::-webkit-scrollbar {
-        width: 6px;
+    .bg-success {
+        background: linear-gradient(135deg, rgb(46, 204, 113), rgb(88, 214, 141)) !important;
     }
 
-    .galleries-list::-webkit-scrollbar-track {
-        background: transparent;
+    .text-purple {
+        color: hsla(var(--primary-hue), var(--primary-saturation), 60%, 1) !important;
     }
 
-    .galleries-list::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, var(--primary-color), transparent);
-        border-radius: 3px;
+    .text-muted {
+        color: hsla(var(--primary-hue), 30%, 70%, 0.8) !important;
+    }
+
+    .border-muted {
+        border-color: hsla(var(--primary-hue), 30%, 40%, 0.2) !important;
     }
 
     .gallery-card {
-        background: hsla(var(--primary-hue), 15%, 20%, 0.4);
-        border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.3);
-        border-radius: 12px;
-        padding: 1.25rem;
-        margin-bottom: 1rem;
-        cursor: pointer;
+        background: hsla(var(--primary-hue), 15%, 20%, 0.4) !important;
+        border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.3) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
-        width: 100%;
-        text-align: left;
     }
 
     .gallery-card::before {
@@ -814,17 +851,17 @@
 
     .gallery-card:hover {
         transform: translateY(-3px);
-        border-color: hsla(var(--primary-hue), 60%, 60%, 0.5);
-        box-shadow: 0 8px 30px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2);
+        border-color: hsla(var(--primary-hue), 60%, 60%, 0.5) !important;
+        box-shadow: 0 8px 30px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2) !important;
     }
 
     .gallery-card.active {
         background: linear-gradient(135deg,
         hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3),
         hsla(var(--primary-hue), 80%, 45%, 0.2)
-        );
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 2px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5);
+        ) !important;
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 2px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5) !important;
         transform: translateY(-2px);
     }
 
@@ -832,47 +869,19 @@
         opacity: 1;
     }
 
-    .gallery-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 0.75rem;
-    }
-
     .gallery-name {
-        font-size: 1.1rem;
-        font-weight: 600;
         color: var(--text-color);
-        margin: 0;
         line-height: 1.3;
-    }
-
-    .gallery-count {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 50%));
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        min-width: 2rem;
-        text-align: center;
     }
 
     .gallery-description {
         color: hsla(var(--primary-hue), 30%, 70%, 0.8);
-        font-size: 0.9rem;
         line-height: 1.4;
-        margin-bottom: 1rem;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-    }
-
-    .gallery-preview {
-        display: flex;
-        justify-content: center;
     }
 
     .preview-images {
@@ -886,7 +895,6 @@
         width: 28px;
         height: 40px;
         object-fit: cover;
-        border-radius: 4px;
         border: 2px solid var(--surface-color);
         transition: transform 0.3s ease;
     }
@@ -896,52 +904,16 @@
     }
 
     .preview-empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
         width: 40px;
         height: 40px;
         background: hsla(var(--primary-hue), 20%, 25%, 0.5);
-        border-radius: 8px;
         color: hsla(var(--primary-hue), 30%, 60%, 0.6);
     }
 
-    .empty-state {
-        padding: 2rem 1rem;
-    }
-
     .galleries-main {
-        background: hsla(var(--primary-hue), 15%, 18%, 0.4);
-        border-radius: 16px;
-        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.2);
-        overflow: hidden;
+        background: hsla(var(--primary-hue), 15%, 18%, 0.4) !important;
+        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.2) !important;
         backdrop-filter: blur(10px);
-    }
-
-    .gallery-details {
-        padding: 2rem;
-        height: 100%;
-    }
-
-    .gallery-details-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 2rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.3);
-    }
-
-    .details-title {
-        color: var(--text-color);
-        font-size: 1.75rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
-
-    .details-subtitle {
-        color: hsla(var(--primary-hue), 30%, 70%, 0.8);
-        margin: 0;
     }
 
     .gallery-name-highlight {
@@ -949,226 +921,45 @@
         font-weight: 700;
     }
 
-    .header-actions {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-    }
-
-    .btn-back-to-create {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 45%));
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem;
-        transition: all 0.3s ease;
-        width: 44px;
-        height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-back-to-create:hover {
-        background: linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 5%)), hsl(290, 100%, 50%));
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
-    }
-
-    .btn-delete-gallery {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem;
-        transition: all 0.3s ease;
-        width: 44px;
-        height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-delete-gallery:hover {
-        background: linear-gradient(135deg, #c0392b, #a93226);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-    }
-
-    .gallery-form, .create-gallery-form {
-        margin-bottom: 2rem;
-    }
-
-    .gallery-stats-quick {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-        padding: 1rem;
-        background: hsla(var(--primary-hue), 20%, 15%, 0.6);
-        border-radius: 8px;
-        border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.3);
-    }
-
-    .stat-quick {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: hsla(var(--primary-hue), 50%, 70%, 0.9);
-        font-size: 0.9rem;
-    }
-
-    .stat-quick i {
-        color: var(--primary-color);
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-        color: var(--text-color);
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
     .form-control {
-        background: hsla(var(--primary-hue), 15%, 12%, 0.8);
-        border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.4);
-        border-radius: 8px;
-        color: var(--text-color);
-        padding: 0.75rem 1rem;
+        background: hsla(var(--primary-hue), 15%, 12%, 0.8) !important;
+        border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.4) !important;
+        color: var(--text-color) !important;
         transition: all 0.3s ease;
-        width: 100%;
     }
 
     .form-control:focus {
-        background: hsla(var(--primary-hue), 15%, 15%, 0.9);
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2);
-        outline: none;
+        background: hsla(var(--primary-hue), 15%, 15%, 0.9) !important;
+        border-color: var(--primary-color) !important;
+        box-shadow: 0 0 0 0.2rem hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.25) !important;
     }
 
     .form-control::placeholder {
-        color: hsla(var(--primary-hue), 20%, 60%, 0.6);
+        color: hsla(var(--primary-hue), 20%, 60%, 0.6) !important;
     }
 
-    .btn-save-gallery, .btn-create-new {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 50%));
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.875rem 1.5rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
+    .form-label {
+        color: var(--text-color) !important;
     }
 
-    .btn-save-gallery:hover, .btn-create-new:hover {
-        background: linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 5%)), hsl(290, 100%, 55%));
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
-    }
-
-    .btn-save-gallery:disabled, .btn-create-new:disabled {
-        background: linear-gradient(135deg, hsla(var(--primary-hue), 30%, 40%, 0.5), hsla(290, 30%, 40%, 0.5));
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-
-    .btn-save-gallery:disabled:hover, .btn-create-new:disabled:hover {
-        background: linear-gradient(135deg, hsla(var(--primary-hue), 30%, 40%, 0.5), hsla(290, 30%, 40%, 0.5));
-        transform: none;
-        box-shadow: none;
-    }
-
-    .section-divider {
-        display: flex;
-        align-items: center;
-        margin: 2.5rem 0;
-        position: relative;
-    }
-
-    .section-divider::before {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, hsla(var(--primary-hue), 50%, 50%, 0.3), transparent);
-    }
-
-    .section-divider span {
-        padding: 0 1.5rem;
-        color: hsla(var(--primary-hue), 50%, 70%, 0.8);
-        font-weight: 600;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .books-section, .add-books-section {
-        margin-bottom: 2rem;
-    }
-
-    .section-title {
-        color: var(--text-color);
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .count-badge {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 50%));
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: 12px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-left: auto;
-    }
-
-    .books-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 1.25rem;
-    }
-
-    .book-item {
-        background: hsla(var(--primary-hue), 15%, 20%, 0.4);
-        border-radius: 12px;
-        overflow: hidden;
+    .book-item.card, .book-item .card {
+        background: hsla(var(--primary-hue), 15%, 20%, 0.4) !important;
+        border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.3) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.3);
     }
 
-    .book-item:hover {
+    .book-item.card:hover, .book-item .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 12px 30px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2);
-        border-color: hsla(var(--primary-hue), 60%, 60%, 0.5);
+        border-color: hsla(var(--primary-hue), 60%, 60%, 0.5) !important;
+        box-shadow: 0 12px 30px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2) !important;
     }
 
-    .add-book-item {
-        cursor: pointer;
-        border: none;
-        padding: 0;
-        background: transparent;
-        width: 100%;
-        text-align: left;
-    }
-
-    .add-book-item:hover {
-        border-color: hsl(120, 60%, 50%);
-        box-shadow: 0 12px 30px hsla(120, 60%, 50%, 0.2);
+    .add-book-item .card:hover {
+        border-color: hsla(120, 60%, 50%, 0) !important;
+        box-shadow: 0 12px 30px hsla(120, 60%, 50%, 0.2) !important;
     }
 
     .book-cover-container {
-        position: relative;
         aspect-ratio: 2 / 3;
         overflow: hidden;
     }
@@ -1185,26 +976,16 @@
     }
 
     .book-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
         background: linear-gradient(to bottom,
         transparent 0%,
         transparent 60%,
         hsla(0, 0%, 0%, 0.8) 100%
         );
-        display: flex;
-        align-items: flex-end;
-        justify-content: flex-end;
-        padding: 0.75rem;
-        opacity: 0;
         transition: all 0.3s ease;
     }
 
     .book-item:hover .book-overlay {
-        opacity: 1;
+        opacity: 1 !important;
     }
 
     .add-overlay {
@@ -1212,68 +993,22 @@
         hsla(120, 60%, 50%, 0.1) 0%,
         hsla(120, 60%, 50%, 0.3) 60%,
         hsla(120, 60%, 30%, 0.8) 100%
-        );
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-remove-book {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-    }
-
-    .btn-remove-book:hover {
-        background: linear-gradient(135deg, #c0392b, #a93226);
-        transform: scale(1.1);
+        ) !important;
     }
 
     .add-icon {
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
-        color: white;
-        border: none;
-        border-radius: 50%;
         width: 48px;
         height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
         font-size: 1.25rem;
+        transition: all 0.3s ease;
     }
 
     .add-book-item:hover .add-icon {
-        background: linear-gradient(135deg, #2ecc71, #58d68d);
         transform: scale(1.1);
     }
 
-    .book-item:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        pointer-events: none;
-    }
-
-    .btn-remove-book:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .book-info {
-        padding: 1rem;
-    }
-
     .book-title {
-        color: var(--text-color);
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin: 0;
+        color: var(--text-color) !important;
         line-height: 1.3;
         display: -webkit-box;
         -webkit-line-clamp: 2;
@@ -1283,8 +1018,6 @@
     }
 
     .empty-gallery {
-        text-align: center;
-        padding: 3rem 2rem;
         color: hsla(var(--primary-hue), 30%, 60%, 0.8);
     }
 
@@ -1294,116 +1027,32 @@
 
     .empty-gallery h4 {
         color: var(--text-color);
-        margin: 1rem 0 0.5rem;
-    }
-
-    .no-books-available {
-        text-align: center;
-        padding: 2rem;
-        color: hsla(120, 40%, 60%, 0.8);
-    }
-
-    .search-books-container {
-        margin-bottom: 1.5rem;
-    }
-
-    .no-search-results {
-        text-align: center;
-        padding: 2rem;
-        color: hsla(var(--primary-hue), 30%, 60%, 0.8);
-    }
-
-    .create-gallery-section {
-        padding: 3rem 2rem;
-        text-align: center;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .create-gallery-content {
-        max-width: 500px;
-        width: 100%;
-    }
-
-    .create-gallery-icon {
-        margin-bottom: 2rem;
     }
 
     .create-gallery-icon i {
-        font-size: 4rem;
         background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
-    .create-title {
-        color: var(--text-color);
-        font-size: 2rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-
-    .create-subtitle {
-        color: hsla(var(--primary-hue), 30%, 70%, 0.8);
-        font-size: 1.1rem;
-        margin-bottom: 2.5rem;
-        line-height: 1.5;
-    }
-
-    .create-gallery-form {
-        text-align: left;
-    }
-
-    @media (max-width: 1024px) {
-        .galleries-layout {
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-
-        .galleries-sidebar {
-            order: 1;
-        }
-
-        .galleries-main {
-            order: 2;
-        }
-    }
-
     @media (max-width: 768px) {
-
         .galleries-title {
             font-size: 2rem;
         }
 
-        .books-grid {
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-        }
-
-        .gallery-details {
-            padding: 1.5rem;
-        }
-
-        .galleries-sidebar {
-            padding: 1rem;
+        .gallery-card {
+            margin-bottom: 1rem !important;
         }
     }
 
-    @media (max-width: 480px) {
-        .books-grid {
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 0.75rem;
-        }
+    .placeholder-glow .placeholder {
+        animation: placeholder-glow 2s ease-in-out infinite alternate;
+    }
 
-        .create-gallery-section {
-            padding: 2rem 1rem;
-        }
-
-        .create-title {
-            font-size: 1.5rem;
+    @keyframes placeholder-glow {
+        50% {
+            opacity: 0.2;
         }
     }
 </style>

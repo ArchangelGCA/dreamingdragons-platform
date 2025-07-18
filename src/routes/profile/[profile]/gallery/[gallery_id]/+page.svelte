@@ -18,46 +18,58 @@
     <meta name="description" content={gallery.description}/>
 </svelte:head>
 
-<div class="gallery-view-container">
-    <div class="gallery-header rounded-3">
-        <div class="header-content">
-            <div class="gallery-icon">
-                <i class="fas fa-images"></i>
-            </div>
-            <div class="gallery-title-section">
-                <h1 class="gallery-title">{gallery.name}</h1>
-                <p class="gallery-owner">
-                    <i class="fas fa-user me-2"></i>
-                    A gallery by <a href="/profile/{gallery.owner.id}" class="owner-link ms-2">{gallery.owner.username}</a>
-                </p>
-                {#if gallery.description}
-                    <p class="gallery-description">{gallery.description}</p>
+<div class="min-vh-100">
+
+    <div class="gallery-header rounded-3 position-relative mb-4">
+        <div class="container-xl">
+            <div class="row align-items-center justify-content-center g-4 py-5">
+                <!-- Gallery Icon -->
+                <div class="col-auto">
+                    <div class="gallery-icon d-flex align-items-center justify-content-center rounded-4 shadow">
+                        <i class="fas fa-images fa-2x text-white"></i>
+                    </div>
+                </div>
+                
+                <!-- Gallery Title Section -->
+                <div class="col">
+                    <h1 class="gallery-title display-4 fw-bold mb-3">{gallery.name}</h1>
+                    <p class="gallery-owner fs-5 mb-3 d-flex align-items-center justify-content-center justify-content-lg-start text-white-50">
+                        <i class="fas fa-user me-2"></i>
+                        A gallery by 
+                        <a href="/profile/{gallery.owner.id}" class="owner-link ms-2 text-decoration-none position-relative">{gallery.owner.username}</a>
+                    </p>
+                    {#if gallery.description}
+                        <p class="gallery-description fs-5 lh-base mb-4 text-white">{gallery.description}</p>
+                    {/if}
+                    <div class="d-flex gap-3">
+                        <span class="stat-item badge rounded-pill px-3 py-2 fs-6 d-flex align-items-center mx-auto mx-lg-0">
+                            <i class="fas fa-book me-2"></i>
+                            {books.length} {books.length === 1 ? 'tale' : 'tales'}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Gallery Actions -->
+                {#if isOwner}
+                    <div class="col-auto">
+                        <a 
+                            href="/settings/galleries?gallery={gallery.id}"
+                            class="btn btn-edit-gallery shadow rounded-3 text-decoration-none"
+                            use:tooltip={{...tooltipConfig}} 
+                            title="Edit Gallery"
+                            aria-label="Edit Gallery"
+                        >
+                            <i class="fas fa-edit me-2"></i>
+                            Edit Gallery
+                        </a>
+                    </div>
                 {/if}
-                <div class="gallery-stats">
-                    <span class="stat-item">
-                        <i class="fas fa-book me-2"></i>
-                        {books.length} {books.length === 1 ? 'tale' : 'tales'}
-                    </span>
-                </div>
             </div>
-            {#if isOwner}
-                <div class="gallery-actions">
-                    <a 
-                        href="/settings/galleries?gallery={gallery.id}"
-                        class="btn-edit-gallery-header"
-                        use:tooltip={{...tooltipConfig}} 
-                        title="Edit Gallery"
-                        aria-label="Edit Gallery"
-                    >
-                        <i class="fas fa-edit me-2"></i>
-                        Edit Gallery
-                    </a>
-                </div>
-            {/if}
         </div>
     </div>
 
-    <div class="gallery-content">
+    <!-- Gallery Content -->
+    <div class="container-xl pb-5">
         {#if books.length > 0}
             <Masonry items={books}
                      {minColWidth}
@@ -72,20 +84,16 @@
                 {/snippet}
             </Masonry>
         {:else}
-            <div class="empty-gallery-view">
-                <i class="fas fa-images fa-4x mb-3"></i>
-                <h3>Empty Gallery</h3>
-                <p>This gallery doesn't contain any books yet.</p>
+            <div class="text-center py-5">
+                <i class="fas fa-images display-1 mb-4 text-muted opacity-50"></i>
+                <h3 class="h2 text-body-secondary mb-3">Empty Gallery</h3>
+                <p class="fs-5 text-muted mb-0">This gallery doesn't contain any books yet.</p>
             </div>
         {/if}
     </div>
 </div>
 
 <style>
-    .gallery-view-container {
-        min-height: 100vh;
-    }
-
     .gallery-header {
         background: linear-gradient(135deg,
             hsla(var(--primary-hue), 20%, 15%, 0.6),
@@ -93,62 +101,26 @@
         );
         border-bottom: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
         backdrop-filter: blur(10px);
-        padding: 3rem 0;
-        margin-bottom: 2rem;
-    }
-
-    .header-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-        display: flex;
-        align-items: center;
-        gap: 2rem;
     }
 
     .gallery-icon {
         background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
-        color: white;
         width: 80px;
         height: 80px;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2rem;
         box-shadow: 0 8px 25px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
-        flex-shrink: 0;
-    }
-
-    .gallery-title-section {
-        flex: 1;
     }
 
     .gallery-title {
-        color: var(--text-color);
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
         background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
-    .gallery-owner {
-        color: hsla(var(--primary-hue), 30%, 70%, 0.9);
-        font-size: 1.1rem;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-    }
-
     .owner-link {
-        color: var(--primary-color);
-        text-decoration: none;
+        color: var(--primary-color) !important;
         font-weight: 600;
         transition: all 0.3s ease;
-        position: relative;
     }
 
     .owner-link::after {
@@ -163,8 +135,7 @@
     }
 
     .owner-link:hover {
-        color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%));
-        text-decoration: none;
+        color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)) !important;
     }
 
     .owner-link:hover::after {
@@ -172,123 +143,45 @@
     }
 
     .gallery-description {
-        color: var(--text-color);
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin-bottom: 1.5rem;
         max-width: 600px;
     }
 
-    .gallery-actions {
-        margin-left: auto;
+    .stat-item {
+        background: hsla(var(--primary-hue), 30%, 25%, 0.6) !important;
+        color: hsla(var(--primary-hue), 50%, 80%, 0.9) !important;
+        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.4);
     }
 
-    .btn-edit-gallery-header {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
-        color: white;
-        text-decoration: none;
-        border: none;
-        border-radius: 12px;
-        padding: 0.75rem 1.5rem;
+    .btn-edit-gallery {
+        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%)) !important;
+        border: none !important;
+        color: white !important;
         font-weight: 600;
-        display: flex;
-        align-items: center;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
-        font-size: 0.95rem;
     }
 
-    .btn-edit-gallery-header:hover {
+    .btn-edit-gallery:hover {
         background: linear-gradient(135deg, 
             hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)), 
             hsl(290, 100%, 70%)
-        );
+        ) !important;
         transform: translateY(-2px);
         box-shadow: 0 6px 20px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.4);
-        color: white;
-        text-decoration: none;
-    }
-
-    .gallery-stats {
-        display: flex;
-        gap: 1.5rem;
-    }
-
-    .stat-item {
-        background: hsla(var(--primary-hue), 30%, 25%, 0.6);
-        color: hsla(var(--primary-hue), 50%, 80%, 0.9);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.4);
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-    }
-
-    .gallery-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem 3rem;
-    }
-
-    .empty-gallery-view {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: hsla(var(--primary-hue), 30%, 60%, 0.8);
-    }
-
-    .empty-gallery-view i {
-        color: hsla(var(--primary-hue), 40%, 50%, 0.6);
-    }
-
-    .empty-gallery-view h3 {
-        color: var(--text-color);
-        margin: 1rem 0 0.5rem;
-        font-size: 1.75rem;
-    }
-
-    .empty-gallery-view p {
-        font-size: 1.1rem;
-        margin: 0;
+        color: white !important;
     }
 
     @media (max-width: 768px) {
-        .header-content {
-            flex-direction: column;
+        .gallery-header .row {
             text-align: center;
-            gap: 1.5rem;
-            padding: 0 1rem;
         }
-
-        .gallery-header {
-            padding: 2rem 0;
-        }
-
+        
         .gallery-title {
-            font-size: 2rem;
+            font-size: 2rem !important;
         }
-
-        .gallery-owner {
-            justify-content: center;
-        }
-
-        .gallery-content {
-            padding: 0 1rem 2rem;
-        }
-
-        .gallery-stats {
-            justify-content: center;
-        }
-
-        .gallery-actions {
-            margin-left: 0;
+        
+        .btn-edit-gallery {
             width: 100%;
-            display: flex;
-            justify-content: center;
-        }
-
-        .btn-edit-gallery-header {
-            width: auto;
             min-width: 160px;
         }
     }
