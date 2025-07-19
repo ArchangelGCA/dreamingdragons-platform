@@ -541,67 +541,70 @@
                     </div>
                 {:else}
                     <div class="col-12">
-                        <div class="galleries-grid">
+                        <div class="galleries-grid row g-3 g-md-4">
                             {#each profile.gallery as gallery (gallery.id)}
-                                <div class="gallery-card-profile">
-                                    <a href="/profile/{profile.id}/gallery/{gallery.id}" class="gallery-card-link">
-                                        <div class="gallery-preview-profile">
-                                            {#if gallery.gallery_books.length > 0}
-                                                <div class="preview-stack">
-                                                    {#each gallery.gallery_books.slice(0, 4) as gb, i}
-                                                        {#if !gb.book.cover_url}
-                                                            <img
-                                                                    src="/favicon.webp"
-                                                                    alt="Tale cover"
-                                                                    class="preview-book"
-                                                                    style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
-                                                            />
-                                                        {:else}
-                                                            {@const
-                                                                optimizedSrc = image_proxy && !gb.book.cover_url.startsWith(image_proxy) ? image_proxy + gb.book.cover_url : gb.book.cover_url}
-                                                            <img
-                                                                    src={optimizedSrc + '?width=300&quality=80'}
-                                                                    alt="Tale cover"
-                                                                    class="preview-book"
-                                                                    style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
-                                                                    loading="lazy"
-                                                            />
-                                                        {/if}
-                                                    {/each}
-                                                </div>
-                                            {:else}
-                                                <div class="preview-empty-profile">
-                                                    <i class="fas fa-images"></i>
-                                                </div>
-                                            {/if}
-                                        </div>
-                                        <div class="gallery-info-profile">
-                                            <h5 class="gallery-title-profile">
-                                                {gallery.name}
-                                            </h5>
-                                            <p class="gallery-description-profile">{gallery.description || 'No description'}</p>
-                                            <div class="gallery-meta-profile">
-                                                <span class="book-count">
-                                                    <i class="fas fa-book me-2"></i>
-                                                    {gallery.gallery_books.length} {gallery.gallery_books.length === 1 ? 'tale' : 'tales'}
-                                                </span>
+                                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                                    <div class="gallery-card-profile h-100">
+                                        <a href="/profile/{profile.id}/gallery/{gallery.id}" class="gallery-card-link d-flex flex-column h-100">
+                                            <div class="gallery-preview-profile flex-shrink-0">
+                                                {#if gallery.gallery_books.length > 0}
+                                                    <div class="preview-stack">
+                                                        {#each gallery.gallery_books.slice(0, 4) as gb, i}
+                                                            {#if !gb.book.cover_url}
+                                                                <img
+                                                                        src="/favicon.webp"
+                                                                        alt="Tale cover"
+                                                                        class="preview-book"
+                                                                        style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
+                                                                />
+                                                            {:else}
+                                                                {@const
+                                                                    optimizedSrc = image_proxy && !gb.book.cover_url.startsWith(image_proxy) ? image_proxy + gb.book.cover_url : gb.book.cover_url}
+                                                                <img
+                                                                        src={optimizedSrc + '?width=300&quality=80'}
+                                                                        alt="Tale cover"
+                                                                        class="preview-book"
+                                                                        style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
+                                                                        loading="lazy"
+                                                                />
+                                                            {/if}
+                                                        {/each}
+                                                    </div>
+                                                {:else}
+                                                    <div class="preview-empty-profile">
+                                                        <i class="fas fa-images"></i>
+                                                    </div>
+                                                {/if}
                                             </div>
-                                        </div>
-                                    </a>
-                                    {#if session && gallery.owner_id === session.user.id}
-                                        <div class="gallery-edit-overlay">
-                                            <a
-                                                    href="/settings/galleries?gallery={gallery.id}"
-                                                    class="btn-edit-gallery"
-                                                    use:tooltip={{...tooltipConfig}}
-                                                    title="Edit Gallery"
-                                                    aria-label="Edit Gallery"
-                                                    onclick={(e) => e.stopPropagation()}
-                                            >
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                        </div>
-                                    {/if}
+                                            <div class="gallery-info-profile flex-grow-1 d-flex flex-column">
+                                                <h5 class="gallery-title-profile">
+                                                    {gallery.name}
+                                                </h5>
+                                                <p class="gallery-description-profile flex-grow-1">{gallery.description || 'No description'}</p>
+                                                <div class="gallery-meta-profile mt-auto">
+                                                    <span class="book-count">
+                                                        <i class="fas fa-book me-2"></i>
+                                                        <span class="d-none d-sm-inline">{gallery.gallery_books.length} {gallery.gallery_books.length === 1 ? 'tale' : 'tales'}</span>
+                                                        <span class="d-sm-none">{gallery.gallery_books.length}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        {#if session && gallery.owner_id === session.user.id}
+                                            <div class="gallery-edit-overlay">
+                                                <a
+                                                        href="/settings/galleries?gallery={gallery.id}"
+                                                        class="btn-edit-gallery"
+                                                        use:tooltip={{...tooltipConfig}}
+                                                        title="Edit Gallery"
+                                                        aria-label="Edit Gallery"
+                                                        onclick={(e) => e.stopPropagation()}
+                                                >
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        {/if}
+                                    </div>
                                 </div>
                             {/each}
                         </div>
@@ -701,9 +704,6 @@
 
     /* Modern Gallery Cards for Profile */
     .galleries-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 1.5rem;
         margin-top: 1rem;
     }
 
@@ -742,13 +742,13 @@
     }
 
     .gallery-card-profile:hover {
-        transform: translateY(-8px);
+        transform: translateY(-4px);
         border-color: hsla(var(--primary-hue), 60%, 60%, 0.6);
-        box-shadow: 0 20px 40px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2);
+        box-shadow: 0 12px 24px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2);
     }
 
     .gallery-preview-profile {
-        height: 200px;
+        height: 180px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -762,16 +762,16 @@
 
     .preview-stack {
         position: relative;
-        width: 120px;
-        height: 160px;
+        width: 110px;
+        height: 140px;
     }
 
     .preview-book {
         position: absolute;
-        width: 80px;
-        height: 120px;
+        width: 72px;
+        height: 108px;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: 6px;
         border: 2px solid hsla(var(--primary-hue), 30%, 50%, 0.3);
         transition: all 0.3s ease;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -779,14 +779,14 @@
 
     .gallery-card-profile:hover .preview-book {
         transform: translateX(0) translateY(0) rotate(0deg) !important;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     }
 
     .preview-empty-profile {
-        width: 80px;
-        height: 120px;
+        width: 72px;
+        height: 108px;
         background: hsla(var(--primary-hue), 15%, 25%, 0.6);
-        border-radius: 8px;
+        border-radius: 6px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -794,26 +794,27 @@
     }
 
     .preview-empty-profile i {
-        font-size: 2rem;
+        font-size: 1.8rem;
         color: hsla(var(--primary-hue), 30%, 60%, 0.6);
     }
 
     .gallery-info-profile {
-        padding: 1.5rem;
+        padding: 1.25rem;
         position: relative;
         z-index: 2;
     }
 
     .gallery-title-profile {
         margin: 0 0 0.75rem 0;
-        font-size: 1.25rem;
+        font-size: 1.1rem;
         font-weight: 600;
         color: var(--text-color);
+        line-height: 1.3;
     }
 
     .gallery-description-profile {
         color: hsla(var(--primary-hue), 30%, 70%, 0.8);
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         line-height: 1.4;
         margin-bottom: 1rem;
         display: -webkit-box;
@@ -826,18 +827,18 @@
     .gallery-meta-profile {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
     }
 
     .book-count {
         color: hsla(var(--primary-hue), 50%, 70%, 0.9);
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         font-weight: 500;
         display: flex;
         align-items: center;
         background: hsla(var(--primary-hue), 30%, 25%, 0.4);
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
+        padding: 0.4rem 0.8rem;
+        border-radius: 16px;
         border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
     }
 
@@ -856,8 +857,8 @@
 
     .gallery-edit-overlay {
         position: absolute;
-        top: 12px;
-        right: 12px;
+        top: 8px;
+        right: 8px;
         z-index: 10;
         opacity: 0;
         transition: all 0.3s ease;
@@ -872,14 +873,14 @@
         color: white;
         border: none;
         border-radius: 50%;
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
         display: flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        font-size: 0.9rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        font-size: 0.8rem;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
         transition: all 0.3s ease;
         backdrop-filter: blur(10px);
     }
@@ -890,34 +891,152 @@
         hsl(290, 100%, 70%)
         );
         transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
         color: white;
         text-decoration: none;
     }
 
-    @media (max-width: 768px) {
-        .galleries-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
+    /* Mobile-First Responsive Design */
+    @media (max-width: 575.98px) {
         .gallery-preview-profile {
             height: 160px;
         }
 
         .preview-stack {
-            width: 100px;
-            height: 140px;
+            width: 90px;
+            height: 120px;
         }
 
         .preview-book {
-            width: 70px;
-            height: 100px;
+            width: 60px;
+            height: 90px;
         }
 
         .preview-empty-profile {
-            width: 70px;
-            height: 100px;
+            width: 60px;
+            height: 90px;
+        }
+
+        .preview-empty-profile i {
+            font-size: 1.5rem;
+        }
+
+        .gallery-info-profile {
+            padding: 1rem;
+        }
+
+        .gallery-title-profile {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-description-profile {
+            font-size: 0.8rem;
+            margin-bottom: 0.75rem;
+            -webkit-line-clamp: 1;
+            line-clamp: 1;
+        }
+
+        .book-count {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.6rem;
+        }
+
+        .gallery-card-profile:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-edit-gallery {
+            width: 32px;
+            height: 32px;
+            font-size: 0.7rem;
+            top: 6px;
+            right: 6px;
+        }
+
+        /* Reduce hover effects on touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            .gallery-card-profile:hover {
+                transform: none;
+            }
+            
+            .gallery-card-profile:hover .preview-book {
+                transform: translateX(var(--transform-x)) translateY(var(--transform-y)) rotate(var(--transform-rotate)) !important;
+            }
+        }
+    }
+
+    /* Tablet optimizations */
+    @media (min-width: 576px) and (max-width: 767.98px) {
+        .gallery-preview-profile {
+            height: 170px;
+        }
+
+        .preview-stack {
+            width: 100px;
+            height: 130px;
+        }
+
+        .preview-book {
+            width: 68px;
+            height: 102px;
+        }
+
+        .preview-empty-profile {
+            width: 68px;
+            height: 102px;
+        }
+
+        .gallery-info-profile {
+            padding: 1.125rem;
+        }
+
+        .gallery-title-profile {
+            font-size: 1.05rem;
+        }
+
+        .gallery-description-profile {
+            font-size: 0.825rem;
+        }
+    }
+
+    /* Desktop and larger optimizations */
+    @media (min-width: 1200px) {
+        .gallery-preview-profile {
+            height: 200px;
+        }
+
+        .preview-stack {
+            width: 120px;
+            height: 150px;
+        }
+
+        .preview-book {
+            width: 80px;
+            height: 120px;
+        }
+
+        .preview-empty-profile {
+            width: 80px;
+            height: 120px;
+        }
+
+        .preview-empty-profile i {
+            font-size: 2rem;
+        }
+
+        .gallery-info-profile {
+            padding: 1.5rem;
+        }
+
+        .gallery-title-profile {
+            font-size: 1.2rem;
+        }
+
+        .gallery-description-profile {
+            font-size: 0.9rem;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
         }
     }
 </style>
