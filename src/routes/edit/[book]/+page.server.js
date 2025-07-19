@@ -3,6 +3,11 @@ import {PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_POCKETBASE_URL_IMG_API } from
 import {fetchProfiles} from "$lib/utils/gcafetchers.js";
 import {uploadImage} from "$lib/utils/misc.js";
 
+/** @type {import('@sveltejs/adapter-vercel').Config} */
+export const config = {
+    runtime: 'edge'
+};
+
 export const load = async ({ params, locals: { supabase, getSession} }) => {
     const {session} = await getSession();
 
@@ -38,8 +43,21 @@ export const load = async ({ params, locals: { supabase, getSession} }) => {
     book.tags = book.book_tags.map(tag => tag.tags.name);
     book.book_tags = [];
 
+    // Check if user can upload (edit permission check)
+    const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('can_upload')
+        .eq('id', sessionUserId)
+        .single();
+
+    if (profileError) {
+        errorx(500, 'Error checking user permissions');
+        return;
+    }
+
     return {
         book,
+        can_upload: profiles?.can_upload || false,
         title: 'DreamingDragons - Edit Tale',
         description: 'Edit your tale.',
         index: false
@@ -93,6 +111,31 @@ export const actions = {
 
         if (!session) {
             throw redirect(303, '/login');
+        }
+
+        // Check if user can upload (edit permission check)
+        const { data: profiles, error: profileError } = await supabase
+            .from('profiles')
+            .select('can_upload')
+            .eq('id', session.user.id)
+            .single();
+
+        if (profileError) {
+            return {
+                status: 500,
+                body: {
+                    message: profileError.message
+                }
+            }
+        }
+
+        if (!profiles.can_upload) {
+            return {
+                status: 403,
+                body: {
+                    message: "You don't have permission to edit content!"
+                }
+            }
         }
 
         const bookId = formData.bookId;
@@ -168,8 +211,8 @@ export const actions = {
 
         let updateData = {};
 
-        if (title !== null) updateData.title = title;
-        if (description !== null) updateData.description = description;
+        if (title !== null && title !== undefined && title.trim() !== '') updateData.title = title.trim();
+        if (description !== null && description !== undefined && description.trim() !== '') updateData.description = description;
         if (finalURL !== null) updateData.cover_url = finalURL;
         updateData.updated_at = new Date();
 
@@ -203,17 +246,22 @@ export const actions = {
                 tag_names[index] = tag.trim();
             });
 
-            const { error } = await supabase
-                .rpc('add_tags_to_book', {
-                    book_id: bookId,
-                    tag_names
-                });
+            // Filter out empty tags
+            const validTags = tag_names.filter(tag => tag.length > 0);
 
-            if (error) {
-                return {
-                    status: 500,
-                    body: {
-                        message: error.message
+            if (validTags.length > 0) {
+                const { error } = await supabase
+                    .rpc('add_tags_to_book', {
+                        book_id: bookId,
+                        tag_names: validTags
+                    });
+
+                if (error) {
+                    return {
+                        status: 500,
+                        body: {
+                            message: error.message
+                        }
                     }
                 }
             }
