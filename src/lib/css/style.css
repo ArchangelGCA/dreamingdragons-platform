@@ -18,6 +18,98 @@
     --font-family-mono: "Menlo", "Consolas", "Monaco", "Liberation Mono", "Lucida Console", monospace;
 
     --spacing-unit: 1rem;
+
+    /* Override Bootstrap CSS Variables to match our purple theme */
+    --bs-primary: var(--primary-color);
+    --bs-primary-rgb: 92, 0, 166;
+    --bs-primary-bg-subtle: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 20%));
+    --bs-primary-border-subtle: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 10%));
+    --bs-primary-text-emphasis: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 20%));
+    
+    --bs-secondary: var(--surface-color);
+    --bs-secondary-rgb: 38, 38, 38;
+    
+    /* Bootstrap text-secondary override for better visibility */
+    --bs-secondary-color: hsl(0, 0%, 65%);
+    --bs-secondary-color-rgb: 166, 166, 166;
+    
+    --bs-body-color: var(--text-color);
+    --bs-body-bg: var(--background-color);
+    --bs-body-bg-rgb: 26, 26, 26;
+    
+    --bs-border-color: var(--border-color);
+    --bs-border-color-translucent: rgba(64, 64, 64, 0.175);
+    
+    --bs-success: hsl(140, 60%, 50%);
+    --bs-success-rgb: 51, 204, 102;
+    --bs-danger: hsl(0, 70%, 50%);
+    --bs-danger-rgb: 217, 51, 51;
+    --bs-warning: hsl(45, 90%, 50%);
+    --bs-warning-rgb: 242, 204, 13;
+    --bs-info: hsl(200, 70%, 50%);
+    --bs-info-rgb: 38, 143, 217;
+}
+
+/* Bootstrap text utilities overrides for better visibility in dark theme */
+.text-secondary {
+    --bs-secondary-color: hsl(0, 0%, 65%);
+    color: var(--bs-secondary-color) !important;
+}
+
+.link-secondary {
+    --bs-secondary-color: hsl(0, 0%, 70%);
+    color: var(--bs-secondary-color) !important;
+    text-decoration-color: var(--bs-secondary-color) !important;
+}
+
+.link-secondary:hover,
+.link-secondary:focus {
+    --bs-secondary-color: hsl(0, 0%, 80%);
+    color: var(--bs-secondary-color) !important;
+    text-decoration-color: var(--bs-secondary-color) !important;
+}
+
+/* Keep text-secondary-emphasis more visible for important secondary content */
+.text-secondary-emphasis {
+    color: hsl(0, 0%, 75%) !important;
+}
+
+/* Text-muted override for better visibility */
+.text-muted {
+    color: hsl(0, 0%, 60%) !important;
+}
+
+/* For light backgrounds, use darker secondary text */
+.bg-light .text-secondary,
+.bg-white .text-secondary,
+.bg-light-subtle .text-secondary {
+    --bs-secondary-color: hsl(0, 0%, 40%);
+    color: var(--bs-secondary-color) !important;
+}
+
+.bg-light .text-muted,
+.bg-white .text-muted,
+.bg-light-subtle .text-muted {
+    color: hsl(0, 0%, 45%) !important;
+}
+
+.bg-light .link-secondary,
+.bg-white .link-secondary,
+.bg-light-subtle .link-secondary {
+    --bs-secondary-color: hsl(0, 0%, 35%);
+    color: var(--bs-secondary-color) !important;
+    text-decoration-color: var(--bs-secondary-color) !important;
+}
+
+.bg-light .link-secondary:hover,
+.bg-light .link-secondary:focus,
+.bg-white .link-secondary:hover,
+.bg-white .link-secondary:focus,
+.bg-light-subtle .link-secondary:hover,
+.bg-light-subtle .link-secondary:focus {
+    --bs-secondary-color: hsl(0, 0%, 25%);
+    color: var(--bs-secondary-color) !important;
+    text-decoration-color: var(--bs-secondary-color) !important;
 }
 
 body {
