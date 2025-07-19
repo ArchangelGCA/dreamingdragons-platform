@@ -1,9 +1,9 @@
 import {error as errorx} from '@sveltejs/kit';
 import {ORIGIN} from '$env/static/private';
 
-export const load = async ( { locals: { supabase, getSession } }) => {
-    const { session } = await getSession();
-    
+export const load = async ({locals: {supabase, getSession}}) => {
+    const {session} = await getSession();
+
     /****************************************************/
     // BEGINNING GLOBAL CODE EXECUTED FOR EVERY VISITOR //
     /****************************************************/
@@ -12,7 +12,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     const endRange = 20;
 
     const fetchBooks = async (table) => {
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from(table)
             .select('*')
             .range(startRange, endRange);
@@ -21,9 +21,9 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     }
 
     const fetchCreatedAtBooks = async () => {
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from('book')
-            .select('id, owner_id, title, cover_url, created_at, hidden, profiles!book_owner_id_fkey(id,username, avatar_url)')
+            .select('id, owner_id, title, cover_url, created_at, hidden, profiles!book_owner_id_fkey(id,username, avatar_url), book_likes(user_id)')
             .order('created_at', {ascending: false})
             .eq('hidden', false)
             .range(startRange, endRange);
@@ -43,6 +43,19 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     } catch (error) {
         console.error(error);
         return errorx(500, "Error fetching content")
+    }
+
+    // Process books_ordered_by_created_at to add like information
+    if (session) {
+        books_ordered_by_created_at.forEach(book => {
+            book.is_liked = book.book_likes.some(like => like.user_id === session.user.id);
+            book.likes = book.book_likes.length;
+        });
+    } else {
+        books_ordered_by_created_at.forEach(book => {
+            book.is_liked = false;
+            book.likes = book.book_likes.length;
+        });
     }
 
     /*const { data: new_books_ordered_by_likes, error: new_books_likes_error } = await supabase
@@ -94,11 +107,13 @@ export const load = async ( { locals: { supabase, getSession } }) => {
     if (!session) { // GUESTS
         results.is_logged = false;
         results.followed = [];
+        results.session = null;
     } else { // LOGGED USERS
         results.is_logged = true;
+        results.session = session;
 
-        const { data: followed, error: followedError } = await supabase
-            .rpc('get_followed_users', { user_id: session.user.id });
+        const {data: followed, error: followedError} = await supabase
+            .rpc('get_followed_users', {user_id: session.user.id});
 
         if (followedError) {
             results.followed = [];
@@ -111,8 +126,9 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 }
 
 export const actions = {
-    books_created_at: async ( {request, locals: { supabase } }) => {
+    books_created_at: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
+        const {session} = await getSession();
 
         let startRange = formData.startRange;
         let endRange = formData.endRange;
@@ -122,7 +138,7 @@ export const actions = {
 
         let {data: books, error} = await supabase
             .from('book')
-            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url)')
+            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url), book_likes(user_id)')
             .order('created_at', {ascending: false})
             .eq('hidden', false)
             .range(startRange, endRange);
@@ -132,13 +148,26 @@ export const actions = {
             return {
                 status: 500,
                 body: {
-                    message: data.message
+                    message: error.message
                 }
             }
         }
 
         if (books.length > 40) {
             books = books.slice(0, 40);
+        }
+
+        // Process like information
+        if (session) {
+            books.forEach(book => {
+                book.is_liked = book.book_likes.some(like => like.user_id === session.user.id);
+                book.likes = book.book_likes.length;
+            });
+        } else {
+            books.forEach(book => {
+                book.is_liked = false;
+                book.likes = book.book_likes.length;
+            });
         }
 
         return {
@@ -148,19 +177,101 @@ export const actions = {
             }
         }
     },
-    newNotifications: async ({ request, locals: { supabase, getSession } }) => {
+    like: async ({request, locals: {supabase, getSession}}) => {
+        const formData = Object.fromEntries(await request.formData());
+        const {session} = await getSession();
+
+        if (!session) {
+            return {
+                status: 401,
+                body: {
+                    message: "You need to be logged in to like content"
+                }
+            }
+        }
+
+        const contentId = formData.contentId;
+        const userId = session.user.id;
+
+        if (contentId === null) {
+            return {
+                status: 400,
+                body: {
+                    message: "Missing required fields"
+                }
+            }
+        }
+
+        const {data: likes, error} = await supabase
+            .from('book_likes')
+            .select('*')
+            .eq('book_id', contentId)
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error(error);
+            return {
+                status: 500,
+                body: {
+                    message: error.message
+                }
+            }
+        }
+
+        const action = likes.length === 0 ? 'added' : 'removed';
+
+        if (likes.length === 0) {
+            const {error} = await supabase
+                .from('book_likes')
+                .insert([{book_id: contentId, user_id: userId}]);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        } else {
+            const {error} = await supabase
+                .from('book_likes')
+                .delete()
+                .eq('book_id', contentId)
+                .eq('user_id', userId);
+
+            if (error) {
+                console.error(error);
+                return {
+                    status: 500,
+                    body: {
+                        message: error.message
+                    }
+                }
+            }
+        }
+
+        return {
+            status: 200,
+            body: {
+                message: "Like " + action + " successfully"
+            }
+        }
+    },
+    newNotifications: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
         const {session} = await getSession();
 
         const latestNotificationTimestamp = formData.latestNotificationTimestamp;
         if (session) {
 
-            const { data: newNotifs, error } = await supabase
+            const {data: newNotifs, error} = await supabase
                 .from('notifications')
                 .select('*')
                 .gt('created_at', latestNotificationTimestamp)
                 .eq('recipient_id', session.user.id)
-                .order('created_at', { ascending: false });
+                .order('created_at', {ascending: false});
 
             if (error) {
                 console.error(error);
@@ -187,7 +298,7 @@ export const actions = {
             }
         };
     },
-    loadMoreNotifications: async ({ request, locals: { supabase, getSession } }) => {
+    loadMoreNotifications: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
         const {session} = await getSession();
 
@@ -195,11 +306,11 @@ export const actions = {
         const endRange = formData.endRange;
 
         if (session) {
-            const { data: notifs, error } = await supabase
+            const {data: notifs, error} = await supabase
                 .from('notifications')
                 .select('*')
                 .eq('recipient_id', session.user.id)
-                .order('created_at', { ascending: false })
+                .order('created_at', {ascending: false})
                 .range(startRange, endRange);
 
             if (error) {

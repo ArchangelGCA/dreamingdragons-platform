@@ -1,8 +1,8 @@
 <script>
     import Masonry from '$lib/components/sveltebricks/Masonry.svelte';
     import ContentMasonry from '$lib/components/pages/ContentMasonry.svelte';
-    import { tooltip } from "@svelte-plugins/tooltips";
-    import { tooltipConfig } from "$lib/utils/gcacommons.js";
+    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     let {data} = $props();
     let {gallery, session, image_proxy} = $state(data);
@@ -29,14 +29,15 @@
                         <i class="fas fa-images fa-2x text-white"></i>
                     </div>
                 </div>
-                
+
                 <!-- Gallery Title Section -->
                 <div class="col">
                     <h1 class="gallery-title display-4 fw-bold mb-3">{gallery.name}</h1>
                     <p class="gallery-owner fs-5 mb-3 d-flex align-items-center justify-content-center justify-content-lg-start text-white-50">
                         <i class="fas fa-user me-2"></i>
-                        A gallery by 
-                        <a href="/profile/{gallery.owner.id}" class="owner-link ms-2 text-decoration-none position-relative">{gallery.owner.username}</a>
+                        A gallery by
+                        <a href="/profile/{gallery.owner.id}"
+                           class="owner-link ms-2 text-decoration-none position-relative">{gallery.owner.username}</a>
                     </p>
                     {#if gallery.description}
                         <p class="gallery-description fs-5 lh-base mb-4 text-white">{gallery.description}</p>
@@ -48,16 +49,16 @@
                         </span>
                     </div>
                 </div>
-                
+
                 <!-- Gallery Actions -->
                 {#if isOwner}
                     <div class="col-auto">
-                        <a 
-                            href="/settings/galleries?gallery={gallery.id}"
-                            class="btn btn-edit-gallery shadow rounded-3 text-decoration-none"
-                            use:tooltip={{...tooltipConfig}} 
-                            title="Edit Gallery"
-                            aria-label="Edit Gallery"
+                        <a
+                                href="/settings/galleries?gallery={gallery.id}"
+                                class="btn btn-edit-gallery shadow rounded-3 text-decoration-none"
+                                use:tooltip={{...tooltipConfig}}
+                                title="Edit Gallery"
+                                aria-label="Edit Gallery"
                         >
                             <i class="fas fa-edit me-2"></i>
                             Edit Gallery
@@ -80,7 +81,7 @@
                      bind:masonryHeight={height}
             >
                 {#snippet children({item})}
-                    <ContentMasonry book={item} {image_proxy}/>
+                    <ContentMasonry book={item} {image_proxy} {session}/>
                 {/snippet}
             </Masonry>
         {:else}
@@ -96,8 +97,8 @@
 <style>
     .gallery-header {
         background: linear-gradient(135deg,
-            hsla(var(--primary-hue), 20%, 15%, 0.6),
-            hsla(var(--primary-hue), 15%, 20%, 0.4)
+        hsla(var(--primary-hue), 20%, 15%, 0.6),
+        hsla(var(--primary-hue), 15%, 20%, 0.4)
         );
         border-bottom: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
         backdrop-filter: blur(10px);
@@ -162,9 +163,9 @@
     }
 
     .btn-edit-gallery:hover {
-        background: linear-gradient(135deg, 
-            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)), 
-            hsl(290, 100%, 70%)
+        background: linear-gradient(135deg,
+        hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)),
+        hsl(290, 100%, 70%)
         ) !important;
         transform: translateY(-2px);
         box-shadow: 0 6px 20px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.4);
@@ -175,11 +176,11 @@
         .gallery-header .row {
             text-align: center;
         }
-        
+
         .gallery-title {
             font-size: 2rem !important;
         }
-        
+
         .btn-edit-gallery {
             width: 100%;
             min-width: 160px;

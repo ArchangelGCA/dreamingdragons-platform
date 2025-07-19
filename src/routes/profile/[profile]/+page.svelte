@@ -525,7 +525,7 @@
                                 bind:height
                         >
                             {#snippet children({item})}
-                                <ContentMasonry book={item.book} {image_proxy}/>
+                                <ContentMasonry book={item.book} {image_proxy} {session}/>
                             {/snippet}
                         </Masonry>
                     </div>
@@ -545,7 +545,8 @@
                             {#each profile.gallery as gallery (gallery.id)}
                                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                                     <div class="gallery-card-profile h-100">
-                                        <a href="/profile/{profile.id}/gallery/{gallery.id}" class="gallery-card-link d-flex flex-column h-100">
+                                        <a href="/profile/{profile.id}/gallery/{gallery.id}"
+                                           class="gallery-card-link d-flex flex-column h-100">
                                             <div class="gallery-preview-profile flex-shrink-0">
                                                 {#if gallery.gallery_books.length > 0}
                                                     <div class="preview-stack">
@@ -959,7 +960,7 @@
             .gallery-card-profile:hover {
                 transform: none;
             }
-            
+
             .gallery-card-profile:hover .preview-book {
                 transform: translateX(var(--transform-x)) translateY(var(--transform-y)) rotate(var(--transform-rotate)) !important;
             }

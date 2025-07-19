@@ -18,6 +18,7 @@
         books_ordered_by_latest_chapter,
         is_logged,
         followed,
+        session,
     } = $state(data);
 
     let loading = false;
@@ -127,7 +128,7 @@
                             bind:masonryHeight={height}
                     >
                         {#snippet children({item})}
-                            <ContentMasonry book={item} {image_proxy}/>
+                            <ContentMasonry book={item} {image_proxy} {session}/>
                         {/snippet}
                     </Masonry>
                     {#if allContentLoaded}
@@ -192,7 +193,8 @@
             <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/5mVFmCBx5q"
                                          target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">DreamingDragons</a>
             </p>
-            <iframe class="rounded-3" src="https://discord.com/widget?id=1054013154822205450&theme=dark" title="DreamingDragons Discord Widget" width="350" height="500"
+            <iframe class="rounded-3" src="https://discord.com/widget?id=1054013154822205450&theme=dark"
+                    title="DreamingDragons Discord Widget" width="350" height="500"
                     allowtransparency="true" frameborder="0"
                     sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
         </div>
