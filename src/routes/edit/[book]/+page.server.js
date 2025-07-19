@@ -3,11 +3,6 @@ import {PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_POCKETBASE_URL_IMG_API } from
 import {fetchProfiles} from "$lib/utils/gcafetchers.js";
 import {uploadImage} from "$lib/utils/misc.js";
 
-/** @type {import('@sveltejs/adapter-vercel').Config} */
-export const config = {
-    runtime: 'edge'
-};
-
 export const load = async ({ params, locals: { supabase, getSession} }) => {
     const {session} = await getSession();
 
