@@ -450,7 +450,7 @@
 
                 // New size
                 const newSize = blob.size;
-                compressedMessage = '🍀 Image compressed from <b>' + (oldSize / 1024 / 1024).toFixed(2) + 'MB</b> to <b>' + (newSize / 1024 / 1024).toFixed(2) + 'MB</b>';
+                compressedMessage = '🍀 Image compressed from ' + (oldSize / 1024 / 1024).toFixed(2) + 'MB to ' + (newSize / 1024 / 1024).toFixed(2) + 'MB';
 
                 // Show success toast
                 toast.push('Image compressed successfully', {
@@ -690,7 +690,7 @@
                                                                                 {#if !isCompressing}
                                                                                     <button type="button"
                                                                                             class="btn btn-sm btn-warning ms-2 compress-btn"
-                                                                                            onclick={compressImage}>
+                                                                                            onclick={(e) => { e.stopPropagation(); compressImage(); }}>
                                                                                         <i class="fas fa-compress me-1"></i>
                                                                                         Compress
                                                                                     </button>
@@ -712,12 +712,12 @@
                                                                 <div class="image-overlay">
                                                                     <button type="button" 
                                                                             class="btn btn-primary btn-sm me-2"
-                                                                            onclick={() => document.getElementById('imageInput').click()}>
+                                                                            onclick={(e) => { e.stopPropagation(); document.getElementById('imageInput').click(); }}>
                                                                         <i class="fas fa-edit me-2"></i>Change Image
                                                                     </button>
                                                                     <button type="button"
                                                                             class="btn btn-outline-secondary btn-sm"
-                                                                            onclick={() => {previewUrl = null; fileName = null; isTooBig = false; formData.selectedImageFile = null; compressedMessage = '';}}>
+                                                                            onclick={(e) => { e.stopPropagation(); previewUrl = null; fileName = null; isTooBig = false; formData.selectedImageFile = null; compressedMessage = ''; }}>
                                                                         <i class="fas fa-times me-1"></i>
                                                                         Remove
                                                                     </button>
@@ -733,7 +733,7 @@
                                                             <div class="image-overlay">
                                                                 <button type="button" 
                                                                         class="btn btn-primary btn-sm"
-                                                                        onclick={() => document.getElementById('imageInput').click()}>
+                                                                        onclick={(e) => { e.stopPropagation(); document.getElementById('imageInput').click(); }}>
                                                                     <i class="fas fa-edit me-2"></i>Change Image
                                                                 </button>
                                                             </div>
