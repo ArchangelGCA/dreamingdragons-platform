@@ -309,525 +309,659 @@
     }
 </script>
 
-<div class="container-md mt-4 mb-3">
-    <div class="row text-center">
-        <div class="col px-0">
-            <p class="h1 rounded-4 animate-background py-2">Edit Chapter</p>
-        </div>
-    </div>
-
-    <!-- Progress Steps -->
-    <div class="row mt-4 mb-3">
+<div class="container-lg mt-4 mb-5">
+    <!-- Header -->
+    <div class="row text-center mb-4">
         <div class="col">
-            <div class="progress-container">
-                <button 
-                    type="button"
-                    class="progress-step {currentStep >= 1 ? 'active' : ''}" 
-                    onclick={() => goToStep(1)}
-                >
-                    <div class="step-number">1</div>
-                    <div class="step-title">Basic Info</div>
-                </button>
-                <div class="progress-line {currentStep > 1 ? 'active' : ''}"></div>
-                <button 
-                    type="button"
-                    class="progress-step {currentStep >= 2 ? 'active' : ''}" 
-                    onclick={() => goToStep(2)}
-                >
-                    <div class="step-number">2</div>
-                    <div class="step-title">Content</div>
-                </button>
-                <div class="progress-line {currentStep > 2 ? 'active' : ''}"></div>
-                <button 
-                    type="button"
-                    class="progress-step {currentStep >= 3 ? 'active' : ''}" 
-                    onclick={() => goToStep(3)}
-                >
-                    <div class="step-number">3</div>
-                    <div class="step-title">Tags & Review</div>
-                </button>
+            <div class="edit-header rounded-4 py-4 mb-3">
+                <h1 class="h2 fw-bold mb-2 text-white">
+                    <i class="fas fa-edit me-2"></i>Edit Chapter
+                </h1>
+                <p class="lead text-white-50 mb-0">Update your chapter details, content, and tags</p>
             </div>
         </div>
     </div>
 
-    <div class="row mt-3 mx-0 justify-content-center text-center">
-        <div class="col px-0">
-            <form method="POST" enctype="multipart/form-data" action="?/editchapter" onsubmit={handleEdit}>
-                <!-- Step 1: Basic Info -->
-                {#if currentStep === 1}
-                    <div class="step-content" use:autoAnimate>
-                        <div class="row">
-                            <div class="col-12 rounded-3 px-0 mb-3">
-                                <p class="fs-5 text-start mb-2 ms-1"><i class="fas fa-book"></i> Target Tale</p>
-                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Select the tale this chapter belongs to">
-                                    <select 
-                                        class="form-select form-select-lg form-select-custom" 
-                                        id="book-select"
-                                        bind:value={formData.selectedBook} 
-                                        required
-                                    >
-                                        <option value="" disabled>Select a tale...</option>
-                                        {#each books as book (book.id)}
-                                            <option class="option-custom" value={book.id}>{book.title}</option>
-                                        {/each}
-                                    </select>
-                                    <label for="book-select"><i class="fas fa-book"></i> Tale</label>
-                                </div>
-                            </div>
-                            <div class="col-12 rounded-3 mb-2 px-0">
-                                <div class="form-floating" use:tooltip={{...tooltipConfig}} title="Enter the chapter title">
-                                    <input 
-                                        type="text" 
-                                        class="form-control form-control-lg form-control-custom" 
-                                        id="chapter-title"
-                                        placeholder="Chapter Title" 
-                                        bind:value={formData.title} 
-                                        required
-                                    >
-                                    <label for="chapter-title" class="form-label"><i class="fas fa-heading"></i> Chapter Title</label>
-                                </div>
-                            </div>
+    <!-- Main Form Container -->
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="edit-form-container" use:autoAnimate>
+                <!-- Progress Indicator -->
+                <div class="progress-container mb-4">
+                    <div class="progress progress-bar-custom">
+                        <div class="progress-bar bg-gradient-primary"
+                             style="width: {(currentStep / totalSteps) * 100}%"
+                             role="progressbar"
+                             aria-valuenow="{currentStep}"
+                             aria-valuemin="0"
+                             aria-valuemax="{totalSteps}">
                         </div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-12 d-flex justify-content-between px-0">
-                                <div></div> <!-- Empty div for spacing -->
-                                <button 
-                                    type="button" 
-                                    class="btn btn-lg animate-button"
-                                    onclick={nextStep}
-                                    disabled={!validateStep1()}
-                                >
-                                    Next: Content <i class="fas fa-arrow-right ms-2"></i>
+                    </div>
+                    <div class="step-indicators mt-3">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <button type="button" 
+                                        class="step-indicator {currentStep >= 1 ? 'active' : ''}"
+                                        onclick={() => goToStep(1)}>
+                                    <div class="step-number">1</div>
+                                    <div class="step-label">Details</div>
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button type="button"
+                                        class="step-indicator {currentStep >= 2 ? 'active' : ''}"
+                                        onclick={() => validateStep1() && goToStep(2)}>
+                                    <div class="step-number">2</div>
+                                    <div class="step-label">Content</div>
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button type="button"
+                                        class="step-indicator {currentStep >= 3 ? 'active' : ''}"
+                                        onclick={() => validateStep2() && goToStep(3)}>
+                                    <div class="step-number">3</div>
+                                    <div class="step-label">Tags & Review</div>
                                 </button>
                             </div>
                         </div>
                     </div>
-                {/if}
+                </div>
+                <!-- Form Content -->
+                <form method="POST" enctype="multipart/form-data" action="?/editchapter" onsubmit={handleEdit} use:autoAnimate>
+                    <!-- Step 1: Basic Info -->
+                    {#if currentStep === 1}
+                        <div class="form-step step-1">
+                            <div class="step-header mb-4">
+                                <h3 class="h4 fw-bold mb-2">
+                                    <i class="fas fa-info-circle me-2 text-primary"></i>Chapter Details
+                                </h3>
+                                <p class="text-muted">Set up the basic information for your chapter</p>
+                            </div>
+                            
+                            <div class="row g-4">
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <select 
+                                            class="form-control form-control-modern bg-dark"
+                                            id="book-select"
+                                            bind:value={formData.selectedBook} 
+                                            required
+                                        >
+                                            <option value="" disabled>Select a tale...</option>
+                                            {#each books as book (book.id)}
+                                                <option class="option-custom" value={book.id}>{book.title}</option>
+                                            {/each}
+                                        </select>
+                                        <label for="book-select">
+                                            <i class="fas fa-book me-2"></i>Target Tale
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input 
+                                            type="text" 
+                                            class="form-control form-control-modern" 
+                                            id="chapter-title"
+                                            placeholder="Enter chapter title" 
+                                            bind:value={formData.title} 
+                                            required
+                                        >
+                                        <label for="chapter-title">
+                                            <i class="fas fa-heading me-2"></i>Chapter Title
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
-                <!-- Step 2: Content -->
-                {#if currentStep === 2}
-                    <div class="step-content" use:autoAnimate>
-                        <div class="row">
-                            <div class="col-12 px-0 mb-3">
-                                <p class="fs-5 text-start mb-2 ms-1"><i class="fas fa-edit"></i> Chapter Content</p>
-                                <Editor 
-                                    {conf}
-                                    scriptSrc="../../../tinymce/tinymce.min.js"
-                                    bind:value={formData.content}
-                                />
+                            <!-- Step Navigation -->
+                            <div class="step-navigation mt-4 d-flex justify-content-end">
+                                <button type="button"
+                                        class="btn btn-primary btn-lg"
+                                        onclick={nextStep}
+                                        disabled={!validateStep1()}>
+                                    Next<i class="fas fa-chevron-right ms-2"></i>
+                                </button>
                             </div>
                         </div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-12 d-flex justify-content-between px-0">
-                                <button 
-                                    type="button" 
-                                    class="btn btn-lg btn-outline-secondary"
-                                    onclick={prevStep}
-                                >
-                                    <i class="fas fa-arrow-left me-2"></i> Back
+                    {/if}
+
+                    <!-- Step 2: Content -->
+                    {#if currentStep === 2}
+                        <div class="form-step step-2">
+                            <div class="step-header mb-4">
+                                <h3 class="h4 fw-bold mb-2">
+                                    <i class="fas fa-edit me-2 text-primary"></i>Chapter Content
+                                </h3>
+                                <p class="text-muted">Write and edit your chapter content</p>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="editor-container">
+                                        <Editor 
+                                            {conf}
+                                            scriptSrc="../../../tinymce/tinymce.min.js"
+                                            bind:value={formData.content}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step Navigation -->
+                            <div class="step-navigation mt-4 d-flex justify-content-between">
+                                <button type="button"
+                                        class="btn btn-outline-secondary"
+                                        onclick={prevStep}>
+                                    <i class="fas fa-chevron-left me-2"></i>Previous
                                 </button>
-                                <button 
-                                    type="button" 
-                                    class="btn btn-lg animate-button"
-                                    onclick={nextStep}
-                                    disabled={!validateStep2()}
-                                >
-                                    Next: Tags & Review <i class="fas fa-arrow-right ms-2"></i>
+                                <button type="button"
+                                        class="btn btn-primary btn-lg"
+                                        onclick={nextStep}
+                                        disabled={!validateStep2()}>
+                                    Next<i class="fas fa-chevron-right ms-2"></i>
                                 </button>
                             </div>
                         </div>
-                    </div>
-                {/if}
+                    {/if}
 
-                <!-- Step 3: Tags & Review -->
-                {#if currentStep === 3}
-                    <div class="step-content" use:autoAnimate>
-                        <div class="row">
-                            <div class="col-12 mt-2 px-0 rounded-3 mb-3">
-                                <p class="fs-6 text-start mb-2 ms-1"><i class="fas fa-tags"></i> Tags (Optional):</p>
-                                <div class="tag-input-container" use:autoAnimate use:tooltip={{...tooltipConfig}} title="Use space, comma, or enter to add tags. Use arrow keys to navigate suggestions.">
-                                    <div class="tags-display">
-                                        {#each tags as tag, index (tag)}
-                                            <div class="badge tag-custom rounded-4 pe-2 my-auto me-1 mb-1">
-                                                <span>{tag}</span>
-                                                <button class="button-tags text-danger-emphasis ms-1" type="button" onclick={removeTag} value={tag}>×</button>
-                                            </div>
+                    <!-- Step 3: Tags & Review -->
+                    {#if currentStep === 3}
+                        <div class="form-step step-3">
+                            <div class="step-header mb-4">
+                                <h3 class="h4 fw-bold mb-2">
+                                    <i class="fas fa-tags me-2 text-primary"></i>Tags & Final Review
+                                </h3>
+                                <p class="text-muted">Add tags and review your chapter before saving</p>
+                            </div>
+
+                            <div class="row">
+                            <div class="tags-section mb-4">
+                                <h6 class="fw-bold mb-3">
+                                    <i class="fas fa-tags me-2"></i>Tags
+                                </h6>
+
+                                <div class="tag-input-container">
+                                    <div class="tag-display mb-3" use:autoAnimate>
+                                        {#each tags as tag}
+                                            <span class="badge tag-pill">
+                                                {tag}
+                                                <button type="button"
+                                                        class="tag-remove"
+                                                        onclick={removeTag}
+                                                        value={tag}
+                                                        aria-label="Remove tag">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </span>
                                         {/each}
                                     </div>
-                                    <div class="tag-input-wrapper">
-                                        <input 
-                                            class="input-tags" 
-                                            type="text" 
-                                            bind:value={inputTag} 
-                                            placeholder={tags.length === 0 ? "Add tags (optional)" : "Add more tags..."} 
-                                            onkeydown={addTag} 
-                                            onkeyup={addTag}
-                                        />
-                                        {#if suggestions.length > 0}
-                                            <div class="suggestions-dropdown">
-                                                {#each suggestions as suggestion, index (suggestion)}
-                                                    <button 
-                                                        class="suggestion-item {index === selectedSuggestionIndex ? 'selected' : ''}" 
-                                                        type="button"
-                                                        onclick={addTag} 
-                                                        value={suggestion}
-                                                    >
+
+                                    <div class="input-group">
+                                        <input type="text"
+                                               class="form-control form-control-modern"
+                                               placeholder="Type tags and press Enter, Space, or Comma"
+                                               bind:value={inputTag}
+                                               onkeydown={addTag}
+                                               onkeyup={addTag}>
+                                        <span class="input-group-text">
+                                            <i class="fas fa-plus"></i>
+                                        </span>
+                                    </div>
+
+                                    {#if suggestions.length > 0}
+                                        <div class="tag-suggestions mt-2" use:autoAnimate>
+                                            <small class="text-muted mb-2 d-block">
+                                                <i class="fas fa-lightbulb me-1"></i>Suggestions:
+                                            </small>
+                                            <div class="suggestions-list">
+                                                {#each suggestions as suggestion, index}
+                                                    <button type="button"
+                                                            class="suggestion-btn {index === selectedSuggestionIndex ? 'selected' : ''}"
+                                                            onclick={addTag}
+                                                            value={suggestion}>
                                                         {suggestion}
                                                     </button>
                                                 {/each}
                                             </div>
-                                        {/if}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Review Summary -->
-                            <div class="col-12 px-0 mb-3">
-                                <div class="review-summary">
-                                    <h5 class="mb-3"><i class="fas fa-eye"></i> Review Your Chapter</h5>
-                                    <div class="summary-item">
-                                        <strong>Tale:</strong> 
-                                        {#each books as book (book.id)}
-                                            {#if book.id === formData.selectedBook}
-                                                {book.title}
-                                            {/if}
-                                        {/each}
-                                    </div>
-                                    <div class="summary-item">
-                                        <strong>Title:</strong> {formData.title || 'Untitled Chapter'}
-                                    </div>
-                                    <div class="summary-item">
-                                        <strong>Content Length:</strong> {formData.content ? formData.content.replace(/<[^>]*>/g, '').trim().length : 0} characters
-                                    </div>
-                                    <div class="summary-item">
-                                        <strong>Tags:</strong> {tags.length > 0 ? tags.join(', ') : 'No tags'}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row mt-3">
-                            <div class="col-12 d-flex justify-content-between px-0">
-                                <button 
-                                    type="button" 
-                                    class="btn btn-lg btn-outline-secondary"
-                                    onclick={prevStep}
-                                >
-                                    <i class="fas fa-arrow-left me-2"></i> Back
-                                </button>
-                                <button 
-                                    type="submit" 
-                                    class="btn btn-lg animate-button" 
-                                    disabled={editActive || !validateStep1() || !validateStep2()}
-                                    use:tooltip={{...tooltipConfig}} 
-                                    title="Click to save your changes"
-                                >
-                                    {#if editActive}
-                                        <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-                                        Saving...
-                                    {:else}
-                                        <i class="fas fa-save me-2"></i> Save Changes
+                                        </div>
                                     {/if}
+                                </div>
+                            </div>
+
+                                <!-- Summary Section -->
+                                <div class="summary-section mb-4">
+                                    <h6 class="fw-bold mb-3">
+                                        <i class="fas fa-eye me-2"></i>Review Changes
+                                    </h6>
+                                    <div class="summary-card">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <strong>Tale:</strong>
+                                                <p class="mb-2">
+                                                    {#each books as book (book.id)}
+                                                        {#if book.id === formData.selectedBook}
+                                                            {book.title}
+                                                        {/if}
+                                                    {/each}
+                                                </p>
+                                                <strong>Title:</strong>
+                                                <p class="mb-2">{formData.title || 'Untitled Chapter'}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong>Content Length:</strong>
+                                                <p class="mb-2">{formData.content ? formData.content.replace(/<[^>]*>/g, '').trim().length : 0} characters</p>
+                                                <strong>Tags:</strong>
+                                                <p class="mb-0">{tags.length > 0 ? tags.join(', ') : 'No tags'}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step Navigation -->
+                            <div class="step-navigation mt-4 d-flex justify-content-between">
+                                <button type="button"
+                                        class="btn btn-outline-secondary"
+                                        onclick={prevStep}>
+                                    <i class="fas fa-chevron-left me-2"></i>Previous
                                 </button>
+                                
+                                <div class="d-flex gap-2">
+                                    {#if isUploading}
+                                        <button type="submit"
+                                                class="btn btn-primary btn-lg"
+                                                disabled>
+                                            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                            Updating...
+                                        </button>
+                                    {:else}
+                                        <button type="submit"
+                                                class="btn btn-primary btn-lg">
+                                            <i class="fas fa-save me-2"></i>Save Changes
+                                        </button>
+                                    {/if}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {/if}
+                    {/if}
 
-                <div class="col-12 mt-4 px-0 rounded-3">
-                    <p class="text-secondary text-center mb-0">By submitting, you agree to our <a href="/legal/tos" target="_blank" class="link-secondary text-decoration-none">terms of service</a> and <a href="/legal/privacy-policy" target="_blank" class="link-secondary text-decoration-none">privacy policy</a>.</p>
-                </div>
-            </form>
+                    <!-- Legal Notice -->
+                    <div class="legal-notice mt-4 text-center">
+                        <p class="text-muted small mb-0">
+                            By updating your chapter, you agree to our 
+                            <a href="/legal/tos" target="_blank" class="link-secondary">terms of service</a> 
+                            and 
+                            <a href="/legal/privacy-policy" target="_blank" class="link-secondary">privacy policy</a>.
+                        </p>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-    /* Progress Steps Styling */
-    .progress-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px 0;
+    :global(.form-control-modern) {
+        background: linear-gradient(145deg, rgba(26, 26, 46, 0.9), rgba(40, 40, 70, 0.8));
+        border: 2px solid rgba(92, 0, 166, 0.3);
+        color: #e8e3f3;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
     }
 
-    .progress-step {
-        all: unset;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    :global(.form-control-modern:focus) {
+        background: linear-gradient(145deg, rgba(26, 26, 46, 0.95), rgba(40, 40, 70, 0.9));
+        border-color: #5c00a6;
+        box-shadow: 0 0 20px rgba(92, 0, 166, 0.4);
+        outline: none;
+    }
+
+    :global(.form-control-modern::placeholder) {
+        color: rgba(232, 227, 243, 0.6);
+    }
+
+    :global(.form-floating > .form-control-modern ~ label) {
+        background: transparent;
+        color: rgba(232, 227, 243, 0.8);
+        padding: 0 8px;
+    }
+
+    :global(.form-floating > .form-control-modern:focus ~ label),
+    :global(.form-floating > .form-control-modern:not(:placeholder-shown) ~ label) {
+        color: #a78bfa;
+        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+
+    .edit-header {
+        background: linear-gradient(135deg, #0b0086, #5c00a6, #8b5cf6);
+        background-size: 300% 300%;
+        animation: gradientShift 8s ease infinite;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Form container styling matching book edit page */
+    .edit-form-container {
+        background: linear-gradient(145deg, rgba(15, 15, 35, 0.9), rgba(30, 30, 60, 0.8));
+        border: 1px solid rgba(92, 0, 166, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        backdrop-filter: blur(20px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Progress bar styling */
+    .progress-bar-custom {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        height: 6px;
+        overflow: hidden;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(90deg, #0b0086, #5c00a6, #a78bfa);
+        background-size: 200% 100%;
+        animation: progressGlow 2s ease infinite;
+        border-radius: 20px;
+    }
+
+    @keyframes progressGlow {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* Step indicators */
+    .step-indicator {
         cursor: pointer;
         transition: all 0.3s ease;
-        background: none;
+        padding: 1rem;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
         border: none;
+        color: inherit;
+        width: 100%;
     }
 
-    .progress-step.active .step-number {
-        background: linear-gradient(45deg, #5c00a6, #0b0086);
-        color: #fff;
-        box-shadow: 0 0 10px rgba(92, 0, 166, 0.5);
+    .step-indicator:hover {
+        background: rgba(92, 0, 166, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .step-indicator.active {
+        background: linear-gradient(135deg, rgba(92, 0, 166, 0.3), rgba(167, 139, 250, 0.2));
+        border: 1px solid rgba(92, 0, 166, 0.5);
     }
 
     .step-number {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        color: #999;
+        background: rgba(92, 0, 166, 0.2);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-weight: bold;
-        margin-bottom: 8px;
+        margin: 0 auto 0.5rem;
+        font-weight: 600;
+        color: #e8e3f3;
         transition: all 0.3s ease;
     }
 
-    .step-title {
-        font-size: 0.9rem;
-        color: #999;
-        text-align: center;
-        transition: color 0.3s ease;
+    .step-indicator.active .step-number {
+        background: linear-gradient(135deg, #5c00a6, #a78bfa);
+        color: white;
+        box-shadow: 0 4px 15px rgba(92, 0, 166, 0.4);
     }
 
-    .progress-step.active .step-title {
-        color: #dcd6f7;
+    .step-label {
+        font-size: 0.875rem;
+        color: rgba(232, 227, 243, 0.8);
+        font-weight: 500;
     }
 
-    .progress-line {
-        width: 80px;
-        height: 2px;
-        background: rgba(255, 255, 255, 0.1);
-        margin: 0 10px;
-        transition: background 0.3s ease;
+    .step-indicator.active .step-label {
+        color: #a78bfa;
+        font-weight: 600;
     }
 
-    .progress-line.active {
-        background: linear-gradient(90deg, #5c00a6, #0b0086);
+    /* Form step styling */
+    .form-step {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
     }
 
-    /* Step content styling */
-    .step-content {
-        min-height: 400px;
+    .step-header h3 {
+        color: #e8e3f3;
+        margin-bottom: 0.5rem;
     }
 
-    /* Review summary styling */
-    .review-summary {
-        background: rgba(92, 0, 166, 0.1);
-        border: 1px solid rgba(92, 0, 166, 0.3);
-        border-radius: 12px;
-        padding: 20px;
-        text-align: left;
-    }
-
-    .summary-item {
-        margin-bottom: 10px;
-        font-size: 0.95rem;
-    }
-
-    .summary-item:last-child {
+    .step-header p {
+        color: rgba(232, 227, 243, 0.7);
         margin-bottom: 0;
     }
 
-    /* Tag input styling */
-    .tag-input-container {
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.1), rgba(11, 0, 134, 0.1));
-        border: 1px solid rgba(92, 0, 166, 0.3);
+    .editor-container {
         border-radius: 12px;
-        padding: 12px;
-        position: relative;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .tags-display {
-        display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 8px;
-    }
-
-    .tag-input-wrapper {
-        position: relative;
-        width: 100%;
-    }
-
-    .input-tags {
-        all: unset;
-        width: 100%;
-        padding: 8px;
-        color: #dcd6f7;
-        font-size: 1rem;
-    }
-
-    .input-tags::placeholder {
-        color: rgba(220, 214, 247, 0.6);
-    }
-
-    .suggestions-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: linear-gradient(45deg, rgb(47, 0, 89), rgb(25, 0, 45));
-        border: 1px solid rgba(92, 0, 166, 0.5);
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        max-height: 200px;
-        overflow-y: auto;
-    }
-
-    .suggestion-item {
-        all: unset;
-        display: block;
-        width: 100%;
-        padding: 10px 12px;
-        color: #dcd6f7;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        text-align: left;
-    }
-
-    .suggestion-item:hover,
-    .suggestion-item.selected {
-        background-color: rgba(92, 0, 166, 0.5);
-    }
-
-    .suggestion-item:first-child {
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-    }
-
-    .suggestion-item:last-child {
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-    }
-
-    /* Existing styles with improvements */
-    .animate-button {
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient 10s ease infinite;
-        border: none;
-        color: #fff;
-        transition: all 0.3s ease;
-    }
-
-    .animate-button:hover:not(:disabled) {
-        box-shadow: 0 0 18px #5c00a6;
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient 1.5s ease infinite;
-        transform: translateY(-2px);
-    }
-
-    .animate-button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-
-    .animate-background {
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient 10s ease infinite;
-        color: #fff;
-    }
-
-    .form-control-custom {
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.65), rgb(11, 0, 134));
-        color: #dcd6f7;
-        border: 1px solid rgba(92, 0, 166, 0.3);
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .form-control-custom:hover {
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.75), rgb(11, 0, 134));
-        border-color: rgba(92, 0, 166, 0.5);
-    }
-
-    .form-control-custom:focus {
-        outline: none;
-        box-shadow: 0 0 0 0.2rem rgba(92, 0, 166, 0.25);
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.8), rgb(11, 0, 134));
-        border-color: #5c00a6;
-        color: #fff;
-    }
-
-    .form-control-custom::placeholder {
-        color: rgba(220, 214, 247, 0.6);
-    }
-
-    .form-select-custom {
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.65), rgb(11, 0, 134));
-        color: #dcd6f7;
-        border: 1px solid rgba(92, 0, 166, 0.3);
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .form-select-custom:hover {
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.75), rgb(11, 0, 134));
-        border-color: rgba(92, 0, 166, 0.5);
-    }
-
-    .form-select-custom:focus {
-        outline: none;
-        box-shadow: 0 0 0 0.2rem rgba(92, 0, 166, 0.25);
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.8), rgb(11, 0, 134));
-        border-color: #5c00a6;
-        color: #fff;
-    }
-
-    .tag-custom {
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.86), rgba(11, 0, 134, 0.86));
-        color: #dcd6f7;
-        border: 1px solid rgba(92, 0, 166, 0.5);
-        transition: all 0.3s ease;
-        font-size: 0.85rem;
-    }
-
-    .tag-custom:hover {
-        background: linear-gradient(45deg, rgba(92, 0, 166, 0.95), rgba(11, 0, 134, 0.95));
-        transform: translateY(-1px);
-        box-shadow: 0 2px 6px rgba(92, 0, 166, 0.3);
-    }
-
-    .option-custom {
-        background-color: rgb(47, 0, 89);
-        color: #dcd6f7;
-    }
-
-    .button-tags {
-        all: unset;
-        color: #ff6b6b;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 1.1rem;
-        transition: color 0.2s ease;
+    .tag-pill {
+        background: linear-gradient(135deg, #5c00a6, #a78bfa);
+        color: white;
+        border-radius: 20px;
+        padding: 8px 12px;
+        margin: 4px;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        width: 16px;
-        height: 16px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
     }
 
-    .button-tags:hover {
-        color: #ff4757;
-        transform: scale(1.2);
+    .tag-pill:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(92, 0, 166, 0.4);
+    }
+
+    .tag-remove {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        margin-left: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        color: white;
+    }
+
+    .tag-remove:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+    }
+
+    .tag-suggestions {
+        background: rgba(15, 15, 35, 0.9);
+        border: 1px solid rgba(92, 0, 166, 0.3);
+        border-radius: 12px;
+        padding: 0.75rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .suggestions-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .suggestion-btn {
+        margin: 4px;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: rgba(232, 227, 243, 0.8);
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+    }
+
+    .suggestion-btn:hover {
+        background: #5c00a6;
+        border-color: #5c00a6;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .suggestion-btn.selected {
+        background: #5c00a6;
+        border-color: #5c00a6;
+        color: white;
+    }
+
+    .summary-card {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        color: #e8e3f3;
+    }
+
+    .summary-card strong {
+        color: #a78bfa;
+    }
+
+    .step-navigation {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #0b0086, #5c00a6);
+        border: 1px solid rgba(92, 0, 166, 0.5);
+        color: white;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(92, 0, 166, 0.2);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, #5c00a6, #a78bfa);
+        border-color: #a78bfa;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(92, 0, 166, 0.3);
+    }
+
+    .btn-primary:disabled {
+        background: rgba(92, 0, 166, 0.3);
+        border-color: rgba(92, 0, 166, 0.2);
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 
     .btn-outline-secondary {
-        border-color: rgba(92, 0, 166, 0.5);
-        color: #dcd6f7;
         background: transparent;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        color: rgba(232, 227, 243, 0.8);
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
 
     .btn-outline-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #e8e3f3;
+    }
+
+    .legal-notice {
+        color: rgba(232, 227, 243, 0.6);
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .legal-notice a {
+        color: #a78bfa;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .legal-notice a:hover {
+        color: #c4b5fd;
+        text-decoration: underline;
+    }
+
+    /* Input group styling for tag input */
+    .input-group-text {
         background: rgba(92, 0, 166, 0.2);
-        border-color: #5c00a6;
-        color: #fff;
+        border: 2px solid rgba(92, 0, 166, 0.3);
+        border-left: none;
+        color: #a78bfa;
+    }
+
+    .input-group .form-control-modern {
+        border-right: none;
+    }
+
+    .input-group .form-control-modern:focus {
+        z-index: 3;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .edit-form-container {
+            padding: 1.5rem;
+        }
+
+        .form-step {
+            padding: 1.5rem;
+        }
+
+        .step-navigation {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .step-navigation .btn {
+            width: 100%;
+        }
+
+        .step-indicator {
+            padding: 0.75rem;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
     }
 
     /* Loading spinner */
@@ -835,37 +969,5 @@
         width: 1rem;
         height: 1rem;
         border-width: 0.125rem;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .progress-container {
-            padding: 15px 0;
-        }
-
-        .step-title {
-            font-size: 0.8rem;
-        }
-
-        .progress-line {
-            width: 40px;
-            margin: 0 5px;
-        }
-
-        .step-number {
-            width: 35px;
-            height: 35px;
-            font-size: 0.9rem;
-        }
-
-        .step-content {
-            min-height: 300px;
-        }
-    }
-
-    @keyframes Gradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
     }
 </style>
