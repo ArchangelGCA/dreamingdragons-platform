@@ -560,7 +560,7 @@
                             </div>
 
                             <!-- Step Navigation -->
-                            <div class="step-navigation mt-4 d-flex justify-content-between">
+                            <div class="step-navigation mt-1 d-flex justify-content-between">
                                 <button type="button"
                                         class="btn btn-outline-secondary"
                                         onclick={prevStep}>
@@ -935,12 +935,15 @@
         }
 
         .step-navigation {
-            flex-direction: column;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
         .step-navigation .btn {
-            width: 100%;
+            flex: 1;
+        }
+
+        .step-navigation .d-flex {
+            flex: 1;
         }
 
         .step-indicator {
