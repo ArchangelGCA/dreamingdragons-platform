@@ -309,7 +309,7 @@
     }
 </script>
 
-<div class="container-lg mt-4 mb-5">
+<div class="container-xxl px-0 px-md-3 mt-4 mb-5">
     <!-- Header -->
     <div class="row text-center mb-4">
         <div class="col">
@@ -325,9 +325,9 @@
     <!-- Main Form Container -->
     <div class="row justify-content-center">
         <div class="col-xl-10">
-            <div class="edit-form-container" use:autoAnimate>
+            <div class="edit-form-container px-0 px-lg-3" use:autoAnimate>
                 <!-- Progress Indicator -->
-                <div class="progress-container mb-4">
+                <div class="progress-container mb-4 px-2 px-md-0">
                     <div class="progress progress-bar-custom">
                         <div class="progress-bar bg-gradient-primary"
                              style="width: {(currentStep / totalSteps) * 100}%"
@@ -428,8 +428,8 @@
 
                     <!-- Step 2: Content -->
                     {#if currentStep === 2}
-                        <div class="form-step step-2">
-                            <div class="step-header mb-4">
+                        <div class="form-step step-2 px-1 px-md-3">
+                            <div class="step-header mb-4 px-3">
                                 <h3 class="h4 fw-bold mb-2">
                                     <i class="fas fa-edit me-2 text-primary"></i>Chapter Content
                                 </h3>
@@ -577,7 +577,7 @@
                                         </button>
                                     {:else}
                                         <button type="submit"
-                                                class="btn btn-primary btn-lg">
+                                                class="btn btn-primary btn-lg ms-2">
                                             <i class="fas fa-save me-2"></i>Save Changes
                                         </button>
                                     {/if}
@@ -848,12 +848,6 @@
 
     .summary-card strong {
         color: #a78bfa;
-    }
-
-    .step-navigation {
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding-top: 1.5rem;
-        margin-top: 2rem;
     }
 
     .btn-primary {
