@@ -766,11 +766,11 @@
                                 class="btn btn-outline-primary btn-lg w-100 content-type-btn {selectedOption === 'book' ? 'active' : ''}"
                                 onclick={() => {selectedOption = 'book'; currentStep = 1; totalSteps = 3;}}
                                 disabled={!can_upload}>
-                            <div class="content-type-content">
+                            <span class="content-type-content">
                                 <i class="fas fa-book fa-2x mb-2"></i>
-                                <div class="fw-bold">New Tale</div>
+                                <span class="fw-bold d-block">New Tale</span>
                                 <small class="text-muted">Start a new story</small>
-                            </div>
+                            </span>
                         </button>
                     </div>
                     <div class="col-6">
@@ -778,11 +778,11 @@
                                 class="btn btn-outline-primary btn-lg w-100 content-type-btn {selectedOption === 'chapter' ? 'active' : ''}"
                                 onclick={() => {selectedOption = 'chapter'; currentStep = 1; totalSteps = 3;}}
                                 disabled={!can_upload || books.length === 0}>
-                            <div class="content-type-content">
+                            <span class="content-type-content">
                                 <i class="fas fa-file-alt fa-2x mb-2"></i>
-                                <div class="fw-bold">New Chapter</div>
+                                <span class="fw-bold d-block">New Chapter</span>
                                 <small class="text-muted">Add to existing tale</small>
-                            </div>
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -1120,9 +1120,9 @@
                                                     onclick={fetchPreviousChapterTags}
                                                     disabled={activePreviousChapterTags}>
                                                 {#if activePreviousChapterTags}
-                                                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                                                    <span class="spinner-border spinner-border-sm me-2" role="status">
                                                         <span class="visually-hidden">Loading...</span>
-                                                    </div>
+                                                    </span>
                                                 {:else}
                                                     <i class="fas fa-history me-2"></i>
                                                 {/if}
@@ -1207,9 +1207,9 @@
                                         <div class="submit-section">
                                             {#if isUploading || activeUpload}
                                                 <button type="submit" class="btn btn-primary btn-lg" disabled>
-                                                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                                                    <span class="spinner-border spinner-border-sm me-2" role="status">
                                                         <span class="visually-hidden">Uploading...</span>
-                                                    </div>
+                                                    </span>
                                                     Uploading...
                                                 </button>
                                             {:else}
@@ -1315,6 +1315,15 @@
     .content-type-content {
         position: relative;
         z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .content-type-content .fw-bold.d-block {
+        display: block !important;
+        margin: 0.5rem 0 0.25rem 0;
     }
 
     /* Progress Bar */
