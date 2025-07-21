@@ -922,7 +922,7 @@
                                                         <h5 class="mb-2">Choose or Drag Cover Image</h5>
                                                         <p class="text-muted mb-3">
                                                             Maximum {maxFileSizeMB}MB • {PUBLIC_COVER_MAX_WIDTH}
-                                                            ×{PUBLIC_COVER_MAX_HEIGHT}px
+                                                            × {PUBLIC_COVER_MAX_HEIGHT}px
                                                         </p>
                                                         <input type="file"
                                                                class="form-control d-none"
@@ -1283,9 +1283,9 @@
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
-        background: var(--surface-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
         color: var(--text-color);
-        border-color: var(--border-color);
+        border-color: hsl(var(--primary-hue), 25%, 20%);
     }
 
     .content-type-btn:not(.active):hover {
@@ -1344,7 +1344,7 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: var(--surface-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
         color: var(--text-color);
         display: flex;
         align-items: center;
@@ -1352,7 +1352,7 @@
         margin: 0 auto 8px;
         font-weight: bold;
         transition: all 0.3s ease;
-        border: 2px solid var(--border-color);
+        border: 2px solid hsl(var(--primary-hue), 25%, 20%);
     }
 
     .step-indicator.active .step-number {
@@ -1379,7 +1379,7 @@
         border: 2px solid var(--border-color);
         border-radius: 12px;
         padding: 12px 16px;
-        background: var(--surface-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
         backdrop-filter: blur(10px);
         transition: all 0.3s ease;
         color: var(--text-color);
@@ -1388,7 +1388,7 @@
     .form-control-modern:focus {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 0.2rem var(--primary-color-alpha-90);
-        background: var(--background-color);
+        background: hsl(var(--primary-hue), 20%, 8%);
         color: var(--text-color);
     }
 
@@ -1420,7 +1420,7 @@
         border: 2px dashed hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 20%));
         border-radius: 16px;
         padding: 2rem;
-        background: var(--surface-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
         transition: all 0.3s ease;
         cursor: pointer;
         position: relative;
@@ -1512,8 +1512,8 @@
         margin: 4px;
         border-radius: 20px;
         transition: all 0.2s ease;
-        background: var(--surface-color);
-        border: 1px solid var(--border-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
+        border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         color: var(--text-color);
     }
 
@@ -1532,9 +1532,9 @@
 
     /* Review Section */
     .review-card {
-        background: var(--surface-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
         backdrop-filter: blur(10px);
-        border: 1px solid var(--border-color);
+        border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         border-radius: 16px;
         padding: 1.5rem;
         transition: all 0.3s ease;
@@ -1659,9 +1659,9 @@
     }
 
     .btn-outline-secondary {
-        border-color: var(--border-color);
+        border-color: hsl(var(--primary-hue), 25%, 20%);
         color: var(--text-color);
-        background: var(--surface-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
         transition: all 0.3s ease;
     }
 
@@ -1669,17 +1669,6 @@
     .btn-outline-secondary:focus {
         background: var(--primary-color);
         border-color: var(--primary-color);
-        color: white;
-    }
-
-    .btn-outline-info {
-        border-color: hsl(200, 70%, 50%);
-        color: hsl(200, 70%, 50%);
-        background: transparent;
-    }
-
-    .btn-outline-info:hover {
-        background: hsl(200, 70%, 50%);
         color: white;
     }
 
@@ -1704,9 +1693,9 @@
     .editor-container {
         border-radius: 12px;
         overflow: hidden;
-        border: 2px solid var(--border-color);
+        border: 2px solid hsl(var(--primary-hue), 25%, 20%);
         transition: border-color 0.3s ease;
-        background: var(--surface-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
     }
 
     .editor-container:focus-within {
@@ -1718,7 +1707,7 @@
     .alert {
         border: none;
         border-radius: 12px;
-        background: var(--surface-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
         color: var(--text-color);
         border-left: 4px solid;
     }
@@ -1783,8 +1772,8 @@
 
     /* Input group text */
     .input-group-text {
-        background: var(--surface-color);
-        border-color: var(--border-color);
+        background: hsl(var(--primary-hue), 15%, 12%);
+        border-color: hsl(var(--primary-hue), 25%, 20%);
         color: var(--text-color);
     }
 
@@ -1872,7 +1861,7 @@
     /* Animations */
     @keyframes gradientShift {
         0%, 100% {
-            background-position: 0% 50%;
+            background-position: 0 50%;
         }
         50% {
             background-position: 100% 50%;
