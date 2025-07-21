@@ -303,6 +303,9 @@
                             <li><a class="dropdown-item {page.url.pathname.startsWith('/updates') ? 'active' : ''}"
                                    href="/updates"><i class="fas fa-newspaper border-end border-light-subtle pe-2"></i>
                                 Updates</a></li>
+                            <li><a class="dropdown-item {page.url.pathname.startsWith('/faq') ? 'active' : ''}"
+                                   href="/faq"><i class="fas fa-question-circle border-end border-light-subtle pe-2"></i>
+                                FAQ</a></li>
                             <li><a class="dropdown-item" href="/rss.xml" target="_blank" rel="noopener noreferrer"><i
                                     class="fas fa-rss border-end border-light-subtle pe-2" style="color: #ff6600;"></i>
                                 RSS Feed</a></li>
