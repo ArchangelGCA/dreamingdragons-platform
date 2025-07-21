@@ -1,5 +1,8 @@
 export async function load() {
 	return {
+		title: 'FAQ - DreamingDragons',
+		description: 'Frequently Asked Questions about DreamingDragons',
+		keywords: 'FAQ, DreamingDragons, Tales, Chapters, Artists, Writers, Community',
 		faqData: [
 			{
 				question: 'What is DreamingDragons?',

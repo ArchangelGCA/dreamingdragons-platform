@@ -47,11 +47,6 @@
 	});
 </script>
 
-<svelte:head>
-	<title>FAQ - DreamingDragons</title>
-	<meta name="description" content="Frequently Asked Questions about DreamingDragons" />
-</svelte:head>
-
 <div class="container-xxl px-4 py-5">
 	<!-- Hero Section -->
 	<div class="hero-section text-center mb-5">
