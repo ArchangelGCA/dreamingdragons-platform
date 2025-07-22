@@ -1,7 +1,8 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 import {ORIGIN} from '$env/static/private';
+import { extractId, isValidUrlParam, getCanonicalUrl } from '$lib/utils/slugs.js';
 
-export const load = async ({ params, locals: { supabase, getSession, image_proxy } }) => {
+export const load = async ({ params, url, locals: { supabase, getSession, image_proxy } }) => {
     const { session } = await getSession();
     let isOwner = false;
 
@@ -9,12 +10,18 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         throw errorx(400, "Missing required fields");
     }
 
-    const bookId = params.book;
-    const chapterId = params.chapter;
+    // Validate URL parameter formats
+    if (!isValidUrlParam(params.book) || !isValidUrlParam(params.chapter)) {
+        throw errorx(400, 'Invalid identifier format');
+    }
+
+    // Extract the actual IDs from the parameters (handles both legacy and new format)
+    const bookId = extractId(params.book);
+    const chapterId = extractId(params.chapter);
 
     // FIX for some URLs that have double /content/content and need redirect.
-    if ((bookId === 'content' || bookId === 'profile')) {
-        throw redirect(302, `/${bookId}/${chapterId}`);
+    if ((params.book === 'content' || params.book === 'profile')) {
+        throw redirect(302, `/${params.book}/${params.chapter}`);
     }
 
     const { data: chapterContent, error } = await supabase
@@ -103,6 +110,16 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
     chapterContent[0].tags = tags;
     chapterContent[0].is_liked = is_liked;
     chapterContent[0].chapter_tags = [];
+
+    // Check if we need to redirect to canonical URL (SEO-friendly format)
+    const canonicalUrl = getCanonicalUrl(chapterContent[0].book, chapterContent[0]);
+    const currentPath = url.pathname;
+    
+    // Only redirect if the current URL doesn't match the canonical format
+    // and it's not already in the canonical format (contains hyphen before ID)
+    if (currentPath !== canonicalUrl && !currentPath.match(/-\d+$/)) {
+        throw redirect(301, canonicalUrl);
+    }
 
     // return
     return {

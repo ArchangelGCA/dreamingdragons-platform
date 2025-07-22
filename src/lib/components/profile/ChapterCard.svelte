@@ -4,16 +4,21 @@
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import { createChapterPath } from "$lib/utils/slugs.js";
 
-    /** @type {{content: any, image_proxy: any, index: any, user_id: any}} */
+    /** @type {{content: any, image_proxy: any, index: any, user_id: any, bookTitle?: string}} */
     let {
         content,
         image_proxy,
         index,
+        bookTitle = 'Book' // Default if not provided for backward compatibility
     } = $props();
 
     let likeActionActive = false;
     let finalLinkImage = $derived(image_proxy && !content.chapter_image_url.startsWith(image_proxy) ? image_proxy + content.chapter_image_url + '?width=750&quality=80' : content.chapter_image_url);
+    
+    // Generate SEO-friendly URL
+    let chapterUrl = $derived(createChapterPath(bookTitle, content.book_id, content.title, content.id));
 
     function handleMouseEnter(e) {
         e.target.parentElement.querySelector('.to-scale').style.transform = 'scale(1.1)';
@@ -87,7 +92,7 @@
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
         {#if finalLinkImage}
-            <a href="/content/{content.book_id}/{content.id}">
+            <a href="{chapterUrl}">
                 <img src={finalLinkImage} alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy"
                      style="object-fit: cover; position: absolute; top: 0; left: 0;">
                 <div class="chapter-number-over">{index}</div>
@@ -96,7 +101,7 @@
             <div class="chapter-number">{content.id}</div>
         {/if}
     </div>
-    <a href="/content/{content.book_id}/{content.id}" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
+    <a href="{chapterUrl}" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 ps-3 pb-1 pt-2 mx-0">
                 <div class="col-9 my-auto">

@@ -1,7 +1,7 @@
 <script>
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
-
     import { tooltip } from "@svelte-plugins/tooltips";
+    import { createBookPath } from "$lib/utils/slugs.js";
 
     /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any}} */
     let {
@@ -13,6 +13,9 @@
         description,
         image_proxy
     } = $props();
+    
+    // Generate SEO-friendly URL
+    const bookUrl = $derived(createBookPath(title, book_id));
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
@@ -40,11 +43,11 @@
                 style="object-fit: cover; position: absolute; top: 0; left: 0;">
         {/if}
     </div>
-    <a href="/content/{book_id}">
+    <a href="{bookUrl}">
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">
                 <div class="col-12">
-                    <button class="btn btn-link p-0 link-light text-decoration-none text-wrap" href="/content/{book_id}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{title}</span></button>
+                    <button class="btn btn-link p-0 link-light text-decoration-none text-wrap" href="{bookUrl}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{title}</span></button>
                     <p class="card-text"><small class="text-muted">Posted by <button class="btn btn-link p-0 link-light text-decoration-none" href="/profile/{owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</button></small></p>
                 </div>
             </div>

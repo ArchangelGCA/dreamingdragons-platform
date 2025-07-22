@@ -14,6 +14,7 @@
     import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ShareButton from "$lib/components/layout/ShareButton.svelte";
+    import { createBookPath } from "$lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -31,6 +32,8 @@
             bookContent,
         } = data)
     });
+    
+    let editUrl = $derived(createBookPath('edit', bookContent.id));
 
     onMount(async () => {
         if (browser) {
@@ -380,7 +383,7 @@
                 <div class="row justify-content-evely gy-3 mx-0">
                     {#each bookContent.chapters as chapter, index (chapter.id)}
                         <div class="col-12 col-sm-6 col-lg-4 col-xl-3 d-flex align-items-stretch px-0 px-sm-2">
-                            <ChapterCard content={chapter} index={index + 1} {image_proxy} {user_id}/>
+                            <ChapterCard content={chapter} index={index + 1} {image_proxy} {user_id} bookTitle={bookContent.title}/>
                         </div>
                     {/each}
                 </div>

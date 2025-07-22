@@ -14,6 +14,7 @@
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ShareButton from "$lib/components/layout/ShareButton.svelte";
     import RSSButton from "$lib/components/layout/RSSButton.svelte";
+    import { createChapterPath, createBookPath } from "$lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -41,6 +42,18 @@
     let createdAtDetailed = $derived(`${(createdAt.getDate()).toString().padStart(2, '0')}-${(createdAt.getMonth() + 1).toString().padStart(2, '0')}-${createdAt.getFullYear()} ${createdAt.getHours().toString().padStart(2, '0')}:${createdAt.getMinutes().toString().padStart(2, '0')}`);
     let deleteChapterActionActive = false;
     let reportText = $state('');
+    
+    // Generate SEO-friendly URLs
+    let bookUrl = $derived(createBookPath(chapterContent.book.title, chapterContent.book_id));
+    let editUrl = $derived(`/edit/${chapterContent.book_id}/${chapterContent.id}`);
+    let previousChapterUrl = $derived(chapterContent.previousChapter ? 
+        createChapterPath(chapterContent.book.title, chapterContent.book_id, 
+                         chapterContent.chapters.find(c => c.id === chapterContent.previousChapter)?.title || 'Chapter', 
+                         chapterContent.previousChapter) : null);
+    let nextChapterUrl = $derived(chapterContent.nextChapter ? 
+        createChapterPath(chapterContent.book.title, chapterContent.book_id,
+                         chapterContent.chapters.find(c => c.id === chapterContent.nextChapter)?.title || 'Chapter',
+                         chapterContent.nextChapter) : null);
 
     onMount(async () => {
         if (browser) {
@@ -174,7 +187,7 @@
                         '--toastColor': '#fff',
                     }
                 });
-                window.location.href = '/content/' + chapterContent.book_id;
+                window.location.href = bookUrl;
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
@@ -259,7 +272,7 @@
     <!-- Chapter and Book cover -->
     <div class="row justify-content-center text-center">
         <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
-            <a href="/content/{chapterContent.book_id}" target="_blank" aria-label="Open image in a new page.">
+            <a href="{bookUrl}" target="_blank" aria-label="Open image in a new page.">
                 <ContentImage src={chapterContent.book.cover_url} alt={chapterContent.book.title} {image_proxy}/>
             </a>
         </div>
@@ -275,7 +288,7 @@
                 </a>
                 <div class="col-9 col-md-10 text-center my-auto">
                     <h2><a class="link-light link-opacity-75 text-decoration-none"
-                           href="/content/{chapterContent.book_id}">{chapterContent.book.title}</a>: {chapterContent.title}
+                           href="{bookUrl}">{chapterContent.book.title}</a>: {chapterContent.title}
                     </h2>
                     <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none"
                                            href="/profile/{chapterContent.owner_id}">{chapterContent.profiles.username}</a>
@@ -399,8 +412,8 @@
                 <!-- Previous and Next Chapters -->
                 <div class="row justify-content-center text-center">
                     <div class="col-6 px-1" use:autoAnimate>
-                        {#if chapterContent.previousChapter}
-                            <a href="/content/{chapterContent.book_id}/{chapterContent.previousChapter}"
+                        {#if chapterContent.previousChapter && previousChapterUrl}
+                            <a href="{previousChapterUrl}"
                                class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}}
                                title="Previous Chapter" data-sveltekit-noscroll>
                                 <i class="fas fa-chevron-left"></i>
@@ -415,8 +428,8 @@
                         {/if}
                     </div>
                     <div class="col-6 px-1" use:autoAnimate>
-                        {#if chapterContent.nextChapter}
-                            <a href="/content/{chapterContent.book_id}/{chapterContent.nextChapter}"
+                        {#if chapterContent.nextChapter && nextChapterUrl}
+                            <a href="{nextChapterUrl}"
                                class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}}
                                title="Next Chapter" data-sveltekit-noscroll>
                                 <span class="fs-6">Next</span>
@@ -467,7 +480,7 @@
             <div class="col-12 px-0">
                 <div class="row justify-content-center pt-1">
                     <div class="col-auto">
-                        <a href="/edit/{chapterContent.book_id}/{chapterContent.id}"
+                        <a href="{editUrl}"
                            class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
                            use:tooltip={{...tooltipConfig}} title="Edit Chapter">
                             <i class="fas fa-edit"></i>
@@ -540,7 +553,7 @@
                     <div class="row row-horizontal flex-nowrap py-2">
                         {#each chapterContent.chapters as chapter, index (chapter.id)}
                             <div class="col-3 col-md-2 col-lg-1">
-                                <a href="/content/{chapter.book_id}/{chapter.id}" data-sveltekit-noscroll
+                                <a href="{createChapterPath(chapterContent.book.title, chapter.book_id, chapter.title, chapter.id)}" data-sveltekit-noscroll
                                    class="btn {chapter.id === chapterContent.id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index + 1}</a>
                             </div>
                         {/each}

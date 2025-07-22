@@ -1,9 +1,10 @@
-import { error as errorx } from '@sveltejs/kit';
+import { error as errorx, redirect } from '@sveltejs/kit';
 import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW, ORIGIN } from '$env/static/private';
 import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import PocketBase from "pocketbase";
+import { extractId, isValidUrlParam, getCanonicalUrl } from '$lib/utils/slugs.js';
 
-export const load = async ({ params, locals: { supabase, getSession, image_proxy } }) => {
+export const load = async ({ params, url, locals: { supabase, getSession, image_proxy } }) => {
     const { session } = await getSession();
     let isOwner = false;
 
@@ -11,7 +12,13 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
         throw errorx(400, 'Missing required fields');
     }
 
-    const bookId = params.book;
+    // Validate URL parameter format
+    if (!isValidUrlParam(params.book)) {
+        throw errorx(400, 'Invalid book identifier format');
+    }
+
+    // Extract the actual ID from the parameter (handles both legacy and new format)
+    const bookId = extractId(params.book);
     let is_liked = false;
 
     const { data: bookContent, error: bookError } = await supabase
@@ -77,6 +84,16 @@ export const load = async ({ params, locals: { supabase, getSession, image_proxy
     bookContent[0].comments = comments;
     bookContent[0].tags = tags;
     bookContent[0].book_tags = []
+
+    // Check if we need to redirect to canonical URL (SEO-friendly format)
+    const canonicalUrl = getCanonicalUrl(bookContent[0]);
+    const currentPath = url.pathname;
+    
+    // Only redirect if the current URL doesn't match the canonical format
+    // and it's not already in the canonical format (contains hyphen before ID)
+    if (currentPath !== canonicalUrl && !currentPath.match(/-\d+$/)) {
+        throw redirect(301, canonicalUrl);
+    }
 
     return {
         bookContent: bookContent[0],

@@ -1,4 +1,8 @@
-const SITE_URL = 'https://tales.archangelgca.eu';
+import { createBookPath, createChapterPath } from './slugs.js';
+import {ORIGIN} from "$env/static/private";
+
+
+const SITE_URL = ORIGIN || 'https://tales.archangelgca.eu';
 const SITE_TITLE = 'DreamingDragons';
 const SITE_DESCRIPTION = 'A platform for sharing and discovering creative art, stories and literature';
 
@@ -61,9 +65,9 @@ export function generateBookRSSItem(book) {
     const title = escapeHTML(book.title);
     const author = book.profiles?.username || 'Unknown Author';
     const description = `New book "${title}" by ${escapeHTML(author)}`;
-    const link = `${SITE_URL}/content/${book.id}`;
+    const link = `${SITE_URL}${createBookPath(book.title, book.id)}`;
     const pubDate = new Date(book.created_at).toUTCString();
-    const guid = `${SITE_URL}/content/${book.id}`;
+    const guid = `${SITE_URL}${createBookPath(book.title, book.id)}`;
 
     return `    <item>
         <title><![CDATA[${title} by ${author}]]></title>
@@ -86,9 +90,9 @@ export function generateChapterRSSItem(chapter) {
     const bookTitle = escapeHTML(chapter.book?.title || 'Unknown Book');
     const author = chapter.profiles?.username || 'Unknown Author';
     const description = `New chapter "${title}" in "${bookTitle}" by ${escapeHTML(author)}`;
-    const link = `${SITE_URL}/content/${chapter.book_id}/${chapter.id}`;
+    const link = `${SITE_URL}${createChapterPath(bookTitle, chapter.book_id, chapter.title, chapter.id)}`;
     const pubDate = new Date(chapter.created_at).toUTCString();
-    const guid = `${SITE_URL}/content/${chapter.book_id}/${chapter.id}`;
+    const guid = `${SITE_URL}${createChapterPath(bookTitle, chapter.book_id, chapter.title, chapter.id)}`;
 
     return `    <item>
         <title><![CDATA[${bookTitle}: ${title}]]></title>
@@ -112,7 +116,7 @@ export function generateUserActivityRSSItem(activity, username) {
     const title = escapeHTML(book.title);
     const bookAuthor = book.profiles?.username || 'Unknown Author';
     const description = `${escapeHTML(username)} liked "${title}" by ${escapeHTML(bookAuthor)}`;
-    const link = `${SITE_URL}/content/${book.id}`;
+    const link = `${SITE_URL}${createBookPath(book.title, book.id)}`;
     const pubDate = new Date(activity.created_at).toUTCString();
     const guid = `${SITE_URL}/activity/like/${activity.created_at}/${book.id}`;
 
@@ -136,9 +140,9 @@ export function generateUserActivityRSSItem(activity, username) {
 export function generateUserBookRSSItem(book, username) {
     const title = escapeHTML(book.title);
     const description = `${escapeHTML(username)} published a new book: "${title}"`;
-    const link = `${SITE_URL}/content/${book.id}`;
+    const link = `${SITE_URL}${createBookPath(book.title, book.id)}`;
     const pubDate = new Date(book.created_at).toUTCString();
-    const guid = `${SITE_URL}/content/${book.id}`;
+    const guid = `${SITE_URL}${createBookPath(book.title, book.id)}`;
 
     return `    <item>
         <title><![CDATA[${username} published: ${title}]]></title>

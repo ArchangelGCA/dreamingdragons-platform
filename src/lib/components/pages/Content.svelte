@@ -2,6 +2,7 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import { createBookPath } from "$lib/utils/slugs.js";
 
     /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any}} */
     let {
@@ -19,6 +20,9 @@
     const final_book_cover_url = $derived(image_proxy && !book_cover_url.startsWith(image_proxy) ? image_proxy + book_cover_url : book_cover_url);
     const final_book_title = $derived(book_title && book_title.length > 45 ? book_title.substring(0, 40) + '...' : book_title);
     const final_owner_username = $derived(owner_username && owner_username.length > 30 ? owner_username.substring(0, 35) + '...' : owner_username);
+    
+    // Generate SEO-friendly URL
+    const bookUrl = $derived(createBookPath(book_title, book_id));
 
     // Prevent clicking while dragging.
     function handlePointerDown() {
@@ -61,12 +65,12 @@
                 loading="lazy"
                 style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
-    <a href="/content/{book_id}" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}
+    <a href="{bookUrl}" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}
        onpointermove={handlePointerMove} onpointerup={handlePointerUp} onpointerleave={handlePointerLeave} aria-label="Content sorted by most recently updated: {final_book_title}">
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                 <div class="col-12 px-0 px-md-2">
-                    <button class="btn btn-link p-0 pb-1 link-light link-custom text-decoration-none text-wrap text-start" href="/content/{book_id}"
+                    <button class="btn btn-link p-0 pb-1 link-light link-custom text-decoration-none text-wrap text-start" href="{bookUrl}"
                        use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{final_book_title}</span></button>
                     <p class="card-text"><small class="text-description"><span><UserAvatarNavbar url={owner_avatar_url} username={final_owner_username} {image_proxy} size="25px"/></span> <button
                             class="btn btn-link p-0 link-light link-custom text-decoration-none" href="/profile/{owner_id}"

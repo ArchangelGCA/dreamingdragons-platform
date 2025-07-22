@@ -5,6 +5,7 @@
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
+    import { createBookPath } from "$lib/utils/slugs.js";
 
     /** @type {{book: any, image_proxy: any, session: any}} */
     let {book = $bindable(), image_proxy, session} = $props();
@@ -26,6 +27,9 @@
     let finalUsername = $derived(profileData.username && profileData.username.length > 16 ? profileData.username.substring(0, 15) + '...' : (profileData.username || 'Unknown'));
     let isImageLoaded = $state(false);
     let likeActionActive = $state(false);
+    
+    // Generate SEO-friendly URL
+    let bookUrl = $derived(createBookPath(normalizedBook.title || 'Book', normalizedBook.id));
 
     // Ensure likes is properly initialized with safe fallbacks
     $effect(() => {
@@ -187,7 +191,7 @@
     }
 
     function handleContentClick() {
-        window.location.href = `/content/${normalizedBook.id}`;
+        window.location.href = bookUrl;
     }
 
     function handleKeyDown(event) {

@@ -118,7 +118,8 @@
             
             if (result.type === 'success') {
                 if (result.data.status === 200) {
-                    const chapterUrl = '/content/' + chapter.book_id + "/" + chapter.id;
+                    // Use the current chapter data to build SEO-friendly URL
+                    const chapterUrl = `/content/${chapter.book_id}/${chapter.id}`;
 
                     toast.push(result.data.body.message + '. View it <a class="link-light" href="' + chapterUrl + '" target="_blank">here</a>.', {
                         theme: {
