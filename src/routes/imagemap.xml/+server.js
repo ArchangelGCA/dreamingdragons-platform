@@ -1,3 +1,5 @@
+import { createBookPath } from '$lib/utils/slugs.js';
+
 export const prerender = true;
 
 export const GET = async ({locals: {supabase}}) => {
@@ -17,8 +19,7 @@ export const GET = async ({locals: {supabase}}) => {
             }
         };
     }
-
-
+    
     // Check for duplicated book cover url and empty ones and remove them. bookCoverUrls is an array of objects
     // like this [ {cover_url: url} ]
     const bookCoverUrlsFiltered = bookCoverUrls.filter((book, index, self) => {
@@ -67,7 +68,7 @@ export const GET = async ({locals: {supabase}}) => {
         </url>
             ${bookCoverUrlsFiltered.map((book) => `
                 <url>
-                    <loc>https://tales.archangelgca.eu/content/${book.id}</loc>
+                    <loc>https://tales.archangelgca.eu${createBookPath(book.title, book.id)}</loc>
                     <image:image>
                         <image:loc>https://images.archangelgca.eu/image/${book.cover_url}</image:loc>
                     </image:image>
