@@ -47,7 +47,7 @@
 	});
 </script>
 
-<div class="container-xxl px-4 py-5">
+<div class="container-xxl py-5">
 	<!-- Hero Section -->
 	<div class="hero-section text-center mb-5">
 		<div class="hero-content">
@@ -203,7 +203,7 @@
 	</div>
 
 	<!-- Footer CTA using Bootstrap Card -->
-	<div class="row justify-content-center mt-5 pt-5">
+	<div class="row justify-content-center mt-5 mt-lg-5 pt-lg-5">
 		<div class="col-lg-8">
 			<div class="card footer-cta-card border-0">
 				<div class="card-body text-center p-5">
