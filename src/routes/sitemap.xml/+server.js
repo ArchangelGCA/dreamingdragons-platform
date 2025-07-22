@@ -1,12 +1,14 @@
+import { createBookPath, createChapterPath } from '$lib/utils/slugs.js';
+
 export const prerender = true;
 
 export const GET = async ({locals: {supabase}}) => {
 
-    const {data, error} = await supabase
-        .from('sitemap_view')
+    const {data: newData, error: newError} = await supabase
+        .from('sitemap_view_with_titles')
         .select('*');
 
-    if (error) {
+    if (newError) {
         return new Response(
             `<?xml version="1.0" encoding="UTF-8"?>
             <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -51,22 +53,22 @@ export const GET = async ({locals: {supabase}}) => {
         <url>
             <loc>https://tales.archangelgca.eu/upload</loc>
         </url>
-        ${data[0].books.map((book) => `
+        ${newData[0].books.map((book) => `
                 <url>
-                    <loc>https://tales.archangelgca.eu/content/${book}</loc>
+                    <loc>https://tales.archangelgca.eu${createBookPath(book.title, book.id)}</loc>
                 </url>
             `).join('')}
-            ${data[0].chapters.map((chapter) => `
+            ${newData[0].chapters.map((chapter) => `
                 <url>
-                    <loc>https://tales.archangelgca.eu/content/${chapter.book_id}/${chapter.chapter_id}</loc>
+                    <loc>https://tales.archangelgca.eu${createChapterPath(chapter.book_title, chapter.book_id, chapter.chapter_title, chapter.chapter_id)}</loc>
                 </url>
             `).join('')}
-            ${data[0].profiles.map((profile) => `
+            ${newData[0].profiles.map((profile) => `
                 <url>
                     <loc>https://tales.archangelgca.eu/profile/${profile}</loc>
                 </url>
             `).join('')}
-            ${data[0].tags.map((tag) => `
+            ${newData[0].tags.map((tag) => `
                 <url>
                     <loc>https://tales.archangelgca.eu/search?tag=${encodeURIComponent(tag)}</loc>
                 </url>
@@ -77,45 +79,4 @@ export const GET = async ({locals: {supabase}}) => {
             }
         }
     );
-
-    // Handle errors if any
-    /*if (error) {
-        // empty books array + profiles
-        return await sitemap.response({
-            origin: 'https://tales.archangelgca.eu',
-            paramValues: {
-                '/content/[book]': [],
-                '/content/[book]/[chapter]': [],
-            },
-            // additionalPaths: [],
-            excludeRoutePatterns: [
-                '^/edit.*',
-                '^/admin.*',
-                '^/health.*',
-                '^/upload/token.*',
-            ],
-            headers: {
-                'Content-Type': 'application/xml'
-            }
-        });
-    }
-
-    return await sitemap.response({
-        origin: 'https://tales.archangelgca.eu',
-        paramValues: {
-            '/content/[book]': data[0].books,
-            '/content/[book]/[chapter]': data[0].chapters.map((chapter) => [chapter.book_id, chapter.chapter_id]),
-            '/profile/[profile]': data[0].profiles,
-        },
-        additionalPaths: data[0].tags.map((tag) => `/search?q=${encodeURIComponent(tag)}`),
-        excludeRoutePatterns: [
-            '^/edit.*',
-            '^/admin.*',
-            '^/health.*',
-            '^/upload/token.*',
-        ],
-        headers: {
-            'Content-Type': 'application/xml'
-        }
-    });*/
 };

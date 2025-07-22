@@ -3,7 +3,7 @@ export const prerender = true;
 export const GET = async ({locals: {supabase}}) => {
     const {data: bookCoverUrls, error: errorBook} = await supabase
         .from('book')
-        .select('id, cover_url');
+        .select('id, title, cover_url');
 
     const {data: profileAvatarCoverUrls, error: errorProfile} = await supabase
         .from('profiles')
