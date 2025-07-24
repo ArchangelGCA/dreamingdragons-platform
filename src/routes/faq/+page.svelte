@@ -53,7 +53,7 @@
 		<div class="hero-content">
 			<h1 class="hero-title mb-3 display-3 fw-bold">
 				<i class="fas fa-question-circle me-3"></i>
-				Frequently Asked Questions
+				DreamingDragons - FAQs
 			</h1>
 			<p class="hero-subtitle mb-4 fs-5">
 				Find answers to common questions about DreamingDragons platform

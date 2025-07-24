@@ -42,7 +42,7 @@ export async function load() {
 			},
 			{
 				question: 'Can I customize my profile?',
-				answer: 'Yes! You can go to your profile page and edit it to add an avatar and a banner. You can also feature your favorite galleries or hide them from your "Settings".',
+				answer: 'Yes! You can go to your profile page and edit it to add an avatar and a banner. You can also feature your favorites or hide them from your "Settings".',
 				category: 'Profile',
 				categoryColor: 'secondary'
 			},
