@@ -90,8 +90,10 @@ export const load = async ({ params, url, locals: { supabase, getSession, image_
     const currentPath = url.pathname;
     
     // Only redirect if the current URL doesn't match the canonical format
-    // and it's not already in the canonical format (contains hyphen before ID)
-    if (currentPath !== canonicalUrl && !currentPath.match(/-\d+$/)) {
+    // Check if book param is in legacy numeric format
+    const isBookLegacyFormat = /^\d+$/.test(params.book);
+    
+    if (currentPath !== canonicalUrl && isBookLegacyFormat) {
         throw redirect(301, canonicalUrl);
     }
 

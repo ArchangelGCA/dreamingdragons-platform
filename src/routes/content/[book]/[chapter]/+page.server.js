@@ -26,7 +26,7 @@ export const load = async ({ params, url, locals: { supabase, getSession, image_
 
     const { data: chapterContent, error } = await supabase
         .from('chapters')
-        .select('*, profiles(id, username, avatar_url), book(title, cover_url, owner_id), views(count), chapter_tags(tags(id, name)), chapter_likes(user_id, created_at, profiles(username, avatar_url)), comments(*, profiles(username, avatar_url))')
+        .select('*, profiles(id, username, avatar_url), book(id, title, cover_url, owner_id), views(count), chapter_tags(tags(id, name)), chapter_likes(user_id, created_at, profiles(username, avatar_url)), comments(*, profiles(username, avatar_url))')
         .eq('id', chapterId)
         .eq('book_id', bookId);
 
@@ -116,8 +116,11 @@ export const load = async ({ params, url, locals: { supabase, getSession, image_
     const currentPath = url.pathname;
     
     // Only redirect if the current URL doesn't match the canonical format
-    // and it's not already in the canonical format (contains hyphen before ID)
-    if (currentPath !== canonicalUrl && !currentPath.match(/-\d+$/)) {
+    // Check if either book or chapter param is in legacy numeric format
+    const isBookLegacyFormat = /^\d+$/.test(params.book);
+    const isChapterLegacyFormat = /^\d+$/.test(params.chapter);
+    
+    if (currentPath !== canonicalUrl && (isBookLegacyFormat || isChapterLegacyFormat)) {
         throw redirect(301, canonicalUrl);
     }
 
