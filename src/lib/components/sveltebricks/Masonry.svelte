@@ -1,4 +1,3 @@
-<!-- Compiled version of svelte-bricks Masonry component, edited for support for Bootstrap -->
 <script>
     import {flip} from 'svelte/animate';
     import {fade} from 'svelte/transition';
@@ -28,7 +27,7 @@
         style = ``,
         class: className = ``,
         children,
-        div = $bindable(undefined), // TODO add unit test for this prop
+        div = $bindable(undefined),
     } = $props();
 
     $effect.pre(() => {

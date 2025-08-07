@@ -5,7 +5,7 @@ import {ORIGIN} from '$env/static/private';
 async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
     const { data, error } = await supabase
         .from('book_likes')
-        .select('book_id, book!id(id, title, cover_url, owner_id, created_at, hidden, profiles:owner_id(id, username, avatar_url))')
+        .select('book_id, book!id(id, title, cover_url, owner_id, created_at, hidden, book_likes(user_id), profiles:owner_id(id, username, avatar_url))')
         .eq('user_id', profileId)
         .order('created_at', { ascending: false })
         .range(startRange, endRange);
