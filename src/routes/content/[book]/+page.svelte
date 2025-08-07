@@ -15,6 +15,7 @@
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ShareButton from "$lib/components/layout/ShareButton.svelte";
     import { createBookPath } from "$lib/utils/slugs.js";
+    import { page } from '$app/state';
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -100,46 +101,82 @@
         const data = new FormData();
         data.append('contentId', bookContent.id);
 
+        // Store original state for potential rollback
+        const originalLiked = bookContent.is_liked;
+        const originalBookLikes = [...bookContent.book_likes];
+
+        // Optimistic update
         bookContent.is_liked = !bookContent.is_liked;
+        
+        if (bookContent.is_liked) {
+            // Adding a like - add a temporary like object to the array
+            bookContent.book_likes = [...bookContent.book_likes, {
+                id: Date.now(), // Temporary ID for reactivity
+                user_id: user_id,
+                profiles: {
+                    username: page.data.session?.user?.user_metadata?.display_name || 'You',
+                    avatar_url: page.data.session?.user?.user_metadata?.avatar_url
+                },
+                created_at: new Date().toISOString()
+            }];
+        } else {
+            // Removing a like - filter out the user's like
+            bookContent.book_likes = bookContent.book_likes.filter((like) => like.user_id !== user_id);
+        }
 
-        const response = await fetch('?/like', {
-            method: 'POST',
-            body: data
-        });
+        try {
+            const response = await fetch('?/like', {
+                method: 'POST',
+                body: data
+            });
 
-        const result = deserialize(await response.text());
-        if (result.type === 'success') {
-            if (result.data.status === 200) {
-                if (bookContent.is_liked) {
-                    bookContent.book_likes = [...bookContent.book_likes, {user_id: user_id}];
-                    toast.push('Tale liked ❤️', {
-                        theme: {
-                            '--toastBackground': '#5c00a6',
-                            '--toastColor': '#fff',
-                        }
-                    });
+            const result = deserialize(await response.text());
+            if (result.type === 'success') {
+                if (result.data.status === 200) {
+                    if (bookContent.is_liked) {
+                        toast.push('Tale liked ❤️', {
+                            theme: {
+                                '--toastBackground': '#5c00a6',
+                                '--toastColor': '#fff',
+                            }
+                        });
+                    } else {
+                        toast.push('Tale unliked 💔', {
+                            theme: {
+                                '--toastBackground': '#5c00a6',
+                                '--toastColor': '#fff',
+                            }
+                        });
+                    }
+                    await invalidateAll();
                 } else {
-                    bookContent.book_likes = bookContent.book_likes.filter((like) => like.user_id !== user_id);
-                    toast.push('Tale unliked 💔', {
+                    // Revert optimistic update on server error
+                    bookContent.is_liked = originalLiked;
+                    bookContent.book_likes = originalBookLikes;
+                    toast.push('Error: ' + result.data.body.message, {
                         theme: {
-                            '--toastBackground': '#5c00a6',
+                            '--toastBackground': '#f44336',
                             '--toastColor': '#fff',
                         }
                     });
                 }
-                await invalidateAll();
             } else {
-                bookContent.is_liked = !bookContent.is_liked;
-                toast.push('Error: ' + result.data.body.message, {
+                // Revert optimistic update on request error
+                bookContent.is_liked = originalLiked;
+                bookContent.book_likes = originalBookLikes;
+                toast.push('Error during action (Please login)', {
                     theme: {
                         '--toastBackground': '#f44336',
                         '--toastColor': '#fff',
                     }
                 });
             }
-        } else {
-            bookContent.is_liked = !bookContent.is_liked;
-            toast.push('Error during action (Please login)', {
+        } catch (error) {
+            // Revert optimistic update on network error
+            bookContent.is_liked = originalLiked;
+            bookContent.book_likes = originalBookLikes;
+            console.error('Like action failed:', error);
+            toast.push('Network error occurred', {
                 theme: {
                     '--toastBackground': '#f44336',
                     '--toastColor': '#fff',
