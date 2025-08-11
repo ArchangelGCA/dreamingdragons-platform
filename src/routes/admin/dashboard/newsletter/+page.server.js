@@ -1,4 +1,4 @@
-import { PRIVATE_RESEND_API_KEY, PRIVATE_RESEND_AUDIENCE_ID, SUPABASE_SERVICE_ROLE_SECRET_KEY } from '$env/static/private';
+import { PRIVATE_RESEND_API_KEY, PRIVATE_RESEND_AUDIENCE_ID, SUPABASE_SECRET_KEY } from '$env/static/private';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import {isAdmin} from "$lib/utils/misc.js";
 import {Resend} from "resend";
@@ -42,7 +42,7 @@ export const actions = {
         }
 
         // Use supabase-js and make admin supabase client
-        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false

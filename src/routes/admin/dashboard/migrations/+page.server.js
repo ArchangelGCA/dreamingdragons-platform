@@ -1,5 +1,5 @@
 import { PUBLIC_SUPABASE_URL, PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from '$env/static/public';
-import { SUPABASE_SERVICE_ROLE_SECRET_KEY, PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
+import { SUPABASE_SECRET_KEY, PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
 import {createClient} from "@supabase/supabase-js";
 import PocketBase from "pocketbase";
 import {isAdmin} from "$lib/utils/misc.js";
@@ -26,7 +26,7 @@ export const actions = {
             return result;
         }
 
-        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false
@@ -120,7 +120,7 @@ export const actions = {
             return result;
         }
 
-        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false

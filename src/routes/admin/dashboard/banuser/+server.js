@@ -1,5 +1,5 @@
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SUPABASE_SERVICE_ROLE_SECRET_KEY } from '$env/static/private';
+import { SUPABASE_SECRET_KEY } from '$env/static/private';
 import {isAdmin} from "$lib/utils/misc.js";
 import {createClient} from "@supabase/supabase-js";
 
@@ -10,7 +10,7 @@ export const GET = async ({locals: {supabase, getSession}}) => {
     const result = await isAdmin(session, supabase);
     if (result !== true) return result;
 
-    const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+    const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
         auth: {
             autoRefreshToken: false,
             persistSession: false

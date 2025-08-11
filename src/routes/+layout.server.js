@@ -2,13 +2,11 @@ import {PUBLIC_IMAGE_PROXY_URL} from "$env/static/public";
 import {ORIGIN} from '$env/static/private';
 
 export const load = async ({locals: {getSession}, cookies, url}) => {
-    const {session} = await getSession();
 
-    const image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
 
     return {
-        session,
-        image_proxy,
+        session: await getSession(),
+        image_proxy: PUBLIC_IMAGE_PROXY_URL ?? undefined,
         cookies: cookies.getAll(),
         title: 'DreamingDragons - Platform',
         description: 'Discover amazing content on DreamingDragons!',

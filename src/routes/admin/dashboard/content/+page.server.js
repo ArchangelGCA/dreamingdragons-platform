@@ -1,5 +1,5 @@
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SUPABASE_SERVICE_ROLE_SECRET_KEY } from '$env/static/private';
+import { SUPABASE_SECRET_KEY } from '$env/static/private';
 import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
 import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 import {error as errorx} from "@sveltejs/kit";
@@ -42,7 +42,7 @@ export const actions = {
             return result;
         }
 
-        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false
@@ -146,7 +146,7 @@ export const actions = {
         }
 
         // Use supabase-js and make admin supabase client
-        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false
@@ -240,7 +240,7 @@ export const actions = {
         }
 
         // Use supabase-js and make admin supabase client
-        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false

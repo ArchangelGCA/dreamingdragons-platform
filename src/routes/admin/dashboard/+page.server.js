@@ -1,6 +1,6 @@
 import {error as errorx} from "@sveltejs/kit";
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SUPABASE_SERVICE_ROLE_SECRET_KEY } from '$env/static/private';
+import { SUPABASE_SECRET_KEY } from '$env/static/private';
 import {createClient} from "@supabase/supabase-js";
 import {isAdmin} from "$lib/utils/misc.js";
 
@@ -68,7 +68,7 @@ export const actions = {
             return result;
         }
 
-        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false
@@ -107,7 +107,7 @@ export const actions = {
             return result;
         }
 
-        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_SECRET_KEY, {
+        const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
             auth: {
                 autoRefreshToken: false,
                 persistSession: false
