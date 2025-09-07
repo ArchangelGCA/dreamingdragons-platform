@@ -29,6 +29,17 @@
     let width = $state(0), height = $state(0);
     let [minColWidth, gap] = [350, 10];
 
+    // Callback function to handle book updates from ContentMasonry
+    function handleBookUpdate(targetBook, updates) {
+        if (targetBook.book) {
+            targetBook.book.likes = updates.likes;
+            targetBook.book.is_liked = updates.is_liked;
+        } else {
+            targetBook.likes = updates.likes;
+            targetBook.is_liked = updates.is_liked;
+        }
+    }
+
     async function loadMoreContentByCreatedAt() {
         if (loading || allContentLoaded) return;
 
@@ -128,7 +139,7 @@
                             bind:masonryHeight={height}
                     >
                         {#snippet children({item})}
-                            <ContentMasonry book={item} {image_proxy} {session}/>
+                            <ContentMasonry book={item} {image_proxy} {session} onBookUpdate={handleBookUpdate}/>
                         {/snippet}
                     </Masonry>
                     {#if allContentLoaded}

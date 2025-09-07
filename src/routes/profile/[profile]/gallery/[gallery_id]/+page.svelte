@@ -11,6 +11,17 @@
 
     let books = $derived(gallery.gallery_books.map(gb => gb.book));
     let isOwner = $derived(session && gallery.owner_id === session.user.id);
+
+    // Callback function to handle book updates from ContentMasonry
+    function handleBookUpdate(targetBook, updates) {
+        if (targetBook.book) {
+            targetBook.book.likes = updates.likes;
+            targetBook.book.is_liked = updates.is_liked;
+        } else {
+            targetBook.likes = updates.likes;
+            targetBook.is_liked = updates.is_liked;
+        }
+    }
 </script>
 
 <svelte:head>
@@ -81,7 +92,7 @@
                      bind:masonryHeight={height}
             >
                 {#snippet children({item})}
-                    <ContentMasonry book={item} {image_proxy} {session}/>
+                    <ContentMasonry book={item} {image_proxy} {session} onBookUpdate={handleBookUpdate}/>
                 {/snippet}
             </Masonry>
         {:else}

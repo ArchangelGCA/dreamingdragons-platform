@@ -51,6 +51,17 @@
 
     let y = $state();
 
+    // Callback function to handle book updates from ContentMasonry
+    function handleBookUpdate(targetBook, updates) {
+        if (targetBook.book) {
+            targetBook.book.likes = updates.likes;
+            targetBook.book.is_liked = updates.is_liked;
+        } else {
+            targetBook.likes = updates.likes;
+            targetBook.is_liked = updates.is_liked;
+        }
+    }
+
     async function resetVariables() {
         avatarFound = true;
         show = 'home';
@@ -525,7 +536,7 @@
                                 bind:height
                         >
                             {#snippet children({item})}
-                                <ContentMasonry book={item.book} {image_proxy} {session}/>
+                                <ContentMasonry book={item.book} {image_proxy} {session} onBookUpdate={handleBookUpdate}/>
                             {/snippet}
                         </Masonry>
                     </div>

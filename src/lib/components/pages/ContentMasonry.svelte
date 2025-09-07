@@ -7,8 +7,8 @@
     import {toast} from "$lib/components/svelte-toast";
     import {createBookPath} from "$lib/utils/slugs.js";
 
-    /** @type {{book: any, image_proxy: any, session: any}} */
-    let {book = $bindable(), image_proxy, session} = $props();
+    /** @type {{book: any, image_proxy: any, session: any, onBookUpdate?: function}} */
+    let {book, image_proxy, session, onBookUpdate} = $props();
 
     let width = 500;
 
@@ -50,13 +50,13 @@
             }
         }
 
-        // Update the original book object to maintain reactivity
-        if (book.book) {
-            book.book.likes = normalizedBook.likes;
-            book.book.is_liked = normalizedBook.is_liked;
-        } else {
-            book.likes = normalizedBook.likes;
-            book.is_liked = normalizedBook.is_liked;
+        // Use callback to update the original book object instead of direct mutation
+        if (onBookUpdate) {
+            const updates = {
+                likes: normalizedBook.likes,
+                is_liked: normalizedBook.is_liked
+            };
+            onBookUpdate(book, updates);
         }
     });
 
@@ -90,13 +90,12 @@
         normalizedBook.is_liked = !normalizedBook.is_liked;
         normalizedBook.likes = normalizedBook.is_liked ? normalizedBook.likes + 1 : normalizedBook.likes - 1;
 
-        // Update the original book object to maintain reactivity
-        if (book.book) {
-            book.book.is_liked = normalizedBook.is_liked;
-            book.book.likes = normalizedBook.likes;
-        } else {
-            book.is_liked = normalizedBook.is_liked;
-            book.likes = normalizedBook.likes;
+        // Use callback to update the original book object instead of direct mutation
+        if (onBookUpdate) {
+            onBookUpdate(book, {
+                is_liked: normalizedBook.is_liked,
+                likes: normalizedBook.likes
+            });
         }
 
         try {
@@ -119,13 +118,12 @@
                     normalizedBook.is_liked = originalLiked;
                     normalizedBook.likes = originalLikes;
 
-                    // Update the original book object
-                    if (book.book) {
-                        book.book.is_liked = originalLiked;
-                        book.book.likes = originalLikes;
-                    } else {
-                        book.is_liked = originalLiked;
-                        book.likes = originalLikes;
+                    // Use callback to revert the original book object
+                    if (onBookUpdate) {
+                        onBookUpdate(book, {
+                            is_liked: originalLiked,
+                            likes: originalLikes
+                        });
                     }
 
                     toast.push('Error: ' + result.data.body.message, {
@@ -140,13 +138,12 @@
                 normalizedBook.is_liked = originalLiked;
                 normalizedBook.likes = originalLikes;
 
-                // Update the original book object
-                if (book.book) {
-                    book.book.is_liked = originalLiked;
-                    book.book.likes = originalLikes;
-                } else {
-                    book.is_liked = originalLiked;
-                    book.likes = originalLikes;
+                // Use callback to revert the original book object
+                if (onBookUpdate) {
+                    onBookUpdate(book, {
+                        is_liked: originalLiked,
+                        likes: originalLikes
+                    });
                 }
 
                 toast.push('Error during action', {
@@ -162,13 +159,12 @@
             normalizedBook.is_liked = originalLiked;
             normalizedBook.likes = originalLikes;
 
-            // Update the original book object
-            if (book.book) {
-                book.book.is_liked = originalLiked;
-                book.book.likes = originalLikes;
-            } else {
-                book.is_liked = originalLiked;
-                book.likes = originalLikes;
+            // Use callback to revert the original book object
+            if (onBookUpdate) {
+                onBookUpdate(book, {
+                    is_liked: originalLiked,
+                    likes: originalLikes
+                });
             }
 
             toast.push('Network error occurred', {
