@@ -11,5 +11,8 @@ export default defineConfig({
         fs: {
             allow: ['static']
         }
+    },
+    ssr: {
+        external: ['@react-email/render']
     }
 });

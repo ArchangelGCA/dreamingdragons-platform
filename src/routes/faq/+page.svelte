@@ -121,7 +121,7 @@
 				<div class="card-body p-3">
 					<div class="d-flex align-items-center justify-content-between mb-2">
 						<small class="text-muted fw-semibold">FAQ Progress</small>
-						<small class="text-muted">{expandedItems.size} / {data.faqData.length} expanded</small>
+						<small class="text-muted ms-2">{expandedItems.size} / {data.faqData.length} expanded</small>
 					</div>
 					<div class="progress" style="height: 6px;">
 						<div 

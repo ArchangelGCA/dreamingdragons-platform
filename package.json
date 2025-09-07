@@ -25,7 +25,7 @@
     "bootstrap": "^5.3.8",
     "jose": "^6.1.0",
     "pocketbase": "^0.21.5",
-    "resend": "^6.0.1",
+    "resend": "^6.0.2",
     "super-sitemap": "^1.0.5",
     "svelte": "^5.38.7",
     "vite": "^7.1.4",

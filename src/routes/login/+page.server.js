@@ -1,10 +1,5 @@
 import { redirect } from '@sveltejs/kit'
 
-/** @type {import('@sveltejs/adapter-vercel').Config} */
-export const config = {
-    runtime: 'edge'
-};
-
 export const load = async ({ url, locals: { getSession } }) => {
     const {session} = await getSession()
     let title = 'DreamingDragons - Login';
