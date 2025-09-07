@@ -1,6 +1,6 @@
 {
   "name": "dd-tales-svelte",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -11,25 +11,25 @@
     "node": "22.x"
   },
   "devDependencies": {
-    "@formkit/auto-animate": "^0.8.2",
+    "@formkit/auto-animate": "^0.9.0",
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/auth-ui-svelte": "^0.2.9",
-    "@supabase/ssr": "^0.6.1",
-    "@supabase/supabase-js": "^2.54.0",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.57.2",
     "@svelte-plugins/tooltips": "^4.0.0-beta.1",
     "@svelte-put/dragscroll": "^4.0.0",
-    "@sveltejs/adapter-vercel": "^5.8.2",
-    "@sveltejs/kit": "^2.27.3",
-    "@sveltejs/vite-plugin-svelte": "^6.1.1",
+    "@sveltejs/adapter-vercel": "^5.10.2",
+    "@sveltejs/kit": "^2.37.1",
+    "@sveltejs/vite-plugin-svelte": "^6.1.4",
     "@tinymce/tinymce-svelte": "^3.2.0",
-    "bootstrap": "^5.3.7",
-    "jose": "^6.0.12",
+    "bootstrap": "^5.3.8",
+    "jose": "^6.1.0",
     "pocketbase": "^0.21.5",
-    "resend": "^6.0.1",
+    "resend": "^6.0.2",
     "super-sitemap": "^1.0.5",
-    "svelte": "^5.38.1",
-    "vite": "^7.1.1",
-    "vite-plugin-devtools-json": "^0.4.1"
+    "svelte": "^5.38.7",
+    "vite": "^7.1.4",
+    "vite-plugin-devtools-json": "^1.0.0"
   },
   "type": "module",
   "dependencies": {
