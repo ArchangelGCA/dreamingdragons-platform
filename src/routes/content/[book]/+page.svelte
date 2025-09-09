@@ -34,7 +34,7 @@
         } = data)
     });
     
-    let editUrl = $derived(createBookPath('edit', bookContent.id));
+    //let editUrl = $derived(createBookPath('edit', bookContent.id));
 
     onMount(async () => {
         if (browser) {

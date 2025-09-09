@@ -11,7 +11,6 @@
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import {deserialize} from "$app/forms";
     import Seo from "$lib/components/seo/Seo.svelte";
-    import {browser} from "$app/environment";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{data: any, children?: import('svelte').Snippet}} */
@@ -53,15 +52,6 @@
                 invalidateAll();
             }
         });
-
-        // Close navbar when open another page, with animation
-        if (browser) {
-            document.querySelectorAll('.nav-link').forEach((element) => {
-                element.addEventListener('click', () => {
-                    document.querySelector('.navbar-collapse').classList.remove('show');
-                });
-            });
-        }
 
         intervalId = setInterval(async () => {
             await tick();
