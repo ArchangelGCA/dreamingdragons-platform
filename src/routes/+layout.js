@@ -40,13 +40,12 @@ export const load = async ({ fetch, data, depends, url }) => {
 
     let notifications = [];
     let userData = null;
-    let notifs = [];
 
     if (session) {
-
-        const { data, error} = await supabase
+        // Only fetch user profile data - notifications will be loaded client-side
+        const { data: profileData, error} = await supabase
             .from('profiles')
-            .select('id, username, avatar_url, notifications!recipient_id(*)')
+            .select('id, username, avatar_url')
             .eq('id', session.user.id)
             .single();
 
@@ -60,21 +59,33 @@ export const load = async ({ fetch, data, depends, url }) => {
             }
         }
 
-        notifs = data.notifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 20);
-        notifications = notifs;
-
         userData = {
-            id: data.id,
-            username: data.username,
-            avatar_url: data.avatar_url,
+            id: profileData.id,
+            username: profileData.username,
+            avatar_url: profileData.avatar_url,
         };
+
+        // Load notifications only on initial page load, not on every navigation
+        if (!isBrowser()) {
+            // Only on server-side rendering (initial page load)
+            const { data: notificationData } = await supabase
+                .from('notifications')
+                .select('*')
+                .eq('recipient_id', session.user.id)
+                .order('created_at', { ascending: false })
+                .limit(20);
+            
+            if (notificationData) {
+                notifications = notificationData;
+            }
+        }
     }
 
     return {
         supabase,
         userData,
         session,
-        notifications,
+        notifications: notifications || [], // Ensure it's always an array
         image_proxy,
         tooltipConfig,
         title: 'DreamingDragons - Platform',

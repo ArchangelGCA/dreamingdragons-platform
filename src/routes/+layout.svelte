@@ -1,6 +1,6 @@
 <script>
     import "$lib/css/style.css";
-    import {invalidateAll} from "$app/navigation";
+    import {invalidateAll, invalidate} from "$app/navigation";
     import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";
     import {SvelteToast} from "$lib/components/svelte-toast";
@@ -12,24 +12,44 @@
     import {deserialize} from "$app/forms";
     import Seo from "$lib/components/seo/Seo.svelte";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import {initCrossTabCommunication} from "$lib/utils/navigationOptimizations.js";
 
     /** @type {{data: any, children?: import('svelte').Snippet}} */
     let {data, children} = $props();
 
-    let {supabase, session, image_proxy, notifications, userData} = $state(data);
+    let {supabase, session, image_proxy, userData} = $state(data);
+    // Initialize notifications independently to prevent hydration issues
+    let notifications = $state(data.notifications || []);
+    let hasInitializedNotifications = $state(false);
+    
     $effect(() => {
-        ({supabase, session, notifications, userData} = data)
+        ({supabase, session, userData} = data);
+        // Only update notifications on first load or if we haven't initialized them yet
+        if (!hasInitializedNotifications && data.notifications && data.notifications.length > 0) {
+            notifications = data.notifications;
+            hasInitializedNotifications = true;
+        }
     });
 
+    let authStateChangeTimeout;
+    
     $effect(() => {
         const {
             data: {subscription},
         } = supabase.auth.onAuthStateChange(async (event, _session) => {
             if (_session?.expires_at !== session?.expires_at) {
-                await invalidateAll();
+                // Debounce auth state changes to prevent multiple rapid invalidations
+                clearTimeout(authStateChangeTimeout);
+                authStateChangeTimeout = setTimeout(async () => {
+                    // Only invalidate auth-dependent data instead of everything
+                    await invalidate('supabase:auth');
+                }, 300); // 300ms debounce
             }
         })
-        return () => subscription.unsubscribe();
+        return () => {
+            subscription.unsubscribe();
+            clearTimeout(authStateChangeTimeout);
+        };
     });
 
     let latestNotificationTimestamp = $derived(notifications && notifications.length > 0 ? notifications[0].created_at : null);
@@ -38,6 +58,9 @@
     let searchTerm = $state('');
     const notifsUpdateInterval = 30000;
     let maintenance = $state(false);
+    let isTabActive = $state(true);
+    let isLeaderTab = $state(false);
+    let crossTabComm;
 
     if (page.url.searchParams.has('q')) {
         searchTerm = page.url.searchParams.get('q');
@@ -45,20 +68,76 @@
         searchTerm = '';
     }
 
+    let mountAuthSubscription;
+    
     onMount(() => {
+        // Initialize cross-tab communication
+        crossTabComm = initCrossTabCommunication();
+        
+        // Load notifications on client-side mount if they weren't loaded server-side
+        if (session && (!notifications || notifications.length === 0) && !hasInitializedNotifications) {
+            fetchNewNotifications().then(() => {
+                hasInitializedNotifications = true;
+            });
+        } else if (notifications && notifications.length > 0) {
+            hasInitializedNotifications = true;
+        }
 
-        const {data} = supabase.auth.onAuthStateChange((_, newSession) => {
-            if (newSession?.expires_at !== session?.expires_at) {
-                invalidateAll();
+        // Tab coordination system to prevent multiple tabs from fetching notifications simultaneously
+        const tabId = Math.random().toString(36);
+        
+        // Check if this tab should be the leader (handle notifications fetching)
+        const checkLeaderTab = () => {
+            const lastLeaderTime = parseInt(localStorage.getItem('notif_leader_time') || '0');
+            const currentTime = Date.now();
+            
+            // If no leader tab active for 35 seconds, become the leader
+            if (currentTime - lastLeaderTime > 35000) {
+                isLeaderTab = true;
+                localStorage.setItem('notif_leader_tab', tabId);
+                localStorage.setItem('notif_leader_time', currentTime.toString());
+            } else {
+                isLeaderTab = localStorage.getItem('notif_leader_tab') === tabId;
             }
-        });
-
+        };
+        
+        checkLeaderTab();
+        
+        // Handle tab visibility changes
+        const handleVisibilityChange = () => {
+            isTabActive = !document.hidden;
+            if (isTabActive) {
+                checkLeaderTab();
+            }
+        };
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // Update leader status periodically and fetch notifications only if leader
         intervalId = setInterval(async () => {
-            await tick();
-            await fetchNewNotifications();
+            if (isTabActive) {
+                checkLeaderTab();
+                if (isLeaderTab && session) {
+                    localStorage.setItem('notif_leader_time', Date.now().toString());
+                    await tick();
+                    const newNotifications = await fetchNewNotifications();
+                    // Broadcast notifications to other tabs
+                    if (newNotifications && crossTabComm) {
+                        crossTabComm.broadcastNotifications(notifications);
+                    }
+                }
+            }
         }, notifsUpdateInterval);
 
-        return () => data.subscription.unsubscribe()
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            if (crossTabComm) {
+                crossTabComm.close();
+            }
+            if (mountAuthSubscription) {
+                mountAuthSubscription.unsubscribe();
+            }
+        }
     });
 
     onDestroy(() => {
@@ -134,26 +213,33 @@
     async function fetchNewNotifications() {
         if (session) {
             const formData = new FormData();
-            formData.append('latestNotificationTimestamp', latestNotificationTimestamp);
+            // Only append timestamp if it's valid
+            if (latestNotificationTimestamp && latestNotificationTimestamp !== 'null' && latestNotificationTimestamp !== null) {
+                formData.append('latestNotificationTimestamp', latestNotificationTimestamp);
+            }
 
-            const response = await fetch('/?/newNotifications', {
-                method: 'POST',
-                body: formData,
-            });
+            try {
+                const response = await fetch('/?/newNotifications', {
+                    method: 'POST',
+                    body: formData,
+                });
 
-            const result = deserialize(await response.text());
-            if (result.type === 'success') {
-                if (result.data.status === 200) {
-                    let newNotifs = result.data.body.newNotifs;
-                    if (newNotifs && newNotifs.length > 0) {
-                        newNotifs = newNotifs.filter(notif => !notifications.some(notification => notification.id === notif.id));
-                        notifications = [...newNotifs, ...notifications];
-                        // latestNotificationTimestamp = notifications[0].created_at; // Should be unnecessary due to derived
-                        // notificationsCount += newNotifs.length; // Should be unnecessary due to derived
+                const result = deserialize(await response.text());
+                if (result.type === 'success') {
+                    if (result.data.status === 200) {
+                        let newNotifs = result.data.body.newNotifs;
+                        if (newNotifs && newNotifs.length > 0) {
+                            newNotifs = newNotifs.filter(notif => !notifications.some(notification => notification.id === notif.id));
+                            notifications = [...newNotifs, ...notifications];
+                            return notifications;
+                        }
                     }
                 }
+            } catch (error) {
+                console.error('Failed to fetch notifications:', error);
             }
         }
+        return null;
     }
 
     function handleScroll(event) {
@@ -237,6 +323,7 @@
                 {#if session}
                     <div class="col-auto pe-0 mt-1">
                         <a class="link-animated rounded-3" href="/upload" aria-label="Upload"
+                           data-sveltekit-preload-data="hover"
                            use:tooltip={{...tooltipConfig}} title="Upload">
                             <i class="fa-solid fa-upload"></i>
                         </a>
@@ -259,7 +346,7 @@
                             aria-labelledby="profileDropdown" use:autoAnimate>
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
                                 {#if session}
-                                    <li><a class="dropdown-item" data-sveltekit-reload href="/profile"><i
+                                    <li><a class="dropdown-item" href="/profile"><i
                                             class="fas fa-user-circle border-end border-light-subtle pe-2"></i> Profile</a>
                                     </li>
                                 {:else}
@@ -279,22 +366,22 @@
                             {/if}
                             <li>
                                 <a class="dropdown-item {page.url.pathname.startsWith('/settings') ? 'active' : ''} {!session ? 'mb-1' : ''}"
-                                   href="/settings"><i
+                                   href="/settings" data-sveltekit-preload-data="hover"><i
                                         class="fa-solid fa-sliders border-end border-light-subtle pe-2"></i>
                                     Settings</a>
                             </li>
                             {#if session}
                                 <li>
                                     <a class="dropdown-item upload-button rounded-3 py-2 my-1 {page.url.pathname.startsWith('/upload') ? 'active' : ''}"
-                                       href="/upload"><i
+                                       href="/upload" data-sveltekit-preload-data="hover"><i
                                             class="fa-solid fa-upload border-end border-light-subtle pe-2"></i>
                                         Upload</a></li>
                             {/if}
                             <li><a class="dropdown-item {page.url.pathname.startsWith('/updates') ? 'active' : ''}"
-                                   href="/updates"><i class="fas fa-newspaper border-end border-light-subtle pe-2"></i>
+                                   href="/updates" data-sveltekit-preload-data="hover"><i class="fas fa-newspaper border-end border-light-subtle pe-2"></i>
                                 Updates</a></li>
                             <li><a class="dropdown-item {page.url.pathname.startsWith('/faq') ? 'active' : ''}"
-                                   href="/faq"><i class="fas fa-question-circle border-end border-light-subtle pe-2"></i>
+                                   href="/faq" data-sveltekit-preload-data="hover"><i class="fas fa-question-circle border-end border-light-subtle pe-2"></i>
                                 FAQ</a></li>
                             <li><a class="dropdown-item" href="/rss.xml" target="_blank" rel="noopener noreferrer"><i
                                     class="fas fa-rss border-end border-light-subtle pe-2" style="color: #ff6600;"></i>

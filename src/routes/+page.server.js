@@ -265,13 +265,21 @@ export const actions = {
 
         const latestNotificationTimestamp = formData.latestNotificationTimestamp;
         if (session) {
-
-            const {data: newNotifs, error} = await supabase
+            let query = supabase
                 .from('notifications')
                 .select('*')
-                .gt('created_at', latestNotificationTimestamp)
                 .eq('recipient_id', session.user.id)
                 .order('created_at', {ascending: false});
+
+            // Only add timestamp filter if it's provided and valid
+            if (latestNotificationTimestamp && latestNotificationTimestamp !== 'null' && latestNotificationTimestamp !== '') {
+                query = query.gt('created_at', latestNotificationTimestamp);
+            } else {
+                // For initial load, limit to recent notifications
+                query = query.limit(20);
+            }
+
+            const {data: newNotifs, error} = await query;
 
             if (error) {
                 console.error(error);
