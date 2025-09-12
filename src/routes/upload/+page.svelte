@@ -195,16 +195,25 @@
 
             const result = deserialize(await response.text());
             if (result.type === 'success') {
-                if (result.data.status === 200) {
+                if (result.data && result.data.status === 200) {
                     suggestions = result.data.body.map(tag => tag.name).filter(suggestion => !tags.includes(suggestion));
                 } else {
-                    toast.push('Error: ' + result.data.body.message, {
+                    const errorMessage = result.data?.body?.message || 'Tag suggestions failed';
+                    toast.push('Error: ' + errorMessage, {
                         theme: {
                             '--toastBackground': '#ff4d4d',
                             '--toastColor': '#fff'
                         }
                     });
                 }
+            } else if (result.type === 'failure') {
+                const errorMessage = result.data?.body?.message || 'Tag suggestions failed';
+                toast.push('Error: ' + errorMessage, {
+                    theme: {
+                        '--toastBackground': '#ff4d4d',
+                        '--toastColor': '#fff'
+                    }
+                });
             } else {
                 toast.push('Error: Tag suggestions failed', {
                     theme: {
@@ -477,7 +486,7 @@
 
         const result = deserialize(await response.text());
         if (result.type === 'success') {
-            if (result.data.status === 200) {
+            if (result.data && result.data.status === 200) {
                 if (result.data.body.length <= 0) {
                     toast.push('No previous chapters or tags found... ☹️', {
                         theme: {
@@ -511,15 +520,24 @@
                     }
                 }
             } else {
-                toast.push('Error: ' + result.data.body.message, {
+                const errorMessage = result.data?.body?.message || 'Previous chapter tags fetch failed';
+                toast.push('Error: ' + errorMessage, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
                         '--toastColor': '#fff'
                     }
                 });
             }
+        } else if (result.type === 'failure') {
+            const errorMessage = result.data?.body?.message || 'Previous chapter tags fetch failed';
+            toast.push('Error: ' + errorMessage, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
         } else {
-            toast.push('Error: Tag suggestions failed', {
+            toast.push('Error: Previous chapter tags fetch failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
                     '--toastColor': '#fff'
@@ -609,8 +627,8 @@
         const result = deserialize(await response.text());
         await invalidateAll();
         if (result.type === 'success') {
-            if (result.data.status === 200) {
-
+            // For successful responses, data is accessible directly
+            if (result.data && result.data.status === 200) {
                 const bookId = result.data.body.book_id;
                 const bookUrl = '/content/' + bookId;
 
@@ -632,14 +650,27 @@
                 editorContentTale = '';
                 currentStep = 1;
             } else {
-                toast.push('Error: ' + result.data.body.message, {
+                // Handle success case where data structure is different
+                console.log('Unexpected success response format:', result.data);
+                toast.push('Error: Unexpected response format', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
                         '--toastColor': '#fff'
                     }
                 });
             }
+        } else if (result.type === 'failure') {
+            // For failed responses using fail(), data is in result.data
+            console.log('Failure response:', result);
+            const errorMessage = result.data?.body?.message || 'Upload failed';
+            toast.push('Error: ' + errorMessage, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
         } else {
+            console.log('Unknown response type:', result);
             toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
@@ -684,8 +715,8 @@
         const result = deserialize(await response.text());
         await invalidateAll();
         if (result.type === 'success') {
-            if (result.data.status === 200) {
-
+            // For successful responses, data is accessible directly
+            if (result.data && result.data.status === 200) {
                 const bookId = result.data.body.book_id;
                 const chapterId = result.data.body.chapter_id;
                 const chapterUrl = '/content/' + bookId + "/" + chapterId;
@@ -695,7 +726,7 @@
                         '--toastBackground': '#4caf50',
                         '--toastColor': '#fff'
                     }
-                })
+                });
 
                 // Reset form
                 formData.title = '';
@@ -704,14 +735,27 @@
                 selectedBook = undefined;
                 currentStep = 1;
             } else {
-                toast.push('Error: ' + result.data.body.message, {
+                // Handle success case where data structure is different
+                console.log('Unexpected success response format:', result.data);
+                toast.push('Error: Unexpected response format', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
                         '--toastColor': '#fff'
                     }
                 });
             }
+        } else if (result.type === 'failure') {
+            // For failed responses using fail(), data is in result.data
+            console.log('Failure response:', result);
+            const errorMessage = result.data?.body?.message || 'Upload failed';
+            toast.push('Error: ' + errorMessage, {
+                theme: {
+                    '--toastBackground': '#ff4d4d',
+                    '--toastColor': '#fff'
+                }
+            });
         } else {
+            console.log('Unknown response type:', result);
             toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',

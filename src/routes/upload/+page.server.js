@@ -1,4 +1,4 @@
-import {redirect} from '@sveltejs/kit'
+import {redirect, fail} from '@sveltejs/kit'
 import {PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES} from "$env/static/public";
 import {fetchProfiles} from "$lib/utils/gcafetchers.js";
 import {uploadImage} from "$lib/utils/misc.js";
@@ -61,31 +61,31 @@ export const actions = {
         const tag_names_temp = formData.tags;
 
         if (image === null || title === null || description === null) {
-            return {
+            return fail(400, {
                 status: 400,
                 body: {
                     message: "Missing required fields"
                 }
-            }
+            });
         }
 
         if (!image || !image.type.startsWith('image/')) {
-            return {
+            return fail(400, {
                 status: 400,
                 body: {
                     message: "Invalid file type"
                 }
-            }
+            });
         }
 
         // Get image size and check if it's bigger than 10MB
         if (image.size > PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES) {
-            return {
+            return fail(400, {
                 status: 400,
                 body: {
                     message: `File size too big (max ${PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES} or about 10MB)`
                 }
-            }
+            });
         }
 
         // Fetch user and check if can_upload
@@ -96,28 +96,28 @@ export const actions = {
             .single();
 
         if (error2) {
-            return {
+            return fail(500, {
                 status: 500,
                 body: {
                     message: error2.message
                 }
-            }
+            });
         }
 
         if (!profiles.can_upload) {
-            return {
+            return fail(403, {
                 status: 403,
                 body: {
                     message: "You can't upload Content!"
                 }
-            }
+            });
         }
 
         const finalURL = await uploadImage(image);
 
         // If error or object, return it
         if (typeof finalURL === 'object') {
-            return finalURL;
+            return fail(finalURL.status, finalURL);
         }
 
         // Insert book into database and get id
@@ -129,12 +129,12 @@ export const actions = {
         });
 
         if (error) {
-            return {
+            return fail(500, {
                 status: 500,
                 body: {
                     message: error.message
                 }
-            }
+            });
         }
 
         const book_id = data;
@@ -154,12 +154,12 @@ export const actions = {
                 });
 
             if (error) {
-                return {
+                return fail(500, {
                     status: 500,
                     body: {
                         message: error.message
                     }
-                }
+                });
             }
         }
 
@@ -185,12 +185,12 @@ export const actions = {
         const tag_names_temp = formData.tags;
 
         if (bookId === null || title === null || content === null) {
-            return {
+            return fail(400, {
                 status: 400,
                 body: {
                     message: "Missing required fields"
                 }
-            }
+            });
         }
 
         // Fetch user and check if can_upload
@@ -201,21 +201,21 @@ export const actions = {
             .single();
 
         if (error2) {
-            return {
+            return fail(500, {
                 status: 500,
                 body: {
                     message: error2.message
                 }
-            }
+            });
         }
 
         if (!profiles.can_upload) {
-            return {
+            return fail(403, {
                 status: 403,
                 body: {
                     message: "You can't upload Chapters!"
                 }
-            }
+            });
         }
 
         // Insert chapter into database
@@ -225,12 +225,12 @@ export const actions = {
 
         if (error) {
             console.error(error);
-            return {
+            return fail(500, {
                 status: 500,
                 body: {
                     message: error.message
                 }
-            }
+            });
         }
 
         const chapter_id = data;
@@ -250,12 +250,12 @@ export const actions = {
                 });
 
             if (error) {
-                return {
+                return fail(500, {
                     status: 500,
                     body: {
                         message: error.message
                     }
-                }
+                });
             }
         }
 
@@ -272,12 +272,12 @@ export const actions = {
         const {session} = await getSession();
 
         if (!session) {
-            return {
+            return fail(401, {
                 status: 401,
                 body: {
                     message: "Unauthorized"
                 }
-            }
+            });
         }
 
         const formData = Object.fromEntries(await request.formData());
@@ -295,12 +295,12 @@ export const actions = {
         }).limit(10);
 
         if (error) {
-            return {
+            return fail(500, {
                 status: 500,
                 body: {
                     message: error.message
                 }
-            }
+            });
         }
 
         return {
@@ -312,24 +312,24 @@ export const actions = {
         const {session} = await getSession();
 
         if (!session) {
-            return {
+            return fail(401, {
                 status: 401,
                 body: {
                     message: "Unauthorized"
                 }
-            }
+            });
         }
 
         const formData = Object.fromEntries(await request.formData());
         const book_id = formData.book_id;
 
         if (!book_id || book_id === "") {
-            return {
+            return fail(400, {
                 status: 400,
                 body: {
                     message: "Missing required fields"
                 }
-            }
+            });
         }
 
         // Get latest chapter of book_id if available, and get its tags names if available
@@ -341,19 +341,19 @@ export const actions = {
             .limit(1);
 
         if (error) {
-            return {
+            return fail(500, {
                 status: 500,
                 body: {
                     message: error.message
                 }
-            }
+            });
         }
 
         if (!chapter) {
-            return {
+            return fail(404, {
                 status: 404,
                 body: []
-            }
+            });
         }
 
         if (!chapter[0].chapter_tags) {
@@ -373,12 +373,12 @@ export const actions = {
     getProfiles: async ({ url, locals: { supabase, getSession } }) => {
         const { session } = await getSession();
         if (!session) {
-            return {
+            return fail(401, {
                 status: 401,
                 body: {
                     message: "Unauthorized"
                 }
-            }
+            });
         }
         const origin = url.origin;
         return await fetchProfiles({ supabase, origin });
