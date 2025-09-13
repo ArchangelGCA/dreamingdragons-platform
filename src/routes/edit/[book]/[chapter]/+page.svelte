@@ -312,21 +312,16 @@
 
 <div class="container-xxl px-0 px-md-3 mt-4 mb-5">
     <!-- Header -->
-    <div class="row text-center mb-4">
-        <div class="col">
-            <div class="edit-header rounded-4 py-4 mb-3">
-                <h1 class="h2 fw-bold mb-2 text-white">
-                    <i class="fas fa-edit me-2"></i>Edit Chapter
-                </h1>
-                <p class="lead text-white-50 mb-0">Update your chapter details, content, and tags</p>
-            </div>
-        </div>
+    <div class="edit-header text-center mb-4">
+        <h1 class="display-6 fw-bold gradient-text my-2">
+            <i class="fas fa-edit me-2"></i>
+            Edit Chapter
+        </h1>
+        <p class="text-white-50">Update your chapter details, content, and tags</p>
     </div>
 
     <!-- Main Form Container -->
-    <div class="row justify-content-center">
-        <div class="col-xl-10">
-            <div class="edit-form-container px-0 px-lg-3" use:autoAnimate>
+    <div class="edit-form-container" use:autoAnimate>
                 <!-- Progress Indicator -->
                 <div class="progress-container mb-4 px-2 px-md-0">
                     <div class="progress progress-bar-custom">
@@ -598,15 +593,16 @@
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
 </div>
 
 <style>
     :global(.form-control-modern) {
-        background: linear-gradient(145deg, rgba(26, 26, 46, 0.9), rgba(40, 40, 70, 0.8));
-        border: 2px solid rgba(92, 0, 166, 0.3);
-        color: #e8e3f3;
+        background: linear-gradient(145deg, 
+            hsl(var(--primary-hue), 20%, 8%), 
+            hsl(var(--primary-hue), 15%, 12%)
+        );
+        border: 2px solid hsl(var(--primary-hue), 25%, 20%);
+        color: var(--text-color);
         border-radius: 12px;
         padding: 12px 16px;
         font-size: 1rem;
@@ -615,155 +611,186 @@
     }
 
     :global(.form-control-modern:focus) {
-        background: linear-gradient(145deg, rgba(26, 26, 46, 0.95), rgba(40, 40, 70, 0.9));
-        border-color: #5c00a6;
-        box-shadow: 0 0 20px rgba(92, 0, 166, 0.4);
+        background: linear-gradient(145deg, 
+            hsl(var(--primary-hue), 20%, 10%), 
+            hsl(var(--primary-hue), 15%, 15%)
+        );
+        border-color: var(--primary-color);
+        box-shadow: 0 0 20px var(--primary-color-alpha-90);
         outline: none;
     }
 
     :global(.form-control-modern::placeholder) {
-        color: rgba(232, 227, 243, 0.6);
+        color: hsl(0, 0%, 60%);
     }
 
     :global(.form-floating > .form-control-modern ~ label) {
         background: transparent;
-        color: rgba(232, 227, 243, 0.8);
+        color: hsl(0, 0%, 80%);
         padding: 0 8px;
+        transform: scale(1) translateY(0);
+        transform-origin: 0 0;
+        transition: all 0.2s ease-in-out;
     }
 
     :global(.form-floating > .form-control-modern:focus ~ label),
     :global(.form-floating > .form-control-modern:not(:placeholder-shown) ~ label) {
-        color: #a78bfa;
-        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+        color: var(--primary-color);
+        opacity: 1;
+        transform: scale(0.85) translateY(-0.5rem) translateX(0rem);
     }
 
     .edit-header {
-        background: linear-gradient(135deg, #0b0086, #5c00a6, #8b5cf6);
+        background: linear-gradient(135deg, 
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 20%)),
+            var(--primary-color),
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%))
+        );
         background-size: 300% 300%;
         animation: gradientShift 8s ease infinite;
         border: 1px solid rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 2rem;
     }
 
     @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+        0%, 100% {
+            background-position: 0 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
     }
 
-    /* Form container styling matching book edit page */
+    .gradient-text {
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        font-weight: 700;
+    }
+
     .edit-form-container {
-        background: linear-gradient(145deg, rgba(15, 15, 35, 0.9), rgba(30, 30, 60, 0.8));
-        border: 1px solid rgba(92, 0, 166, 0.2);
+        background: linear-gradient(145deg, 
+            hsl(var(--primary-hue), 20%, 8%), 
+            hsl(var(--primary-hue), 15%, 12%)
+        );
+        border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         border-radius: 20px;
         padding: 2rem;
         backdrop-filter: blur(20px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
-    /* Progress bar styling */
     .progress-bar-custom {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        height: 6px;
+        height: 8px;
+        border-radius: 10px;
+        background-color: var(--surface-color);
         overflow: hidden;
+        border: 1px solid var(--border-color);
+    }
+
+    .progress-bar {
+        background: linear-gradient(90deg, var(--primary-color), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%)));
+        transition: width 0.3s ease;
     }
 
     .bg-gradient-primary {
-        background: linear-gradient(90deg, #0b0086, #5c00a6, #a78bfa);
-        background-size: 200% 100%;
-        animation: progressGlow 2s ease infinite;
-        border-radius: 20px;
+        background: linear-gradient(90deg, var(--primary-color), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%))) !important;
     }
 
-    @keyframes progressGlow {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-
-    /* Step indicators */
     .step-indicator {
-        cursor: pointer;
         transition: all 0.3s ease;
+        cursor: pointer;
         padding: 1rem;
         border-radius: 12px;
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
+        background: transparent;
         border: none;
         color: inherit;
         width: 100%;
     }
 
     .step-indicator:hover {
-        background: rgba(92, 0, 166, 0.1);
+        background: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 25%));
         transform: translateY(-2px);
+    }
+    
+    .step-indicator:hover .step-label {
+        color: white;
     }
 
     .step-indicator.active {
-        background: linear-gradient(135deg, rgba(92, 0, 166, 0.3), rgba(167, 139, 250, 0.2));
-        border: 1px solid rgba(92, 0, 166, 0.5);
+        background: linear-gradient(135deg, 
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 10%)), 
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 5%))
+        );
+        border: 1px solid var(--primary-color);
     }
 
     .step-number {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: rgba(92, 0, 166, 0.2);
+        background: hsl(var(--primary-hue), 15%, 12%);
+        color: var(--text-color);
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 0.5rem;
-        font-weight: 600;
-        color: #e8e3f3;
+        margin: 0 auto 8px;
+        font-weight: bold;
         transition: all 0.3s ease;
+        border: 2px solid hsl(var(--primary-hue), 25%, 20%);
     }
 
     .step-indicator.active .step-number {
-        background: linear-gradient(135deg, #5c00a6, #a78bfa);
+        background: var(--primary-color);
         color: white;
-        box-shadow: 0 4px 15px rgba(92, 0, 166, 0.4);
+        box-shadow: 0 4px 12px var(--primary-color-alpha-90);
+        border-color: var(--primary-color);
     }
 
     .step-label {
-        font-size: 0.875rem;
-        color: rgba(232, 227, 243, 0.8);
+        font-size: 0.9rem;
         font-weight: 500;
+        color: hsl(0, 0%, 80%);
+        transition: color 0.3s ease;
     }
 
     .step-indicator.active .step-label {
-        color: #a78bfa;
+        color: white;
         font-weight: 600;
     }
 
-    /* Form step styling */
     .form-step {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: hsl(var(--primary-hue), 15%, 12%);
+        backdrop-filter: blur(10px);
+        border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         border-radius: 16px;
         padding: 2rem;
-        margin-bottom: 2rem;
-        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
     }
 
     .step-header h3 {
-        color: #e8e3f3;
+        color: var(--text-color);
         margin-bottom: 0.5rem;
     }
 
     .step-header p {
-        color: rgba(232, 227, 243, 0.7);
+        color: hsl(0, 0%, 60%);
         margin-bottom: 0;
     }
 
     .editor-container {
         border-radius: 12px;
         overflow: hidden;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: hsl(var(--primary-hue), 20%, 8%);
+        border: 1px solid hsl(var(--primary-hue), 25%, 20%);
     }
 
     .tag-pill {
-        background: linear-gradient(135deg, #5c00a6, #a78bfa);
+        background: linear-gradient(135deg, 
+            var(--primary-color), 
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%))
+        );
         color: white;
         border-radius: 20px;
         padding: 8px 12px;
@@ -773,11 +800,12 @@
         font-size: 0.9rem;
         font-weight: 500;
         transition: all 0.3s ease;
+        border: 1px solid var(--primary-color);
     }
 
     .tag-pill:hover {
         transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(92, 0, 166, 0.4);
+        box-shadow: 0 4px 12px var(--primary-color-alpha-90);
     }
 
     .tag-remove {
@@ -793,6 +821,7 @@
         cursor: pointer;
         transition: all 0.2s ease;
         color: white;
+        font-size: 0.8rem;
     }
 
     .tag-remove:hover {
@@ -801,8 +830,8 @@
     }
 
     .tag-suggestions {
-        background: rgba(15, 15, 35, 0.9);
-        border: 1px solid rgba(92, 0, 166, 0.3);
+        background: hsl(var(--primary-hue), 20%, 8%);
+        border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         border-radius: 12px;
         padding: 0.75rem;
         backdrop-filter: blur(10px);
@@ -818,68 +847,75 @@
         margin: 4px;
         border-radius: 20px;
         transition: all 0.2s ease;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: rgba(232, 227, 243, 0.8);
+        background: var(--surface-color);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
         padding: 0.375rem 0.75rem;
         font-size: 0.875rem;
         cursor: pointer;
     }
 
     .suggestion-btn:hover {
-        background: #5c00a6;
-        border-color: #5c00a6;
+        background: var(--primary-color);
+        border-color: var(--primary-color);
         color: white;
         transform: translateY(-1px);
     }
 
     .suggestion-btn.selected {
-        background: #5c00a6;
-        border-color: #5c00a6;
+        background: var(--primary-color);
+        border-color: var(--primary-color);
         color: white;
     }
 
     .summary-card {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: hsl(var(--primary-hue), 20%, 8%);
+        border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         border-radius: 12px;
         padding: 1.5rem;
-        color: #e8e3f3;
+        color: var(--text-color);
+        backdrop-filter: blur(10px);
     }
 
     .summary-card strong {
-        color: #a78bfa;
+        color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 20%));
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #0b0086, #5c00a6);
-        border: 1px solid rgba(92, 0, 166, 0.5);
+        background: linear-gradient(135deg, 
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 20%)),
+            var(--primary-color)
+        );
+        border: 2px solid var(--primary-color);
         color: white;
         padding: 0.75rem 2rem;
         border-radius: 12px;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(92, 0, 166, 0.2);
+        box-shadow: 0 4px 15px var(--primary-color-alpha-90);
     }
 
     .btn-primary:hover:not(:disabled) {
-        background: linear-gradient(135deg, #5c00a6, #a78bfa);
-        border-color: #a78bfa;
+        background: linear-gradient(135deg, 
+            var(--primary-color), 
+            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%))
+        );
+        border-color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%));
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(92, 0, 166, 0.3);
+        box-shadow: 0 8px 25px var(--primary-color-alpha-90);
     }
 
     .btn-primary:disabled {
-        background: rgba(92, 0, 166, 0.3);
-        border-color: rgba(92, 0, 166, 0.2);
+        background: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 30%));
+        border-color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 20%));
         opacity: 0.6;
         cursor: not-allowed;
     }
 
     .btn-outline-secondary {
         background: transparent;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-        color: rgba(232, 227, 243, 0.8);
+        border: 2px solid hsl(var(--primary-hue), 25%, 20%);
+        color: hsl(0, 0%, 80%);
         padding: 0.75rem 2rem;
         border-radius: 12px;
         font-weight: 600;
@@ -887,34 +923,35 @@
     }
 
     .btn-outline-secondary:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.3);
-        color: #e8e3f3;
+        background: hsl(var(--primary-hue), 25%, 15%);
+        border-color: hsl(var(--primary-hue), 25%, 30%);
+        color: var(--text-color);
+        transform: translateY(-1px);
     }
 
     .legal-notice {
-        color: rgba(232, 227, 243, 0.6);
+        color: hsl(0, 0%, 60%);
         padding-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-top: 1px solid hsl(var(--primary-hue), 25%, 20%);
     }
 
     .legal-notice a {
-        color: #a78bfa;
+        color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 20%));
         text-decoration: none;
         transition: color 0.2s ease;
     }
 
     .legal-notice a:hover {
-        color: #c4b5fd;
+        color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 30%));
         text-decoration: underline;
     }
 
     /* Input group styling for tag input */
     .input-group-text {
-        background: rgba(92, 0, 166, 0.2);
-        border: 2px solid rgba(92, 0, 166, 0.3);
+        background: hsl(var(--primary-hue), 25%, 15%);
+        border: 2px solid hsl(var(--primary-hue), 25%, 20%);
         border-left: none;
-        color: #a78bfa;
+        color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 20%));
     }
 
     .input-group .form-control-modern {
@@ -925,47 +962,126 @@
         z-index: 3;
     }
 
-    /* Responsive adjustments */
+    /* Loading States */
+    .spinner-border-sm {
+        width: 1rem;
+        height: 1rem;
+        border-color: var(--primary-color);
+        border-right-color: transparent;
+    }
+
+    /* Accessibility improvements */
+    .form-control-modern:focus {
+        outline: none;
+    }
+
+    button:focus-visible {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
+        .edit-header {
+            margin-left: -0.5rem;
+            margin-right: -0.5rem;
+            padding: 1.5rem 1rem;
+        }
+        
         .edit-form-container {
-            padding: 1.5rem;
+            padding: 1rem;
+            margin-left: -0.5rem;
+            margin-right: -0.5rem;
         }
-
+        
         .form-step {
-            padding: 1.5rem;
+            padding: 1rem;
         }
-
-        .step-navigation {
-            gap: 0.5rem;
-        }
-
-        .step-navigation .btn {
-            flex: 1;
-        }
-
-        .step-navigation .d-flex {
-            flex: 1;
-        }
-
+        
         .step-indicator {
-            padding: 0.75rem;
+            padding: 0.5rem;
         }
-
+        
         .step-number {
             width: 32px;
             height: 32px;
+            font-size: 0.85rem;
         }
-
+        
+        .step-label {
+            font-size: 0.8rem;
+        }
+        
         .btn-lg {
             padding: 0.75rem 1.5rem;
             font-size: 1rem;
         }
+
+        .step-navigation {
+            flex-direction: row !important;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .step-navigation > button {
+            flex: 0 0 auto;
+            min-width: 140px;
+            padding: 0.75rem 1.25rem;
+        }
+
+        .tag-pill {
+            font-size: 0.85rem;
+            padding: 6px 10px;
+        }
+
+        .summary-card {
+            padding: 1rem;
+        }
     }
 
-    /* Loading spinner */
-    .spinner-border-sm {
-        width: 1rem;
-        height: 1rem;
-        border-width: 0.125rem;
+    @media (max-width: 576px) {
+        .edit-header {
+            margin-left: -0.75rem;
+            margin-right: -0.75rem;
+            padding: 1rem 0.75rem;
+        }
+        
+        .edit-form-container {
+            margin-left: -0.75rem;
+            margin-right: -0.75rem;
+            padding: 0.75rem;
+        }
+        
+        .form-step {
+            padding: 0.75rem;
+        }
+
+        .step-header h3 {
+            font-size: 1.1rem;
+        }
+        
+        .step-indicator {
+            padding: 0.4rem;
+        }
+        
+        .step-number {
+            width: 28px;
+            height: 28px;
+            font-size: 0.8rem;
+        }
+        
+        .step-label {
+            font-size: 0.75rem;
+        }
+
+        .btn-lg {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.95rem;
+        }
+        
+        .progress-container {
+            margin-left: -0.25rem;
+            margin-right: -0.25rem;
+        }
     }
 </style>
