@@ -1,7 +1,5 @@
 import { createBookPath, createChapterPath, createProfilePath } from '$lib/utils/slugs.js';
 
-export const prerender = true;
-
 export const GET = async ({locals: {supabase}}) => {
 
     const {data: newData, error: newError} = await supabase

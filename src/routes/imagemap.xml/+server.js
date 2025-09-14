@@ -1,7 +1,5 @@
 import { createBookPath, createProfilePath } from '$lib/utils/slugs.js';
 
-export const prerender = true;
-
 export const GET = async ({locals: {supabase}}) => {
     const {data: bookCoverUrls, error: errorBook} = await supabase
         .from('book')
@@ -9,7 +7,7 @@ export const GET = async ({locals: {supabase}}) => {
 
     const {data: profileAvatarCoverUrls, error: errorProfile} = await supabase
         .from('profiles')
-        .select('id, avatar_url, cover_url');
+        .select('id, username, avatar_url, cover_url');
 
     if (errorBook || errorProfile) {
         return {
