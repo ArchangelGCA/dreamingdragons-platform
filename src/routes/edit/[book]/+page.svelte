@@ -12,7 +12,8 @@
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import Editor from "@tinymce/tinymce-svelte";
-    import {conf} from "$lib/utils/gcatinymce.js"
+    import {conf} from "$lib/utils/gcatinymce.js";
+    import {createBookPath} from "$lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -145,7 +146,7 @@
             
             if (result.type === 'success') {
                 if (result.data.status === 200) {
-                    const bookUrl = '/content/' + book.id;
+                    const bookUrl = createBookPath(book.title, book.id);
 
                     toast.push(result.data.body.message + '. View it <a class="link-light" href="' + bookUrl + '" target="_blank">here</a>.', {
                         theme: {

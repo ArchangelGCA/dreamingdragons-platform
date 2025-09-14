@@ -5,7 +5,7 @@
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
-    import {createBookPath} from "$lib/utils/slugs.js";
+    import {createBookPath, createProfilePath} from "$lib/utils/slugs.js";
 
     /** @type {{book: any, image_proxy: any, session: any, onBookUpdate?: function}} */
     let {book, image_proxy, session, onBookUpdate} = $props();
@@ -182,7 +182,7 @@
         e.preventDefault();
         e.stopPropagation();
         if (profileData.id) {
-            window.location.href = `/profile/${profileData.id}`;
+            window.location.href = createProfilePath(profileData.username, profileData.id);
         }
     }
 

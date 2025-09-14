@@ -1,6 +1,7 @@
 <script>
     import {tooltip} from "@svelte-plugins/tooltips";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import { createProfilePath } from '$lib/utils/slugs.js';
 
     /** @type {{url?: string, username?: string, id?: string, size?: string, image_proxy?: any}} */
     let {
@@ -48,7 +49,7 @@
 <!-- Circle avatar, using Bootstrap 5 classes -->
 <div class="d-flex justify-content-center" use:tooltip={{...tooltipConfig}} title="{username}'s Profile">
     {#if link}
-        <a href={`/profile/${id}`} class="text-decoration-none" draggable="false"
+        <a href={createProfilePath(username, id)} class="text-decoration-none" draggable="false"
            aria-label="View profile of {username}">
             {#if !isAvatarLoaded}
                 <div class="placeholder-glow" style="width: {size}; height: {size};">

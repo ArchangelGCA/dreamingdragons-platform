@@ -8,6 +8,7 @@
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import { createProfilePath } from '$lib/utils/slugs.js';
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -109,7 +110,7 @@
                 </div>
                 <div class="row row-horizontal flex-nowrap ps-1 pe-1 gx-3 gx-md-4" use:dragscroll={{axis: 'x'}}>
                     {#each followed as follow (follow.id)}
-                        <a class="col-auto py-2" href="/profile/{follow.id}">
+                        <a class="col-auto py-2" href={createProfilePath(follow.username, follow.id)}>
                             <UserAvatar url={follow.avatar_url} username={follow.username} id={follow.id} {image_proxy}
                                         size="50px" link={false}/>
                         </a>

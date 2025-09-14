@@ -5,6 +5,7 @@
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import {createBookPath} from "$lib/utils/slugs.js";
 
     /** @type {{content: any, image_proxy: any}} */
     let {content = $bindable(), image_proxy} = $props();
@@ -13,6 +14,9 @@
     let finalLinkImage = $derived(image_proxy && !content.cover_url.startsWith(image_proxy) ? image_proxy + content.cover_url + '?width=750&quality=80' : content.cover_url);
     let finalBookTitle = $derived(content.title.length > 35 ? content.title.substring(0, 35) + '...' : content.title);
     let isImageLoaded = $state(false);
+    
+    // Generate SEO-friendly URL
+    let bookUrl = $derived(createBookPath(content.title, content.id));
 
     async function handleHeartClick(e) {
         e.preventDefault();
@@ -65,7 +69,7 @@
 
 <div>
     <div class="card border-0">
-        <a href="/content/{content.id}">
+        <a href={bookUrl}>
             <div class="card-img" use:autoAnimate>
                 {#if !isImageLoaded}
                     <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
@@ -91,7 +95,7 @@
                 <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                     <div class="col-9 my-auto">
                         <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap"
-                                href="/content/{content.id}"
+                                href={bookUrl}
                                 use:tooltip={{...tooltipConfig}} title="Click to view"><span
                                 class="text-title">{finalBookTitle}</span></button>
                     </div>

@@ -1,7 +1,7 @@
 <script>
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { tooltip } from "@svelte-plugins/tooltips";
-    import { createBookPath } from "$lib/utils/slugs.js";
+    import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
 
     /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any}} */
     let {
@@ -48,7 +48,7 @@
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">
                 <div class="col-12">
                     <button class="btn btn-link p-0 link-light text-decoration-none text-wrap" href="{bookUrl}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{title}</span></button>
-                    <p class="card-text"><small class="text-muted">Posted by <button class="btn btn-link p-0 link-light text-decoration-none" href="/profile/{owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</button></small></p>
+                    <p class="card-text"><small class="text-muted">Posted by <a class="btn btn-link p-0 link-light text-decoration-none" href={createProfilePath(owner_username, owner_id)} use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
                 </div>
             </div>
         </div>

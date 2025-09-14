@@ -1,4 +1,5 @@
 import {deserialize} from "$app/forms";
+import { createProfilePath } from './slugs.js';
 
 let usersRequest = null;
 export const conf = {
@@ -56,7 +57,7 @@ export const conf = {
     },
     mentions_menu_complete: (editor, mention) => {
         const a = editor.getDoc().createElement('a');
-        a.href = `/profile/${mention.id}`;
+        a.href = createProfilePath(mention.name, mention.id);
         a.classList.add('mention');
         a.setAttribute('data-mention-id', mention.id);
         a.appendChild(editor.getDoc().createTextNode('@' + mention.name));

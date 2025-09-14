@@ -2,7 +2,7 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { createBookPath } from "$lib/utils/slugs.js";
+    import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
 
     /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any}} */
     let {
@@ -73,7 +73,7 @@
                     <button class="btn btn-link p-0 pb-1 link-light link-custom text-decoration-none text-wrap text-start" href="{bookUrl}"
                        use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{final_book_title}</span></button>
                     <p class="card-text"><small class="text-description"><span><UserAvatarNavbar url={owner_avatar_url} username={final_owner_username} {image_proxy} size="25px"/></span> <button
-                            class="btn btn-link p-0 link-light link-custom text-decoration-none" href="/profile/{owner_id}"
+                            class="btn btn-link p-0 link-light link-custom text-decoration-none" href={createProfilePath(owner_username, owner_id)}
                             use:tooltip={{...tooltipConfig}} title="Visit profile">{final_owner_username}</button></small></p>
                 </div>
             </div>

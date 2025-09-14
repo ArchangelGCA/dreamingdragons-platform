@@ -12,6 +12,7 @@
     import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
     import ShareButton from "$lib/components/layout/ShareButton.svelte";
     import RSSButton from "$lib/components/layout/RSSButton.svelte";
+    import { createProfilePath } from '$lib/utils/slugs.js';
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -295,7 +296,7 @@
                         <div class="position-absolute top-0 end-0 p-3">
                             <div class="d-flex gap-2">
                                 <ShareButton
-                                        url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/profile/${profile.id}`}
+                                        url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu${createProfilePath(profile.username, profile.id)}`}
                                         title="{profile.username}'s Profile"
                                         description="Check out {profile.username}'s amazing content on DreamingDragons!"
                                         compact={true}
@@ -330,7 +331,7 @@
                         <div class="position-absolute top-0 end-0 p-3">
                             <div class="d-flex gap-2">
                                 <ShareButton
-                                        url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/profile/${profile.id}`}
+                                        url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu${createProfilePath(profile.username, profile.id)}`}
                                         title="{profile.username}'s Profile"
                                         description="Check out {profile.username}'s amazing content on DreamingDragons!"
                                         compact={true}
@@ -413,7 +414,7 @@
                             {:else}
                                 {#each profile.followers as follower (follower.follower_id)}
                                     <span>
-                                        <a class="dropdown-item" href="/profile/{follower.follower_id}">
+                                        <a class="dropdown-item" href={createProfilePath(follower.profiles.username, follower.follower_id)}>
                                             <UserAvatarNavbar url={follower.profiles.avatar_url}
                                                               username={follower.profiles.username} {image_proxy}
                                                               size="25px" classes="me-2"/>
@@ -556,7 +557,7 @@
                             {#each profile.gallery as gallery (gallery.id)}
                                 <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
                                     <div class="gallery-card-profile h-100">
-                                        <a href="/profile/{profile.id}/gallery/{gallery.id}"
+                                        <a href={createProfilePath(profile.username, profile.id) + '/gallery/' + gallery.id}
                                            class="gallery-card-link d-flex flex-column h-100">
                                             <div class="gallery-preview-profile flex-shrink-0">
                                                 {#if gallery.gallery_books.length > 0}

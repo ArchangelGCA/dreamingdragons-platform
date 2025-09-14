@@ -14,7 +14,7 @@
     import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ShareButton from "$lib/components/layout/ShareButton.svelte";
-    import { createBookPath } from "$lib/utils/slugs.js";
+    import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
     import { page } from '$app/state';
 
     /** @type {{data: any}} */
@@ -34,6 +34,8 @@
         } = data)
     });
     
+    // Generate SEO-friendly URL for sharing
+    let bookUrl = $derived(createBookPath(bookContent.title, bookContent.id));
     //let editUrl = $derived(createBookPath('edit', bookContent.id));
 
     onMount(async () => {
@@ -302,7 +304,7 @@
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <a href={"/profile/" + bookContent.owner_id}
+                <a href={createProfilePath(bookContent.profiles.username, bookContent.owner_id)}
                    class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
                     <UserAvatar url={bookContent.profiles.avatar_url} username={bookContent.profiles.username}
                                 id={bookContent.owner_id} {image_proxy} link={false} size="75px"/>
@@ -310,7 +312,7 @@
                 <div class="col-9 col-md-10 text-center my-auto">
                     <p class="h3">{bookContent.title}</p>
                     <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none"
-                                             href="/profile/{bookContent.owner_id}">{bookContent.profiles.username}</a>
+                                             href={createProfilePath(bookContent.profiles.username, bookContent.owner_id)}>{bookContent.profiles.username}</a>
                         - <span class="text-muted" use:tooltip={{...tooltipConfig}}
                                 title="{createdAtDetailed}">{createdAtFormatted}</span></p>
                     {#if bookContent.tags.length !== 0}
@@ -346,7 +348,7 @@
                         {#if bookContent.book_likes && bookContent.book_likes.length > 0}
                             {#each bookContent.book_likes as like (like.id)}
                                 <li>
-                                    <a class="dropdown-item" href="/profile/{like.user_id}">
+                                    <a class="dropdown-item" href={createProfilePath(like.profiles.username, like.user_id)}>
                                         <span>
                                             <UserAvatarNavbar url={like.profiles.avatar_url}
                                                               username={like.profiles.username} {image_proxy}
@@ -389,7 +391,7 @@
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-auto d-flex align-items-center pe-2">
                     <ShareButton
-                            url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/content/${bookContent.id}`}
+                            url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu${bookUrl}`}
                             title="{bookContent.title} by {bookContent.profiles.username}"
                             description="Check out this amazing tale on DreamingDragons!"
                     />
@@ -433,7 +435,7 @@
             <p class="text-secondary text-center">
                 <small>
                     &copy; {currentYear} <a class="link-secondary text-decoration-none"
-                                            href="/profile/{bookContent.owner_id}" use:tooltip={{...tooltipConfig}}
+                                            href={createProfilePath(bookContent.profiles.username, bookContent.owner_id)} use:tooltip={{...tooltipConfig}}
                                             title="Profile">{bookContent.profiles.username}</a> - {bookContent.title}
                 </small>
             </p>

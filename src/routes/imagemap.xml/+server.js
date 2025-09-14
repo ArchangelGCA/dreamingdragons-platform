@@ -1,4 +1,4 @@
-import { createBookPath } from '$lib/utils/slugs.js';
+import { createBookPath, createProfilePath } from '$lib/utils/slugs.js';
 
 export const prerender = true;
 
@@ -76,7 +76,7 @@ export const GET = async ({locals: {supabase}}) => {
             `).join('')}
             ${profileAvatarCoverUrlFiltered.map((profile) => `
                 <url>
-                    <loc>https://tales.archangelgca.eu/profile/${profile.id}</loc>
+                    <loc>https://tales.archangelgca.eu${createProfilePath(profile.username, profile.id)}</loc>
                     <image:image>
                         <image:loc>https://images.archangelgca.eu/image/${profile.avatar_url}</image:loc>
                     </image:image>

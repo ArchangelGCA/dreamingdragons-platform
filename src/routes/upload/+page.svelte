@@ -13,6 +13,7 @@
     import {tooltip} from "@svelte-plugins/tooltips";
     import {conf} from "$lib/utils/gcatinymce.js"
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import {createBookPath, createChapterPath} from "$lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -630,7 +631,7 @@
             // For successful responses, data is accessible directly
             if (result.data && result.data.status === 200) {
                 const bookId = result.data.body.book_id;
-                const bookUrl = '/content/' + bookId;
+                const bookUrl = createBookPath(formData.title, bookId);
 
                 toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + bookUrl + '" target="_blank">here</a>.', {
                     theme: {
@@ -719,7 +720,8 @@
             if (result.data && result.data.status === 200) {
                 const bookId = result.data.body.book_id;
                 const chapterId = result.data.body.chapter_id;
-                const chapterUrl = '/content/' + bookId + "/" + chapterId;
+                const bookTitle = books.find(b => b.id === selectedBook)?.title || 'Book';
+                const chapterUrl = createChapterPath(bookTitle, bookId, formData.title, chapterId);
 
                 toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + chapterUrl + '" target="_blank">here</a>.', {
                     theme: {

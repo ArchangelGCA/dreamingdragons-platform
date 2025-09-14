@@ -4,6 +4,7 @@ import {
     generateChapterRSSItem,
     escapeHTML
 } from '$lib/utils/rss.js';
+import { createBookPath } from '$lib/utils/slugs.js';
 
 export const prerender = false;
 
@@ -40,7 +41,7 @@ export const GET = async ({ params, locals: { supabase } }) => {
         const authorName = book.profiles?.username || 'Unknown Author';
         const feedTitle = `${bookTitle} - Chapters by ${authorName}`;
         const feedDescription = `Latest chapters from "${bookTitle}" by ${escapeHTML(authorName)} on DreamingDragons`;
-        const feedLink = `https://tales.archangelgca.eu/content/${bookId}`;
+        const feedLink = `https://tales.archangelgca.eu${createBookPath(book.title, bookId)}`;
         const selfLink = `https://tales.archangelgca.eu/rss/content/${bookId}.xml`;
 
         // Generate RSS items

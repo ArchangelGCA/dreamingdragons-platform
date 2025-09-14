@@ -3,6 +3,7 @@
     import ContentMasonry from '$lib/components/pages/ContentMasonry.svelte';
     import {tooltip} from "@svelte-plugins/tooltips";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import { createProfilePath } from '$lib/utils/slugs.js';
 
     let {data} = $props();
     let {gallery, session, image_proxy} = $state(data);
@@ -47,7 +48,7 @@
                     <p class="gallery-owner fs-5 mb-3 d-flex align-items-center justify-content-center justify-content-lg-start text-white-50">
                         <i class="fas fa-user me-2"></i>
                         A gallery by
-                        <a href="/profile/{gallery.owner.id}"
+                        <a href={createProfilePath(gallery.owner.username, gallery.owner.id)}
                            class="owner-link ms-2 text-decoration-none position-relative">{gallery.owner.username}</a>
                     </p>
                     {#if gallery.description}

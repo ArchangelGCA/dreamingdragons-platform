@@ -1,16 +1,19 @@
 <script>
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import UserAvatarNavbar from "$lib/components/layout\UserAvatarNavbar.svelte";
+    import { createProfilePath, createBookPath, createChapterPath } from '$lib/utils/slugs.js';
     /** @type {{report: any, image_proxy?: string}} */
     let { report, closeReport, image_proxy = '' } = $props();
 
     let urlToOpen = $state('');
 
     if (report.report_type === 'book') {
-        urlToOpen = `/content/${report.book_id}`;
+        // Use placeholder title for admin reports since we don't have the actual book title
+        urlToOpen = createBookPath('Book', report.book_id);
     } else if (report.report_type === 'chapter') {
-        urlToOpen = `/content/${report.book_id}/${report.chapter_id}`;
+        // Use placeholder titles for admin reports since we don't have the actual titles
+        urlToOpen = createChapterPath('Book', report.book_id, 'Chapter', report.chapter_id);
     }
 
     let isCloseReportActive = false;
@@ -86,7 +89,7 @@
     <div class="card-title text-uppercase bg-light bg-opacity-10 p-2 rounded-2 mb-0">
         {report.report_type} <span class="fs-6 text-muted">{formatDate(report.created_at)}</span>
         <br>
-        <UserAvatarNavbar url={report.profiles.avatar_url} username={report.profiles.username} image_proxy={image_proxy} size="25px" /> <a class="text-warning-emphasis fs-7 text-decoration-none" href="/profile/{report.profiles.id}">{report.profiles.username}</a>
+        <UserAvatarNavbar url={report.profiles.avatar_url} username={report.profiles.username} image_proxy={image_proxy} size="25px" /> <a class="text-warning-emphasis fs-7 text-decoration-none" href={createProfilePath(report.profiles.username, report.profiles.id)}>{report.profiles.username}</a>
     </div>
     <div class="card-body">
         <p class="card-text">{report.report_description}</p>

@@ -1,5 +1,6 @@
 import {error, json} from '@sveltejs/kit';
 import {ORIGIN} from '$env/static/private';
+import { createProfilePath } from '$lib/utils/slugs.js';
 
 export async function GET({url, locals: {supabase, image_proxy}}) {
     const requestUrl = url.searchParams.get('url');
@@ -54,7 +55,7 @@ export async function GET({url, locals: {supabase, image_proxy}}) {
                 type: 'rich',
                 title: `${chapterContent.book.title} - ${chapterContent.title}`,
                 author_name: chapterContent.profiles.username,
-                author_url: `${ORIGIN}/profile/${chapterContent.profiles.username}`,
+                author_url: `${ORIGIN}${createProfilePath(chapterContent.profiles.username, chapterContent.profiles.id)}`,
                 provider_name: 'DreamingDragons',
                 provider_url: ORIGIN,
                 url: requestUrl,
@@ -104,7 +105,7 @@ export async function GET({url, locals: {supabase, image_proxy}}) {
                 type: 'rich',
                 title: bookContent.title,
                 author_name: bookContent.profiles.username,
-                author_url: `${ORIGIN}/profile/${bookContent.profiles.username}`,
+                author_url: `${ORIGIN}${createProfilePath(bookContent.profiles.username, bookContent.profiles.id)}`,
                 provider_name: 'DreamingDragons',
                 provider_url: ORIGIN,
                 url: requestUrl,

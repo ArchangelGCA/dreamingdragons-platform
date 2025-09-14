@@ -7,6 +7,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import {conf} from "$lib/utils/gcatinymce.js";
+    import {createChapterPath} from "$lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -119,7 +120,7 @@
             if (result.type === 'success') {
                 if (result.data.status === 200) {
                     // Use the current chapter data to build SEO-friendly URL
-                    const chapterUrl = `/content/${chapter.book_id}/${chapter.id}`;
+                    const chapterUrl = createChapterPath(chapter.book.title, chapter.book_id, chapter.title, chapter.id);
 
                     toast.push(result.data.body.message + '. View it <a class="link-light" href="' + chapterUrl + '" target="_blank">here</a>.', {
                         theme: {

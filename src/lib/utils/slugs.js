@@ -136,3 +136,91 @@ export function getCanonicalUrl(book, chapter = null) {
     }
     return createBookPath(book.title, book.id);
 }
+
+/**
+ * Creates SEO-friendly URL for profile
+ * @param {string} username - Profile username
+ * @param {string|number} id - Profile ID (UUID)
+ * @returns {string} - SEO-friendly URL segment (username-id)
+ */
+export function createProfileUrl(username, id) {
+    const slug = createSlug(username);
+    return slug ? `${slug}-${id}` : `${id}`;
+}
+
+/**
+ * Extracts profile ID from either legacy UUID or new username-id format
+ * @param {string} param - URL parameter (either "abc123-def..." or "username-abc123-def...")
+ * @returns {string|null} - Extracted UUID or null if invalid
+ */
+export function extractProfileId(param) {
+    if (!param || typeof param !== 'string') {
+        return null;
+    }
+
+    // Check if it's just a UUID (legacy format) - UUIDs are 36 characters with specific pattern
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (uuidRegex.test(param)) {
+        return param;
+    }
+
+    // Check if it's username-uuid format by looking for the last hyphen followed by UUID
+    const parts = param.split('-');
+    if (parts.length >= 6) { // UUID has 5 hyphens, so username-UUID should have at least 6 parts
+        // Try to reconstruct UUID from the last 5 parts
+        const possibleUuid = parts.slice(-5).join('-');
+        if (uuidRegex.test(possibleUuid)) {
+            return possibleUuid;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Validates that a profile URL parameter is either a valid UUID or username-uuid format
+ * @param {string} param - URL parameter to validate
+ * @returns {boolean} - True if valid, false otherwise
+ */
+export function isValidProfileParam(param) {
+    if (!param || typeof param !== 'string') {
+        return false;
+    }
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    // Allow UUIDs (legacy)
+    if (uuidRegex.test(param)) {
+        return true;
+    }
+
+    // Allow username-uuid format (new SEO-friendly)
+    const parts = param.split('-');
+    if (parts.length >= 6) {
+        const possibleUuid = parts.slice(-5).join('-');
+        if (uuidRegex.test(possibleUuid)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Creates full profile URL path
+ * @param {string} username - Profile username
+ * @param {string|number} id - Profile ID (UUID)
+ * @returns {string} - Full URL path
+ */
+export function createProfilePath(username, id) {
+    return `/profile/${createProfileUrl(username, id)}`;
+}
+
+/**
+ * Generate canonical profile URL for redirects
+ * @param {Object} profile - Profile object with username and id
+ * @returns {string} - Canonical profile URL
+ */
+export function getCanonicalProfileUrl(profile) {
+    return createProfilePath(profile.username, profile.id);
+}

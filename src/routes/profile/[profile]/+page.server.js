@@ -1,5 +1,6 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
 import {ORIGIN} from '$env/static/private';
+import { extractProfileId, isValidProfileParam, getCanonicalProfileUrl } from '$lib/utils/slugs.js';
 
 // Async function to get liked books, from range start to end, from book_likes
 async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
@@ -33,9 +34,9 @@ async function fetchBooks(startRange, endRange, profileId, supabase) {
     return data;
 }
 
-export const load = async ({ params, locals: { supabase, getSession } }) => {
+export const load = async ({ params, url, locals: { supabase, getSession } }) => {
     const { session } = await getSession();
-    const id = params.profile;
+    const profileParam = params.profile;
 
     const startRange = 0;
     const endRange = 40;
@@ -45,8 +46,8 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
         isOwner: false,
     };
 
-    // If there's no id and the user isn't logged in, send to login page
-    if (!id && !session) {
+    // If there's no profileParam and the user isn't logged in, send to login page
+    if (!profileParam && !session) {
         throw redirect(303, '/login');
     }
 
@@ -54,21 +55,29 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
     //    BEGINNING ACTIONS IF AN ID IS SPECIFIED    //
     /*************************************************/
 
-    if (id) {
-        results.id = id;
-
-        if (id.length !== 36) {
-            throw errorx(404, "Profile not found (invalid ID length)");
+    if (profileParam) {
+        // Validate URL parameter format
+        if (!isValidProfileParam(profileParam)) {
+            throw errorx(400, 'Invalid profile identifier format');
         }
+
+        // Extract the actual UUID from the parameter (handles both legacy and new format)
+        const profileId = extractProfileId(profileParam);
+        
+        if (!profileId) {
+            throw errorx(404, "Profile not found (invalid ID format)");
+        }
+
+        results.id = profileId;
 
         // Fetch profile and related data concurrently
         const [profileData, likedBooks] = await Promise.all([
             supabase
                 .from('profiles')
                 .select('*, book!book_owner_id_fkey(id, title, owner_id, cover_url, created_at, hidden, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id, username, avatar_url)), gallery(id, name, description, owner_id, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
-                .eq('id', id)
+                .eq('id', profileId)
                 .order('created_at', { referencedTable: 'book', ascending: false }),
-            fetchBooksLiked(startRange, endRange, id, supabase)
+            fetchBooksLiked(startRange, endRange, profileId, supabase)
         ]);
 
         const { data: profile, error: errorTest } = profileData;
@@ -80,13 +89,25 @@ export const load = async ({ params, locals: { supabase, getSession } }) => {
 
         // Profile not found
         if (!profile || profile.length === 0) {
-            if (session && id === session.user.id) {
+            if (session && profileId === session.user.id) {
                 return redirect(302, '/profile');
             }
             throw errorx(404, "Profile not found");
         }
 
         results.profile = profile[0];
+
+        // Check if we need to redirect to canonical URL (SEO-friendly format)
+        const canonicalUrl = getCanonicalProfileUrl(results.profile);
+        const currentPath = url.pathname;
+        
+        // Only redirect if the current URL doesn't match the canonical format
+        // Check if profileParam is in legacy UUID format
+        const isProfileLegacyFormat = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(profileParam);
+        
+        if (currentPath !== canonicalUrl && isProfileLegacyFormat) {
+            throw redirect(301, canonicalUrl);
+        }
 
         // Remove hidden books and keep only those in range
         if (results.profile.book) {

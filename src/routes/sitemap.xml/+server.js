@@ -1,4 +1,4 @@
-import { createBookPath, createChapterPath } from '$lib/utils/slugs.js';
+import { createBookPath, createChapterPath, createProfilePath } from '$lib/utils/slugs.js';
 
 export const prerender = true;
 
@@ -65,7 +65,7 @@ export const GET = async ({locals: {supabase}}) => {
             `).join('')}
             ${newData[0].profiles.map((profile) => `
                 <url>
-                    <loc>https://tales.archangelgca.eu/profile/${profile}</loc>
+                    <loc>https://tales.archangelgca.eu${createProfilePath(profile.username, profile.id)}</loc>
                 </url>
             `).join('')}
             ${newData[0].tags.map((tag) => `

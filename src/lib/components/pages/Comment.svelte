@@ -7,6 +7,7 @@
     import autoAnimate from '@formkit/auto-animate';
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import {invalidateAll} from "$app/navigation";
+    import { createProfilePath } from '$lib/utils/slugs.js';
 
     /** @type {{comment: any, supabase: any, image_proxy: any}} */
     let { comment, supabase, image_proxy } = $props();
@@ -137,7 +138,7 @@
         <UserAvatar url={comment.profiles.avatar_url} username={comment.profiles.username} id={comment.user_id} {image_proxy} size="50px" />
     </div>
     <div class="col align-middle pt-1">
-        <p class="mb-0"><a class="link-light text-decoration-none" href="/profile/{comment.user_id}">{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
+        <p class="mb-0"><a class="link-light text-decoration-none" href={createProfilePath(comment.profiles.username, comment.user_id)}>{comment.profiles.username}</a> <span class="text-secondary">{createdAtFormatted}</span></p>
         <span class="text-secondary-emphasis">{comment.content}</span>
     </div>
     {#if comment.is_owner}

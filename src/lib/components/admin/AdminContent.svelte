@@ -2,6 +2,7 @@
     import autoAnimate from "@formkit/auto-animate";
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
+    import { createProfilePath } from '$lib/utils/slugs.js';
     /** @type {{item: any, image_proxy: any}} */
     let { item, image_proxy, editContent, deleteContent } = $props();
 
@@ -231,7 +232,7 @@
     </a>
     <div class="card-body">
         <h5 class="card-title"><a href="/content/{item.id}" target="_blank" aria-label="Open Content"><i class="fas fa-solid fa-link"></i></a> {item.title}</h5>
-        <p class="card-text">By: <a href="/profile/{item.profiles.id}" target="_blank">{item.profiles.username}</a></p>
+        <p class="card-text">By: <a href={createProfilePath(item.profiles.username, item.profiles.id)} target="_blank">{item.profiles.username}</a></p>
         <p class="card-text" use:autoAnimate>
             {#if showFullDescription}
                 {@html item.description}
@@ -312,7 +313,7 @@
         <div class="collapse" id="profile-{item.id}">
             <div>
                 <h6>{item.profiles.username}</h6>
-                <p>id: <a href="/profile/{item.profiles.id}" target="_blank">{item.profiles.id}</a></p>
+                <p>id: <a href={createProfilePath(item.profiles.username, item.profiles.id)} target="_blank">{item.profiles.id}</a></p>
             </div>
         </div>
     </div>

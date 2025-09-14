@@ -14,7 +14,7 @@
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ShareButton from "$lib/components/layout/ShareButton.svelte";
     import RSSButton from "$lib/components/layout/RSSButton.svelte";
-    import { createChapterPath, createBookPath } from "$lib/utils/slugs.js";
+    import { createChapterPath, createBookPath, createProfilePath } from "$lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -33,6 +33,9 @@
         } = data)
     });
 
+    // Generate SEO-friendly URL for sharing
+    let chapterUrl = $derived(createChapterPath(chapterContent.book.title, chapterContent.book_id, chapterContent.title, chapterContent.id));
+    
     let likeActionActive = false;
     let reportActionActive = false;
     let commentsCount = $derived(chapterContent.comments.length);
@@ -281,7 +284,7 @@
     <div class="row justify-content-center text-center bg-purple-opacity-10 py-3 mb-3 rounded-4">
         <div class="col-12">
             <div class="row justify-content-center d-flex align-items-center">
-                <a href={"/profile/" + chapterContent.owner_id}
+                <a href={createProfilePath(chapterContent.profiles.username, chapterContent.owner_id)}
                    class="d-flex col-3 col-md-2 justify-content-center justify-content-xl-end pe-0 pe-md-1">
                     <UserAvatar url={chapterContent.profiles.avatar_url} username={chapterContent.profiles.username}
                                 id={chapterContent.owner_id} {image_proxy} link={false} size="75px"/>
@@ -291,7 +294,7 @@
                            href="{bookUrl}">{chapterContent.book.title}</a>: {chapterContent.title}
                     </h2>
                     <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none"
-                                           href="/profile/{chapterContent.owner_id}">{chapterContent.profiles.username}</a>
+                                           href={createProfilePath(chapterContent.profiles.username, chapterContent.owner_id)}>{chapterContent.profiles.username}</a>
                         - <span class="text-muted" use:tooltip={{...tooltipConfig}}
                                 title="{createdAtDetailed}">{createdAtFormatted}</span></h6>
                     {#if chapterContent.tags.length !== 0}
@@ -331,7 +334,7 @@
                         {#if chapterContent.chapter_likes && chapterContent.chapter_likes.length > 0}
                             {#each chapterContent.chapter_likes as like (like.id)}
                                 <li>
-                                    <a class="dropdown-item" href="/profile/{like.user_id}">
+                                    <a class="dropdown-item" href={createProfilePath(like.profiles.username, like.user_id)}>
                                         <span>
                                             <UserAvatarNavbar url={like.profiles.avatar_url}
                                                               username={like.profiles.username} {image_proxy}
@@ -374,7 +377,7 @@
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-auto d-flex align-items-center pe-2">
                     <ShareButton
-                            url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu/content/${chapterContent.book_id}/${chapterContent.id}`}
+                            url={typeof window !== 'undefined' ? window.location.href : `https://tales.archangelgca.eu${chapterUrl}`}
                             title="{chapterContent.book.title}: {chapterContent.title}"
                             description="Read this chapter on DreamingDragons!"
                     />
@@ -459,7 +462,7 @@
             <p class="text-secondary text-center">
                 <small>
                     &copy; {currentYear} <a class="link-secondary text-decoration-none"
-                                            href="/profile/{chapterContent.owner_id}" use:tooltip={{...tooltipConfig}}
+                                            href={createProfilePath(chapterContent.profiles.username, chapterContent.owner_id)} use:tooltip={{...tooltipConfig}}
                                             title="Profile">{chapterContent.profiles.username}</a>
                     - {chapterContent.book.title} - {chapterContent.title}
                 </small>

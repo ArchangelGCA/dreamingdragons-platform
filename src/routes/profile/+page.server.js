@@ -1,5 +1,6 @@
 import { PUBLIC_DEFAULT_NAME, PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
 import {error as errorx, redirect} from "@sveltejs/kit";
+import { createProfilePath } from '$lib/utils/slugs.js';
 
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();
@@ -9,7 +10,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         // Check if user is found in profiles, if not, create a new profile
         const { data: profile, error } = await supabase
             .from('profiles')
-            .select('id')
+            .select('id, username')
             .eq('id', session.user.id);
 
         if (error) {
@@ -36,9 +37,24 @@ export const load = async ( { locals: { supabase, getSession } }) => {
                 console.error('Error creating profile', errorCreation);
                 return errorx(500, "Error creating profile");
             }
+            
+            // Fetch the newly created profile to get the username for SEO-friendly URL
+            const { data: newProfile, error: fetchError } = await supabase
+                .from('profiles')
+                .select('username')
+                .eq('id', session.user.id)
+                .single();
+                
+            if (fetchError || !newProfile) {
+                console.error('Error fetching newly created profile', fetchError);
+                return redirect(302, createProfilePath(PUBLIC_DEFAULT_USERNAME + "-" + randomIdUsernameShort, session.user.id)); // Fallback with generated username
+            }
+            
+            return redirect(302, createProfilePath(newProfile.username, session.user.id));
         }
 
-        return redirect(302,'/profile/' + session.user.id);
+        // User exists, redirect to their SEO-friendly profile URL
+        return redirect(302, createProfilePath(profile[0].username, session.user.id));
     } else {
         return redirect(302,'/login');
     }
