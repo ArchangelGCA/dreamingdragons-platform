@@ -2,6 +2,7 @@
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { tooltip } from "@svelte-plugins/tooltips";
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
+    import { goto } from '$app/navigation';
 
     /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any}} */
     let {
@@ -16,9 +17,24 @@
     
     // Generate SEO-friendly URL
     const bookUrl = $derived(createBookPath(title, book_id));
+    
+    // Handle card click - navigate to book unless clicking on profile link
+    function handleCardClick(event) {
+        // Check if the clicked element or its parents contain the profile link
+        const profileLink = event.target.closest('a[href*="profile"]');
+        if (!profileLink) {
+            goto(bookUrl);
+        }
+    }
 </script>
 
-<div class="card border-0 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
+<div class="card border-0 img-home w-100 rounded-4 cursor-pointer" 
+     use:tooltip={{...tooltipConfig}} 
+     title="View" 
+     onclick={handleCardClick}
+     role="button"
+     tabindex="0"
+     onkeydown={(e) => e.key === 'Enter' && handleCardClick(e)}>
     <div class="d-none">
         {description}
     </div>
@@ -43,16 +59,14 @@
                 style="object-fit: cover; position: absolute; top: 0; left: 0;">
         {/if}
     </div>
-    <a href="{bookUrl}">
-        <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
-            <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">
-                <div class="col-12">
-                    <button class="btn btn-link p-0 link-light text-decoration-none text-wrap" href="{bookUrl}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{title}</span></button>
-                    <p class="card-text"><small class="text-muted">Posted by <a class="btn btn-link p-0 link-light text-decoration-none" href={createProfilePath(owner_username, owner_id)} use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
-                </div>
+    <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
+        <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">
+            <div class="col-12">
+                <a class="btn btn-link p-0 link-light text-decoration-none text-wrap" href="{bookUrl}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{title}</span></a>
+                <p class="card-text"><small class="text-muted">Posted by <a class="btn btn-link p-0 link-light text-decoration-none" href={createProfilePath(owner_username, owner_id)} use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
             </div>
         </div>
-    </a>
+    </div>
 </div>
 
 <style>
@@ -81,6 +95,10 @@
 
     .card:hover {
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
     }
 
 </style>
