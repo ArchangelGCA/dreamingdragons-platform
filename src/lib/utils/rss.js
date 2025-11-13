@@ -71,15 +71,15 @@ export function generateBookRSSItem(book) {
     const guid = `${SITE_URL}${createBookPath(book.title, book.id)}`;
     const coverURL = book.cover_url ? `${PUBLIC_IMAGE_PROXY_URL}${book.cover_url}?width=1024&quality=80` : '';
 
+    let finalDescription = description;
+    if (coverURL) {
+        finalDescription = `<img src="${coverURL}" alt="${title}" /><br /><br />${description}`;
+    }
+
     return `    <item>
         <title><![CDATA[${title} by ${author}]]></title>
-        <description><![CDATA[${description}]]></description>
+        <description><![CDATA[${finalDescription}]]></description>
         <link>${link}</link>
-        <image>
-            <url>${coverURL}</url>
-            <title><![CDATA[${title}]]></title>
-            <link>${link}</link>
-        </image>
         <guid isPermaLink="true">${guid}</guid>
         <pubDate>${pubDate}</pubDate>
         <author>${escapeHTML(author)}</author>
@@ -102,15 +102,15 @@ export function generateChapterRSSItem(chapter) {
     const guid = `${SITE_URL}${createChapterPath(bookTitle, chapter.book_id, chapter.title, chapter.id)}`;
     const bookCoverURL = chapter.book?.cover_url ? `${PUBLIC_IMAGE_PROXY_URL}${chapter.book.cover_url}?width=1024&quality=80` : '';
 
+    let finalDescription = description;
+    if (bookCoverURL) {
+        finalDescription = `<img src="${bookCoverURL}" alt="${title}" /><br /><br />${description}`;
+    }
+
     return `    <item>
         <title><![CDATA[${bookTitle}: ${title}]]></title>
-        <description><![CDATA[${description}]]></description>
+        <description><![CDATA[${finalDescription}]]></description>
         <link>${link}</link>
-        <image>
-            <url>${bookCoverURL}</url>
-            <title><![CDATA[${bookTitle}]]></title>
-            <link>${link}</link>
-        </image>
         <guid isPermaLink="true">${guid}</guid>
         <pubDate>${pubDate}</pubDate>
         <author>${escapeHTML(author)}</author>
