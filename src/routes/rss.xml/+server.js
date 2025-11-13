@@ -13,14 +13,14 @@ export const GET = async ({ locals: { supabase } }) => {
         const [booksResult, chaptersResult] = await Promise.all([
             supabase
                 .from('book')
-                .select('id, title, owner_id, created_at, profiles!book_owner_id_fkey(username)')
+                .select('id, title, owner_id, created_at, cover_url, profiles!book_owner_id_fkey(username)')
                 .eq('hidden', false)
                 .order('created_at', { ascending: false })
                 .limit(25),
                 
             supabase
                 .from('chapters')
-                .select('id, title, book_id, owner_id, created_at, book!chapters_book_id_fkey(id, title), profiles!chapters_owner_id_fkey(username)')
+                .select('id, title, book_id, owner_id, created_at, book!chapters_book_id_fkey(id, cover_url, title), profiles!chapters_owner_id_fkey(username)')
                 .order('created_at', { ascending: false })
                 .limit(25)
         ]);

@@ -1,5 +1,6 @@
 import { createBookPath, createChapterPath } from './slugs.js';
 import {ORIGIN} from "$env/static/private";
+import { PUBLIC_IMAGE_PROXY_URL } from '$env/static/public';
 
 
 const SITE_URL = ORIGIN || 'https://tales.archangelgca.eu';
@@ -68,11 +69,17 @@ export function generateBookRSSItem(book) {
     const link = `${SITE_URL}${createBookPath(book.title, book.id)}`;
     const pubDate = new Date(book.created_at).toUTCString();
     const guid = `${SITE_URL}${createBookPath(book.title, book.id)}`;
+    const coverURL = book.cover_url ? `${PUBLIC_IMAGE_PROXY_URL}${book.cover_url}?width=1024&quality=80` : '';
 
     return `    <item>
         <title><![CDATA[${title} by ${author}]]></title>
         <description><![CDATA[${description}]]></description>
         <link>${link}</link>
+        <image>
+            <url>${coverURL}</url>
+            <title><![CDATA[${title}]]></title>
+            <link>${link}</link>
+        </image>
         <guid isPermaLink="true">${guid}</guid>
         <pubDate>${pubDate}</pubDate>
         <author>${escapeHTML(author)}</author>
@@ -93,11 +100,17 @@ export function generateChapterRSSItem(chapter) {
     const link = `${SITE_URL}${createChapterPath(bookTitle, chapter.book_id, chapter.title, chapter.id)}`;
     const pubDate = new Date(chapter.created_at).toUTCString();
     const guid = `${SITE_URL}${createChapterPath(bookTitle, chapter.book_id, chapter.title, chapter.id)}`;
+    const bookCoverURL = chapter.book?.cover_url ? `${PUBLIC_IMAGE_PROXY_URL}${chapter.book.cover_url}?width=1024&quality=80` : '';
 
     return `    <item>
         <title><![CDATA[${bookTitle}: ${title}]]></title>
         <description><![CDATA[${description}]]></description>
         <link>${link}</link>
+        <image>
+            <url>${bookCoverURL}</url>
+            <title><![CDATA[${bookTitle}]]></title>
+            <link>${link}</link>
+        </image>
         <guid isPermaLink="true">${guid}</guid>
         <pubDate>${pubDate}</pubDate>
         <author>${escapeHTML(author)}</author>
