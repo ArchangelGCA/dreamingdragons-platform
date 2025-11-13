@@ -75,7 +75,7 @@ export function generateBookRSSItem(book) {
         <link>${link}</link>
         <guid isPermaLink="true">${guid}</guid>
         <pubDate>${pubDate}</pubDate>
-        <author>contact@archangelgca.eu (${escapeHTML(author)})</author>
+        <author>${escapeHTML(author)}</author>
         <category>Books, Artworks</category>
     </item>`;
 }
@@ -100,7 +100,7 @@ export function generateChapterRSSItem(chapter) {
         <link>${link}</link>
         <guid isPermaLink="true">${guid}</guid>
         <pubDate>${pubDate}</pubDate>
-        <author>contact@archangelgca.eu (${escapeHTML(author)})</author>
+        <author>${escapeHTML(author)}</author>
         <category>Chapters</category>
     </item>`;
 }
@@ -126,7 +126,7 @@ export function generateUserActivityRSSItem(activity, username) {
         <link>${link}</link>
         <guid isPermaLink="false">${guid}</guid>
         <pubDate>${pubDate}</pubDate>
-        <author>contact@archangelgca.eu (${escapeHTML(username)})</author>
+        <author>${escapeHTML(username)}</author>
         <category>User Activity</category>
     </item>`;
 }
@@ -150,7 +150,7 @@ export function generateUserBookRSSItem(book, username) {
         <link>${link}</link>
         <guid isPermaLink="true">${guid}</guid>
         <pubDate>${pubDate}</pubDate>
-        <author>contact@archangelgca.eu (${escapeHTML(username)})</author>
+        <author>${escapeHTML(username)}</author>
         <category>Published</category>
     </item>`;
 }
