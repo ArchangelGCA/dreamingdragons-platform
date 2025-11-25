@@ -168,9 +168,9 @@
     const notificationsRangeStep = 20;
 
     let notificationsCount = $derived(notifications.filter(notification => notification.watched === false).length);
-    let allNotificationsLoaded = false;
+    let allNotificationsLoaded = $state(false);
 
-    let loading = false;
+    let loading = $state(false);
     let notificationsStart = 0;
     let notificationsEnd = notificationsRangeStep;
 
@@ -405,22 +405,70 @@
     </div>
     <!-- End Navbar -->
 
-    <div class="offcanvas offcanvas-end rounded-4 p-2 my-2 me-lg-2" tabindex="-1" id="notifications"
-         aria-labelledby="notifications">
-        <div class="offcanvas-header bg-light bg-opacity-25 rounded-4">
-            <h5 class="offcanvas-title mt-1">Notifications</h5>
-            <button type="button" class="btn-close me-1" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    <div class="offcanvas offcanvas-end notifications-offcanvas" tabindex="-1" id="notifications"
+         aria-labelledby="notificationsTitle">
+        <!-- Modern Header -->
+        <div class="offcanvas-header notifications-header">
+            <div class="d-flex align-items-center gap-2">
+                <div class="notifications-header-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div>
+                    <h5 class="offcanvas-title mb-0" id="notificationsTitle">Notifications</h5>
+                    {#if notificationsCount > 0}
+                        <span class="notifications-subtitle">{notificationsCount} unread</span>
+                    {/if}
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                {#if notifications && notifications.length > 0 && notificationsCount > 0}
+                    <button 
+                        type="button" 
+                        class="btn btn-sm notifications-mark-read"
+                        onclick={setNotificationsAsRead}
+                        title="Mark all as read"
+                    >
+                        <i class="fas fa-check-double"></i>
+                    </button>
+                {/if}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
         </div>
-        <div class="offcanvas-body" onscroll={handleScroll}>
+        
+        <!-- Notifications Body -->
+        <div class="offcanvas-body notifications-body" onscroll={handleScroll}>
             {#if notifications && notifications !== null && notifications.length !== 0}
-                {#each notifications as notification (notification.id)}
-                    <Notification {notification} {supabase} {session}/>
-                {/each}
-            {:else}
-                <div class="row border border-light-subtle rounded-3 p-2 mb-2">
-                    <div class="col">
-                        <p class="fs-6 text-center mb-auto">No notifications found.</p>
+                <div class="notifications-list">
+                    {#each notifications as notification (notification.id)}
+                        <Notification {notification} {supabase} {session}/>
+                    {/each}
+                </div>
+                
+                <!-- Loading indicator for infinite scroll -->
+                {#if loading}
+                    <div class="notifications-loading">
+                        <div class="spinner-border spinner-border-sm text-purple" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span>Loading more...</span>
                     </div>
+                {/if}
+                
+                <!-- End of notifications indicator -->
+                {#if allNotificationsLoaded && notifications.length > notificationsRangeStep}
+                    <div class="notifications-end">
+                        <i class="fas fa-check-circle"></i>
+                        <span>You've seen all notifications</span>
+                    </div>
+                {/if}
+            {:else}
+                <!-- Empty State -->
+                <div class="notifications-empty">
+                    <div class="notifications-empty-icon">
+                        <i class="fas fa-bell-slash"></i>
+                    </div>
+                    <h6 class="notifications-empty-title">All caught up!</h6>
+                    <p class="notifications-empty-text">No notifications yet. When you get interactions, they'll show up here.</p>
                 </div>
             {/if}
         </div>
@@ -645,6 +693,170 @@
     .offcanvas {
         background: linear-gradient(75deg, #0b0086, #410075);
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+    }
+
+    /* Modern Notifications Offcanvas Styles */
+    .notifications-offcanvas {
+        border-radius: 1rem 0 0 1rem;
+        border: none;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    .notifications-header {
+        background: linear-gradient(135deg, rgba(92, 0, 166, 0.4), rgba(11, 0, 134, 0.6));
+        border-bottom: 1px solid rgba(196, 0, 255, 0.2);
+        padding: 1rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notifications-header-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(196, 0, 255, 0.5), rgba(92, 0, 166, 0.8));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: #fff;
+    }
+
+    .notifications-subtitle {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .notifications-mark-read {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.8);
+        border-radius: 0.5rem;
+        padding: 0.375rem 0.625rem;
+        transition: all 0.2s ease;
+    }
+
+    .notifications-mark-read:hover {
+        background: rgba(196, 0, 255, 0.3);
+        border-color: rgba(196, 0, 255, 0.5);
+        color: #fff;
+    }
+
+    .notifications-body {
+        padding: 1rem;
+        background: linear-gradient(180deg, rgba(11, 0, 134, 0.3), transparent 50%);
+    }
+
+    .notifications-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .notifications-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
+    }
+
+    .notifications-loading .spinner-border {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .text-purple {
+        color: #c400ff !important;
+    }
+
+    .notifications-end {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.8rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 0.5rem;
+    }
+
+    .notifications-end i {
+        color: rgba(25, 135, 84, 0.7);
+    }
+
+    .notifications-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 3rem 1.5rem;
+        height: 100%;
+        min-height: 300px;
+    }
+
+    .notifications-empty-icon {
+        width: 5rem;
+        height: 5rem;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(92, 0, 166, 0.3), rgba(11, 0, 134, 0.4));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-bottom: 1.5rem;
+    }
+
+    .notifications-empty-title {
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .notifications-empty-text {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.875rem;
+        margin: 0;
+        max-width: 250px;
+    }
+
+    /* Mobile responsiveness for notifications */
+    @media (max-width: 576px) {
+        .notifications-offcanvas {
+            max-width: 100%;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .notifications-header {
+            padding: 0.875rem 1rem;
+        }
+
+        .notifications-header-icon {
+            width: 2.25rem;
+            height: 2.25rem;
+            font-size: 0.9rem;
+        }
+
+        .notifications-body {
+            padding: 0.75rem;
+        }
+
+        .notifications-empty {
+            padding: 2rem 1rem;
+            min-height: 250px;
+        }
+
+        .notifications-empty-icon {
+            width: 4rem;
+            height: 4rem;
+            font-size: 1.5rem;
+        }
     }
 
     .link-purple {
