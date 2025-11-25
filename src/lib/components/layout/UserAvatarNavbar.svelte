@@ -28,7 +28,7 @@
 <!-- Circle avatar, using Bootstrap 5 classes -->
 {#if !isAvatarLoaded}
     <div 
-        class="avatar-fallback d-flex align-items-center justify-content-center rounded-circle {classes}"
+        class="avatar-fallback d-inline-flex align-items-center justify-content-center rounded-circle {classes}"
         style="width: {size}; height: {size}; font-size: {fontSize}px;"
         title="{username}"
         aria-label="{username}'s avatar"
