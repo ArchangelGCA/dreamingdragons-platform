@@ -239,10 +239,11 @@
                             onclick={(e) => e.stopPropagation()}
                             use:tooltip={{...tooltipConfig}} title="Click to view"><span
                             class="text-title">{finalBookTitle}</span></button>
-                    <p class="card-text"><small class="text-description"><span>
-                        <UserAvatarNavbar url={profileData.avatar_url} username={profileData.username}
-                                          {image_proxy} size="25px"/>
-                    </span>
+                    <p class="card-text mb-0"><small class="text-description d-flex align-items-center gap-1 flex-wrap">
+                        <span class="d-inline-flex align-items-center">
+                            <UserAvatarNavbar url={profileData.avatar_url} username={profileData.username}
+                                              {image_proxy} size="25px"/>
+                        </span>
                         <button
                                 class="btn btn-link p-0 link-light link-custom text-decoration-none"
                                 onclick={handleProfileClick}

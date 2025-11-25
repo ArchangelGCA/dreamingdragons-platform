@@ -17,6 +17,13 @@
     let isDragging = false;
     let dragTimeout;
 
+    // Get the first letter of the username for the fallback avatar
+    let initial = $derived(username && username.length > 0 ? username.charAt(0).toUpperCase() : '?');
+    
+    // Parse size to get numeric value for font size calculation
+    let sizeNum = $derived(parseInt(size) || 100);
+    let fontSize = $derived(Math.round(sizeNum * 0.45));
+
     // Prevent clicking while dragging.
     function handlePointerDown() {
         isDragging = false;
@@ -52,8 +59,11 @@
         <a href={createProfilePath(username, id)} class="text-decoration-none" draggable="false"
            aria-label="View profile of {username}">
             {#if !isAvatarLoaded}
-                <div class="placeholder-glow" style="width: {size}; height: {size};">
-                    <div class="placeholder rounded-circle w-100 h-100"></div>
+                <div 
+                    class="avatar-fallback d-flex align-items-center justify-content-center rounded-circle"
+                    style="width: {size}; height: {size}; font-size: {fontSize}px;"
+                >
+                    <span class="avatar-initial">{initial}</span>
                 </div>
             {:else}
                 {@const baseUrl = !url.startsWith(image_proxy) ? image_proxy + url : url}
@@ -70,8 +80,11 @@
         </a>
     {:else}
         {#if !isAvatarLoaded}
-            <div class="placeholder-glow" style="width: {size}; height: {size};">
-                <div class="placeholder rounded-circle w-100 h-100"></div>
+            <div 
+                class="avatar-fallback d-flex align-items-center justify-content-center rounded-circle"
+                style="width: {size}; height: {size}; font-size: {fontSize}px;"
+            >
+                <span class="avatar-initial">{initial}</span>
             </div>
         {:else}
             {@const baseUrl = !url.startsWith(image_proxy) ? image_proxy + url : url}
@@ -96,5 +109,25 @@
 
     .avatar-style:hover {
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+    }
+
+    .avatar-fallback {
+        background: linear-gradient(135deg, #5c00a6 0%, #8b00d4 50%, #5c00a6 100%);
+        border: 2px solid rgba(196, 0, 255, 0.4);
+        box-shadow: 0 0 0.3rem 0.1rem rgba(92, 0, 166, 0.4);
+        transition: all 0.15s ease-in-out;
+        user-select: none;
+    }
+
+    .avatar-fallback:hover {
+        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        border-color: rgba(196, 0, 255, 0.7);
+    }
+
+    .avatar-initial {
+        color: #ffffff;
+        font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        line-height: 1;
     }
 </style>

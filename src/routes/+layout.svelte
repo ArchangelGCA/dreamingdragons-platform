@@ -300,28 +300,26 @@
         </div>
         <!-- Notifications & Profile -->
         <div class="col-4 col-md-3 col-xxl-4 text-end ps-0">
-            <div class="row align-items-center" use:autoAnimate>
+            <div class="d-flex align-items-center justify-content-end gap-2 gap-md-3 flex-nowrap" use:autoAnimate>
                 {#if notificationsCount !== 0}
-                    <div class="col pe-3 mt-1">
-                        <div class="position-relative">
-                            <button class="btn border border-0 p-0 bg-transparent"
-                                    onclick={() => setNotificationsAsRead()} onkeydown={() => setNotificationsAsRead()}
-                                    aria-label="View notifications">
-                                <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas"
-                                   data-bs-target="#notifications" aria-controls="notifications"></i>
-                            </button>
-                            <span class="position-absolute top-0 start-100 mt-1 ms-2 translate-middle badge rounded-pill bg-danger">{notificationsCount}</span>
-                        </div>
+                    <div class="position-relative flex-shrink-0">
+                        <button class="btn border border-0 p-0 bg-transparent"
+                                onclick={() => setNotificationsAsRead()} onkeydown={() => setNotificationsAsRead()}
+                                aria-label="View notifications">
+                            <i class="fas fa-bell" id="notificationBell" data-bs-toggle="offcanvas"
+                               data-bs-target="#notifications" aria-controls="notifications"></i>
+                        </button>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge">{notificationsCount}</span>
                     </div>
                 {:else}
-                    <div class="col pe-1">
-                        <i class="fas fa-bell mt-2" id="notificationBell" data-bs-toggle="offcanvas"
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-bell" id="notificationBell" data-bs-toggle="offcanvas"
                            data-bs-target="#notifications" aria-controls="notifications"></i>
                     </div>
                 {/if}
                 <!-- Upload -->
                 {#if session}
-                    <div class="col-auto pe-0 mt-1">
+                    <div class="flex-shrink-0">
                         <a class="link-animated rounded-3" href="/upload" aria-label="Upload"
                            data-sveltekit-preload-data="hover"
                            use:tooltip={{...tooltipConfig}} title="Upload">
@@ -330,9 +328,9 @@
                     </div>
                 {/if}
                 <!-- Profile -->
-                <div class="col-auto">
+                <div class="flex-shrink-0">
                     <div class="dropdown">
-                        <button class="btn btn-transparent py-0 pt-1 ps-0 pe-1" type="button" id="profileDropdown"
+                        <button class="btn btn-transparent py-0 ps-0 pe-0" type="button" id="profileDropdown"
                                 data-bs-toggle="dropdown" aria-expanded="false" aria-label="Profile Menu Button"
                                 use:autoAnimate>
                             {#if !userData || userData === null || userData.avatar_url === null || userData.avatar_url === ''}
@@ -662,6 +660,24 @@
         font-size: 1.1rem;
     }
 
+    .notification-badge {
+        font-size: 0.65rem;
+        min-width: 1rem;
+        padding: 0.15rem 0.35rem;
+    }
+
+    @media (max-width: 576px) {
+        #notificationBell {
+            font-size: 1rem;
+        }
+        
+        .notification-badge {
+            font-size: 0.55rem;
+            min-width: 0.85rem;
+            padding: 0.1rem 0.25rem;
+        }
+    }
+
     .btn-transparent {
         background-color: transparent;
         color: #ffffff;
@@ -675,8 +691,9 @@
 
     .link-animated {
         color: #ffffff;
-        animation: link-animation 2s ease-in-out infinite alternate;
+        padding: 0.25rem 0.5rem;
         transition: all 0.12s ease-in-out;
+        animation: glow-breathing 2.5s ease-in-out infinite;
     }
 
     .fa-upload, .fa-bell {
@@ -688,6 +705,12 @@
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
         background-color: #5c00a6;
         border-radius: 0.25rem;
+    }
+
+    .link-animated:hover {
+        animation: none;
+        box-shadow: 0 0 0.8rem 0.3rem rgba(196, 0, 255, 0.8);
+        background-color: rgba(92, 0, 166, 0.5);
     }
 
     .logo {
@@ -704,15 +727,25 @@
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
     }
 
-    /* Link animation (small glowing text effect) */
-    @keyframes link-animation {
+    /* Link animation (smooth glowing breathing effect for icons) */
+    @keyframes glow-breathing {
+        0%, 100% {
+            box-shadow: 0 0 0.2rem 0.1rem rgba(196, 0, 255, 0.3);
+        }
+        50% {
+            box-shadow: 0 0 0.6rem 0.25rem rgba(196, 0, 255, 0.6);
+        }
+    }
+
+    /* Deprecated: Old link-animation that caused visual glitches */
+    /* @keyframes link-animation {
         from {
             text-shadow: 0 0 0.1rem #c400ff, 0 0 0.1rem #c400ff, 0 0 0.1rem #c400ff;
         }
         to {
             text-shadow: 0 0 1rem #c400ff, 0 0 1rem #c400ff, 0 0 1rem #c400ff;
         }
-    }
+    } */
 
     @keyframes Gradient-Register {
         0% {
