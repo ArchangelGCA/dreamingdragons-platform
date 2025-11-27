@@ -1,6 +1,6 @@
 {
   "name": "dd-tales-svelte",
-  "version": "0.4.10",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "dev": "vite dev",
