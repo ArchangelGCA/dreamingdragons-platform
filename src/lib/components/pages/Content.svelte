@@ -2,10 +2,12 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
+    import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
+    import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
 
-    /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any, chapter_count?: number}} */
+    /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any, chapter_count?: number, likes?: number}} */
     let {
         owner_username = $bindable(),
         owner_id,
@@ -14,7 +16,8 @@
         book_cover_url = $bindable(),
         owner_avatar_url,
         image_proxy,
-        chapter_count = 0
+        chapter_count = 0,
+        likes = 0
     } = $props();
 
     let isDragging = false;
@@ -55,9 +58,12 @@
     }
 </script>
 
+<PopularGlow {likes} class="rounded-4 w-100">
 <div class="card border-0 img-home w-100 rounded-4">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 35vh; overflow: hidden;">
+        <!-- Popular Badge -->
+        <PopularBadge {likes} size="sm" position="top-left" />
         <!-- Content Type Badge -->
         {#if chapter_count > 0}
             <div class="content-badge-wrapper">
@@ -88,6 +94,7 @@
         </div>
     </a>
 </div>
+</PopularGlow>
 
 <style>
     .content-badge-wrapper {

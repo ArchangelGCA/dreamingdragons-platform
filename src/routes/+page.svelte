@@ -168,6 +168,7 @@
                                      book_title={book.book_title} book_id={book.book_id}
                                      book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url}
                                      chapter_count={book.chapter_count ?? 0}
+                                     likes={book.likes_count ?? 0}
                                      {image_proxy}/>
                         </div>
                     {/each}
@@ -191,6 +192,7 @@
                                      book_title={book.book_title} book_id={book.book_id}
                                      book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url}
                                      chapter_count={book.chapter_count ?? 0}
+                                     likes={book.likes_count ?? 0}
                                      {image_proxy}/>
                         </div>
                     {/each}

@@ -5,6 +5,8 @@
     import {invalidateAll} from "$app/navigation";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createChapterPath } from "$lib/utils/slugs.js";
+    import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
+    import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
 
     /** @type {{content: any, image_proxy: any, index: any, user_id: any, bookTitle?: string}} */
     let {
@@ -87,10 +89,13 @@
     }
 </script>
 
+<PopularGlow likes={content.chapter_likes?.length ?? 0} class="rounded-4 w-100">
 <div class="card border-0 bg-black bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}}
      title="View">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
+        <!-- Popular Badge for chapters -->
+        <PopularBadge likes={content.chapter_likes?.length ?? 0} size="sm" position="top-left" />
         {#if finalLinkImage}
             <a href="{chapterUrl}">
                 <img src={finalLinkImage} alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy"
@@ -119,6 +124,7 @@
         </div>
     </a>
 </div>
+</PopularGlow>
 
 <style>
     .card {

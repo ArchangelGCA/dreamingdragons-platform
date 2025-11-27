@@ -7,6 +7,8 @@
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {createBookPath} from "$lib/utils/slugs.js";
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
+    import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
+    import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
 
     /** @type {{content: any, image_proxy: any}} */
     let {content = $bindable(), image_proxy} = $props();
@@ -70,9 +72,12 @@
 </script>
 
 <div>
+    <PopularGlow likes={content.likes ?? 0} class="rounded-3">
     <div class="card border-0">
         <a href={bookUrl}>
             <div class="card-img position-relative" use:autoAnimate>
+                <!-- Popular Badge -->
+                <PopularBadge likes={content.likes ?? 0} size="sm" position="top-left" />
                 <!-- Content Type Badge -->
                 {#if chapterCount > 0}
                     <div class="content-badge-wrapper">
@@ -120,6 +125,7 @@
             </div>
         </a>
     </div>
+    </PopularGlow>
 </div>
 
 <style>

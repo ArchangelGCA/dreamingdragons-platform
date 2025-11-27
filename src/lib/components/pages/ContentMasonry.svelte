@@ -2,6 +2,8 @@
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
+    import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
+    import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
     import autoAnimate from "@formkit/auto-animate";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
@@ -201,21 +203,24 @@
 </script>
 
 <div>
-    <div class="card border-0"
-         onclick={handleContentClick}
-         onkeydown={handleKeyDown}
-         tabindex="0"
-         role="button"
-         aria-label="View content: {finalBookTitle}"
-         style="cursor: pointer;">
-        <!-- 1x is for desktop, 2x is for mobile -->
-        <div class="card-img" use:autoAnimate>
-            <!-- Content Type Badge -->
-            {#if chapterCount > 0}
-                <div class="content-badge-wrapper">
-                    <ContentTypeBadge {chapterCount} size="sm" />
-                </div>
-            {/if}
+    <PopularGlow likes={normalizedBook.likes ?? 0} class="rounded-3">
+        <div class="card border-0"
+             onclick={handleContentClick}
+             onkeydown={handleKeyDown}
+             tabindex="0"
+             role="button"
+             aria-label="View content: {finalBookTitle}"
+             style="cursor: pointer;">
+            <!-- 1x is for desktop, 2x is for mobile -->
+            <div class="card-img" use:autoAnimate>
+                <!-- Popular Badge -->
+                <PopularBadge likes={normalizedBook.likes ?? 0} size="sm" position="top-left" />
+                <!-- Content Type Badge -->
+                {#if chapterCount > 0}
+                    <div class="content-badge-wrapper">
+                        <ContentTypeBadge {chapterCount} size="sm" />
+                    </div>
+                {/if}
             {#if !isImageLoaded}
                 <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
                     <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
@@ -285,6 +290,7 @@
             </div>
         </div>
     </div>
+    </PopularGlow>
 </div>
 
 <style>
