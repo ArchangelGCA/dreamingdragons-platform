@@ -28,6 +28,28 @@ export const load = async ( { url, locals: { supabase, /*getSession,*/ } }) => {
         }
     }
 
+    // Fetch chapter counts for all books in search results
+    if (searchResults && searchResults.length > 0) {
+        const bookIds = searchResults.map(book => book.book_id);
+        const { data: chapterCounts, error: chapterError } = await supabase
+            .from('chapters')
+            .select('book_id')
+            .in('book_id', bookIds);
+        
+        if (!chapterError && chapterCounts) {
+            // Count chapters per book
+            const countMap = {};
+            chapterCounts.forEach(chapter => {
+                countMap[chapter.book_id] = (countMap[chapter.book_id] || 0) + 1;
+            });
+            
+            // Attach chapter counts to search results
+            searchResults.forEach(book => {
+                book.chapter_count = countMap[book.book_id] || 0;
+            });
+        }
+    }
+
     results.searchResults = searchResults;
     results.title = partial_text + ' - DreamingDragons';
     results.partialText = partial_text;
@@ -64,6 +86,28 @@ export const actions = {
                 body: {
                     message: error.message
                 }
+            }
+        }
+
+        // Fetch chapter counts for all books in search results
+        if (searchResults && searchResults.length > 0) {
+            const bookIds = searchResults.map(book => book.book_id);
+            const { data: chapterCounts, error: chapterError } = await supabase
+                .from('chapters')
+                .select('book_id')
+                .in('book_id', bookIds);
+            
+            if (!chapterError && chapterCounts) {
+                // Count chapters per book
+                const countMap = {};
+                chapterCounts.forEach(chapter => {
+                    countMap[chapter.book_id] = (countMap[chapter.book_id] || 0) + 1;
+                });
+                
+                // Attach chapter counts to search results
+                searchResults.forEach(book => {
+                    book.chapter_count = countMap[book.book_id] || 0;
+                });
             }
         }
 

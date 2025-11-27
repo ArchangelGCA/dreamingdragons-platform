@@ -17,19 +17,46 @@ export const load = async ({locals: {supabase, getSession}}) => {
             .select('*')
             .range(startRange, endRange);
         if (error) throw error;
-        return data;
+        
+        // Fetch chapter counts for each book
+        if (data.length > 0) {
+            const bookIds = data.map(book => book.book_id);
+            const {data: chapterCounts, error: chapterError} = await supabase
+                .from('chapters')
+                .select('book_id')
+                .in('book_id', bookIds);
+            
+            if (!chapterError && chapterCounts) {
+                // Count chapters per book_id
+                const countMap = chapterCounts.reduce((acc, ch) => {
+                    acc[ch.book_id] = (acc[ch.book_id] || 0) + 1;
+                    return acc;
+                }, {});
+                
+                return data.map(book => ({
+                    ...book,
+                    chapter_count: countMap[book.book_id] || 0
+                }));
+            }
+        }
+        
+        return data.map(book => ({...book, chapter_count: 0}));
     }
 
     const fetchCreatedAtBooks = async () => {
         const {data, error} = await supabase
             .from('book')
-            .select('id, owner_id, title, cover_url, created_at, hidden, profiles!book_owner_id_fkey(id,username, avatar_url), book_likes(user_id)')
+            .select('id, owner_id, title, cover_url, created_at, hidden, profiles!book_owner_id_fkey(id,username, avatar_url), book_likes(user_id), chapters(count)')
             .order('created_at', {ascending: false})
             .eq('hidden', false)
             .range(startRange, endRange);
 
         if (error) throw error;
-        return data;
+        // Process chapter counts
+        return data.map(book => ({
+            ...book,
+            chapter_count: book.chapters?.[0]?.count ?? 0
+        }));
     }
 
     let books_ordered_by_likes, books_ordered_by_created_at, books_ordered_by_latest_chapter;
@@ -138,7 +165,7 @@ export const actions = {
 
         let {data: books, error} = await supabase
             .from('book')
-            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url), book_likes(user_id)')
+            .select('id, owner_id, title, cover_url, created_at, profiles!book_owner_id_fkey(id,username, avatar_url), book_likes(user_id), chapters(count)')
             .order('created_at', {ascending: false})
             .eq('hidden', false)
             .range(startRange, endRange);
@@ -157,16 +184,18 @@ export const actions = {
             books = books.slice(0, 40);
         }
 
-        // Process like information
+        // Process like information and chapter counts
         if (session) {
             books.forEach(book => {
                 book.is_liked = book.book_likes.some(like => like.user_id === session.user.id);
                 book.likes = book.book_likes.length;
+                book.chapter_count = book.chapters?.[0]?.count ?? 0;
             });
         } else {
             books.forEach(book => {
                 book.is_liked = false;
                 book.likes = book.book_likes.length;
+                book.chapter_count = book.chapters?.[0]?.count ?? 0;
             });
         }
 

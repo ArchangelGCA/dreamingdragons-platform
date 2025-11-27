@@ -3,8 +3,9 @@
     import { tooltip } from "@svelte-plugins/tooltips";
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
     import { goto } from '$app/navigation';
+    import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
 
-    /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any}} */
+    /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any, chapter_count?: number}} */
     let {
         owner_username,
         owner_id,
@@ -12,7 +13,8 @@
         book_id,
         book_cover_url,
         description,
-        image_proxy
+        image_proxy,
+        chapter_count = 0
     } = $props();
     
     // Generate SEO-friendly URL
@@ -40,6 +42,12 @@
     </div>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
+        <!-- Content Type Badge -->
+        {#if chapter_count > 0}
+            <div class="content-badge-wrapper">
+                <ContentTypeBadge chapterCount={chapter_count} size="md" />
+            </div>
+        {/if}
         {#if image_proxy && !book_cover_url.startsWith(image_proxy)}
             {@const baseUrl = image_proxy + book_cover_url}
             <img 
@@ -70,6 +78,13 @@
 </div>
 
 <style>
+    .content-badge-wrapper {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 10;
+    }
+
     .overlay-custom {
         transition: 0.15s all ease-in-out;
         opacity: 0;

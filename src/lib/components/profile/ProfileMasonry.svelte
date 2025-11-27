@@ -6,6 +6,7 @@
     import autoAnimate from "@formkit/auto-animate";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {createBookPath} from "$lib/utils/slugs.js";
+    import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
 
     /** @type {{content: any, image_proxy: any}} */
     let {content = $bindable(), image_proxy} = $props();
@@ -14,6 +15,7 @@
     let finalLinkImage = $derived(image_proxy && !content.cover_url.startsWith(image_proxy) ? image_proxy + content.cover_url + '?width=750&quality=80' : content.cover_url);
     let finalBookTitle = $derived(content.title.length > 35 ? content.title.substring(0, 35) + '...' : content.title);
     let isImageLoaded = $state(false);
+    let chapterCount = $derived(content.chapter_count ?? 0);
     
     // Generate SEO-friendly URL
     let bookUrl = $derived(createBookPath(content.title, content.id));
@@ -70,7 +72,13 @@
 <div>
     <div class="card border-0">
         <a href={bookUrl}>
-            <div class="card-img" use:autoAnimate>
+            <div class="card-img position-relative" use:autoAnimate>
+                <!-- Content Type Badge -->
+                {#if chapterCount > 0}
+                    <div class="content-badge-wrapper">
+                        <ContentTypeBadge {chapterCount} size="sm" />
+                    </div>
+                {/if}
                 {#if !isImageLoaded}
                     <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
                         <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
@@ -115,6 +123,13 @@
 </div>
 
 <style>
+    .content-badge-wrapper {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 10;
+    }
+
     .card {
         transition: 0.12s all ease-in-out;
     }

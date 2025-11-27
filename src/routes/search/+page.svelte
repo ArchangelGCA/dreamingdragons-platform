@@ -152,7 +152,7 @@
                             <div class="row g-3 justify-content-center" use:autoAnimate>
                                 {#each books as book (book.book_id)}
                                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                                        <BookSearch owner_username={book.owner_username} owner_id={book.owner_id} title={book.book_title} book_id={book.book_id} description={book.book_description} book_cover_url={book.book_cover_url} {image_proxy}/>
+                                        <BookSearch owner_username={book.owner_username} owner_id={book.owner_id} title={book.book_title} book_id={book.book_id} description={book.book_description} book_cover_url={book.book_cover_url} {image_proxy} chapter_count={book.chapter_count ?? 0}/>
                                     </div>
                                 {/each}
                             </div>

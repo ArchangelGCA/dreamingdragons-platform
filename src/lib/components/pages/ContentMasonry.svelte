@@ -1,6 +1,7 @@
 <script>
     import {tooltip} from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
     import autoAnimate from "@formkit/auto-animate";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
@@ -25,6 +26,7 @@
     let finalLinkImage = $derived(image_proxy && !normalizedBook.cover_url.startsWith(image_proxy) ? image_proxy + normalizedBook.cover_url : normalizedBook.cover_url);
     let finalBookTitle = $derived(normalizedBook.title && normalizedBook.title.length > 20 ? normalizedBook.title.substring(0, 18) + '...' : (normalizedBook.title || 'Untitled'));
     let finalUsername = $derived(profileData.username && profileData.username.length > 16 ? profileData.username.substring(0, 15) + '...' : (profileData.username || 'Unknown'));
+    let chapterCount = $derived(normalizedBook.chapter_count ?? 0);
     let isImageLoaded = $state(false);
     let likeActionActive = $state(false);
 
@@ -208,6 +210,12 @@
          style="cursor: pointer;">
         <!-- 1x is for desktop, 2x is for mobile -->
         <div class="card-img" use:autoAnimate>
+            <!-- Content Type Badge -->
+            {#if chapterCount > 0}
+                <div class="content-badge-wrapper">
+                    <ContentTypeBadge {chapterCount} size="sm" />
+                </div>
+            {/if}
             {#if !isImageLoaded}
                 <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
                     <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
@@ -280,6 +288,17 @@
 </div>
 
 <style>
+    .card-img {
+        position: relative;
+    }
+
+    .content-badge-wrapper {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 10;
+    }
+
     .overlay-custom {
         transition: 0.15s all ease-in-out;
         opacity: 0;

@@ -6,31 +6,41 @@ import { extractProfileId, isValidProfileParam, getCanonicalProfileUrl } from '$
 async function fetchBooksLiked(startRange, endRange, profileId, supabase) {
     const { data, error } = await supabase
         .from('book_likes')
-        .select('book_id, book!id(id, title, cover_url, owner_id, created_at, hidden, book_likes(user_id), profiles:owner_id(id, username, avatar_url))')
+        .select('book_id, book!id(id, title, cover_url, owner_id, created_at, hidden, book_likes(user_id), profiles:owner_id(id, username, avatar_url), chapters(count))')
         .eq('user_id', profileId)
         .order('created_at', { ascending: false })
         .range(startRange, endRange);
 
     if (error) throw error;
-    return data;
+    
+    // Process chapter counts for liked books
+    return data.map(item => ({
+        ...item,
+        book: item.book ? {
+            ...item.book,
+            chapter_count: item.book.chapters?.[0]?.count ?? 0
+        } : item.book
+    }));
 }
 
 // Async function to get books + likes + owner related to them, from range start to end, from book
 async function fetchBooks(startRange, endRange, profileId, supabase) {
     const { data, error } = await supabase
         .from('book')
-        .select('id, title, owner_id, cover_url, created_at, book_likes(user_id)')
+        .select('id, title, owner_id, cover_url, created_at, book_likes(user_id), chapters(count)')
         .eq('owner_id', profileId)
         .eq('hidden', false)
         .order('created_at', { ascending: false })
         .range(startRange, endRange);
 
-    // is_liked for each book
+    if (error) throw error;
+
+    // is_liked and chapter_count for each book
     for (let i = 0; i < data.length; i++) {
         data[i].is_liked = data[i].book_likes.some(like => like.user_id === profileId);
+        data[i].chapter_count = data[i].chapters?.[0]?.count ?? 0;
     }
 
-    if (error) throw error;
     return data;
 }
 
@@ -74,7 +84,7 @@ export const load = async ({ params, url, locals: { supabase, getSession } }) =>
         const [profileData, likedBooks] = await Promise.all([
             supabase
                 .from('profiles')
-                .select('*, book!book_owner_id_fkey(id, title, owner_id, cover_url, created_at, hidden, book_likes(user_id)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id, username, avatar_url)), gallery(id, name, description, owner_id, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
+                .select('*, book!book_owner_id_fkey(id, title, owner_id, cover_url, created_at, hidden, book_likes(user_id), chapters(count)), followers!followers_following_id_fkey(follower_id, profiles!followers_follower_id_fkey(id, username, avatar_url)), gallery(id, name, description, owner_id, gallery_books(id, gallery_id, book_id, book(id, owner_id, title, cover_url, hidden)))')
                 .eq('id', profileId)
                 .order('created_at', { referencedTable: 'book', ascending: false }),
             fetchBooksLiked(startRange, endRange, profileId, supabase)
@@ -122,6 +132,7 @@ export const load = async ({ params, url, locals: { supabase, getSession } }) =>
                 results.profile.book[i].is_liked = false;
             }
             results.profile.book[i].likes = results.profile.book[i].book_likes.length;
+            results.profile.book[i].chapter_count = results.profile.book[i].chapters?.[0]?.count ?? 0;
             total_likes += results.profile.book[i].book_likes.length;
         }
         results.total_likes = total_likes;

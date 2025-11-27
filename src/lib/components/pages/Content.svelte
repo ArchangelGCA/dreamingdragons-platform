@@ -1,10 +1,11 @@
 <script>
     import { tooltip } from "@svelte-plugins/tooltips";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
 
-    /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any}} */
+    /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any, chapter_count?: number}} */
     let {
         owner_username = $bindable(),
         owner_id,
@@ -12,7 +13,8 @@
         book_id,
         book_cover_url = $bindable(),
         owner_avatar_url,
-        image_proxy
+        image_proxy,
+        chapter_count = 0
     } = $props();
 
     let isDragging = false;
@@ -56,6 +58,12 @@
 <div class="card border-0 img-home w-100 rounded-4">
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 35vh; overflow: hidden;">
+        <!-- Content Type Badge -->
+        {#if chapter_count > 0}
+            <div class="content-badge-wrapper">
+                <ContentTypeBadge chapterCount={chapter_count} size="sm" />
+            </div>
+        {/if}
         <img
                 srcset="{final_book_cover_url + '?width=350&quality=80'} 2x,
                         {final_book_cover_url + '?width=500&quality=80'} 1x"
@@ -82,6 +90,13 @@
 </div>
 
 <style>
+    .content-badge-wrapper {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 10;
+    }
+
     .card .link-custom {
         color: var(--bs-light) !important;
     }

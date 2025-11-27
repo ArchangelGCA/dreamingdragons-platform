@@ -167,6 +167,7 @@
                             <Content owner_username={book.owner_username} owner_id={book.owner_id}
                                      book_title={book.book_title} book_id={book.book_id}
                                      book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url}
+                                     chapter_count={book.chapter_count ?? 0}
                                      {image_proxy}/>
                         </div>
                     {/each}
@@ -189,6 +190,7 @@
                             <Content owner_username={book.owner_username} owner_id={book.owner_id}
                                      book_title={book.book_title} book_id={book.book_id}
                                      book_cover_url={book.book_cover_url} owner_avatar_url={book.owner_avatar_url}
+                                     chapter_count={book.chapter_count ?? 0}
                                      {image_proxy}/>
                         </div>
                     {/each}
