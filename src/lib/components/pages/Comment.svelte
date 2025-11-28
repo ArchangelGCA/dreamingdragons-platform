@@ -577,9 +577,10 @@
         }
 
         .avatar-section :global(img),
-        .avatar-section :global(.avatar-wrapper > *) {
+        .avatar-section :global(.avatar-fallback) {
             width: 32px !important;
             height: 32px !important;
+            font-size: 14px !important;
         }
 
         .thread-line {

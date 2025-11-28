@@ -71,9 +71,8 @@
                     srcset="{baseUrl}?width=375 2x, {baseUrl}?width=250 1x"
                     src="{baseUrl}?width=250"
                     alt='{username} Avatar' 
-                    class="rounded-circle avatar-style" 
-                    width={size} 
-                    height={size}
+                    class="rounded-circle avatar-style"
+                    style="width: {size}; height: {size};"
                     loading="lazy"
                     draggable="false">
             {/if}
@@ -92,9 +91,8 @@
                 srcset="{baseUrl}?width=375 2x, {baseUrl}?width=250 1x"
                 src="{baseUrl}?width=250"
                 alt='{username} Avatar' 
-                class="rounded-circle avatar-style" 
-                width={size} 
-                height={size}
+                class="rounded-circle avatar-style"
+                style="width: {size}; height: {size};"
                 loading="lazy"
                 draggable="false">
         {/if}
@@ -105,6 +103,8 @@
     .avatar-style {
         box-shadow: 0 0 0 0 rgba(92, 0, 166, 0.75);
         transition: all 0.15s ease-in-out;
+        object-fit: cover;
+        flex-shrink: 0;
     }
 
     .avatar-style:hover {
@@ -117,6 +117,7 @@
         box-shadow: 0 0 0.3rem 0.1rem rgba(92, 0, 166, 0.4);
         transition: all 0.15s ease-in-out;
         user-select: none;
+        flex-shrink: 0;
     }
 
     .avatar-fallback:hover {
