@@ -1,27 +1,14 @@
-# Work-in-progress - ritf-svelte
-
-## TODO:
-- Website design and layout.
-- Functionalities (Please read commits todo list).
+# Work-in-progress - DreamingDragons-Tales
 
 **Using a VPS would be the best option for hosting the website.**
 
-### Using a VPS:
-- Making a /static folder alongside the build nodeapp folder, and using NGINX make it public (route /static), this for storing **IMAGES** and **UPLOADED FILES**.
-- Deploying
+.env file isn't provided for now (not even .env.example), as well as the database schema. Please contact the repository owner for more information.
 
-## AUTHENTICATION:
-- We're using Supabase for authentication and database management. For users we're using the basic example: [Link](https://supabase.com/docs/guides/getting-started/tutorials/with-sveltekit)
+A production version of this project is hosted at: [https://tales.archangelgca.eu](https://tales.archangelgca.eu).
 
-## MANUAL REQUIREMENTS: [OUTDATED]
-- To run the project you must create a `.env` file in the root directory of the project and add the following environment variables:
-- Add to your static folder tinymce, you first [download](https://www.tiny.cloud/get-tiny/) it and then extract the zip, open folders `tinymce/js/tinymce` and move this last subfolder tinymce to `/static`.
+In the future we're planning to move our domain to https://dreamingdragons.net.
 
-#### Example .env: [OUTDATED]
-```env
-PUBLIC_SUPABASE_URL=https://<your_project_id>.supabase.co
-PUBLIC_SUPABASE_ANON_KEY=<your_public_anon_key>
-```
+Make sure to join our Disord server for more information: [Discord](https://discord.gg/u6qFjfDDy2).
 
 ## Developing
 
