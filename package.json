@@ -1,6 +1,6 @@
 {
   "name": "dd-tales-svelte",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "scripts": {
     "dev": "vite dev",
@@ -24,7 +24,7 @@
     "@tinymce/tinymce-svelte": "^3.2.0",
     "bootstrap": "^5.3.8",
     "jose": "^6.1.2",
-    "pocketbase": "^0.26.3",
+    "pocketbase": "^0.21.5",
     "resend": "^6.5.2",
     "super-sitemap": "^1.0.5",
     "svelte": "^5.45.2",
