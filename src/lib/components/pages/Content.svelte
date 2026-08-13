@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
     import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
@@ -85,10 +85,10 @@
             <div class="row custom-overlay-content justify-content-center rounded-bottom-2 p-2 pt-2 pt-md-3 mx-0">
                 <div class="col-12 px-0 px-md-2">
                     <button class="btn btn-link p-0 pb-1 link-light link-custom text-decoration-none text-wrap text-start" href="{bookUrl}"
-                       use:tooltip={{...tooltipConfig}} title="Click to view"><span class="text-title">{final_book_title}</span></button>
+                       use:tooltip={{...tooltipConfig, content: 'Click to view'}}><span class="text-title">{final_book_title}</span></button>
                     <p class="card-text"><small class="text-description"><span><UserAvatarNavbar url={owner_avatar_url} username={final_owner_username} {image_proxy} size="25px"/></span> <button
                             class="btn btn-link p-0 link-light link-custom text-decoration-none" href={createProfilePath(owner_username, owner_id)}
-                            use:tooltip={{...tooltipConfig}} title="Visit profile">{final_owner_username}</button></small></p>
+                            use:tooltip={{...tooltipConfig, content: 'Visit profile'}}>{final_owner_username}</button></small></p>
                 </div>
             </div>
         </div>

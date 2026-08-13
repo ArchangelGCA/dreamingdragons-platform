@@ -1,5 +1,5 @@
 <script>
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
@@ -97,8 +97,7 @@
                         class="{panic.is_active ? 'text-danger' : 'text-warning'}">{panic.is_active ? 'Enabled' : 'Disabled'}</span>
                 </h5>
                 <button class="btn btn-panic {isPanicAction ? 'disabled': ''}" onclick={handlePanic}
-                        use:tooltip={{...tooltipConfig}}
-                        title="Toggle panic mode">{panic.is_active ? 'Disable Panic Mode' : 'Enable Panic Mode'}</button>
+                        use:tooltip={{...tooltipConfig, content: 'Toggle panic mode'}}>{panic.is_active ? 'Disable Panic Mode' : 'Enable Panic Mode'}</button>
             </div>
         </div>
     </div>

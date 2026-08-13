@@ -6,7 +6,7 @@
     import {SvelteToast} from "$lib/components/svelte-toast";
     import autoAnimate from "@formkit/auto-animate";
     import Notification from "$lib/components/layout/Notification.svelte";
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import {page} from '$app/state';
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import {deserialize} from "$app/forms";
@@ -321,7 +321,7 @@
                     <div class="flex-shrink-0">
                         <a class="link-animated rounded-3" href="/upload" aria-label="Upload"
                            data-sveltekit-preload-data="hover"
-                           use:tooltip={{...tooltipConfig}} title="Upload">
+                           use:tooltip={{...tooltipConfig, content: 'Upload'}}>
                             <i class="fa-solid fa-upload"></i>
                         </a>
                     </div>
@@ -501,10 +501,10 @@
                 <div class="col text-center pb-1">
                     <p class="mb-1">Designed for <a class="link-purple text-decoration-none"
                                                     href="https://www.deviantart.com/dreamingdragons" target="_blank"
-                                                    use:tooltip={{...tooltipConfig}} title="Official Website">DreamingDragons</a>
+                                                    use:tooltip={{...tooltipConfig, content: 'Official Website'}}>DreamingDragons</a>
                         by:</p>
-                    <a class="link-purple text-decoration-none" href="{designedByLink}" use:tooltip={{...tooltipConfig}}
-                       title="Visit Developer" target="_blank">{designedBy}</a>
+                    <a class="link-purple text-decoration-none" href="{designedByLink}" use:tooltip={{...tooltipConfig, content: 'Visit Developer'}}
+                       target="_blank">{designedBy}</a>
                     <!--<UserAvatar url="https://avatars.githubusercontent.com/u/159050591?v=4" username={designedBy} size="25px"/>-->
                 </div>
             </div>
@@ -515,7 +515,7 @@
                     <p class="fs-4 text-center">
                         {#each socials as social}
                             <a href="{social.link}" target="_blank" aria-label="Find us on {social.name}"
-                               use:tooltip={{...tooltipConfig}} title="Open {social.name}"
+                               use:tooltip={{...tooltipConfig, content: `Open ${social.name}`}}
                                class="text-decoration-none text-light px-1"><i class="{social.icon}"></i></a>
                         {/each}
                     </p>
@@ -525,12 +525,11 @@
             <div class="row">
                 <div class="col">
                     <p class="fs-6 text-center mb-md-0">For Terms of Service and Privacy Policy, please visit: <a
-                            href="{tosLink}" target="_blank" use:tooltip={{...tooltipConfig}} title="Terms Of Service"
+                            href="{tosLink}" target="_blank" use:tooltip={{...tooltipConfig, content: 'Terms Of Service'}}
                             class="text-decoration-none text-light">TOS</a> and <a href="{privacyPolicyLink}"
                                                                                    target="_blank"
-                                                                                   use:tooltip={{...tooltipConfig}}
+                                                                                   use:tooltip={{...tooltipConfig, content: 'Privacy Policy'}}
                                                                                    data-bs-placement="top"
-                                                                                   title="Privacy Policy"
                                                                                    class="text-decoration-none text-light">Privacy
                         Policy</a>.</p>
                 </div>

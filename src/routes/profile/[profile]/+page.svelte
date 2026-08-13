@@ -1,5 +1,5 @@
 <script>
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {PUBLIC_DEFAULT_USERNAME} from '$env/static/public';
     import autoAnimate from '@formkit/auto-animate';
@@ -381,8 +381,7 @@
                     <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
                 {:else}
                     <span class="h1 mt-2 mb-1"><button type="button" class="btn-username" onclick={copyToClipboardId}
-                                                       use:tooltip={{...tooltipConfig}}
-                                                       title="Click to copy profile ID!">{profile.username}</button> <a
+                                                       use:tooltip={{...tooltipConfig, content: 'Click to copy profile ID!'}}>{profile.username}</button> <a
                             class="link-purple"
                             href="{profile.website ? profile.website : ''}"
                             target="_blank"
@@ -399,7 +398,7 @@
                     <div class="col-4 col-md-3 align-items-center" id="followers"
                          aria-expanded="false">
                         <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="dropdown"
-                             use:tooltip={{...tooltipConfig}} title="Followers">
+                             use:tooltip={{...tooltipConfig, content: 'Followers'}}>
                             <div class="col-auto d-flex align-items-center pe-0">
                                 <i class="fas fa-user"></i>
                             </div>
@@ -428,7 +427,7 @@
                     </div>
                     <div class="col-4 col-md-3">
                         <div class="row justify-content-center d-flex align-items-center"
-                             use:tooltip={{...tooltipConfig}} title="Total likes">
+                             use:tooltip={{...tooltipConfig, content: 'Total likes'}}>
                             <div class="col-auto d-flex align-items-center pe-0">
                                 <i class="fas fa-heart"></i>
                             </div>
@@ -608,8 +607,7 @@
                                                 <a
                                                         href="/settings/galleries?gallery={gallery.id}"
                                                         class="btn-edit-gallery"
-                                                        use:tooltip={{...tooltipConfig}}
-                                                        title="Edit Gallery"
+                                                        use:tooltip={{...tooltipConfig, content: 'Edit Gallery'}}
                                                         aria-label="Edit Gallery"
                                                         onclick={(e) => e.stopPropagation()}
                                                 >

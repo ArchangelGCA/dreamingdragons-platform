@@ -1,14 +1,21 @@
 export const tooltipConfig = {
-    animation: 'fade',
+    placement: 'top',
+    offset: 8,
     delay: 0,
-    style: {
+    hideDelay: 50,
+    arrow: false,
+    animation: true,
+    animationDuration: 150,
+    class: 'text-center w-auto',
+    theme: {
+        background: 'rgba(92,0,166,0.9)',
         color: 'white',
-        backgroundColor: 'rgba(92,0,166,0.9)',
         padding: '10px',
-        borderRadius: '5px'
+        borderRadius: '5px',
+        fontSize: '0.875rem',
+        shadow: '0 2px 8px rgba(0,0,0,0.3)',
+        maxWidth: '300px',
     },
-    theme: 'text-center w-auto',
-    autoPosition: true,
 };
 
 export const getValidatedSession = async (supabase) => {

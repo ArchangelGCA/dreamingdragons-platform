@@ -1,5 +1,5 @@
 <script>
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
     import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
@@ -250,7 +250,7 @@
                 <div class="col-8 col-md-7 px-0 px-md-2">
                     <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap"
                             onclick={(e) => e.stopPropagation()}
-                            use:tooltip={{...tooltipConfig}} title="Click to view"><span
+                            use:tooltip={{...tooltipConfig, content: 'Click to view'}}><span
                             class="text-title">{finalBookTitle}</span></button>
                     <p class="card-text mb-0"><small class="text-description d-flex align-items-center gap-1 flex-wrap">
                         <span class="d-inline-flex align-items-center">
@@ -260,7 +260,7 @@
                         <button
                                 class="btn btn-link p-0 link-light link-custom text-decoration-none"
                                 onclick={handleProfileClick}
-                                use:tooltip={{...tooltipConfig}} title="Visit profile">{finalUsername}
+                                use:tooltip={{...tooltipConfig, content: 'Visit profile'}}>{finalUsername}
                         </button>
                     </small>
                     </p>
@@ -269,8 +269,7 @@
                     <div class="col-4 col-md-5 text-center d-flex align-items-center justify-content-center">
                         <button class="btn btn-link text-decoration-none p-0 w-auto heart-button"
                                 onclick={handleHeartClick}
-                                use:tooltip={{...tooltipConfig}}
-                                title={normalizedBook.is_liked ? 'Unlike' : 'Like'}>
+                                use:tooltip={{...tooltipConfig, content: normalizedBook.is_liked ? 'Unlike' : 'Like'}}>
                             <span class="heart-icon {normalizedBook.is_liked ? 'liked' : 'unliked'}">
                                 <i class="fas fa-heart"></i>
                                 <span class="likes-counter">{normalizedBook.likes ?? 0}</span>

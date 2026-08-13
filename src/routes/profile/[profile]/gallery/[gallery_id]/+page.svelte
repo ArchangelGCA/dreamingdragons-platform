@@ -1,7 +1,7 @@
 <script>
     import Masonry from '$lib/components/sveltebricks/Masonry.svelte';
     import ContentMasonry from '$lib/components/pages/ContentMasonry.svelte';
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createProfilePath } from '$lib/utils/slugs.js';
 
@@ -68,8 +68,7 @@
                         <a
                                 href="/settings/galleries?gallery={gallery.id}"
                                 class="btn btn-edit-gallery shadow rounded-3 text-decoration-none"
-                                use:tooltip={{...tooltipConfig}}
-                                title="Edit Gallery"
+                                use:tooltip={{...tooltipConfig, content: 'Edit Gallery'}}
                                 aria-label="Edit Gallery"
                         >
                             <i class="fas fa-edit me-2"></i>

@@ -1,6 +1,6 @@
 <script>
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
     import { goto } from '$app/navigation';
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
@@ -31,8 +31,7 @@
 </script>
 
 <div class="card border-0 img-home w-100 rounded-4 cursor-pointer" 
-     use:tooltip={{...tooltipConfig}} 
-     title="View" 
+     use:tooltip={{...tooltipConfig, content: 'View'}} 
      onclick={handleCardClick}
      role="button"
      tabindex="0"
@@ -70,8 +69,8 @@
     <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
         <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">
             <div class="col-12">
-                <a class="btn btn-link p-0 link-light text-decoration-none text-wrap" href="{bookUrl}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{title}</span></a>
-                <p class="card-text"><small class="text-muted">Posted by <a class="btn btn-link p-0 link-light text-decoration-none" href={createProfilePath(owner_username, owner_id)} use:tooltip={{...tooltipConfig}} title="Visit profile">{owner_username}</a></small></p>
+                <a class="btn btn-link p-0 link-light text-decoration-none text-wrap" href="{bookUrl}" use:tooltip={{...tooltipConfig, content: 'Click to view'}}><span class="h5">{title}</span></a>
+                <p class="card-text"><small class="text-muted">Posted by <a class="btn btn-link p-0 link-light text-decoration-none" href={createProfilePath(owner_username, owner_id)} use:tooltip={{...tooltipConfig, content: 'Visit profile'}}>{owner_username}</a></small></p>
             </div>
         </div>
     </div>

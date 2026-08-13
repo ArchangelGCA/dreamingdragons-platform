@@ -25,18 +25,6 @@ export const load = async ({ fetch, data, depends, url }) => {
     const {session} = isBrowser() ? await getValidatedSession(supabase) : data.session;
 
     const image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
-    const tooltipConfig = {
-        animation: 'fade',
-        delay: 0,
-        style: {
-            color: 'white',
-            backgroundColor: 'rgba(92,0,166,0.9)',
-            padding: '10px',
-            borderRadius: '5px'
-        },
-        theme: 'text-center w-auto',
-        autoPosition: true,
-    };
 
     let notifications = [];
     let userData = null;
@@ -87,7 +75,6 @@ export const load = async ({ fetch, data, depends, url }) => {
         session,
         notifications: notifications || [], // Ensure it's always an array
         image_proxy,
-        tooltipConfig,
         title: 'DreamingDragons - Platform',
         description: 'The official platform of DreamingDragons. By ArchangelGCA, and its community. Read, find and share your art and literature.',
         siteName: 'DreamingDragons - Platform',

@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import { tooltipConfig } from "$lib/utils/gcacommons.js";
 
     /** @type {{chapterCount?: number, size?: 'sm' | 'md' | 'lg'}} */
@@ -20,8 +20,7 @@
 {#if isBook}
     <span 
         class="content-type-badge {sizeClasses} badge-book"
-        use:tooltip={{...tooltipConfig}}
-        title={tooltipText}
+        use:tooltip={{...tooltipConfig, content: tooltipText}}
     >
         <i class="fas fa-book"></i>
         <span class="badge-label">Book</span>

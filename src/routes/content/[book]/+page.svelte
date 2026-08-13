@@ -1,5 +1,5 @@
 <script>
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
@@ -288,13 +288,13 @@
     <div class="row justify-content-center my-2">
         <div class="col-12 text-center px-0">
             <a href="#chapters" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2"
-               use:tooltip={{...tooltipConfig}} title="Go to Chapters" aria-label="View chapters">
+               use:tooltip={{...tooltipConfig, content: 'Go to Chapters'}} aria-label="View chapters">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Original Cover">
+        <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig, content: 'Original Cover'}}>
             <a href="{bookContent.cover_url}" target="_blank" aria-label="Open image in new page." use:autoAnimate>
                 <ContentImage src={bookContent.cover_url} alt={bookContent.title} {image_proxy}/>
             </a>
@@ -312,15 +312,15 @@
                     <p class="h3">{bookContent.title}</p>
                     <p class="h6 mb-0">by <a class="link-light link-opacity-75 text-decoration-none"
                                              href={createProfilePath(bookContent.profiles.username, bookContent.owner_id)}>{bookContent.profiles.username}</a>
-                        - <span class="text-muted" use:tooltip={{...tooltipConfig}}
-                                title="{createdAtDetailed}">{createdAtFormatted}</span></p>
+                        - <span class="text-muted" use:tooltip={{...tooltipConfig, content: createdAtDetailed}}
+                                >{createdAtFormatted}</span></p>
                     {#if bookContent.tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
                                 {#each bookContent.tags as tag (tag.id)}
                                     <a href="/search?tag={tag.name}"
                                        class="badge bg-purple text-light me-1 mb-1 text-decoration-none"
-                                       use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
+                                       use:tooltip={{...tooltipConfig, content: `Search for ${tag.name}`}}>{tag.name}</a>
                                 {/each}
                             </div>
                         </div>
@@ -331,8 +331,7 @@
     </div>
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
-                 title="Likes">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Likes'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1"
                             onclick={handleHeartClick} aria-label="Like Tale">
@@ -365,8 +364,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
-                 title="Views">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Views'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-eye"></i>
                 </div>
@@ -376,8 +374,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
-                 title="Comments">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Comments'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-comment"></i>
                 </div>
@@ -434,13 +431,12 @@
             <p class="text-secondary text-center">
                 <small>
                     &copy; {currentYear} <a class="link-secondary text-decoration-none"
-                                            href={createProfilePath(bookContent.profiles.username, bookContent.owner_id)} use:tooltip={{...tooltipConfig}}
-                                            title="Profile">{bookContent.profiles.username}</a> - {bookContent.title}
+                                            href={createProfilePath(bookContent.profiles.username, bookContent.owner_id)} use:tooltip={{...tooltipConfig, content: 'Profile'}}>{bookContent.profiles.username}</a> - {bookContent.title}
                 </small>
             </p>
         </div>
         <div class="col-auto text-center my-auto mt-md-1 px-0">
-            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report"
+            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig, content: 'Report'}}
                     data-bs-toggle="modal" data-bs-target="#reportModal" aria-label="Report tale">
                 <i class="fas fa-flag"></i>
             </button>
@@ -456,14 +452,14 @@
                     <div class="col-auto">
                         <a href="/edit/{bookContent.id}"
                            class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
-                           use:tooltip={{...tooltipConfig}} title="Edit Tale">
+                           use:tooltip={{...tooltipConfig, content: 'Edit Tale'}}>
                             <i class="fas fa-edit"></i>
                             <span class="fs-6">Edit</span>
                         </a>
                     </div>
                     <div class="col-auto">
                         <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
-                                use:tooltip={{...tooltipConfig}} title="Delete Tale" onclick={handleBookDelete}>
+                                use:tooltip={{...tooltipConfig, content: 'Delete Tale'}} onclick={handleBookDelete}>
                             <i class="fas fa-trash-alt"></i>
                             <span class="fs-6">Delete</span>
                         </button>

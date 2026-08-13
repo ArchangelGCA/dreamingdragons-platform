@@ -10,9 +10,7 @@
     import Editor from '@tinymce/tinymce-svelte';
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
-    import {tooltip} from "$lib/utils/tooltip.js";
     import {conf} from "$lib/utils/gcatinymce.js"
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {createBookPath, createChapterPath} from "$lib/utils/slugs.js";
 
     /** @type {{data: any}} */

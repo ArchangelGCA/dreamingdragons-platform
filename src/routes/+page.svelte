@@ -1,7 +1,7 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
     import {dragscroll} from '@svelte-put/dragscroll';
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
@@ -96,14 +96,14 @@
 
         <!-- Home title -->
         <div class="col-12 bg-purple-gradient py-2 rounded-3">
-            <span class="h2 text-start fw-bolder" use:tooltip={{...tooltipConfig}} title="Home 🏠">Home</span>
+            <span class="h2 text-start fw-bolder" use:tooltip={{...tooltipConfig, content: 'Home 🏠'}}>Home</span>
         </div>
 
         <!-- Following section -->
         {#if is_logged && followed && followed.length > 0}
             <div class="col-12 pb-1 mt-2">
                 <div class="row justify-content-center bg-purple-gradient rounded-3 mb-1 mt-1 p-1"
-                     use:tooltip={{...tooltipConfig}} title="Following Users">
+                     use:tooltip={{...tooltipConfig, content: 'Following Users'}}>
                     <div class="col-12 text-center">
                         <p class="fs-5 mb-0">Following</p>
                     </div>
@@ -207,7 +207,7 @@
         </div>
         <div class="col-auto">
             <p class="h3 text-center"><a class="btn btn-purple btn-lg" href="https://discord.gg/5mVFmCBx5q"
-                                         target="_blank" use:tooltip={{...tooltipConfig}} title="Join Discord">DreamingDragons</a>
+                                         target="_blank" use:tooltip={{...tooltipConfig, content: 'Join Discord'}}>DreamingDragons</a>
             </p>
             <iframe class="rounded-3" src="https://discord.com/widget?id=1054013154822205450&theme=dark"
                     title="DreamingDragons Discord Widget" width="350" height="500"

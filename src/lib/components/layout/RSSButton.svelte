@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import { tooltipConfig } from "$lib/utils/gcacommons.js";
     import { toast } from "$lib/components/svelte-toast";    /** @type {string} */
     let { rssUrl, label = "RSS Feed", classes = "", size = "md", compact = false } = $props();
@@ -27,8 +27,7 @@
 <button 
     class="btn {compact ? 'btn-link text-warning text-decoration-none border-0 p-1' : `btn-outline-warning ${sizeClasses[size]}`} rss-btn {classes}"
     onclick={handleRSSClick}
-    use:tooltip={{...tooltipConfig}} 
-    title="{label} - Subscribe to updates"
+    use:tooltip={{...tooltipConfig, content: `${label} - Subscribe to updates`}}
     aria-label="{label}"
     style={compact ? 'font-size: 0.9rem; opacity: 0.8;' : ''}
 >

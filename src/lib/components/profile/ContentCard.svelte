@@ -1,7 +1,7 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{content: any, image_proxy: any}} */
@@ -73,7 +73,7 @@
     }
 </script>
 
-<div class="card border-0 bg-dark bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}} title="View">
+<div class="card border-0 bg-dark bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig, content: 'View'}}>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
         <img src={finalLinkImage} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" style="object-fit: cover; position: absolute; top: 0; left: 0;">
@@ -82,11 +82,11 @@
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
             <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-3 pb-2 mx-0">
                 <div class="col-9 my-auto">
-                    <button class="btn btn-link p-0 link-light text-decoration-none text-wrap " href="/content/{content.id}" use:tooltip={{...tooltipConfig}} title="Click to view"><span class="h5">{content.title}</span></button>
+                    <button class="btn btn-link p-0 link-light text-decoration-none text-wrap " href="/content/{content.id}" use:tooltip={{...tooltipConfig, content: 'Click to view'}}><span class="h5">{content.title}</span></button>
                     <!--<p class="card-text"><small class="text-muted">Posted by <a class="link-light text-decoration-none" href="/profile/{content.owner_id}" use:tooltip={{...tooltipConfig}} title="Visit profile">{content.owner_username}</a></small></p>-->
                 </div>
                 <div class="col-3 text-end my-auto">
-                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" onclick={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
+                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" onclick={handleHeartClick} use:tooltip={{...tooltipConfig, content: content.is_liked ? 'Unlike' : 'Like'}}>
                         <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
                             <span class="likes-counter">{content.likes}</span>

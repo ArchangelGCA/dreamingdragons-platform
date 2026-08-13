@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import { tooltipConfig } from "$lib/utils/gcacommons.js";
     import { toast } from "$lib/components/svelte-toast";
     import { browser } from "$app/environment";
@@ -117,8 +117,7 @@
     <button 
         class="btn btn-link text-light text-decoration-none border-0 share-btn {compact ? 'p-1' : 'p-0'}"
         onclick={toggleDropdown}
-        use:tooltip={{...tooltipConfig}} 
-        title="Share"
+        use:tooltip={{...tooltipConfig, content: 'Share'}}
         aria-label="Share content"
         aria-expanded={showDropdown}
         style={compact ? 'font-size: 0.9rem; opacity: 0.8;' : ''}

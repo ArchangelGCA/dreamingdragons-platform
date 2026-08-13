@@ -1,6 +1,6 @@
 <script>
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import {toast} from "$lib/components/svelte-toast";
     import autoAnimate from "@formkit/auto-animate";
     import {deserialize} from "$app/forms";
@@ -444,7 +444,7 @@
                                     <p class="h5">Profile cover: </p>
                                     {#if profile.cover_url && finalCoverUrl}
                                         <a href="{finalCoverUrl}" target="_blank">
-                                            <img src={finalCoverUrl} alt="Profile cover" class="img-fluid rounded-4" use:tooltip={{...tooltipConfig}} title="View Cover" />
+                                            <img src={finalCoverUrl} alt="Profile cover" class="img-fluid rounded-4" use:tooltip={{...tooltipConfig, content: 'View Cover'}} />
                                         </a>
                                     {:else}
                                         <p class="text-center text-warning">No cover image</p>

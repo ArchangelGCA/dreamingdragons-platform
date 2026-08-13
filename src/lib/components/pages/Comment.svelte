@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {toast} from "$lib/components/svelte-toast";
     import Comment from "$lib/components/pages/Comment.svelte";
@@ -182,7 +182,7 @@
                     <a class="username" href={createProfilePath(comment.profiles.username, comment.user_id)}>
                         {comment.profiles.username}
                     </a>
-                    <span class="timestamp" use:tooltip={{...tooltipConfig}} title={fullDate}>
+                    <span class="timestamp" use:tooltip={{...tooltipConfig, content: fullDate}}>
                         {timeAgo}
                     </span>
                 </div>
@@ -192,8 +192,7 @@
                     <button 
                         class="action-btn reply-btn" 
                         onclick={toggleReply}
-                        use:tooltip={{...tooltipConfig}} 
-                        title="Reply"
+                        use:tooltip={{...tooltipConfig, content: 'Reply'}}
                         aria-label="Reply to comment"
                     >
                         <i class="fas fa-reply"></i>
@@ -204,8 +203,7 @@
                             class="action-btn delete-btn" 
                             onclick={deleteComment}
                             disabled={isDeleting}
-                            use:tooltip={{...tooltipConfig}} 
-                            title="Delete"
+                            use:tooltip={{...tooltipConfig, content: 'Delete'}}
                             aria-label="Delete comment"
                         >
                             {#if isDeleting}

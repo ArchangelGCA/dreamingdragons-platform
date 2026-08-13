@@ -13,3 +13,8 @@ vite.config.ts.timestamp-*
 /public/
 /.vercel/
 /.vscode/
+/.cursor/
+/.codex/
+/.github/
+/.grok/
+/.impeccable/

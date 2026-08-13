@@ -2,8 +2,6 @@
     import Editor from "@tinymce/tinymce-svelte";
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
-    import { tooltip } from "$lib/utils/tooltip.js";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
     import {conf} from "$lib/utils/gcatinymce.js";

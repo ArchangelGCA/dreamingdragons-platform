@@ -1,6 +1,6 @@
 <script>
     import {toast} from "$lib/components/svelte-toast";
-    import { tooltip } from "$lib/utils/tooltip.js";
+    import { tooltip } from "svelte-tooltip-gca";
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
@@ -90,8 +90,8 @@
 </script>
 
 <PopularGlow likes={content.chapter_likes?.length ?? 0} class="rounded-4 w-100">
-<div class="card border-0 bg-black bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig}}
-     title="View">
+<div class="card border-0 bg-black bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig, content: 'View'}}
+     >
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
         <!-- Popular Badge for chapters -->
@@ -113,7 +113,7 @@
                     <span class="h5 text-light">{content.title}</span>
                 </div>
                 <div class="col-3 mb-1 text-end">
-                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" onclick={handleHeartClick} use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
+                    <button class="btn btn-link text-decoration-none p-0 w-auto me-4" onclick={handleHeartClick} use:tooltip={{...tooltipConfig, content: content.is_liked ? 'Unlike' : 'Like'}}>
                         <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
                             <span class="likes-counter">{content.chapter_likes.length}</span>

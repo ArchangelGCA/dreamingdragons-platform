@@ -4,7 +4,7 @@
     import {toast} from '$lib/components/svelte-toast/index.js';
     import {deserialize} from '$app/forms';
     import autoAnimate from "@formkit/auto-animate";
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     import {fly, scale} from 'svelte/transition';
@@ -427,8 +427,7 @@
                                     <button
                                             class="btn btn-primary btn-sm"
                                             onclick={() => selectGallery(null)}
-                                            use:tooltip={{...tooltipConfig}}
-                                            title="Back to Create Gallery"
+                                            use:tooltip={{...tooltipConfig, content: 'Back to Create Gallery'}}
                                             aria-label="Back to create gallery"
                                             type="button"
                                     >
@@ -440,8 +439,7 @@
                                         e.preventDefault();
                                         handleDeleteGallery();
                                     }}
-                                            use:tooltip={{...tooltipConfig}}
-                                            title="Delete Gallery"
+                                            use:tooltip={{...tooltipConfig, content: 'Delete Gallery'}}
                                             aria-label="Delete gallery"
                                             type="button"
                                     >
@@ -564,8 +562,7 @@
                                                                 e.preventDefault();
                                                                 handleRemoveBook(book.id);
                                                             }}
-                                                                    use:tooltip={{...tooltipConfig}}
-                                                                    title="Remove from gallery"
+                                                                    use:tooltip={{...tooltipConfig, content: 'Remove from gallery'}}
                                                                     aria-label="Remove {book.title} from gallery"
                                                                     type="button"
                                                                     disabled={isLoading}

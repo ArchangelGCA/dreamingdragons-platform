@@ -1,7 +1,7 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
@@ -109,12 +109,12 @@
                     <div class="col-9 my-auto">
                         <button class="btn btn-link p-0 link-light link-custom text-decoration-none text-wrap"
                                 href={bookUrl}
-                                use:tooltip={{...tooltipConfig}} title="Click to view"><span
+                                use:tooltip={{...tooltipConfig, content: 'Click to view'}}><span
                                 class="text-title">{finalBookTitle}</span></button>
                     </div>
                     <div class="col-3 text-center">
                         <button class="btn btn-link text-decoration-none p-0 w-auto" onclick={handleHeartClick}
-                                use:tooltip={{...tooltipConfig}} title={content.is_liked ? 'Unlike' : 'Like'}>
+                                use:tooltip={{...tooltipConfig, content: content.is_liked ? 'Unlike' : 'Like'}}>
                         <span class="heart-icon {content.is_liked ? 'liked' : 'unliked'}">
                             <i class="fas fa-heart fa-3x"></i>
                             <span class="likes-counter">{content.likes}</span>

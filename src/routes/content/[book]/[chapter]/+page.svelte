@@ -1,5 +1,5 @@
 <script>
-    import {tooltip} from "$lib/utils/tooltip.js";
+    import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
@@ -266,14 +266,14 @@
     <div class="row justify-content-center my-2">
         <div class="col-12 text-center px-0">
             <a href="#title" class="btn btn-shortcut text-light text-opacity-50 w-100 rounded-3 py-3 py-md-2"
-               use:tooltip={{...tooltipConfig}} title="Go to Text" aria-label="Go to text">
+               use:tooltip={{...tooltipConfig, content: 'Go to Text'}} aria-label="Go to text">
                 <i class="fas fa-chevron-down"></i>
             </a>
         </div>
     </div>
     <!-- Chapter and Book cover -->
     <div class="row justify-content-center text-center">
-        <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig}} title="Open Book">
+        <div class="col-12 mb-4 px-0" use:tooltip={{...tooltipConfig, content: 'Open Book'}}>
             <a href="{bookUrl}" target="_blank" aria-label="Open image in a new page.">
                 <ContentImage src={chapterContent.book.cover_url} alt={chapterContent.book.title} {image_proxy}/>
             </a>
@@ -294,15 +294,15 @@
                     </h2>
                     <h6 class="mb-0">by <a class="link-light link-opacity-75 text-decoration-none"
                                            href={createProfilePath(chapterContent.profiles.username, chapterContent.owner_id)}>{chapterContent.profiles.username}</a>
-                        - <span class="text-muted" use:tooltip={{...tooltipConfig}}
-                                title="{createdAtDetailed}">{createdAtFormatted}</span></h6>
+                        - <span class="text-muted" use:tooltip={{...tooltipConfig, content: createdAtDetailed}}
+                                >{createdAtFormatted}</span></h6>
                     {#if chapterContent.tags.length !== 0}
                         <div class="row justify-content-center mt-1">
                             <div class="col-auto">
                                 {#each chapterContent.tags as tag (tag.id)}
                                     <a href="/search?tag={tag.name}"
                                        class="badge bg-purple text-light me-1 mb-1 text-decoration-none"
-                                       use:tooltip={{...tooltipConfig}} title="Search for {tag.name}">{tag.name}</a>
+                                       use:tooltip={{...tooltipConfig, content: `Search for ${tag.name}`}}>{tag.name}</a>
                                 {/each}
                             </div>
                         </div>
@@ -314,8 +314,7 @@
     <!-- Stats -->
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 mb-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
-                 title="Likes">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Likes'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1"
                             onclick={handleHeartClick} aria-label="Like Chapter">
@@ -351,8 +350,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
-                 title="Views">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Views'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-eye"></i>
                 </div>
@@ -362,8 +360,7 @@
             </div>
         </div>
         <div class="col">
-            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig}}
-                 title="Comments">
+            <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Comments'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-comment"></i>
                 </div>
@@ -416,14 +413,13 @@
                     <div class="col-6 px-1" use:autoAnimate>
                         {#if chapterContent.previousChapter && previousChapterUrl}
                             <a href="{previousChapterUrl}"
-                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}}
-                               title="Previous Chapter" data-sveltekit-noscroll>
+                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig, content: 'Previous Chapter'}} data-sveltekit-noscroll>
                                 <i class="fas fa-chevron-left"></i>
                                 <span class="fs-6">Previous</span>
                             </a>
                         {:else if chapterContent.nextChapter}
                             <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled"
-                                  use:tooltip={{...tooltipConfig}} title="No previous chapters">
+                                  use:tooltip={{...tooltipConfig, content: 'No previous chapters'}}>
                                 <i class="fas fa-chevron-left"></i>
                                 <span class="fs-6">You're here! 😅</span>
                             </span>
@@ -432,14 +428,13 @@
                     <div class="col-6 px-1" use:autoAnimate>
                         {#if chapterContent.nextChapter && nextChapterUrl}
                             <a href="{nextChapterUrl}"
-                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig}}
-                               title="Next Chapter" data-sveltekit-noscroll>
+                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig, content: 'Next Chapter'}} data-sveltekit-noscroll>
                                 <span class="fs-6">Next</span>
                                 <i class="fas fa-chevron-right"></i>
                             </a>
                         {:else if chapterContent.previousChapter}
                             <span class="btn btn-dark text-light text-opacity-50 w-100 rounded-3 disabled"
-                                  use:tooltip={{...tooltipConfig}} title="No more chapters">
+                                  use:tooltip={{...tooltipConfig, content: 'No more chapters'}}>
                                 <span class="fs-6">You're here! 😅</span>
                                 <i class="fas fa-chevron-right"></i>
                             </span>
@@ -461,14 +456,13 @@
             <p class="text-secondary text-center">
                 <small>
                     &copy; {currentYear} <a class="link-secondary text-decoration-none"
-                                            href={createProfilePath(chapterContent.profiles.username, chapterContent.owner_id)} use:tooltip={{...tooltipConfig}}
-                                            title="Profile">{chapterContent.profiles.username}</a>
+                                            href={createProfilePath(chapterContent.profiles.username, chapterContent.owner_id)} use:tooltip={{...tooltipConfig, content: 'Profile'}}>{chapterContent.profiles.username}</a>
                     - {chapterContent.book.title} - {chapterContent.title}
                 </small>
             </p>
         </div>
         <div class="col-auto text-center my-auto mt-md-1 px-0">
-            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig}} title="Report"
+            <button class="btn btn-link-secondary" use:tooltip={{...tooltipConfig, content: 'Report'}}
                     data-bs-toggle="modal" data-bs-target="#reportModal" aria-label="Report Chapter">
                 <i class="fas fa-flag"></i>
             </button>
@@ -484,14 +478,14 @@
                     <div class="col-auto">
                         <a href="{editUrl}"
                            class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
-                           use:tooltip={{...tooltipConfig}} title="Edit Chapter">
+                           use:tooltip={{...tooltipConfig, content: 'Edit Chapter'}}>
                             <i class="fas fa-edit"></i>
                             <span class="fs-6">Edit</span>
                         </a>
                     </div>
                     <div class="col-auto">
                         <button class="btn btn-lg btn-shortcut text-light text-opacity-50 w-100 rounded-3"
-                                use:tooltip={{...tooltipConfig}} title="Delete Chapter" onclick={handleChapterDelete}>
+                                use:tooltip={{...tooltipConfig, content: 'Delete Chapter'}} onclick={handleChapterDelete}>
                             <i class="fas fa-trash-alt"></i>
                             <span class="fs-6">Delete</span>
                         </button>
