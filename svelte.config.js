@@ -9,7 +9,8 @@ const config = {
     }),
   },
   compilerOptions: {
-    warningFilter: (warning) => warning.code !== 'state_referenced_locally'
+    warningFilter: (warning) => warning.code !== 'state_referenced_locally',
+    preserveComments: true
   }
 };
 

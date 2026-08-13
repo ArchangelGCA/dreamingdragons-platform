@@ -101,9 +101,9 @@
         padding: 0.35rem 0.65rem;
         background: linear-gradient(
             135deg,
-            hsla(280, 100%, 50%, 0.9) 0%,
-            hsla(320, 100%, 45%, 0.9) 50%,
-            hsla(350, 100%, 50%, 0.9) 100%
+            hsla(28, 100%, 52%, 0.92) 0%,
+            hsla(320, 100%, 48%, 0.92) 50%,
+            hsla(273, 100%, 46%, 0.92) 100%
         );
         border-radius: 2rem;
         font-weight: 600;
@@ -111,8 +111,8 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         /* Static shadow - no animation on shadow itself */
         box-shadow: 
-            0 0 12px hsla(320, 100%, 50%, 0.7),
-            0 0 25px hsla(280, 100%, 50%, 0.5),
+            0 0 12px hsla(30, 100%, 55%, 0.75),
+            0 0 25px hsla(310, 100%, 55%, 0.5),
             inset 0 1px 0 hsla(0, 0%, 100%, 0.3);
         /* Only animate opacity - runs on compositor thread */
         animation: badge-pulse-optimized 2.5s ease-in-out infinite;

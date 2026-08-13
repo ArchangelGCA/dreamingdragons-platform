@@ -632,7 +632,11 @@
     }
 
     .bg-info-profile {
-        background: linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+        background:
+            radial-gradient(600px 130px at 50% 0%, rgba(255, 123, 43, 0.14) 0%, transparent 75%),
+            linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+        border: 1px solid rgba(196, 0, 255, 0.16);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
     }
 
     .dropdown-menu {
@@ -667,7 +671,7 @@
     .btn-view-options {
         background-color: transparent;
         color: #fff;
-        border: none;
+        border: 1px solid transparent;
         border-radius: 5px;
         transition: background-color 0.3s;
     }
@@ -675,26 +679,23 @@
     .btn-view-options:hover {
         background-color: #7d00dd;
         color: #fff;
-        border: none;
-        border-radius: 5px;
-        transition: background-color 0.3s;
+        border-color: rgba(255, 171, 94, 0.4);
+        box-shadow: 0 0 0.5rem 0.1rem rgba(196, 0, 255, 0.35);
     }
 
     .btn-view-options.active {
         background-color: #7d00dd;
         color: #fff;
-        border: none;
+        border-color: rgba(255, 171, 94, 0.5);
         border-radius: 5px;
-        transition: all 0.3s;
-        box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75);
+        box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .btn-view-options:active {
         background-color: #7d00dd;
         color: #fff;
-        border: none;
+        border-color: rgba(255, 171, 94, 0.5);
         border-radius: 5px;
-        transition: all 0.3s;
         box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75);
     }
 

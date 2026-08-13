@@ -270,6 +270,20 @@
     }
 </script>
 
+<!--
+    THESIS: DreamingDragons is a dragon-smith's foundry at night — the community feed is the forge
+    floor where newly forged tales and art still glow with magenta heat and cool to royal-purple rest.
+    It refuses the flat dark-feed default: heat is a process, not decoration.
+    OWN-WORLD: charcoal foundry night, ember-orange→magenta heat ramp on fresh content fading to the
+    hue-273 purple family at rest; ember flicker keyframes; iron/slag surface tones; single Comfortaa.
+    STORY: visitors feel the foundry's life — fresh work is hot, liked work glows brightest, an empty
+    rack invites the next strike. Creators forge; readers temper.
+    FIRST VIEWPORT: ember-title plate over the newest-content rack (still-hot cards), then most-liked
+    hot rack, then below-threshold cooled rows; search vent at top.
+    FORM: assigned candidate 3, Ember-Forge, seed e0a09597.
+    FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the
+    verdict, and DESIGN.md
+-->
 <Seo/>
 
 <SvelteToast/>
@@ -277,7 +291,7 @@
 <div class="container-fluid bg-black bg-opacity-50" style="max-width: 100%; overflow-x: hidden">
 
     <!-- Start Navbar -->
-    <div class="row navbar-container py-2">
+    <div class="row navbar-container py-2 ember-heat-line">
         <!-- Logo -->
         <div class="col-2 col-md-3 col-xxl-4">
             <a href="/" aria-label="DreamingDragons - Home" title="Homepage">
@@ -652,12 +666,30 @@
     .btn-outline-search:hover {
         background-color: #5c00a6;
         color: #c400ff;
+        box-shadow: 0 0 0.5rem 0.1rem rgba(196, 0, 255, 0.5);
+    }
+
+    /* Forge vent: the search field reads as a furnace vent drawing in air */
+    .navbar-container .form-control {
+        background-color: rgba(10, 6, 16, 0.55);
+        border: 1px solid rgba(178, 0, 232, 0.28);
+    }
+
+    .navbar-container .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.42);
+    }
+
+    .navbar-container .input-group:focus-within {
+        box-shadow: 0 0 0.8rem 0.2rem rgba(196, 0, 255, 0.35);
+        border-radius: 1rem;
     }
 
     .dropdown-menu {
-        border: none;
+        border: 1px solid rgba(196, 0, 255, 0.18);
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
-        background: linear-gradient(75deg, #0b0086, #410075);
+        background:
+            radial-gradient(240px 90px at 50% 0%, rgba(255, 123, 43, 0.08) 0%, transparent 70%),
+            linear-gradient(75deg, #0b0086, #410075);
         background-size: 150% 150%;
     }
 
@@ -681,15 +713,21 @@
     }
 
     .navbar-container {
-        background: linear-gradient(180deg, rgba(65, 0, 117, 0.4), rgba(37, 0, 62, 0));
+        background:
+            radial-gradient(700px 120px at 50% -20%, rgba(255, 123, 43, 0.12) 0%, transparent 70%),
+            linear-gradient(180deg, rgba(65, 0, 117, 0.55), rgba(37, 0, 62, 0));
     }
 
     .footer-container {
-        background: linear-gradient(0deg, rgba(65, 0, 117, 0.4), rgba(37, 0, 62, 0));
+        background:
+            radial-gradient(700px 140px at 50% 120%, rgba(255, 123, 43, 0.10) 0%, transparent 70%),
+            linear-gradient(0deg, rgba(65, 0, 117, 0.55), rgba(37, 0, 62, 0));
     }
 
     .offcanvas {
-        background: linear-gradient(75deg, #0b0086, #410075);
+        background:
+            radial-gradient(320px 110px at 50% 0%, rgba(255, 123, 43, 0.10) 0%, transparent 70%),
+            linear-gradient(75deg, #0b0086, #410075);
         box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
     }
 

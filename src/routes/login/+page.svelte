@@ -185,4 +185,18 @@
     .text-magic-link {
         color: #b056ff;
     }
+
+    /* Foundry gate: the auth card is a forged plate, ember-lit from below */
+    .bg-purple.border-purple {
+        background:
+            radial-gradient(420px 130px at 50% 0%, rgba(255, 123, 43, 0.12) 0%, transparent 75%),
+            linear-gradient(165deg, rgba(23, 13, 33, 0.85) 0%, rgba(92, 0, 166, 0.65) 100%);
+        border: 1px solid rgba(196, 0, 255, 0.22);
+        box-shadow: 0 0 1.4rem 0.25rem rgba(92, 0, 166, 0.45), 0 0 3rem 0.3rem rgba(255, 123, 43, 0.10);
+    }
+
+    /* Auth card sits on a dark well so the plate reads as iron in the foundry night */
+    .main-div {
+        background-color: rgba(10, 6, 16, 0.65);
+    }
 </style>

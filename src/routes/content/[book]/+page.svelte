@@ -330,7 +330,7 @@
         </div>
     </div>
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
-        <div class="col">
+        <div class="col-6 col-sm-3">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Likes'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1"
@@ -363,7 +363,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-6 col-sm-3">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Views'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-eye"></i>
@@ -373,7 +373,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-6 col-sm-3">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Comments'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-comment"></i>
@@ -383,7 +383,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-6 col-sm-3">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-auto d-flex align-items-center pe-2">
                     <ShareButton
@@ -392,13 +392,6 @@
                             description="Check out this amazing tale on DreamingDragons!"
                     />
                 </div>
-                <!--<div class="col-auto d-flex align-items-center">
-                    <RSSButton
-                            rssUrl="/rss/content/{bookContent.id}.xml"
-                            label="Book RSS"
-                            size="sm"
-                    />
-                </div>-->
             </div>
         </div>
     </div>
@@ -518,7 +511,10 @@
     }
 
     .bg-info-stats {
-        background: linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+        background:
+            radial-gradient(500px 110px at 50% 0%, rgba(255, 123, 43, 0.16) 0%, transparent 75%),
+            linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+        border: 1px solid rgba(196, 0, 255, 0.16);
     }
 
     .bg-purple {
@@ -526,11 +522,33 @@
     }
 
     .bg-purple-opacity-25 {
-        background-color: rgba(92, 0, 166, 0.25);
+        background:
+            radial-gradient(700px 160px at 50% 0%, rgba(255, 123, 43, 0.07) 0%, transparent 70%),
+            rgba(92, 0, 166, 0.25);
     }
 
-    .bg-purple-opacity-10 {
-        background-color: rgba(92, 0, 166, 0.1);
+        .bg-purple-opacity-10 {
+        background:
+            radial-gradient(600px 140px at 50% 0%, rgba(255, 123, 43, 0.06) 0%, transparent 70%),
+            rgba(92, 0, 166, 0.1);
+    }
+
+    /* Smith's journal: the tale description reads on warm iron, not flat purple */
+    .fs-5.bg-purple-opacity-25 {
+        background:
+            radial-gradient(700px 180px at 50% 0%, rgba(255, 171, 94, 0.05) 0%, transparent 70%),
+            linear-gradient(180deg, rgba(10, 6, 16, 0.55) 0%, rgba(23, 13, 33, 0.6) 100%);
+        border: 1px solid rgba(196, 0, 255, 0.14);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 6px 22px rgba(0, 0, 0, 0.35);
+        color: hsl(0, 0%, 88%);
+        line-height: 1.75;
+    }
+
+    .fs-5.bg-purple-opacity-25 :global(p),
+    .fs-5.bg-purple-opacity-25 :global(div) {
+        max-width: 72ch;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .bg-purple-dark {

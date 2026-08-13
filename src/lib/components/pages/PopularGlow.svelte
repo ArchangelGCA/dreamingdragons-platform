@@ -60,9 +60,9 @@
     }
 
     .popular-glow-wrapper.is-popular {
-        --glow-color-1: hsla(280, 100%, 50%, 0.7);
-        --glow-color-2: hsla(320, 100%, 50%, 0.6);
-        --glow-color-3: hsla(350, 100%, 50%, 0.5);
+        --glow-color-1: hsla(28, 100%, 55%, 0.7);
+        --glow-color-2: hsla(310, 100%, 55%, 0.6);
+        --glow-color-3: hsla(273, 100%, 45%, 0.5);
     }
 
     /*

@@ -41,15 +41,24 @@
         transition: all 0.15s ease-in-out;
     }
 
-    /* Book badge - pink/magenta theme matching site accent color */
+    /* Book badge - forged plate: dark iron, ember book glyph */
     .badge-book {
-        background: linear-gradient(135deg, hsla(330, 80%, 45%, 0.95) 0%, hsla(300, 70%, 35%, 0.95) 100%);
+        background:
+            radial-gradient(120px 40px at 50% 0%, rgba(255, 123, 43, 0.30) 0%, transparent 75%),
+            linear-gradient(135deg, rgba(34, 20, 48, 0.95) 0%, rgba(23, 13, 33, 0.98) 100%);
         color: #fff;
-        box-shadow: 0 2px 8px hsla(330, 80%, 50%, 0.35);
+        border: 1px solid rgba(255, 171, 94, 0.35);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .badge-book .fas {
+        color: #ffab5e;
+        text-shadow: 0 0 0.4rem rgba(255, 123, 43, 0.55);
     }
 
     .badge-book:hover {
-        box-shadow: 0 4px 12px hsla(330, 80%, 50%, 0.55);
+        box-shadow: 0 4px 12px rgba(196, 0, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 0, 251, 0.55);
         transform: translateY(-1px);
     }
 

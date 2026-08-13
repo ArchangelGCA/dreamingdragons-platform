@@ -313,7 +313,7 @@
     </div>
     <!-- Stats -->
     <div class="row justify-content-between px-lg-5 py-2 py-lg-3 mb-3 bg-info-stats bg-opacity-10 rounded-3 d-flex align-items-center">
-        <div class="col">
+        <div class="col-6 col-sm-3">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Likes'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <button class="btn btn-link text-decoration-none p-0 border-0 w-auto mt-1"
@@ -349,7 +349,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-6 col-sm-3">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Views'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-eye"></i>
@@ -359,7 +359,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-6 col-sm-3">
             <div class="row justify-content-center d-flex align-items-center" use:tooltip={{...tooltipConfig, content: 'Comments'}}>
                 <div class="col-auto d-flex align-items-center pe-0">
                     <i class="fas fa-comment"></i>
@@ -369,7 +369,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-6 col-sm-3">
             <div class="row justify-content-center d-flex align-items-center">
                 <div class="col-auto d-flex align-items-center pe-2">
                     <ShareButton
@@ -566,23 +566,50 @@
     }
 
     .bg-info-stats {
-        background: linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+        background:
+            radial-gradient(500px 110px at 50% 0%, rgba(255, 123, 43, 0.16) 0%, transparent 75%),
+            linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
+        border: 1px solid rgba(196, 0, 255, 0.16);
     }
 
     .bg-purple {
         background-color: #5c00a6;
     }
 
-    .bg-text-opacity-10 {
-        background-color: rgba(128, 0, 128, 0.1);
-    }
-
     .bg-purple-opacity-25 {
-        background-color: rgba(92, 0, 166, 0.25);
+        background:
+            radial-gradient(700px 160px at 50% 0%, rgba(255, 123, 43, 0.07) 0%, transparent 70%),
+            rgba(92, 0, 166, 0.25);
     }
 
     .bg-purple-opacity-10 {
-        background-color: rgba(92, 0, 166, 0.1);
+        background:
+            radial-gradient(600px 140px at 50% 0%, rgba(255, 123, 43, 0.06) 0%, transparent 70%),
+            rgba(92, 0, 166, 0.1);
+    }
+
+    .bg-text-opacity-10 {
+        background:
+            radial-gradient(700px 180px at 50% 120%, rgba(255, 123, 43, 0.06) 0%, transparent 70%),
+            rgba(128, 0, 128, 0.1);
+    }
+
+    /* Smith's journal: chapter text reads on a warm dark well */
+    .bg-text-opacity-10 .bg-black.bg-opacity-25 {
+        background:
+            radial-gradient(760px 200px at 50% 0%, rgba(255, 171, 94, 0.04) 0%, transparent 70%),
+            linear-gradient(180deg, rgba(10, 6, 16, 0.62) 0%, rgba(23, 13, 33, 0.65) 100%);
+        border: 1px solid rgba(196, 0, 255, 0.12);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 28px rgba(0, 0, 0, 0.4);
+        color: hsl(0, 0%, 88%);
+        line-height: 1.8;
+    }
+
+    .bg-text-opacity-10 .bg-black.bg-opacity-25 :global(p),
+    .bg-text-opacity-10 .bg-black.bg-opacity-25 :global(div) {
+        max-width: 72ch;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .bg-purple-dark {

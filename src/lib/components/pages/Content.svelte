@@ -116,11 +116,13 @@
         font-size: 1.2rem;
         font-weight: 400;
         line-height: 1.2;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     }
 
     .card .text-description {
         font-size: 0.9rem;
-        color: hsla(210, 17%, 98%, 0.8) !important;
+        color: hsla(210, 17%, 98%, 0.85) !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
     }
 
     .card .to-scale {
@@ -128,7 +130,8 @@
     }
 
     .card.border-0 {
-        box-shadow: 0 0 0 0 hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.75);
+        background: var(--forge-iron);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
         transition: 0.1s all ease-in-out;
     }
 
@@ -146,8 +149,12 @@
         backdrop-filter: brightness(1.2);
     }
 
+    /* Forged overlay: ember-cooling iron instead of flat purple */
     .custom-overlay-content {
-        background: radial-gradient(circle at center, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.6) 0%, var(--primary-color) 100%);
+        background:
+            radial-gradient(220px 90px at 50% 120%, rgba(255, 123, 43, 0.45) 0%, rgba(196, 0, 255, 0.25) 45%, transparent 75%),
+            linear-gradient(180deg, hsla(273, 100%, 22%, 0.55) 0%, hsl(273, 75%, 16%) 100%);
+        border-top: 1px solid rgba(255, 171, 94, 0.22);
     }
 
     @media (max-width: 768px) {

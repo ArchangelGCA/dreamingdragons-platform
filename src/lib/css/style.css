@@ -1,12 +1,24 @@
 :root {
+    /* Royal identity (binding) */
     --primary-hue: 273;
     --primary-saturation: 100%;
     --primary-lightness: 33%;
     --primary-color: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
     --primary-color-alpha-90: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.9);
 
+    /* Ember-Forge tokens */
+    --forge-night: #0a0610;          /* foundry night: page ground */
+    --forge-floor: #120a1c;          /* wells & large panels */
+    --forge-iron: #170d21;           /* card/panel surface */
+    --forge-iron-2: #221430;         /* raised surface */
+    --forge-edge: #342043;           /* hairline edges */
+    --ember: #ff7b2b;                /* forge heat — used sparingly, glow only */
+    --ember-soft: #ffab5e;           /* warm side of the ember */
+    --ember-magenta: #ff2bd6;        /* hot magenta (spark side) */
+    --ember-line: linear-gradient(90deg, transparent 0%, rgba(196, 0, 255, 0.55) 30%, rgba(255, 123, 43, 0.75) 55%, rgba(255, 171, 94, 0.4) 80%, transparent 100%);
+
     --text-color: hsl(0, 0%, 90%);
-    --background-color: hsl(0, 0%, 10%);
+    --background-color: var(--forge-night);
     --surface-color: hsl(0, 0%, 15%);
     --border-color: hsl(0, 0%, 25%);
 
@@ -35,7 +47,7 @@
     
     --bs-body-color: var(--text-color);
     --bs-body-bg: var(--background-color);
-    --bs-body-bg-rgb: 26, 26, 26;
+    --bs-body-bg-rgb: 10, 6, 16;
     
     --bs-border-color: var(--border-color);
     --bs-border-color-translucent: rgba(64, 64, 64, 0.175);
@@ -120,8 +132,15 @@ body {
     padding: 0;
 }
 
+/* Foundry night: near-black indigo with ember heat rising off the floor */
 .bg-main-gradient {
-    background: linear-gradient(105deg, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5) 0%, hsl(0, 0%, 0%) 140%);
+    background:
+        radial-gradient(1100px 480px at 50% 108%, rgba(255, 123, 43, 0.10) 0%, rgba(196, 0, 255, 0.06) 32%, transparent 62%),
+        radial-gradient(900px 420px at 12% -6%, rgba(92, 0, 166, 0.16) 0%, transparent 60%),
+        radial-gradient(900px 420px at 88% -8%, rgba(196, 0, 255, 0.10) 0%, transparent 60%),
+        linear-gradient(105deg, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5) 0%, hsl(0, 0%, 0%) 140%);
+    background-color: var(--forge-night);
+    background-attachment: fixed;
 }
 
 a {
@@ -223,8 +242,41 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--magic-link-color);
 }
 
+/* The forge plate: an iron panel with an ember edge — section identity */
 .bg-purple-gradient {
-    background: linear-gradient(145deg, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5) 10%, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.1));
+    background:
+        radial-gradient(600px 140px at 50% 0%, rgba(196, 0, 255, 0.16) 0%, transparent 70%),
+        linear-gradient(145deg, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5) 10%, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.1));
+}
+
+/* Ember heat line: the anvil's edge — sits on top of hot sections */
+.ember-heat-line {
+    position: relative;
+}
+
+.ember-heat-line::after {
+    content: '';
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 0;
+    height: 2px;
+    background: var(--ember-line);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+/* Cooling rack glow for freshly forged work */
+.forge-rack {
+    position: relative;
+}
+
+.forge-rack::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -1px 0;
+    background: linear-gradient(180deg, rgba(255, 123, 43, 0.10) 0%, rgba(196, 0, 255, 0.05) 40%, transparent 70%);
+    pointer-events: none;
 }
 
 .column-vertical {
@@ -261,15 +313,24 @@ h1, h2, h3, h4, h5, h6 {
     text-decoration: none !important;
 }
 
+/* Forged primary button: purple iron, ember spark on hover */
 .btn-purple {
-    background-color: var(--primary-color);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0) 45%),
+        linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 6%)) 0%, var(--primary-color) 100%);
     color: white;
+    border: 1px solid rgba(196, 0, 255, 0.35);
+    box-shadow: 0 0 0.4rem 0.05rem rgba(92, 0, 166, 0.45);
     animation: pulse 2s ease-in-out infinite;
 }
 
 .btn-purple:hover {
-    background-color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%));
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 45%),
+        linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 16%)) 0%, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 8%)) 100%);
     color: white;
+    border-color: rgba(255, 0, 251, 0.55);
+    box-shadow: 0 0 0.8rem 0.2rem rgba(196, 0, 255, 0.55);
 }
 
 .blink {
@@ -286,15 +347,29 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+/* Forge pulse: the ember breathing under a forged button */
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 hsl(288, 100%, 50%);
+        box-shadow: 0 0 0 0 rgba(255, 123, 43, 0.55);
     }
     70% {
-        box-shadow: 0 0 0 10px rgba(88, 101, 242, 0);
+        box-shadow: 0 0 0 10px rgba(255, 123, 43, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(88, 101, 242, 0);
+        box-shadow: 0 0 0 0 rgba(255, 123, 43, 0);
+    }
+}
+
+/* Ember flicker: subtle shimmer used on hot badges and plates */
+@keyframes ember-flicker {
+    0%, 100% {
+        opacity: 1;
+    }
+    45% {
+        opacity: 0.86;
+    }
+    70% {
+        opacity: 0.94;
     }
 }
 

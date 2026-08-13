@@ -95,7 +95,7 @@
     <div class="row justify-content-center">
 
         <!-- Home title -->
-        <div class="col-12 bg-purple-gradient py-2 rounded-3">
+        <div class="col-12 bg-purple-gradient py-2 rounded-3 forge-title">
             <span class="h2 text-start fw-bolder" use:tooltip={{...tooltipConfig, content: 'Home 🏠'}}>Home</span>
         </div>
 
@@ -122,9 +122,9 @@
 
         <!-- Start newest content section -->
         <div class="col-12 mt-3">
-            <p class="h4">Newest Content <span class="text-body-tertiary small-text">Masonry v0.3.2</span></p>
+            <p class="h4 forge-section-head"><span class="heat-dot heat-dot-hot"></span>Newest Content <span class="text-body-tertiary small-text">Fresh off the anvil</span></p>
         </div>
-        <div class="col-12">
+        <div class="col-12 forge-rack">
             {#if !books_ordered_by_created_at || books_ordered_by_created_at.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
@@ -145,7 +145,7 @@
                     </Masonry>
                     {#if allContentLoaded}
                         <div class="col-12">
-                            <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All Content loaded!⚠️</p>
+                            <p class="h5 text-center mb-0 pt-2 pb-2 rounded-3 text-secondary" style="opacity: 0.6;">— All content loaded —</p>
                         </div>
                     {/if}
                 </div>
@@ -155,9 +155,9 @@
 
         <!-- Start most liked and recently updated content section -->
         <div class="col-12 mt-5 mb-2">
-            <p class="h4">Most Liked</p>
+            <p class="h4 forge-section-head"><span class="heat-dot heat-dot-ember"></span>Most Liked <span class="text-body-tertiary small-text">The hot rack</span></p>
         </div>
-        <div class="col-12">
+        <div class="col-12 forge-rack">
             {#if !books_ordered_by_likes || books_ordered_by_likes.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
@@ -179,9 +179,9 @@
 
         <!-- Start recently updated content section -->
         <div class="col-12 mt-5 mb-2">
-            <p class="h4">Recently Updated</p>
+            <p class="h4 forge-section-head"><span class="heat-dot heat-dot-cool"></span>Recently Updated <span class="text-body-tertiary small-text">Tempered</span></p>
         </div>
-        <div class="col-12">
+        <div class="col-12 forge-rack">
             {#if !books_ordered_by_latest_chapter || books_ordered_by_latest_chapter.length === 0}
                 <p class="h5 text-center">No new content available.</p>
             {:else}
@@ -216,3 +216,43 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Forge section headers: heat-ranked by how fresh the work is */
+    .forge-section-head {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        font-weight: 600;
+    }
+
+    .heat-dot {
+        display: inline-block;
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .heat-dot-hot {
+        background: radial-gradient(circle at 40% 40%, #ffab5e 0%, #ff7b2b 45%, #c400ff 100%);
+        box-shadow: 0 0 0.55rem 0.1rem rgba(255, 123, 43, 0.65);
+        animation: ember-flicker 2.6s ease-in-out infinite;
+    }
+
+    .heat-dot-ember {
+        background: radial-gradient(circle at 40% 40%, #ff2bd6 0%, #c400ff 55%, #5c00a6 100%);
+        box-shadow: 0 0 0.5rem 0.1rem rgba(196, 0, 255, 0.55);
+    }
+
+    .heat-dot-cool {
+        background: radial-gradient(circle at 40% 40%, #5c00a6 0%, #3d34c7 100%);
+        box-shadow: 0 0 0.4rem 0.08rem rgba(92, 0, 166, 0.5);
+    }
+
+    .forge-title {
+        background:
+            radial-gradient(500px 90px at 50% 0%, rgba(255, 123, 43, 0.14) 0%, transparent 70%),
+            linear-gradient(145deg, hsla(var(--primary-hue), var(--primary-saturation), 45%, 0.55) 10%, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.1));
+    }
+</style>

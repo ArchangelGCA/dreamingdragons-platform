@@ -168,7 +168,10 @@
     }
 
     .custom-overlay-content {
-        background: radial-gradient(circle at center, rgba(92, 0, 166, 0.3) 0%, rgba(92, 0, 166, 0.95) 100%);
+        background:
+            radial-gradient(220px 90px at 50% 120%, rgba(255, 123, 43, 0.45) 0%, rgba(196, 0, 255, 0.25) 45%, transparent 75%),
+            linear-gradient(180deg, hsla(273, 100%, 22%, 0.55) 0%, hsl(273, 75%, 16%) 100%);
+        border-top: 1px solid rgba(255, 171, 94, 0.22);
     }
 
     .liked {

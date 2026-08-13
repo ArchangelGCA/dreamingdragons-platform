@@ -160,7 +160,7 @@
                         {#if allResultsLoaded}
                             <div class="row pt-3 mt-3">
                                 <div class="col">
-                                    <p class="h5 text-center mb-0 blink pt-2 pb-2 rounded-3">⚠️All results loaded!⚠️</p>
+                                    <p class="h5 text-center mb-0 pt-2 pb-2 rounded-3 text-secondary" style="opacity: 0.6;">— All results loaded —</p>
                                 </div>
                             </div>
                         {/if}
@@ -177,15 +177,5 @@
         white-space: nowrap;
     }
 
-    /* we make the element with class blink blink one time */
-    .blink {
-        animation: blinker 1s linear 2;
-    }
-
-    /** we change the background color of the element with class blink */
-    @keyframes blinker {
-        50% {
-            background-color: rgba(255, 0, 0, 0.5);
-        }
-    }
+    
 </style>
