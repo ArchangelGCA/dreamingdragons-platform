@@ -2,7 +2,7 @@
     /** @type {{data: any}} */
     let { data } = $props();
 
-    let { updates } = data;
+    let { updates } = $derived(data);
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };

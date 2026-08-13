@@ -1,5 +1,5 @@
 <script>
-    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltip} from "$lib/utils/tooltip.js";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
     import PopularBadge from "$lib/components/pages/PopularBadge.svelte";

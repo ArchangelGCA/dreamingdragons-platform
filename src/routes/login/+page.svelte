@@ -8,7 +8,6 @@
     /** @type {{data: any}} */
     let { data } = $props();
     let callBackUrl = $derived(data.url + '/auth/callback');
-
     let view = $state(data.view || 'magic_link');
     let finalView = $derived(view);
     let signup = $derived(data.signup || false);

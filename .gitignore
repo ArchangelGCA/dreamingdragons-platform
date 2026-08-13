@@ -11,3 +11,5 @@ vite.config.ts.timestamp-*
 /private.txt
 /private2.txt
 /public/
+/.vercel/
+/.vscode/

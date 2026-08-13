@@ -1,6 +1,6 @@
 <script>
     let {data} = $props();
-    let {testUrl, oembedUrl} = data;
+    let {testUrl, oembedUrl} = $derived(data);
 
     let oembedData = $state(null);
     let loading = $state(false);

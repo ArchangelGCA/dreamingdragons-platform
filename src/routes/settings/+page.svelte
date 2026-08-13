@@ -17,7 +17,6 @@
 
     /** @type {{data: any}} */
     let {data} = $props();
-
     let {
         session,
         profile = {full_name: '', username: '', website: '', avatar_url: '', cover_url: ''},

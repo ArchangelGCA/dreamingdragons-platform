@@ -1,6 +1,6 @@
 <script>
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import { tooltip } from "$lib/utils/tooltip.js";
     import {toast} from "$lib/components/svelte-toast";
     import autoAnimate from "@formkit/auto-animate";
     import {deserialize} from "$app/forms";

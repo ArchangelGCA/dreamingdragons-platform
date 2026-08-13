@@ -1,6 +1,6 @@
 <script>
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import { tooltip } from "$lib/utils/tooltip.js";
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
     import { goto } from '$app/navigation';
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";

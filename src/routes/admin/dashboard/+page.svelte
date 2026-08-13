@@ -1,5 +1,5 @@
 <script>
-    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltip} from "$lib/utils/tooltip.js";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
@@ -7,7 +7,6 @@
 
     /** @type {{data: any}} */
     let { data } = $props();
-
     let {panic} = $state(data);
     $effect(() => {
         ({panic} = data);

@@ -5,7 +5,6 @@
 
     /** @type {{data: any}} */
     let { data } = $props();
-
     let {openReports, closedReports, image_proxy} = $state(data);
     $effect(() => {
         ({openReports, closedReports} = data);

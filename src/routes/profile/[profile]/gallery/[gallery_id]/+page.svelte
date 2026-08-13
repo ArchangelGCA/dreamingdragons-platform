@@ -1,7 +1,7 @@
 <script>
     import Masonry from '$lib/components/sveltebricks/Masonry.svelte';
     import ContentMasonry from '$lib/components/pages/ContentMasonry.svelte';
-    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltip} from "$lib/utils/tooltip.js";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createProfilePath } from '$lib/utils/slugs.js';
 

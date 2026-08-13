@@ -1,5 +1,5 @@
 <script>
-    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltip} from "$lib/utils/tooltip.js";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
@@ -19,7 +19,6 @@
 
     /** @type {{data: any}} */
     let {data} = $props();
-
     let {
         supabase,
         image_proxy,

@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import { tooltip } from "$lib/utils/tooltip.js";
     import { tooltipConfig } from "$lib/utils/gcacommons.js";
 
     /** @type {{chapterCount?: number, size?: 'sm' | 'md' | 'lg'}} */

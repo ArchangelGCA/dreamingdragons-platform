@@ -1,7 +1,7 @@
 <script>
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import { tooltip } from "$lib/utils/tooltip.js";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     /** @type {{content: any, image_proxy: any}} */

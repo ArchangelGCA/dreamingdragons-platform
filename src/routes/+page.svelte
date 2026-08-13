@@ -1,7 +1,7 @@
 <script>
     import Content from "$lib/components/pages/Content.svelte";
     import {dragscroll} from '@svelte-put/dragscroll';
-    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltip} from "$lib/utils/tooltip.js";
     import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
     import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
     import Masonry from "$lib/components/sveltebricks/Masonry.svelte";

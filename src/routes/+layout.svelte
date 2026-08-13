@@ -6,7 +6,7 @@
     import {SvelteToast} from "$lib/components/svelte-toast";
     import autoAnimate from "@formkit/auto-animate";
     import Notification from "$lib/components/layout/Notification.svelte";
-    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltip} from "$lib/utils/tooltip.js";
     import {page} from '$app/state';
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import {deserialize} from "$app/forms";
@@ -16,7 +16,6 @@
 
     /** @type {{data: any, children?: import('svelte').Snippet}} */
     let {data, children} = $props();
-
     let {supabase, session, image_proxy, userData} = $state(data);
     // Initialize notifications independently to prevent hydration issues
     let notifications = $state(data.notifications || []);

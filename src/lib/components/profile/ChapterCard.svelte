@@ -1,6 +1,6 @@
 <script>
     import {toast} from "$lib/components/svelte-toast";
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import { tooltip } from "$lib/utils/tooltip.js";
     import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";

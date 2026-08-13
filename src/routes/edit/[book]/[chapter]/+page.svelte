@@ -2,7 +2,7 @@
     import Editor from "@tinymce/tinymce-svelte";
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import { tooltip } from "$lib/utils/tooltip.js";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import autoAnimate from '@formkit/auto-animate';
     import {invalidateAll} from "$app/navigation";
@@ -11,7 +11,6 @@
 
     /** @type {{data: any}} */
     let { data } = $props();
-
     let { chapter, books } = $state(data);
     $effect(() => {
         ({ chapter, books } = data);

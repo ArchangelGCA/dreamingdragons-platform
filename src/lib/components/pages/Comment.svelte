@@ -1,5 +1,5 @@
 <script>
-    import { tooltip } from "@svelte-plugins/tooltips";
+    import { tooltip } from "$lib/utils/tooltip.js";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {toast} from "$lib/components/svelte-toast";
     import Comment from "$lib/components/pages/Comment.svelte";
@@ -132,7 +132,6 @@
 
         isReplyActionActive = false;
     }
-
     const createdAt = new Date(comment.created_at);
     const now = new Date();
     const diffMs = now.getTime() - createdAt.getTime();

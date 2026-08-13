@@ -5,7 +5,7 @@
 
     /** @type {{data: any}} */
     let { data } = $props();
-    let { timedata } = data;
+    let { timedata } = $derived(data);
     let time = $state(new Date());
     let userLocale = $state("en-US");
     let is12Hour = $state(true);

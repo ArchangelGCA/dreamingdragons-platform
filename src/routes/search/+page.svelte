@@ -8,7 +8,7 @@
 
     /** @type {{data: any}} */
     let { data } = $props();
-    let { searchResults, partialText, image_proxy } = data;
+    let { searchResults, partialText, image_proxy } = $derived(data);
 
     onMount(() => {
         window.addEventListener('scroll', handleScroll);

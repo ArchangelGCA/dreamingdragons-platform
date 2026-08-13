@@ -7,7 +7,6 @@
     let { report, closeReport, image_proxy = '' } = $props();
 
     let urlToOpen = $state('');
-
     if (report.report_type === 'book') {
         // Use placeholder title for admin reports since we don't have the actual book title
         urlToOpen = createBookPath('Book', report.book_id);

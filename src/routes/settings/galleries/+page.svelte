@@ -4,7 +4,7 @@
     import {toast} from '$lib/components/svelte-toast/index.js';
     import {deserialize} from '$app/forms';
     import autoAnimate from "@formkit/auto-animate";
-    import {tooltip} from "@svelte-plugins/tooltips";
+    import {tooltip} from "$lib/utils/tooltip.js";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     import {fly, scale} from 'svelte/transition';
