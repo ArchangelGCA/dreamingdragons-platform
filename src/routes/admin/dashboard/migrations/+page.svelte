@@ -1,14 +1,13 @@
 <script>
     import {deserialize} from "$app/forms";
-    import {toast} from "$lib/components/svelte-toast";
+    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
+    import {notifyError, notifySuccess} from "$lib/utils/admin-notify.js";
 
     const OLD_HOST = 'rosesintheflames.pockethost.io';
     const NEW_HOST = 'dreamingdragons-images.pockethost.io';
     const BATCH_SIZE = 50;
     const CONFIRM_FORWARD = 'MIGRATE';
     const CONFIRM_REVERSE = 'ROLLBACK';
-
-    let isMigrating = $state(false);
 
     // --- Pockethost host migration state (Svelte 5 runes) ---
     let isScanning = $state(false);
@@ -37,7 +36,7 @@
     let overallPct = $derived(runTotal > 0 ? Math.min(100, Math.round((processed / runTotal) * 100)) : 0);
     let confirmWord = $derived(pendingDirection === 'reverse' ? CONFIRM_REVERSE : CONFIRM_FORWARD);
     let confirmOk = $derived(confirmText.trim() === confirmWord);
-    let canRun = $derived(!isRunning && !isScanning && !isMigrating);
+    let canRun = $derived(!isRunning && !isScanning);
     // Idempotency: once a direction scans to zero it is done — disable its
     // trigger so an accidental click can't rewrite anything.
     let forwardDone = $derived(forwardCount === 0);
@@ -64,13 +63,8 @@
     }
 
     function showToast(message, ok = true) {
-        toast.push(message, {
-            theme: {
-                '--toastBackground': ok ? 'rgba(92,0,166,0.9)' : '#ff0000',
-                '--toastBody': '#fff',
-                '--toastProgress': '#fff',
-            },
-        });
+        if (ok) notifySuccess(message);
+        else notifyError(message);
     }
 
     async function postAction(action, formData) {
@@ -366,127 +360,9 @@
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 5000);
     }
-
-    async function handleMigrationAvatars() {
-        if (isMigrating) return;
-        if (!confirm('Are you sure you want to migrate avatars?')) return;
-
-        isMigrating = true;
-
-        const toastId = toast.push('Migrating avatars...', {
-            theme: {
-                '--toastBackground': '#851919',
-                '--toastBody': '#fff',
-                '--toastProgress': '#fff',
-            },
-            duration: 100000,
-        });
-
-        const formData = new FormData();
-
-        const response = await fetch('?/migrate_avatars', {
-            method: 'POST',
-            body: formData,
-        });
-
-        toast.pop(toastId);
-
-        const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
-                toast.push('Avatars migrated successfully!', {
-                    theme: {
-                        '--toastBackground': 'rgba(92,0,166,0.9)',
-                        '--toastBody': '#fff',
-                        '--toastProgress': '#fff',
-                    },
-                });
-            } else {
-                toast.push('Failed to migrate avatars!', {
-                    theme: {
-                        '--toastBackground': '#ff0000',
-                        '--toastBody': '#fff',
-                        '--toastProgress': '#fff',
-                    },
-                });
-            }
-        } else {
-            toast.push('Failed to migrate avatars!', {
-                theme: {
-                    '--toastBackground': '#ff0000',
-                    '--toastBody': '#fff',
-                    '--toastProgress': '#fff',
-                },
-            });
-        }
-
-        isMigrating = false;
-    }
-
-    async function handleMigrationCovers(){
-        if (isMigrating) return;
-        if (!confirm('Are you sure you want to migrate covers?')) return;
-
-        isMigrating = true;
-
-        const toastId = toast.push('Migrating covers...', {
-            theme: {
-                '--toastBackground': '#851919',
-                '--toastBody': '#fff',
-                '--toastProgress': '#fff',
-            },
-            duration: 100000,
-        });
-
-        const formData = new FormData();
-
-        const response = await fetch('?/migrate_covers', {
-            method: 'POST',
-            body: formData,
-        });
-
-        toast.pop(toastId);
-
-        const result = deserialize(await response.text());
-
-        if (result.type === 'success'){
-            if (result.data.status === 200){
-                toast.push('Covers migrated successfully!', {
-                    theme: {
-                        '--toastBackground': 'rgba(92,0,166,0.9)',
-                        '--toastBody': '#fff',
-                        '--toastProgress': '#fff',
-                    },
-                });
-            } else {
-                toast.push('Failed to migrate covers!', {
-                    theme: {
-                        '--toastBackground': '#ff0000',
-                        '--toastBody': '#fff',
-                        '--toastProgress': '#fff',
-                    },
-                });
-            }
-        } else {
-            toast.push('Failed to migrate covers!', {
-                theme: {
-                    '--toastBackground': '#ff0000',
-                    '--toastBody': '#fff',
-                    '--toastProgress': '#fff',
-                },
-            });
-        }
-
-        isMigrating = false;
-    }
 </script>
 
-<div class="row mb-2">
-    <div class="col text-center">
-        <h2>Migrations</h2>
-        <p class="text-danger alert alert-danger">DO NOT USE! MIGRATIONS HAVE ALREADY BEEN RAN!</p>
-    </div>
-</div>
+<AdminPageHeader title="Migrations" subtitle="One-shot data rewrites with live progress. Retired tools are hidden." />
 
 <!-- Pockethost host migration (active) -->
 <div class="row gy-3 mb-3">
@@ -656,26 +532,6 @@
                         {/if}
                     {/if}
                 {/if}
-            </div>
-        </div>
-    </div>
-
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header"><i class="fas fa-triangle-exclamation me-2" aria-hidden="true"></i>Migrate Avatars</div>
-            <div class="card-body text-center">
-                <p class="card-text">Migrate avatars from the old system to the new system.</p>
-                <button type="button" class="btn btn-purple disabled" disabled onclick={handleMigrationAvatars}>Migrate Avatars</button>
-            </div>
-        </div>
-    </div>
-    <!-- migrate covers -->
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header"><i class="fas fa-triangle-exclamation me-2" aria-hidden="true"></i>Migrate Covers</div>
-            <div class="card-body text-center">
-                <p class="card-text">Migrate covers from the old system to the new system.</p>
-                <button type="button" class="btn btn-purple disabled" disabled onclick={handleMigrationCovers}>Migrate Covers</button>
             </div>
         </div>
     </div>

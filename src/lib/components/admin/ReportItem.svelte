@@ -1,8 +1,10 @@
 <script>
-    import {toast} from "$lib/components/svelte-toast";
-    import {deserialize} from "$app/forms";
+    import AdminDialog from "$lib/components/admin/AdminDialog.svelte";
+    import { toast } from "$lib/components/svelte-toast";
     import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
     import { createProfilePath, createBookPath, createChapterPath } from '$lib/utils/slugs.js';
+    import { formatAdminDate, postAdminAction } from "$lib/utils/admin.js";
+    import { notifyError, notifySuccess, notifyWorking } from "$lib/utils/admin-notify.js";
     /** @type {{report: any, image_proxy?: string}} */
     let { report, closeReport, image_proxy = '' } = $props();
 
@@ -15,115 +17,73 @@
         urlToOpen = createChapterPath('Book', report.book_id, 'Chapter', report.chapter_id);
     }
 
-    let isCloseReportActive = false;
-
-    function formatDate(date) {
-        if (date === null) {
-            return date;
-        }
-        const finalDate = new Date(date);
-        if (finalDate === "Invalid Date" || isNaN(finalDate)) {
-            return date;
-        }
-        return finalDate.toLocaleString();
-    }
+    let confirmOpen = $state(false);
+    let busy = $state(false);
 
     async function handleCloseReport() {
-        if (isCloseReportActive) return;
-
-        if (!confirm('Are you sure you want to close this report?')) return;
-
-        isCloseReportActive = true;
-
-        const toastId = toast.push('Closing report...', {
-            theme: {
-                '--toastBackground': '#333',
-                '--toastColor': '#fff',
-            },
-        });
-
-        const formData = new FormData();
-        formData.append('report_id', report.id);
-
-        const response = await fetch('?/close_report', {
-            method: 'POST',
-            body: formData
-        });
-
-        toast.pop(toastId);
-
-        const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
-                toast.push('Report closed successfully', {
-                    theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                    },
-                });
+        if (busy) return;
+        busy = true;
+        const toastId = notifyWorking('Closing report...');
+        try {
+            const formData = new FormData();
+            formData.append('report_id', report.id);
+            const result = await postAdminAction('close_report', formData);
+            toast.pop(toastId);
+            if (result.type === 'success' && result.data.status === 200) {
+                notifySuccess('Report closed');
+                confirmOpen = false;
                 closeReport(report.id);
             } else {
-                toast.push('Failed to close report', {
-                    theme: {
-                        '--toastBackground': '#f44336',
-                        '--toastColor': '#fff',
-                    },
-                });
+                notifyError('Could not close report.');
             }
-        } else {
-            toast.push('Failed to close report', {
-                theme: {
-                    '--toastBackground': '#f44336',
-                    '--toastColor': '#fff',
-                },
-            });
+        } catch {
+            toast.pop(toastId);
+            notifyError('Could not close report.');
+        } finally {
+            busy = false;
         }
-
-
-        isCloseReportActive = false;
     }
 </script>
 
-<div class="card bg-black bg-opacity-25 shadow">
-    <div class="card-title text-uppercase bg-light bg-opacity-10 p-2 rounded-2 mb-0">
-        {report.report_type} <span class="fs-6 text-muted">{formatDate(report.created_at)}</span>
-        <br>
-        <UserAvatarNavbar url={report.profiles.avatar_url} username={report.profiles.username} image_proxy={image_proxy} size="25px" /> <a class="text-warning-emphasis fs-7 text-decoration-none" href={createProfilePath(report.profiles.username, report.profiles.id)}>{report.profiles.username}</a>
+<div class="admin-card p-3">
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+        {#if report.report_type === 'book'}
+            <span class="badge rounded-pill text-bg-danger">Tale</span>
+        {:else}
+            <span class="badge rounded-pill text-bg-warning">Chapter</span>
+        {/if}
+        {#if report.is_closed}
+            <span class="badge rounded-pill text-bg-success">Closed</span>
+        {:else}
+            <span class="badge rounded-pill chip-purple">Open</span>
+        {/if}
+        <span class="small text-secondary tnum ms-auto">{formatAdminDate(report.created_at)}</span>
     </div>
-    <div class="card-body">
-        <p class="card-text">{report.report_description}</p>
-        <hr>
-        <div class="row">
-            <div class="col-12">
-                <a class="btn btn-open w-100" href="{urlToOpen}" target="_blank">Open {(report.book_id && report.chapter_id) ? 'Chapter' : 'Book'}</a>
-            </div>
-            <div class="col-12">
-                {#if !report.is_closed}
-                    <button class="btn btn-danger w-100 mt-2" onclick={handleCloseReport}>
-                        Close Report
-                    </button>
-                {:else}
-                    <div class="alert alert-success mt-2 mb-0" role="alert">
-                        Report closed
-                    </div>
-                {/if}
-            </div>
-        </div>
+    <div class="d-flex align-items-center gap-2 mb-2">
+        <UserAvatarNavbar url={report.profiles.avatar_url} username={report.profiles.username} image_proxy={image_proxy} size="25px" />
+        <a class="text-warning-emphasis small text-decoration-none text-truncate" href={createProfilePath(report.profiles.username, report.profiles.id)}>{report.profiles.username}</a>
+    </div>
+    <p class="small mb-3">{report.report_description}</p>
+    <div class="d-flex flex-column flex-sm-row gap-2">
+        <a class="btn btn-sm btn-purple flex-fill" href={urlToOpen} target="_blank" rel="noopener noreferrer">
+            Open {(report.book_id && report.chapter_id) ? 'chapter' : 'tale'}
+            <i class="fas fa-arrow-up-right-from-square ms-1" aria-hidden="true"></i>
+        </a>
+        {#if !report.is_closed}
+            <button class="btn btn-sm btn-outline-danger flex-fill" disabled={busy} onclick={() => confirmOpen = true}>
+                Close report
+            </button>
+        {/if}
     </div>
 </div>
 
-<style>
-    .btn-open {
-        background-color: #5c00a6;
-        color: #fff;
-    }
-
-    .btn-open:hover {
-        background-color: #4d0090;
-        color: #fff;
-    }
-
-    .fs-7 {
-        font-size: 0.875rem;
-    }
-</style>
+<AdminDialog
+    open={confirmOpen}
+    title="Close this report?"
+    confirmLabel="Close report"
+    {busy}
+    onClose={() => { if (!busy) confirmOpen = false; }}
+    onConfirm={handleCloseReport}
+>
+    <p class="mb-0">The report moves to Closed. The reported tale or chapter itself is untouched.</p>
+</AdminDialog>

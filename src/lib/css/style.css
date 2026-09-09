@@ -319,3 +319,28 @@ h1, h2, h3, h4, h5, h6 {
         height: 8px;
     }
 }
+
+/* ---- Admin console vocabulary (single source of truth) ----
+   One card, one chip set, one dialog pattern across all admin pages. */
+.admin-card {
+    background: var(--forge-iron, #170d21);
+    border: 1px solid var(--forge-edge, #342043);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.admin-card-accent {
+    border-color: var(--primary-color);
+}
+
+/* Brand chip for neutral admin metadata (pill, hue-273). */
+.chip-purple {
+    background: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
+    color: #fff;
+    border-radius: 32px;
+}
+
+/* Tabular numerals for counts and stats. */
+.tnum {
+    font-variant-numeric: tabular-nums;
+}

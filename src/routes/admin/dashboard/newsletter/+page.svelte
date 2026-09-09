@@ -1,8 +1,10 @@
 <script>
-    import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
+    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
+    import AdminStat from "$lib/components/admin/AdminStat.svelte";
     import autoAnimate from "@formkit/auto-animate";
     import {isPlausibleEmail, postAdminAction} from "$lib/utils/admin.js";
+    import {notifyError, notifySuccess, notifyWorking} from "$lib/utils/admin-notify.js";
 
     let {data} = $props();
     // Writable derived: local adds assign locally, server data re-evaluates on navigation.
@@ -17,31 +19,18 @@
     let emailInput = $state('');
     let delay = 300;
 
-    function notify(message, ok = true) {
-        toast.push(message, {
-            theme: {
-                '--toastBackground': ok ? '#5c00a6' : '#f44336',
-                '--toastColor': 'white',
-            },
-            duration: 5000,
-        });
-    }
-
     async function handleAdd(e) {
         e.preventDefault();
         if (isAdding) return;
 
         const email = String(emailInput ?? '').trim();
         if (!isPlausibleEmail(email)) {
-            notify('Enter a valid email address.', false);
+            notifyError('Enter a valid email address.');
             return;
         }
 
         isAdding = true;
-        const toastId = toast.push('Adding user...', {
-            theme: { '--toastBackground': '#5c00a6', '--toastColor': 'white' },
-            duration: 5000,
-        });
+        const toastId = notifyWorking('Adding user...');
 
         try {
             const formData = new FormData();
@@ -51,13 +40,13 @@
             if (result.type === 'success' && result.data.status === 200) {
                 audience = [...audience, { email, unsubscribed: false }];
                 emailInput = '';
-                notify(result.data.body.message);
+                notifySuccess(result.data.body.message);
             } else {
-                notify(result.data?.body?.message ?? 'Could not add user.', false);
+                notifyError(result.data?.body?.message ?? 'Could not add user.');
             }
         } catch {
             toast.pop(toastId);
-            notify('Could not add user.', false);
+            notifyError('Could not add user.');
         } finally {
             isAdding = false;
         }
@@ -66,7 +55,7 @@
     async function handleAddOne(email) {
         if (isAdding) return;
         if (!isPlausibleEmail(email)) {
-            notify('Invalid email address.', false);
+            notifyError('Invalid email address.');
             return;
         }
         isAdding = true;
@@ -76,9 +65,10 @@
             const result = await postAdminAction('addUserToAudience', formData);
             if (result.type === 'success' && result.data.status === 200) {
                 audience = [...audience, { email, unsubscribed: false }];
-                notify(result.data.body.message);
+                users = users.filter((u) => u.email !== email);
+                notifySuccess(result.data.body.message);
             } else {
-                notify(result.data?.body?.message ?? 'Could not add user.', false);
+                notifyError(result.data?.body?.message ?? 'Could not add user.');
             }
         } finally {
             isAdding = false;
@@ -90,10 +80,7 @@
         if (isAdding || !users?.length) return;
 
         isAdding = true;
-        const toastId = toast.push('Adding all users...', {
-            theme: { '--toastBackground': '#5c00a6', '--toastColor': 'white' },
-            duration: 100000,
-        });
+        const toastId = notifyWorking('Adding all users...');
         progress = 0;
 
         try {
@@ -108,6 +95,8 @@
                 progress = Math.round(((i + 1) / users.length) * 100);
                 await new Promise((resolve) => setTimeout(resolve, delay));
             }
+            users = [];
+            notifySuccess('All fetched users added.');
         } finally {
             toast.pop(toastId);
             isAdding = false;
@@ -130,10 +119,7 @@
         if (isFetchingUsers) return;
 
         isFetchingUsers = true;
-        const toastId = toast.push('Fetching users...', {
-            theme: { '--toastBackground': '#5c00a6', '--toastColor': 'white' },
-            duration: 5000,
-        });
+        const toastId = notifyWorking('Fetching users...');
 
         try {
             const result = await postAdminAction('getUsersOnPlatform', new FormData());
@@ -154,109 +140,77 @@
                 fetched = fetched.filter((user) => !known.has(String(user.email ?? '').toLowerCase()));
                 users = fetched;
                 usersCapped = Boolean(result.data.body.capped);
-                notify(
+                notifySuccess(
                     users.length + ' users ready to add.' + (usersCapped ? ' (fetch capped at 2,000 — repeat to cover more)' : '')
                 );
             } else {
-                notify(result.data?.body?.message ?? 'Could not fetch users.', false);
+                notifyError(result.data?.body?.message ?? 'Could not fetch users.');
             }
         } catch {
             toast.pop(toastId);
-            notify('Could not fetch users.', false);
+            notifyError('Could not fetch users.');
         } finally {
             isFetchingUsers = false;
         }
     }
 </script>
 
-<div class="row mb-2">
-    <div class="col text-center">
-        <h2>Audience</h2>
-        <p class="text-secondary small mb-0">Newsletter contacts via Resend.</p>
+<AdminPageHeader title="Newsletter" subtitle="Grow the Resend audience from verified creators." />
+
+<div class="row g-3 mb-3">
+    <div class="col-6">
+        <AdminStat icon="fa-users" label="Contacts" value={audience.length} href="/admin/dashboard/newsletter" linkLabel="Audience list" tip="Total contacts in Resend" />
+    </div>
+    <div class="col-6">
+        <AdminStat icon="fa-envelope-circle-check" label="Subscribed" value={subscribedCount} href="/admin/dashboard/newsletter" linkLabel="Subscribed" tip="Contacts still subscribed" accent="success" />
     </div>
 </div>
 
-<div class="row gy-2">
+<div class="row g-3">
     <div class="col-12 col-md-6">
-        <div class="card rounded-4 bg-black bg-opacity-25 border-purple">
-            <div class="card-body">
-                <h3 class="card-title h6 text-secondary">Total contacts</h3>
-                <p class="card-text h1 mb-0">{audience ? audience.length : 0}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-md-6">
-        <div class="card rounded-4 bg-black bg-opacity-25 border-purple">
-            <div class="card-body">
-                <h3 class="card-title h6 text-secondary">Subscribed</h3>
-                <p class="card-text h1 mb-0">{subscribedCount}</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Actions section, like adding a user to audience or removing it -->
-<div class="row mt-3">
-    <div class="col-12 text-center">
-        <h3 class="h5">Actions</h3>
-    </div>
-</div>
-
-<div class="row gy-2">
-    <div class="col-12 col-md-6">
-        <div class="card rounded-4 bg-black bg-opacity-25 border-purple">
-            <div class="card-body">
-                <h3 class="card-title h6">Add user</h3>
-                <form onsubmit={handleAdd}>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" placeholder="Email" required bind:value={emailInput} maxlength="254">
-                    </div>
-                    <button type="submit" class="btn btn-purple w-100" disabled={isAdding}>{isAdding ? 'Adding...' : 'Add'}</button>
-                </form>
-            </div>
+        <div class="admin-card p-3">
+            <h3 class="h6">Add user</h3>
+            <form onsubmit={handleAdd}>
+                <label for="email" class="form-label small">Email</label>
+                <div class="input-group">
+                    <input type="email" class="form-control" id="email" placeholder="creator@example.com" required bind:value={emailInput} maxlength="254" />
+                    <button type="submit" class="btn btn-purple" disabled={isAdding}>{isAdding ? 'Adding…' : 'Add'}</button>
+                </div>
+            </form>
         </div>
     </div>
     <!-- Fetch verified users from platform, and do actions like adding them to audience -->
     <div class="col-12 col-md-6">
-        <div class="card rounded-4 bg-black bg-opacity-25 border-purple">
-            <div class="card-body" use:autoAnimate>
-                <h3 class="card-title h6">Fetch users</h3>
-                <p class="small text-secondary">Verified creators not yet in the audience.</p>
-                <form onsubmit={fetchUsers}>
-                    <button type="submit" class="btn btn-purple w-100" disabled={isFetchingUsers}>{isFetchingUsers ? 'Fetching...' : 'Fetch'}</button>
-                </form>
-                <!-- Show fetched users and a button to add them to audience -->
-                {#if users && users.length > 0}
-                    <div class="mt-3" style="overflow-y: auto; max-height: 50vh">
-                        <h4 class="text-center h6">Ready ({users.length}){usersCapped ? ' · capped' : ''}</h4>
-                        <ul class="list-group">
-                            {#each users as user (user.id)}
-                                <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
-                                    <span class="text-truncate">{user.username}</span>
-                                    <button class="btn btn-sm btn-purple flex-shrink-0" onclick={() => handleAddOne(user.email)} disabled={isAdding}>Add</button>
-                                </li>
-                            {/each}
-                        </ul>
+        <div class="admin-card p-3" use:autoAnimate>
+            <h3 class="h6">Fetch creators</h3>
+            <p class="small text-secondary">Verified, eligible creators not yet in the audience.</p>
+            <form onsubmit={fetchUsers}>
+                <button type="submit" class="btn btn-purple w-100" disabled={isFetchingUsers}>{isFetchingUsers ? 'Fetching…' : 'Fetch'}</button>
+            </form>
+            <!-- Show fetched users and a button to add them to audience -->
+            {#if users && users.length > 0}
+                <div class="mt-3" style="overflow-y: auto; max-height: 50vh">
+                    <h4 class="h6 text-center">Ready <span class="tnum">({users.length})</span>{usersCapped ? ' · capped' : ''}</h4>
+                    <ul class="list-group">
+                        {#each users as user (user.id)}
+                            <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                                <span class="text-truncate small">{user.username}</span>
+                                <button class="btn btn-sm btn-purple flex-shrink-0" onclick={() => handleAddOne(user.email)} disabled={isAdding}>Add</button>
+                            </li>
+                        {/each}
+                    </ul>
+                </div>
+                <!-- Button to add all fetched users to audience -->
+                <button class="btn btn-purple mt-3 w-100" onclick={handleAddAll} disabled={isAdding}>Add all users</button>
+                <!-- Progress bar -->
+                {#if progress >= 0 && isAdding}
+                    <div class="progress mt-3" role="progressbar" aria-label="Adding all users" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar" style="width: {progress}%"></div>
                     </div>
-                    <!-- Button to add all fetched users to audience -->
-                    <button class="btn btn-purple mt-3 w-100" onclick={handleAddAll} disabled={isAdding}>Add all users</button>
-                    <!-- Progress bar -->
-                    {#if progress >= 0 && isAdding}
-                        <div class="progress mt-3" role="progressbar" aria-label="Adding all users" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: {progress}%"></div>
-                        </div>
-                    {/if}
-                {:else if users && users.length === 0}
-                    <p class="small text-secondary mt-3 mb-0">Everyone eligible is already in the audience.</p>
                 {/if}
-            </div>
+            {:else if users && users.length === 0}
+                <p class="small text-secondary mt-3 mb-0">Everyone eligible is already in the audience.</p>
+            {/if}
         </div>
     </div>
 </div>
-
-<style>
-    .border-purple {
-        border-color: var(--primary-color) !important;
-    }
-</style>

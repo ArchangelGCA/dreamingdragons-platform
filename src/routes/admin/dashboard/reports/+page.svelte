@@ -1,5 +1,7 @@
 <script>
     import ReportItem from "$lib/components/admin/ReportItem.svelte";
+    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
+    import AdminEmpty from "$lib/components/admin/AdminEmpty.svelte";
     import {invalidateAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
 
@@ -20,40 +22,45 @@
     let openChapters = $derived(visibleOpen.filter((r) => r.report_type === 'chapter'));
     let closedBooks = $derived(visibleClosed.filter((r) => r.report_type === 'book'));
     let closedChapters = $derived(visibleClosed.filter((r) => r.report_type === 'chapter'));
+
+    const filters = [
+        { value: 'all', label: 'All' },
+        { value: 'book', label: 'Tales' },
+        { value: 'chapter', label: 'Chapters' }
+    ];
 </script>
 
-<div class="row mb-2">
-    <div class="col text-center">
-        <h2>Reports</h2>
-        <p class="text-secondary small mb-2">{openReports.length} open · {closedReports.length} closed</p>
+<AdminPageHeader title="Reports" subtitle="Triage what the community flagged." meta="{openReports.length} open · {closedReports.length} closed">
+    {#snippet actions()}
         <div class="btn-group btn-group-sm" role="group" aria-label="Filter by report type">
-            <button type="button" class="btn {typeFilter === 'all' ? 'btn-purple' : 'btn-outline-secondary'}" onclick={() => typeFilter = 'all'} aria-pressed={typeFilter === 'all'}>All</button>
-            <button type="button" class="btn {typeFilter === 'book' ? 'btn-purple' : 'btn-outline-secondary'}" onclick={() => typeFilter = 'book'} aria-pressed={typeFilter === 'book'}>Tales</button>
-            <button type="button" class="btn {typeFilter === 'chapter' ? 'btn-purple' : 'btn-outline-secondary'}" onclick={() => typeFilter = 'chapter'} aria-pressed={typeFilter === 'chapter'}>Chapters</button>
+            {#each filters as f (f.value)}
+                <button
+                    type="button"
+                    class="btn {typeFilter === f.value ? 'btn-purple' : 'btn-outline-secondary'}"
+                    onclick={() => typeFilter = f.value}
+                    aria-pressed={typeFilter === f.value}
+                >{f.label}</button>
+            {/each}
         </div>
-    </div>
-</div>
+    {/snippet}
+</AdminPageHeader>
 
 <div class="accordion" id="reportsAccordion">
     <div class="accordion-item">
         <h2 class="accordion-header" id="openReportsHeading">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#openReports"
                     aria-expanded="true" aria-controls="openReports">
-                <span>Open <span
-                        class="{visibleOpen.length === 0 ? 'text-success-emphasis' : 'text-danger-emphasis'}">{visibleOpen.length}</span></span>
+                <span>Open <span class="badge rounded-pill tnum {visibleOpen.length === 0 ? 'text-bg-success' : 'text-bg-danger'}">{visibleOpen.length}</span></span>
             </button>
         </h2>
         <div id="openReports" class="accordion-collapse collapse show" aria-labelledby="openReportsHeading"
              data-bs-parent="#reportsAccordion">
             <div class="accordion-body">
                 {#if visibleOpen.length === 0}
-                    <div class="text-center py-4">
-                        <i class="fas fa-circle-check fa-2x mb-2 text-success" aria-hidden="true"></i>
-                        <p class="mb-0">No open reports</p>
-                    </div>
+                    <AdminEmpty icon="fa-circle-check" title="No open reports" hint="Everything triaged. Nice." />
                 {:else}
                     {#if openBooks.length > 0}
-                        <h3 class="h6 text-center bg-danger bg-opacity-10 rounded-4 py-2">Tale reports ({openBooks.length})</h3>
+                        <h3 class="h6 text-secondary mb-2">Tales ({openBooks.length})</h3>
                         <div class="row gy-2 mb-3" use:autoAnimate>
                             {#each openBooks as report (report.id)}
                                 <div class="col-12">
@@ -63,7 +70,7 @@
                         </div>
                     {/if}
                     {#if openChapters.length > 0}
-                        <h3 class="h6 text-center bg-warning bg-opacity-10 rounded-4 py-2">Chapter reports ({openChapters.length})</h3>
+                        <h3 class="h6 text-secondary mb-2">Chapters ({openChapters.length})</h3>
                         <div class="row gy-2" use:autoAnimate>
                             {#each openChapters as report (report.id)}
                                 <div class="col-12">
@@ -80,20 +87,17 @@
         <h2 class="accordion-header" id="closedReportsHeading">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#closedReports" aria-expanded="false" aria-controls="closedReports">
-                <span>Closed <span class="text-primary-emphasis">{visibleClosed.length}</span></span>
+                <span>Closed <span class="badge rounded-pill text-bg-secondary tnum">{visibleClosed.length}</span></span>
             </button>
         </h2>
         <div id="closedReports" class="accordion-collapse collapse" aria-labelledby="closedReportsHeading"
              data-bs-parent="#reportsAccordion">
             <div class="accordion-body">
                 {#if visibleClosed.length === 0}
-                    <div class="text-center py-4">
-                        <i class="fas fa-folder-open fa-2x mb-2 text-secondary" aria-hidden="true"></i>
-                        <p class="mb-0">No closed reports</p>
-                    </div>
+                    <AdminEmpty icon="fa-folder-open" title="No closed reports" />
                 {:else}
                     {#if closedBooks.length > 0}
-                        <h3 class="h6 text-center bg-danger bg-opacity-10 rounded-4 py-2">Tale reports ({closedBooks.length})</h3>
+                        <h3 class="h6 text-secondary mb-2">Tales ({closedBooks.length})</h3>
                         <div class="row gy-2 mb-3" use:autoAnimate>
                             {#each closedBooks as report (report.id)}
                                 <div class="col-12">
@@ -103,7 +107,7 @@
                         </div>
                     {/if}
                     {#if closedChapters.length > 0}
-                        <h3 class="h6 text-center bg-warning bg-opacity-10 rounded-4 py-2">Chapter reports ({closedChapters.length})</h3>
+                        <h3 class="h6 text-secondary mb-2">Chapters ({closedChapters.length})</h3>
                         <div class="row gy-2" use:autoAnimate>
                             {#each closedChapters as report (report.id)}
                                 <div class="col-12">

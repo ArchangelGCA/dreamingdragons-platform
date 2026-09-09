@@ -5,6 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] - 2026-09-09
+
+### Added
+
+- **Admin console design system: one vocabulary everywhere.**
+  - New `AdminDialog.svelte`: the single confirm/form dialog (Svelte-controlled
+    Bootstrap markup, Escape + backdrop-button dismiss, busy state,
+    danger/warning/primary tones). Replaces all three competing patterns at
+    once: native `confirm()` calls, per-item Bootstrap `data-bs-toggle`
+    modals, and the manual `modal-backdrop` DOM-removal hacks after
+    `invalidateAll()` — `rg "confirm\(" src/routes/admin` is now empty.
+  - New `AdminPageHeader.svelte` (title + one-line purpose + meta counts +
+    actions slot) on all six admin pages; new `AdminEmpty.svelte`
+    (icon + title + hint) for every empty state.
+  - New `admin-notify.js` (client-only split from `admin.js`, which stays
+    server-importable): `notifyWorking` (dark) / `notifySuccess` (royal
+    purple) / `notifyError` (red) — the console's only toast themes.
+  - New `style.css` tokens: `.admin-card` (vault surface, 16px, hairline
+    edge), `.chip-purple` (hue-273 pill), `.tnum` (tabular numerals).
+  - Sidebar groups: Moderate (Dashboard, Users, Content, Reports) and System
+    (Migrations, Newsletter) with muted captions.
+  - Status reads as chips everywhere: Can upload / Blocked / N warnings
+    (users), Tale / Chapter / Open / Closed (reports), chapter counts
+    (content); counts render tabular.
+
+### Changed
+
+- **AdminUser**: header row (avatar, name, chips, copy-ID) + Warn/Block
+  actions up front; details, cover and reset actions behind progressive
+  disclosure; warning composer and all four confirms are `AdminDialog`s;
+  cover images go through `resolveImageUrl`; dates via `formatAdminDate`.
+- **AdminContent**: vault card with 16:9 cover, chapter-count chip, equal
+  heights in the grid; delete-tale / delete-chapter (with warn option) / edit
+  are `AdminDialog`s; toasts and dates unified.
+- **ReportItem**: chip header (type + status + date), `btn-purple` open
+  action (custom `.btn-open` removed), close goes through `AdminDialog`.
+- **Newsletter**: header + `AdminStat` overview cards, vault panels, input
+  group add-form; adding one user also removes them from the ready list.
+- **Migrations**: retired avatar/cover cards, dead `confirm()` handlers and
+  the shouting red banner removed (Pockethost tool keeps its proven
+  type-to-confirm flow); toasts unified via the shared helpers.
+
+### Verified
+
+- `svelte-autofixer` on all new/touched admin components → zero new issues
+  (one real a11y catch fixed: dialog backdrop is now a labelled dismiss
+  button instead of a click-only `div`; the rest is pre-existing/systemic).
+- Impeccable `detect` over all changed admin targets → advisories only,
+  reviewed (Bootstrap signal shades, hue-273 tonal steps, icon sizing;
+  migrations log mono style is pre-existing).
+- `bun outdated` → clean, zero outdated packages.
+- `bun --bun run build` → succeeds (client + SSR + `@sveltejs/adapter-vercel`).
+
 ## [0.13.0] - 2026-09-09
 
 ### Added

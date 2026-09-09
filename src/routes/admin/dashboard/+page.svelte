@@ -2,10 +2,11 @@
     import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {toast} from "$lib/components/svelte-toast";
-    import {deserialize} from "$app/forms";
     import {invalidateAll} from "$app/navigation";
     import AdminStat from "$lib/components/admin/AdminStat.svelte";
+    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
     import {postAdminAction} from "$lib/utils/admin.js";
+    import {notifyError, notifySuccess, notifyWorking} from "$lib/utils/admin-notify.js";
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -23,29 +24,20 @@
 
         const active = Boolean(panicObj?.is_active);
         const action = active ? 'disable_panic' : 'enable_panic';
-        const toastId = toast.push(active ? 'Disabling panic mode...' : 'Enabling panic mode...', {
-            theme: { '--toastBackground': '#bd135a', '--toastColor': 'white' },
-            duration: 5000,
-        });
+        const toastId = notifyWorking(active ? 'Disabling panic mode...' : 'Enabling panic mode...');
 
         try {
             const result = await postAdminAction(action, new FormData());
             toast.pop(toastId);
             if (result.type === 'success' && result.data.status === 200) {
-                toast.push(result.data.body.message, {
-                    theme: { '--toastBackground': '#5c00a6', '--toastColor': '#fff' }
-                });
+                notifySuccess(result.data.body.message);
                 await invalidateAll();
             } else {
-                toast.push(result.data?.body?.message ?? 'Error during toggle action', {
-                    theme: { '--toastBackground': '#f44336', '--toastColor': '#fff' }
-                });
+                notifyError(result.data?.body?.message ?? 'Error during toggle action');
             }
         } catch {
             toast.pop(toastId);
-            toast.push('Error during toggle action', {
-                theme: { '--toastBackground': '#f44336', '--toastColor': '#fff' }
-            });
+            notifyError('Error during toggle action');
         } finally {
             isPanicAction = false;
         }
@@ -54,12 +46,7 @@
     let panicActive = $derived(Boolean(panicObj?.is_active ?? false));
 </script>
 
-<div class="row text-center mb-3 mt-1">
-    <div class="col-12">
-        <h2 class="mb-1">Admin Dashboard</h2>
-        <p class="text-secondary small mb-0">Health at a glance — jump to a section to act.</p>
-    </div>
-</div>
+<AdminPageHeader title="Dashboard" subtitle="Health at a glance — pick a section to act." />
 
 <div class="row g-3 mb-3">
     <div class="col-6 col-xl-3">

@@ -1,24 +1,22 @@
 <script>
     import autoAnimate from "@formkit/auto-animate";
-    import {deserialize} from "$app/forms";
-    import {toast} from "$lib/components/svelte-toast";
+    import AdminDialog from "$lib/components/admin/AdminDialog.svelte";
+    import { toast } from "$lib/components/svelte-toast";
     import { createProfilePath } from '$lib/utils/slugs.js';
     import { resolveImageUrl } from '$lib/utils/images.js';
-    import { postAdminAction } from '$lib/utils/admin.js';
+    import { formatAdminDate, postAdminAction } from '$lib/utils/admin.js';
+    import { notifyError, notifySuccess, notifyWorking } from "$lib/utils/admin-notify.js";
     /** @type {{item: any, image_proxy: any}} */
     let { item, image_proxy, editContent, deleteContent } = $props();
 
     const maxChars = 100;
     let showFullDescription = $state(false);
-    let deleteBookActionActive = false;
-    let deleteChapterActionActive = false;
-    let editBookActionActive = false;
+    let busy = $state(false);
     let sendWarning = $state(false);
     let warningMessage = $state('');
-    // Chapter bodies are NOT in the list payload (perf) — lazy-load on expand.
-    let chapterTexts = $state({});
-    let chapterLoading = $state({});
-    let chapterErrors = $state({});
+    let deleteBookOpen = $state(false);
+    let editOpen = $state(false);
+    let pendingChapter = $state(null);
     let editItem = $state({
         title: item.title,
         description: item.description,
@@ -27,20 +25,93 @@
             username: item.profiles.username
         }
     });
+    // Chapter bodies are NOT in the list payload (perf) — lazy-load on expand.
+    let chapterTexts = $state({});
+    let chapterLoading = $state({});
+    let chapterErrors = $state({});
 
-    function formatDate(date) {
-        if (date === null) {
-            return date;
+    let description = $derived(item.description ?? '');
+
+    async function runAction(action, formData, verb) {
+        if (busy) return null;
+        busy = true;
+        const toastId = notifyWorking(verb);
+        try {
+            const result = await postAdminAction(action, formData);
+            toast.pop(toastId);
+            if (result.type === 'success' && result.data.status === 200) {
+                notifySuccess(result.data.body.message);
+                return result;
+            }
+            notifyError(result.data?.body?.message ?? 'Something went wrong.');
+            return null;
+        } catch {
+            toast.pop(toastId);
+            notifyError('Something went wrong.');
+            return null;
+        } finally {
+            busy = false;
         }
-        const finalDate = new Date(date);
-        if (finalDate === "Invalid Date" || isNaN(finalDate)) {
-            return date;
-        }
-        return finalDate.toLocaleString();
+    }
+
+    function warningFields(formData) {
+        formData.append('sendWarning', String(sendWarning));
+        formData.append('warningMessage', warningMessage);
     }
 
     function openEditModal() {
         editItem = { ...item };
+        editOpen = true;
+    }
+
+    async function saveBookChanges() {
+        if (!editItem.title?.trim() || !editItem.description?.trim() || !editItem.cover_url?.trim()) {
+            notifyError('Title, description and cover URL are all required.');
+            return;
+        }
+
+        const data = new FormData();
+        data.append('bookId', item.id);
+        data.append('title', editItem.title);
+        data.append('description', editItem.description);
+        data.append('coverUrl', editItem.cover_url);
+
+        const result = await runAction('edit_book', data, `Saving ${item.title}...`);
+        if (result) {
+            editOpen = false;
+            editContent({ id: item.id, ...editItem });
+        }
+    }
+
+    async function confirmDelete() {
+        const data = new FormData();
+        data.append('bookId', item.id);
+        data.append('bookCover', item.cover_url);
+        data.append('ownerId', item.owner_id);
+        warningFields(data);
+        const result = await runAction('delete_book', data, `Deleting ${item.title}...`);
+        if (result) {
+            deleteBookOpen = false;
+            sendWarning = false;
+            warningMessage = '';
+            deleteContent(item.id);
+        }
+    }
+
+    async function confirmDeleteChapter() {
+        if (!pendingChapter) return;
+        const data = new FormData();
+        data.append('chapterId', pendingChapter.id);
+        data.append('ownerId', pendingChapter.owner_id);
+        warningFields(data);
+        const result = await runAction('delete_chapter', data, `Deleting ${pendingChapter.title}...`);
+        if (result) {
+            const removedId = pendingChapter.id;
+            pendingChapter = null;
+            sendWarning = false;
+            warningMessage = '';
+            deleteContent(removedId);
+        }
     }
 
     async function loadChapterText(chapter) {
@@ -67,247 +138,62 @@
             chapterLoading = { ...chapterLoading, [chapter.id]: false };
         }
     }
-
-    async function saveBookChanges() {
-        if (editBookActionActive) return;
-        if (editItem.title === '' || editItem.description === '' || editItem.cover_url === '') {
-            toast.push('Please fill all fields', {
-                theme: {
-                    '--toastBackground': '#f44336',
-                    '--toastColor': '#fff',
-                }
-            });
-            return;
-        }
-
-        editBookActionActive = true;
-
-        const toastId = toast.push('Editing content ' + item.title + '...', {
-            duration: 100000,
-            theme: {
-                '--toastBackground': '#5c00a6',
-                '--toastColor': '#fff',
-            }
-        });
-
-        const data = new FormData();
-        data.append('bookId', item.id);
-        data.append('title', editItem.title);
-        data.append('description', editItem.description);
-        data.append('coverUrl', editItem.cover_url);
-
-        const response = await fetch('?/edit_book', {
-            method: 'POST',
-            body: data
-        });
-
-        toast.pop(toastId);
-
-        const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
-                toast.push('Content ' + item.title +  ' edited! 📝', {
-                    theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                    }
-                });
-
-                document.getElementById('editModal-' + item.id).style.display = 'none';
-
-                editContent({ id: item.id, ...editItem });
-            } else {
-                toast.push('Error: ' + result.data.body.message, {
-                    theme: {
-                        '--toastBackground': '#f44336',
-                        '--toastColor': '#fff',
-                    }
-                });
-            }
-        } else {
-            toast.push('Error during action', {
-                theme: {
-                    '--toastBackground': '#f44336',
-                    '--toastColor': '#fff',
-                }
-            });
-        }
-
-
-        editBookActionActive = false;
-    }
-
-    async function confirmDelete() {
-        if (deleteBookActionActive) return;
-
-        deleteBookActionActive = true;
-
-        // Makes waiting toast
-        const toastId = toast.push('Deleting content ' + item.title + '...', {
-            duration: 100000,
-            theme: {
-                '--toastBackground': '#5c00a6',
-                '--toastColor': '#fff',
-            }
-        });
-
-        const data = new FormData();
-        data.append('bookId', item.id);
-        data.append('bookCover', item.cover_url);
-        data.append('sendWarning', sendWarning);
-        data.append('warningMessage', warningMessage);
-        data.append('ownerId', item.owner_id);
-        const response = await fetch('?/delete_book', {
-            method: 'POST',
-            body: data
-        });
-
-        toast.pop(toastId);
-
-        const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
-                toast.push('Content ' + item.title +  ' deleted! 🗑️', {
-                    theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                    }
-                });
-
-                deleteContent(item.id);
-            } else {
-                toast.push('Error: ' + result.data.body.message, {
-                    theme: {
-                        '--toastBackground': '#f44336',
-                        '--toastColor': '#fff',
-                    }
-                });
-            }
-        } else {
-            toast.push('Error during action (Please login)', {
-                theme: {
-                    '--toastBackground': '#f44336',
-                    '--toastColor': '#fff',
-                }
-            });
-        }
-
-        deleteBookActionActive = false;
-    }
-
-    async function confirmDeleteChapter(chapter) {
-        if (deleteChapterActionActive) return;
-
-        deleteChapterActionActive = true;
-
-        const toastId = toast.push('Deleting chapter ' + chapter.title + '...', {
-            duration: 100000,
-            theme: {
-                '--toastBackground': '#5c00a6',
-                '--toastColor': '#fff',
-            }
-        });
-
-        const data = new FormData();
-        data.append('chapterId', chapter.id);
-        data.append('sendWarning', sendWarning);
-        data.append('warningMessage', warningMessage);
-        data.append('ownerId', chapter.owner_id);
-        const response = await fetch('?/delete_chapter', {
-            method: 'POST',
-            body: data
-        });
-
-        toast.pop(toastId);
-
-        const result = deserialize(await response.text());
-        if (result.type === 'success'){
-            if (result.data.status === 200){
-                toast.push('Chapter ' + chapter.title +  ' deleted! 🗑️', {
-                    theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                    }
-                });
-
-                deleteContent(chapter.id);
-            } else {
-                toast.push('Error: ' + result.data.body.message, {
-                    theme: {
-                        '--toastBackground': '#f44336',
-                        '--toastColor': '#fff',
-                    }
-                });
-            }
-        } else {
-            toast.push('Error during action (Please login)', {
-                theme: {
-                    '--toastBackground': '#f44336',
-                    '--toastColor': '#fff',
-                }
-            });
-        }
-
-        deleteChapterActionActive = false;
-    }
 </script>
 
-<div class="card">
-    <a href="/content/{item.id}" target="_blank">
+<div class="admin-card overflow-hidden h-100 d-flex flex-column">
+    <a href="/content/{item.id}" target="_blank" rel="noopener noreferrer" aria-label="Open {item.title}">
         {#if item.cover_url}
             {@const optimizedCoverUrl = resolveImageUrl(item.cover_url, image_proxy)}
-            <img src={optimizedCoverUrl} class="card-img-top" alt={item.title} loading="lazy" decoding="async" />
+            <img src={optimizedCoverUrl} class="card-img-top admin-cover" alt={item.title} loading="lazy" decoding="async" />
         {:else}
-            <img src="/favicon.webp" class="card-img-top" alt={item.title} loading="lazy" />
+            <img src="/favicon.webp" class="card-img-top admin-cover" alt={item.title} loading="lazy" decoding="async" />
         {/if}
     </a>
-    <div class="card-body">
-        <h5 class="card-title"><a href="/content/{item.id}" target="_blank" aria-label="Open Content"><i class="fas fa-solid fa-link"></i></a> {item.title}</h5>
-        <p class="card-text">By: <a href={createProfilePath(item.profiles.username, item.profiles.id)} target="_blank">{item.profiles.username}</a></p>
-        <p class="card-text" use:autoAnimate>
+    <div class="card-body d-flex flex-column flex-grow-1">
+        <h5 class="card-title h6">
+            <a href="/content/{item.id}" target="_blank" rel="noopener noreferrer" aria-label="Open tale"><i class="fas fa-link" aria-hidden="true"></i></a>
+            {item.title}
+        </h5>
+        <p class="small mb-1">
+            By <a href={createProfilePath(item.profiles.username, item.profiles.id)} target="_blank" rel="noopener noreferrer">{item.profiles.username}</a>
+            <span class="badge rounded-pill chip-purple ms-1 tnum">{item.chapters.length} ch.</span>
+        </p>
+        <p class="card-text small" use:autoAnimate>
             {#if showFullDescription}
-                {@html item.description ?? ''}
+                {@html description}
             {:else}
-                {@html (item.description ?? '').substring(0, maxChars)}
-                {#if (item.description ?? '').length > maxChars}...{/if}
+                {@html description.substring(0, maxChars)}
+                {#if description.length > maxChars}...{/if}
             {/if}
-            {#if (item.description ?? '').length > maxChars}
-                <button class="btn btn-link" onclick={() => showFullDescription = !showFullDescription}>
-                    {#if showFullDescription} Show Less {:else} Show More {/if}
+            {#if description.length > maxChars}
+                <button class="btn btn-link btn-sm p-0 ms-1" onclick={() => showFullDescription = !showFullDescription}>
+                    {#if showFullDescription}Show less{:else}Show more{/if}
                 </button>
             {/if}
         </p>
-        <div class="row justify-content-center text-center">
-            <div class="col-12 col-md-6">
-                <button class="btn btn-link {item.chapters.length === 0 ? 'disabled' : ''}" type="button" data-bs-toggle="collapse" data-bs-target="#chapters-{item.id}">
-                    Show Chapters {#if item.chapters.length > 0} ({item.chapters.length}) {/if}
-                </button>
-            </div>
-            <div class="col-12 col-md-6">
-                <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#profile-{item.id}">
-                    Show Profile
-                </button>
-            </div>
+        <div class="d-flex gap-2 mb-2">
+            <button class="btn btn-sm btn-outline-secondary flex-fill {item.chapters.length === 0 ? 'disabled' : ''}" type="button" data-bs-toggle="collapse" data-bs-target="#chapters-{item.id}" aria-expanded="false" aria-controls="chapters-{item.id}">
+                Chapters ({item.chapters.length})
+            </button>
+            <button class="btn btn-sm btn-outline-secondary flex-fill" type="button" data-bs-toggle="collapse" data-bs-target="#profile-{item.id}" aria-expanded="false" aria-controls="profile-{item.id}">
+                Owner
+            </button>
         </div>
         <div class="collapse" id="chapters-{item.id}">
             <div class="accordion" id="accordionChapters-{item.id}">
                 {#each item.chapters as chapter (chapter.id)}
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading-{chapter.id}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{chapter.id}" aria-expanded="false" aria-controls="collapse-{chapter.id}" onclick={() => loadChapterText(chapter)}>
+                            <button class="accordion-button collapsed small" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{chapter.id}" aria-expanded="false" aria-controls="collapse-{chapter.id}" onclick={() => loadChapterText(chapter)}>
                                 {chapter.title}
                             </button>
                         </h2>
                         <div id="collapse-{chapter.id}" class="accordion-collapse collapse" aria-labelledby="heading-{chapter.id}" data-bs-parent="#accordionChapters-{item.id}">
                             <div class="accordion-body">
-                                <div class="row text-center mt-1">
-                                    <div class="col">
-                                        <button class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#deleteChapterModal-{chapter.id}">
-                                            <i class="fas fa-trash-alt"></i> Delete
-                                        </button>
-                                    </div>
-                                </div>
-                                <hr>
+                                <button class="btn btn-outline-danger btn-sm w-100" onclick={() => pendingChapter = chapter}>
+                                    <i class="fas fa-trash-can me-1" aria-hidden="true"></i>Delete chapter
+                                </button>
+                                <hr />
                                 {#if chapterLoading[chapter.id]}
                                     <p class="text-secondary small mb-0"><span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Loading chapter…</p>
                                 {:else if chapterErrors[chapter.id]}
@@ -320,117 +206,86 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="deleteChapterModal-{chapter.id}" tabindex="-1" aria-labelledby="deleteChapterModalLabel-{chapter.id}" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="deleteChapterModalLabel-{chapter.id}">Confirm Delete</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body" use:autoAnimate>
-                                    <p>Are you sure you want to delete Chapter -> <b>{chapter.title}</b>?</p>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sendChapterWarning-{chapter.id}" bind:checked={sendWarning}>
-                                        <label class="form-check-label" for="sendChapterWarning-{chapter.id}">
-                                            Send warning to user
-                                        </label>
-                                    </div>
-                                    {#if sendWarning}
-                                        <textarea class="form-control mt-2" id="warningMessage-{chapter.id}" rows="3" bind:value={warningMessage} placeholder="Enter warning message here..."></textarea>
-                                    {/if}
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-danger" onclick={() => confirmDeleteChapter(chapter)}>Delete</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 {/each}
             </div>
         </div>
         <div class="collapse" id="profile-{item.id}">
-            <div>
-                <h6>{item.profiles.username}</h6>
-                <p>id: <a href={createProfilePath(item.profiles.username, item.profiles.id)} target="_blank">{item.profiles.id}</a></p>
-            </div>
+            <p class="small mb-0">Owner: <a href={createProfilePath(item.profiles.username, item.profiles.id)} target="_blank" rel="noopener noreferrer">{item.profiles.username}</a></p>
+        </div>
+        <div class="d-flex gap-2 mt-auto pt-2">
+            <button class="btn btn-purple btn-sm flex-fill" onclick={openEditModal}>
+                <i class="fas fa-pen me-1" aria-hidden="true"></i>Edit
+            </button>
+            <button class="btn btn-danger btn-sm flex-fill" onclick={() => deleteBookOpen = true}>
+                <i class="fas fa-trash-can me-1" aria-hidden="true"></i>Delete
+            </button>
         </div>
     </div>
-    <div class="card-footer">
-        <small class="text-muted">Created at: {formatDate(item.created_at)}</small>
-        <div class="row mt-1">
-            <div class="col-6 text-center">
-                <button class="btn btn-primary btn-sm w-100" onclick={openEditModal} data-bs-toggle="modal" data-bs-target="#editModal-{item.id}">
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-            </div>
-            <div class="col-6">
-                <button class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#deleteModal-{item.id}">
-                    <i class="fas fa-trash-alt"></i> Delete
-                </button>
-            </div>
-        </div>
-    </div>
+    <div class="card-footer small text-secondary tnum">Created {formatAdminDate(item.created_at)}</div>
 </div>
 
-<div class="modal fade" id="deleteModal-{item.id}" tabindex="-1" aria-labelledby="deleteModalLabel-{item.id}" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel-{item.id}">Confirm Delete</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" use:autoAnimate>
-                <p>Are you sure you want to delete -> <b>{item.title}</b>?</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="sendWarning-{item.id}" bind:checked={sendWarning}>
-                    <label class="form-check-label" for="sendWarning-{item.id}">
-                        Send warning to user
-                    </label>
-                </div>
-                {#if sendWarning}
-                    <textarea class="form-control mt-2" id="warningMessage-{item.id}" rows="3" bind:value={warningMessage} placeholder="Enter warning message here..."></textarea>
-                {/if}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger" onclick={confirmDelete}>Delete</button>
-            </div>
-        </div>
+<AdminDialog
+    open={deleteBookOpen}
+    title="Delete “{item.title}”?"
+    confirmLabel="Delete tale"
+    {busy}
+    onClose={() => { if (!busy) deleteBookOpen = false; }}
+    onConfirm={confirmDelete}
+>
+    <p>The tale, its chapters and its cover file are permanently removed.</p>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="sendWarning-{item.id}" bind:checked={sendWarning} />
+        <label class="form-check-label" for="sendWarning-{item.id}">Send warning to the owner</label>
     </div>
-</div>
+    {#if sendWarning}
+        <textarea class="form-control mt-2" rows="3" maxlength="1000" bind:value={warningMessage} placeholder="Warning message…"></textarea>
+    {/if}
+</AdminDialog>
 
-<div class="modal fade" id="editModal-{item.id}" tabindex="-1" aria-labelledby="editModalLabel-{item.id}" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel-{item.id}">Edit Content</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="title-{item.id}" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="title-{item.id}" bind:value={editItem.title}>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description-{item.id}" class="form-label">Description</label>
-                        <textarea class="form-control" id="description-{item.id}" rows="3" bind:value={editItem.description}></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cover_url-{item.id}" class="form-label">Cover URL</label>
-                        <input type="text" class="form-control" id="cover_url-{item.id}" bind:value={editItem.cover_url}>
-                    </div>
-                    <div class="mb-3">
-                        <label for="username-{item.id}" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username-{item.id}" bind:value={editItem.profiles.username} disabled>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick={saveBookChanges}>Save changes</button>
-            </div>
-        </div>
+<AdminDialog
+    open={pendingChapter !== null}
+    title="Delete “{pendingChapter?.title ?? ''}”?"
+    confirmLabel="Delete chapter"
+    {busy}
+    onClose={() => { if (!busy) pendingChapter = null; }}
+    onConfirm={confirmDeleteChapter}
+>
+    <p>The chapter is permanently removed from “{item.title}”.</p>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="sendChapterWarning-{item.id}" bind:checked={sendWarning} />
+        <label class="form-check-label" for="sendChapterWarning-{item.id}">Send warning to the owner</label>
     </div>
-</div>
+    {#if sendWarning}
+        <textarea class="form-control mt-2" rows="3" maxlength="1000" bind:value={warningMessage} placeholder="Warning message…"></textarea>
+    {/if}
+</AdminDialog>
+
+<AdminDialog
+    open={editOpen}
+    title="Edit tale"
+    tone="primary"
+    confirmLabel="Save changes"
+    {busy}
+    onClose={() => { if (!busy) editOpen = false; }}
+    onConfirm={saveBookChanges}
+>
+    <div class="mb-3">
+        <label for="title-{item.id}" class="form-label small">Title</label>
+        <input type="text" class="form-control" id="title-{item.id}" maxlength="200" bind:value={editItem.title} />
+    </div>
+    <div class="mb-3">
+        <label for="description-{item.id}" class="form-label small">Description</label>
+        <textarea class="form-control" id="description-{item.id}" rows="3" bind:value={editItem.description}></textarea>
+    </div>
+    <div class="mb-0">
+        <label for="cover_url-{item.id}" class="form-label small">Cover URL</label>
+        <input type="text" class="form-control" id="cover_url-{item.id}" bind:value={editItem.cover_url} />
+    </div>
+</AdminDialog>
+
+<style>
+    .admin-cover {
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+    }
+</style>
