@@ -4,26 +4,56 @@ import {error as errorx} from "@sveltejs/kit";
 import {createClient} from "@supabase/supabase-js";
 import {isAdmin} from "$lib/utils/misc.js";
 import {createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "$lib/server/pocketbase.js";
+import {pageRange, totalPagesFor} from "$lib/utils/admin.js";
 
-export const load = async ( { locals: { supabase, getSession } }) => {
+const PER_PAGE = 12;
+// Slim list select: chapter bodies (`chapters.text`) are deliberately excluded —
+// they can be megabytes per book. The client lazy-loads one chapter via
+// `get_chapter_text` only when an admin expands it.
+const LIST_SELECT = 'id,title,description,cover_url,owner_id,created_at,updated_at,profiles:owner_id(id,username),chapters:chapters(id,title,owner_id,created_at)';
+
+function createAdminSupabase() {
+    return createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false
+        }
+    });
+}
+
+export const load = async ( { url, locals: { supabase, getSession } }) => {
     const {session} = await getSession();
 
     const result = await isAdmin(session, supabase);
     if (result !== true) return result;
 
-    // Get all books and chapters
-    const {data: content, error: booksError} = await supabase
+    const q = (url.searchParams.get('q') ?? '').trim().slice(0, 80);
+    const { page, perPage, from, to } = pageRange(url.searchParams.get('page'), PER_PAGE);
+
+    let query = supabase
         .from('book')
-        .select('*, profiles:owner_id(*), chapters:chapters(*)')
-        .order('created_at', {ascending: false});
+        .select(LIST_SELECT, { count: 'exact' })
+        .order('created_at', {ascending: false})
+        .range(from, to);
+
+    if (q) query = query.ilike('title', `%${q}%`);
+
+    const { data: content, error: booksError, count } = await query;
 
     if (booksError) {
         console.error(booksError);
         return errorx(500, "Error fetching content");
     }
 
+    const total = count ?? 0;
+
     return {
-        content,
+        content: content ?? [],
+        page,
+        perPage,
+        total,
+        totalPages: totalPagesFor(total, perPage),
+        q,
         title: 'Admin - Content',
         description: 'Admin Content Dashboard of DreamingDragons platform.',
         index: false
@@ -31,6 +61,29 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 }
 
 export const actions = {
+    get_chapter_text: async ({request, locals: {supabase, getSession}}) => {
+        const {session} = await getSession();
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+        const formData = await request.formData();
+        const chapterId = String(formData.get('chapterId') ?? '').trim();
+        if (!chapterId) {
+            return { status: 400, body: { message: "Invalid Chapter ID" } };
+        }
+        const adminSupabase = createAdminSupabase();
+        const { data, error } = await adminSupabase
+            .from('chapters')
+            .select('id,title,text')
+            .eq('id', chapterId)
+            .single();
+        if (error) {
+            console.error(error);
+            return { status: 500, body: { message: "Error fetching Chapter" } };
+        }
+        return { status: 200, body: { message: "Chapter loaded", chapter: data } };
+    },
     delete_book: async ({request, locals: {supabase, getSession}}) => {
         const {session} = await getSession();
         const formData = Object.fromEntries(await request.formData());

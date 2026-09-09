@@ -20,21 +20,26 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     const resend = new Resend(PRIVATE_RESEND_API_KEY);
 
-    // Get contacts from audience
-    const audienceList = await resend.contacts.list({
-        audienceId: PRIVATE_RESEND_AUDIENCE_ID
-    });
+    // Get contacts from audience (shape varies by SDK — degrade to []).
+    let audience = [];
+    try {
+        const audienceList = await resend.contacts.list({
+            audienceId: PRIVATE_RESEND_AUDIENCE_ID
+        });
+        audience = audienceList?.data?.data ?? audienceList?.data ?? [];
+    } catch (err) {
+        console.error(err);
+    }
 
     return {
         ...pageData,
-        audience: audienceList.data.data
+        audience
     }
 }
 
 export const actions = {
     getUsersOnPlatform: async ({request, locals: {supabase, getSession}}) => {
         const {session} = await getSession();
-        let maxUsers = 1000000;
 
         const result = await isAdmin(session, supabase);
         if (result !== true) {
@@ -58,41 +63,60 @@ export const actions = {
             }
         }
 
-        // Get all users
-        const { data: { users }, error: listUsersError } = await adminSupabase.auth.admin.listUsers({
-            page: 1,
-            perPage: maxUsers
-        });
-
-        if (listUsersError) {
-            console.error(listUsersError);
-            return {
-                status: 500,
-                body: {
-                    message: "Error fetching users"
+        // Page through auth users in small bounded batches: a single
+        // `perPage: 1000000` call blows Vercel's serverless timeout/memory on
+        // large communities. Cap the fetch so the admin action always returns.
+        const AUTH_PAGE_SIZE = 200;
+        const MAX_USERS = 2000;
+        const users = [];
+        let authPage = 1;
+        while (users.length < MAX_USERS) {
+            const { data, error: listUsersError } = await adminSupabase.auth.admin.listUsers({
+                page: authPage,
+                perPage: AUTH_PAGE_SIZE
+            });
+            if (listUsersError) {
+                console.error(listUsersError);
+                return {
+                    status: 500,
+                    body: {
+                        message: "Error fetching users"
+                    }
                 }
             }
+            const batch = data?.users ?? [];
+            users.push(...batch);
+            if (batch.length < AUTH_PAGE_SIZE) break;
+            authPage += 1;
         }
+        const capped = users.length >= MAX_USERS;
 
-        // Get profiles using profiles table, we just need the id (that matches users[].id and username)
-        const { data: profiles, error: profilesError } = await adminSupabase
-            .from('profiles')
-            .select('id, username, can_upload')
-            .in('id', users.map(u => u.id));
+        // Get profiles in id chunks (Supabase `in()` handles hundreds per call).
+        const ids = users.map((u) => u.id);
+        const profilesById = new Map();
+        for (let i = 0; i < ids.length; i += 200) {
+            const chunk = ids.slice(i, i + 200);
+            if (chunk.length === 0) break;
+            const { data: profiles, error: profilesError } = await adminSupabase
+                .from('profiles')
+                .select('id, username, can_upload')
+                .in('id', chunk);
 
-        if (profilesError) {
-            console.error(profilesError);
-            return {
-                status: 500,
-                body: {
-                    message: "Error fetching profiles"
+            if (profilesError) {
+                console.error(profilesError);
+                return {
+                    status: 500,
+                    body: {
+                        message: "Error fetching profiles"
+                    }
                 }
             }
+            for (const p of (profiles ?? [])) profilesById.set(p.id, p);
         }
 
         // Add username to users
         users.forEach(u => {
-            const profile = profiles.find(p => p.id === u.id);
+            const profile = profilesById.get(u.id);
             if (profile) {
                 u.username = profile.username;
                 u.can_upload = profile.can_upload;
@@ -102,7 +126,9 @@ export const actions = {
         return {
             status: 200,
             body: {
-                users: users
+                users,
+                capped,
+                fetched: users.length
             }
         }
     },
@@ -117,10 +143,20 @@ export const actions = {
 
         const resend = new Resend(PRIVATE_RESEND_API_KEY);
 
+        const email = String(formData.email ?? '').trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254) {
+            return {
+                status: 400,
+                body: {
+                    message: "Invalid email address"
+                }
+            }
+        }
+
         const {error} = await resend.contacts.create({
             audienceId: PRIVATE_RESEND_AUDIENCE_ID,
             unsubscribed: false,
-            email: formData.email,
+            email,
         });
 
         if (error) {
@@ -136,7 +172,7 @@ export const actions = {
         return {
             status: 200,
             body: {
-                message: "User " + formData.email +  " added to audience!"
+                message: "User " + email +  " added to audience!"
             }
         }
     }

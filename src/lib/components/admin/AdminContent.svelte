@@ -4,6 +4,7 @@
     import {toast} from "$lib/components/svelte-toast";
     import { createProfilePath } from '$lib/utils/slugs.js';
     import { resolveImageUrl } from '$lib/utils/images.js';
+    import { postAdminAction } from '$lib/utils/admin.js';
     /** @type {{item: any, image_proxy: any}} */
     let { item, image_proxy, editContent, deleteContent } = $props();
 
@@ -14,6 +15,10 @@
     let editBookActionActive = false;
     let sendWarning = $state(false);
     let warningMessage = $state('');
+    // Chapter bodies are NOT in the list payload (perf) — lazy-load on expand.
+    let chapterTexts = $state({});
+    let chapterLoading = $state({});
+    let chapterErrors = $state({});
     let editItem = $state({
         title: item.title,
         description: item.description,
@@ -36,6 +41,31 @@
 
     function openEditModal() {
         editItem = { ...item };
+    }
+
+    async function loadChapterText(chapter) {
+        if (chapterTexts[chapter.id] || chapterLoading[chapter.id]) return;
+        // Already embedded (backwards compat) — nothing to fetch.
+        if (chapter.text) {
+            chapterTexts = { ...chapterTexts, [chapter.id]: chapter.text };
+            return;
+        }
+        chapterLoading = { ...chapterLoading, [chapter.id]: true };
+        chapterErrors = { ...chapterErrors, [chapter.id]: '' };
+        try {
+            const formData = new FormData();
+            formData.append('chapterId', chapter.id);
+            const result = await postAdminAction('get_chapter_text', formData);
+            if (result.type === 'success' && result.data.status === 200) {
+                chapterTexts = { ...chapterTexts, [chapter.id]: result.data.body.chapter?.text ?? '' };
+            } else {
+                chapterErrors = { ...chapterErrors, [chapter.id]: result.data?.body?.message ?? 'Could not load chapter.' };
+            }
+        } catch {
+            chapterErrors = { ...chapterErrors, [chapter.id]: 'Could not load chapter.' };
+        } finally {
+            chapterLoading = { ...chapterLoading, [chapter.id]: false };
+        }
     }
 
     async function saveBookChanges() {
@@ -236,12 +266,12 @@
         <p class="card-text">By: <a href={createProfilePath(item.profiles.username, item.profiles.id)} target="_blank">{item.profiles.username}</a></p>
         <p class="card-text" use:autoAnimate>
             {#if showFullDescription}
-                {@html item.description}
+                {@html item.description ?? ''}
             {:else}
-                {@html item.description.substring(0, maxChars)}
-                {#if item.description.length > maxChars}...{/if}
+                {@html (item.description ?? '').substring(0, maxChars)}
+                {#if (item.description ?? '').length > maxChars}...{/if}
             {/if}
-            {#if item.description.length > maxChars}
+            {#if (item.description ?? '').length > maxChars}
                 <button class="btn btn-link" onclick={() => showFullDescription = !showFullDescription}>
                     {#if showFullDescription} Show Less {:else} Show More {/if}
                 </button>
@@ -264,7 +294,7 @@
                 {#each item.chapters as chapter (chapter.id)}
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading-{chapter.id}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{chapter.id}" aria-expanded="false" aria-controls="collapse-{chapter.id}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{chapter.id}" aria-expanded="false" aria-controls="collapse-{chapter.id}" onclick={() => loadChapterText(chapter)}>
                                 {chapter.title}
                             </button>
                         </h2>
@@ -278,7 +308,15 @@
                                     </div>
                                 </div>
                                 <hr>
-                                {@html chapter.text}
+                                {#if chapterLoading[chapter.id]}
+                                    <p class="text-secondary small mb-0"><span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Loading chapter…</p>
+                                {:else if chapterErrors[chapter.id]}
+                                    <p class="text-danger small mb-0">{chapterErrors[chapter.id]}</p>
+                                {:else if chapterTexts[chapter.id]}
+                                    {@html chapterTexts[chapter.id]}
+                                {:else}
+                                    <p class="text-secondary small mb-0">Expand to load the full text.</p>
+                                {/if}
                             </div>
                         </div>
                     </div>

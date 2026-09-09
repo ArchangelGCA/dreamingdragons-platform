@@ -4,52 +4,77 @@
     /** @type {{children?: import('svelte').Snippet}} */
     let { children } = $props();
 
+    const links = [
+        { href: '/admin/dashboard', icon: 'fa-tachometer-alt', label: 'Dashboard' },
+        { href: '/admin/dashboard/users', icon: 'fa-users', label: 'Users' },
+        { href: '/admin/dashboard/content', icon: 'fa-file-alt', label: 'Content' },
+        { href: '/admin/dashboard/reports', icon: 'fa-flag', label: 'Reports' },
+        { href: '/admin/dashboard/migrations', icon: 'fa-right-left', label: 'Migrations' },
+        { href: '/admin/dashboard/newsletter', icon: 'fa-envelope', label: 'Newsletter' },
+    ];
+
+    function isActive(href) {
+        return href === '/admin/dashboard'
+            ? page.url.pathname === href
+            : page.url.pathname === href || page.url.pathname.startsWith(href + '/');
+    }
 </script>
 
-<div class="row">
-    <nav class="col-lg-2 navbar navbar-expand-lg navbar-dark bg-black bg-opacity-10 rounded-end-3 border-end border-light-subtle pt-1 px-3">
-        <button class="navbar-toggler w-100" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav flex-column w-100 text-center">
-                <li class="nav-item">
-                    <a class="nav-link {page.url.pathname === '/admin/dashboard' ? 'active' : ''}" href="/admin/dashboard">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {page.url.pathname === '/admin/dashboard/users' ? 'active' : ''}" href="/admin/dashboard/users">
-                        <i class="fas fa-users"></i> Users
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {page.url.pathname === '/admin/dashboard/content' ? 'active' : ''}" href="/admin/dashboard/content">
-                        <i class="fas fa-file-alt"></i> Content
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {page.url.pathname === '/admin/dashboard/reports' ? 'active' : ''}" href="/admin/dashboard/reports">
-                        <i class="fas fa-flag"></i> Reports
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {page.url.pathname === '/admin/dashboard/migrations' ? 'active' : ''}" href="/admin/dashboard/migrations">
-                        <i class="fas fa-exchange"></i> Migrations
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {page.url.pathname === '/admin/dashboard/newsletter' ? 'active' : ''}" href="/admin/dashboard/newsletter">
-                        <i class="fas fa-envelope"></i> Newsletter
-                    </a>
-                </li>
+<div class="row g-0 admin-shell">
+    <nav class="col-12 col-lg-2 admin-nav navbar navbar-expand-lg navbar-dark bg-black bg-opacity-10 rounded-bottom-4 rounded-lg-end-0 border-bottom border-lg-bottom-0 border-lg-end border-light-subtle px-3 py-2 py-lg-3" aria-label="Admin sections">
+        <div class="d-flex w-100 align-items-center justify-content-between gap-2">
+            <span class="navbar-brand mb-0 h6 d-lg-none"><i class="fas fa-shield-halved me-2" aria-hidden="true"></i>Admin</span>
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="adminNav" aria-expanded="false" aria-label="Toggle admin navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse" id="adminNav">
+            <ul class="navbar-nav flex-column w-100 text-start text-lg-center gap-1 py-2">
+                {#each links as link (link.href)}
+                    <li class="nav-item">
+                        <a
+                            class="nav-link admin-link d-flex align-items-center gap-2 px-3 py-2 rounded-3 {isActive(link.href) ? 'active' : ''}"
+                            href={link.href}
+                            aria-current={isActive(link.href) ? 'page' : undefined}
+                        >
+                            <i class="fas {link.icon} fa-fw" aria-hidden="true"></i> {link.label}
+                        </a>
+                    </li>
+                {/each}
             </ul>
         </div>
     </nav>
 
-    <div class="col-12 col-lg-10 overflow-auto">
-        <div class="container py-3" style="height: 100vh" use:autoAnimate>
+    <div class="col-12 col-lg-10">
+        <div class="container py-3 admin-content" use:autoAnimate>
             {@render children?.()}
         </div>
     </div>
 </div>
+
+<style>
+    .admin-shell {
+        min-height: calc(100vh - 140px);
+    }
+    .admin-nav {
+        background: transparent;
+    }
+    @media (min-width: 992px) {
+        .admin-nav {
+            position: sticky;
+            top: 0;
+            align-self: flex-start;
+            min-height: calc(100vh - 140px);
+        }
+    }
+    .admin-link {
+        min-height: 48px;
+    }
+    .admin-link.active {
+        background: hsl(273, 100%, 33%);
+        color: #fff;
+    }
+    .admin-content {
+        min-height: 60vh;
+    }
+</style>

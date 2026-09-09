@@ -35,7 +35,6 @@ function getActivePanic(panic) {
 
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();
-    let maxUsers = 1000000;
 
     const result = await isAdmin(session, supabase);
     if (result !== true) {
@@ -46,14 +45,29 @@ export const load = async ( { locals: { supabase, getSession } }) => {
         .from('panic')
         .select('*')
         .order('created_at', {ascending: false});
-
     if (panicError) {
         console.error(panicError);
         return errorx(500, "Error fetching panic");
     }
 
+    // Lightweight overview counts — `head: true` transfers no rows, so the
+    // home stays fast even as tables grow. A failed count degrades to null
+    // (card shows "—") instead of failing the whole dashboard.
+    const [usersCount, booksCount, chaptersCount, openReportsCount] = await Promise.all([
+        supabase.from('profiles').select('id', { count: 'exact', head: true }),
+        supabase.from('book').select('id', { count: 'exact', head: true }),
+        supabase.from('chapters').select('id', { count: 'exact', head: true }),
+        supabase.from('reports').select('id', { count: 'exact', head: true }).eq('is_closed', false)
+    ]);
+
     return {
         panic: getActivePanic(panic),
+        stats: {
+            users: usersCount.count ?? null,
+            books: booksCount.count ?? null,
+            chapters: chaptersCount.count ?? null,
+            openReports: openReportsCount.count ?? null
+        },
         title: 'Admin - Dashboard',
         description: 'Admin Dashboard of DreamingDragons platform.',
         index: false,

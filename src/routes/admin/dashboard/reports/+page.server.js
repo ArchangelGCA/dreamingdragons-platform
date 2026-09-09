@@ -17,7 +17,7 @@ export const load = async ( { locals: { supabase, getSession } }) => {
 
     const {data: reports, error: reportsError} = await supabase
         .from('reports')
-        .select('*, profiles!reports_user_id_fkey(id,username, avatar_url)')
+        .select('id,report_type,report_description,book_id,chapter_id,is_closed,created_at,user_id,profiles!reports_user_id_fkey(id,username,avatar_url)')
         .order('created_at', {ascending: false});
 
     if (reportsError) {

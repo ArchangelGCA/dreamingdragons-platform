@@ -492,7 +492,7 @@
 <div class="row gy-3 mb-3">
     <div class="col-12">
         <div class="card border-warning">
-            <div class="card-header bg-warning-subtle fw-bold">🔁 Pockethost Host Migration <span class="badge text-bg-warning ms-1">reversible</span></div>
+            <div class="card-header bg-warning-subtle fw-bold"><i class="fas fa-right-left me-2" aria-hidden="true"></i>Pockethost Host Migration <span class="badge text-bg-warning ms-1">reversible</span></div>
             <div class="card-body">
                 <p class="card-text">
                     Rewrite stored image URLs from
@@ -662,7 +662,7 @@
 
     <div class="col-12">
         <div class="card">
-            <div class="card-header">⚠️ Migrate Avatars</div>
+            <div class="card-header"><i class="fas fa-triangle-exclamation me-2" aria-hidden="true"></i>Migrate Avatars</div>
             <div class="card-body text-center">
                 <p class="card-text">Migrate avatars from the old system to the new system.</p>
                 <button type="button" class="btn btn-purple disabled" disabled onclick={handleMigrationAvatars}>Migrate Avatars</button>
@@ -672,7 +672,7 @@
     <!-- migrate covers -->
     <div class="col-12">
         <div class="card">
-            <div class="card-header">⚠️ Migrate Covers</div>
+            <div class="card-header"><i class="fas fa-triangle-exclamation me-2" aria-hidden="true"></i>Migrate Covers</div>
             <div class="card-body text-center">
                 <p class="card-text">Migrate covers from the old system to the new system.</p>
                 <button type="button" class="btn btn-purple disabled" disabled onclick={handleMigrationCovers}>Migrate Covers</button>
@@ -727,18 +727,6 @@
 {/if}
 
 <style>
-    .btn-purple {
-        background-color: #6f42c1;
-        border-color: #6f42c1;
-        color: #fff;
-    }
-
-    .btn-purple:hover:not(:disabled) {
-        background-color: #5a3ac5;
-        border-color: #5438c4;
-        color: #fff;
-    }
-
     .migration-log {
         max-height: 260px;
         overflow-y: auto;

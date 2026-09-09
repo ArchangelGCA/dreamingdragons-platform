@@ -5,6 +5,64 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-09-09
+
+### Added
+
+- **Admin dashboard overhaul: stats home, search + pagination, slim queries.**
+  - Home is now a health-at-a-glance overview: live counts (creators, tales,
+    chapters, open reports) via `count/head` queries that transfer zero rows,
+    plus compact Panic / Migrations / Newsletter cards. Minimal text, 1-col →
+    2-col → 4-col responsive grid, hue-273 theme (off-palette pinks removed).
+  - Users: server-side search (`?q=`, username `ilike`), status filter
+    (`all/active/blocked/warned`), 20/page pagination with counts. Emails are
+    fetched per visible user (`getUserById`, max 20 parallel) instead of
+    listing up to a million auth users; warnings load in one `in()` query
+    instead of a per-profile join.
+  - Content: title search + 12/page pagination; list select is slim
+    (`chapters.text` excluded — it could be megabytes per book). New
+    `get_chapter_text` action lazy-loads one chapter body on expand with
+    loading/error states.
+  - Reports: slim select, Tale/Chapter filter pills, fixed duplicate collapse
+    IDs in the closed section (both sections reused `openBookReports`), closed
+    items now receive `image_proxy`, icon empty states.
+  - Newsletter: bounded auth paging (200/page, 2,000 cap with a "capped" note)
+    instead of a single 1M `listUsers` call; profile join in 200-id chunks;
+    fixed `audience.push` on a `$derived` (now a writable derived +
+    reassignment, so adds render); email validation client + server; labelled
+    progress bar; already-subscribed emails are filtered out of Fetch results.
+  - New shared pieces: `src/lib/utils/admin.js` (`formatAdminDate`,
+    `postAdminAction`, `clampPage`/`pageRange`/`totalPagesFor`,
+    `isPlausibleEmail`), `AdminStat.svelte`, `AdminPagination.svelte`.
+  - Layout: sticky desktop sidebar + collapsible mobile top bar, 48px touch
+    targets, `startsWith` active state (nested routes stay highlighted), no
+    more fixed `100vh` double-scroll content well.
+  - Migrations: Font Awesome icons replace emoji headers (`🔁`/`⚠️`), dropped
+    the off-palette local `.btn-purple` override in favour of the global
+    vault button.
+
+### Fixed
+
+- Dashboard panic toggle read `panic.is_active` off the `{ panic: {...} }`
+  wrapper (always falsy → always took the enable path); now normalises both
+  shapes and the button correctly shows Enable/Disable.
+- `AdminUser` empty tooltip (`use:tooltip` with no content) now has a
+  "Delete warning" label; `border-magenta` drift replaced with
+  `border-purple`.
+
+### Verified
+
+- `svelte-autofixer` on all touched admin components → zero new issues
+  (remaining notes are pre-existing/systemic: plain `href`/`goto` without
+  `resolve()`, admin-controlled `{@html}`, silenced
+  `state_referenced_locally`).
+- Impeccable `detect` over changed admin targets → advisories only, reviewed
+  (status-signal shades of documented Bootstrap danger/warning/success,
+  hue-273 tonal steps, icon sizing); `rgba(0,0,0,0.25)` spots replaced with
+  `bg-black bg-opacity-*` utilities.
+- `bun outdated` → clean, zero outdated packages.
+- `bun --bun run build` → succeeds (client + SSR + `@sveltejs/adapter-vercel`).
+
 ## [0.12.1] - 2026-09-09
 
 ### Fixed

@@ -4,55 +4,128 @@ import { createClient } from '@supabase/supabase-js';
 import {error as errorx} from '@sveltejs/kit';
 import {isAdmin} from "$lib/utils/misc.js";
 import {createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "$lib/server/pocketbase.js";
+import {pageRange, totalPagesFor} from "$lib/utils/admin.js";
 
-export const load = async ( { locals: { supabase, getSession } }) => {
+const PER_PAGE = 20;
+const PROFILE_COLUMNS = 'id,username,full_name,website,can_upload,avatar_url,cover_url,created_at,updated_at';
+
+function createAdminSupabase() {
+    return createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
+        auth: {
+            autoRefreshToken: false,
+            persistSession: false
+        }
+    });
+}
+
+export const load = async ( { url, locals: { supabase, getSession } }) => {
     const {session} = await getSession();
-    let maxUsers = 1000000;
 
     const result = await isAdmin(session, supabase);
     if (result !== true) {
         return result;
     }
 
-    // Use supabase-js and make admin supabase client
-    const adminSupabase = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false
-        }
-    });
+    const q = (url.searchParams.get('q') ?? '').trim().slice(0, 64);
+    const status = url.searchParams.get('status') ?? 'all';
+    const { page, perPage, from, to } = pageRange(url.searchParams.get('page'), PER_PAGE);
 
-    const {data: profiles, error} = await supabase
+    const adminSupabase = createAdminSupabase();
+
+    // `warned` needs the id set first: recipients of warning-type notifications.
+    let warnedIds = null;
+    if (status === 'warned') {
+        const { data: warnedRows, error: warnedError } = await supabase
+            .from('notifications')
+            .select('recipient_id')
+            .ilike('type', '%warning%')
+            .limit(1000);
+        if (warnedError) {
+            console.error(warnedError);
+            return errorx(500, "Error fetching users");
+        }
+        warnedIds = [...new Set((warnedRows ?? []).map((r) => r.recipient_id).filter(Boolean))];
+        if (warnedIds.length === 0) {
+            return {
+                profiles: [],
+                page: 1,
+                perPage,
+                total: 0,
+                totalPages: 1,
+                q,
+                status,
+                title: 'Admin - Users',
+                description: 'Admin Users Dashboard of DreamingDragons platform.',
+                index: false,
+            };
+        }
+    }
+
+    let query = supabase
         .from('profiles')
-        .select('*, notifications!notifications_recipient_id_fkey(*)')
-        .order('created_at', {ascending: false});
+        .select(PROFILE_COLUMNS, { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(from, to);
+
+    if (q) query = query.ilike('username', `%${q}%`);
+    if (status === 'blocked') query = query.eq('can_upload', false);
+    else if (status === 'active') query = query.eq('can_upload', true);
+    else if (status === 'warned' && warnedIds) query = query.in('id', warnedIds.slice(0, 200));
+
+    const { data: profiles, error, count } = await query;
 
     if (error) {
         console.error(error);
         return errorx(500, "Error fetching users");
     }
 
-    const { data: { users }, error: listUsersError } = await adminSupabase.auth.admin.listUsers({
-        page: 1,
-        perPage: maxUsers
-    });
+    const total = count ?? 0;
+    const totalPages = totalPagesFor(total, perPage);
+    const safePage = Math.min(page, totalPages);
+    const list = profiles ?? [];
 
-    if (listUsersError) {
-        console.error(listUsersError);
-        return errorx(500, "Error fetching users");
+    // One warnings query for the whole page (instead of a join per profile).
+    let warningsByUser = new Map();
+    if (list.length > 0) {
+        const ids = list.map((p) => p.id);
+        const { data: warnings, error: warningsError } = await supabase
+            .from('notifications')
+            .select('id,recipient_id,content,created_at')
+            .in('recipient_id', ids)
+            .ilike('type', '%warning%')
+            .order('created_at', { ascending: false })
+            .limit(200);
+        if (warningsError) {
+            console.error(warningsError);
+        } else {
+            for (const w of (warnings ?? [])) {
+                if (!warningsByUser.has(w.recipient_id)) warningsByUser.set(w.recipient_id, []);
+                warningsByUser.get(w.recipient_id).push(w);
+            }
+        }
     }
 
-    profiles.forEach(profile => {
-        const user = users.find(user => user.id === profile.id);
-        if (user) {
-            profile.email = user.email;
-        }
-        profile.notifications = profile.notifications.filter(notification => notification.type.includes("warning"));
-        profile.notifications.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    // Emails live in auth, not profiles — fetch per visible user (bounded to
+    // one page) instead of listing up to a million auth users at once.
+    const emailResults = await Promise.allSettled(
+        list.map((p) => adminSupabase.auth.admin.getUserById(p.id))
+    );
+    list.forEach((profile, i) => {
+        const settled = emailResults[i];
+        profile.email = settled?.status === 'fulfilled'
+            ? (settled.value?.data?.user?.email ?? null)
+            : null;
+        profile.notifications = warningsByUser.get(profile.id) ?? [];
     });
 
     return {
-        profiles,
+        profiles: list,
+        page: safePage,
+        perPage,
+        total,
+        totalPages,
+        q,
+        status,
         title: 'Admin - Users',
         description: 'Admin Users Dashboard of DreamingDragons platform.',
         index: false,
@@ -388,4 +461,3 @@ export const actions = {
         }
     }
 }
-

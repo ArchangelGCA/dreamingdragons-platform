@@ -399,7 +399,7 @@
     }
 </script>
 
-<div class="container border {profile.can_upload ? 'border-magenta bg-black bg-opacity-25' : 'border-danger bg-danger bg-opacity-10'} rounded-4 mb-4 p-4 shadow-sm">
+<div class="container border {profile.can_upload ? 'border-purple bg-black bg-opacity-25' : 'border-danger bg-danger bg-opacity-10'} rounded-4 mb-4 p-4 shadow-sm">
     <div class="row">
         <div class="col-12">
             <div class="row justify-content-center">
@@ -469,7 +469,7 @@
                                             <p class="mb-0">{notification.content}</p>
                                             <small class="text-muted">{formatDate(notification.created_at)}</small>
                                         </div>
-                                        <button class="btn btn-outline-danger btn-sm" onclick={() => deleteNotification(notification.id)} aria-label="Delete Warning" use:tooltip={{...tooltipConfig}}>
+                                        <button class="btn btn-outline-danger btn-sm" onclick={() => deleteNotification(notification.id)} aria-label="Delete Warning" use:tooltip={{...tooltipConfig, content: 'Delete warning'}}>
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -572,7 +572,7 @@
 </div>
 
 <style>
-    .border-magenta {
-        border-color: #ef43cd !important;
+    .border-purple {
+        border-color: var(--primary-color) !important;
     }
 </style>
