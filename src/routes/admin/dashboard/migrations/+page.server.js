@@ -12,6 +12,7 @@ import {
 	OLD_SUBSTRING,
 	findTarget,
 	migrateBatch,
+	parseSkipIds,
 	scanAll
 } from "$lib/server/pockethost-migration.js";
 
@@ -282,6 +283,9 @@ export const actions = {
         const column = String(formData.get('column') ?? '');
         const direction = String(formData.get('direction') ?? 'forward');
         const limit = Math.min(Math.max(parseInt(String(formData.get('limit') ?? '50'), 10) || 50, 1), 200);
+        // Ids previously rejected by the database — exclude so the run can
+        // continue past them instead of fetching the same blocked rows again.
+        const skipIds = parseSkipIds(formData.get('skip_ids') ?? '');
 
         if (!DIRECTIONS.includes(direction)) {
             return {
@@ -303,7 +307,10 @@ export const actions = {
         }
 
         const adminSupabase = createAdminSupabase();
-        const batch = await migrateBatch(adminSupabase, target, direction, limit);
+        // Pass the verified admin's own client as a fallback identity:
+        // permission triggers reading auth.uid() reject service-role (NULL
+        // uid) but may accept the real admin JWT.
+        const batch = await migrateBatch(adminSupabase, target, direction, limit, skipIds, supabase);
 
         if (batch.failed > 0) {
             console.error(`Pockethost migration ${direction} ${table}.${column} batch: ${batch.failed} failed`, batch.errors);

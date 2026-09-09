@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.1] - 2026-09-09
+
+### Fixed
+
+- **Pockethost migration no longer aborts on database-rejected rows.**
+  Production showed a row failing with `You are not allowed to update your
+  avatar icon` — a message raised inside the database (Postgres trigger /
+  `RAISE`, not the app's admin check: the app had already verified admin, and
+  service-role bypasses RLS but *not* triggers), which stopped the whole run.
+  - Each blocked row is now automatically **retried once as your admin
+    account** (the verified admin JWT): permission triggers reading
+    `auth.uid()` see NULL under service-role but may accept the real admin
+    identity. Passes the request-scoped user client into `migrateBatch` as a
+    fallback; audit backup still uses service-role.
+  - Rows failing both attempts are **skipped and collected, never fatal**:
+    the server accepts an id-allowlisted `skip_ids` exclusion
+    (`parseSkipIds`), the client carries forward per-target skip lists so
+    batches drain past blocked rows instead of re-fetching them, and the run
+    continues through every target (request-level target errors and the batch
+    safety guard now skip the target instead of aborting the run).
+  - Final summary distinguishes **complete / already-done / finished with N
+    blocked rows / incomplete**, with a per-row failures table, a trigger/RLS
+    hint (where to look: Supabase Dashboard → Database → Triggers), and the
+    failures included in the downloadable run JSON — re-run retries just the
+    blocked rows, already-migrated rows stay skipped.
+  - New pure, unit-tested helpers: `parseSkipIds` (injection-safe id parsing),
+    `isDbPolicyError` (trigger/RLS message heuristic).
+
+### Verified
+
+- New unit checks → 19/19 pass (`parseSkipIds`, `isDbPolicyError`,
+  `rewriteValue` regression).
+- `svelte-autofixer` on the migrations page → zero issues.
+- `bun --bun run build` → succeeds.
+
 ## [0.12.0] - 2026-09-09
 
 ### Added

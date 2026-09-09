@@ -78,6 +78,40 @@ export function findTarget(table, column) {
 	return MIGRATION_TARGETS.find((t) => t.table === table && t.column === column) ?? null;
 }
 
+/**
+ * Parse a client-supplied skip list (comma-separated ids) into a safe array.
+ * Only id-shaped values survive (`/^[A-Za-z0-9_-]{1,64}$/` — UUIDs and ints
+ * both pass); anything else is dropped so it can never reach a query.
+ * Pure — unit-tested.
+ */
+export function parseSkipIds(value, max = 1000) {
+	if (value === null || value === undefined) return [];
+	const parts = Array.isArray(value) ? value : String(value).split(',');
+	const out = [];
+	for (const part of parts) {
+		const id = String(part).trim();
+		if (/^[A-Za-z0-9_-]{1,64}$/.test(id) && !out.includes(id)) {
+			out.push(id);
+			if (out.length >= max) break;
+		}
+	}
+	return out;
+}
+
+/**
+ * Heuristic: does this Supabase/Postgres error look like a row-level
+ * permission rejection (trigger RAISE / RLS) rather than a connectivity or
+ * schema problem? Service-role bypasses RLS but NOT triggers, so trigger
+ * messages such as "You are not allowed to update your avatar icon" surface
+ * here. Pure — unit-tested.
+ */
+export function isDbPolicyError(message) {
+	if (!message || typeof message !== 'string') return false;
+	return /not allowed|permission denied|row-level security|violates row-level|policy|trigger|forbidden|unauthorized/i.test(
+		message
+	);
+}
+
 function likePattern(needle) {
 	return `%${needle}%`;
 }
@@ -129,20 +163,41 @@ export async function scanAll(adminSupabase, direction) {
 
 /**
  * Process a single batch for one target: fetch up to `limit` rows still
- * matching the needle, rewrite, update, and (best-effort) back up.
- * Returns a summary object — never throws for row-level failures; those are
- * collected in `errors` and counted in `failed`.
+ * matching the needle (minus `skipIds`), rewrite, update, and (best-effort)
+ * back up.
+ *
+ * Per-row update strategy (fault-tolerant by design):
+ * 1. Service-role client first (bypasses RLS — but NOT Postgres triggers).
+ * 2. On failure, retry once with the calling admin's own JWT (`userSupabase`),
+ *    because permission-enforcing triggers that read `auth.uid()` see NULL
+ *    under service-role and reject — while the verified admin identity may
+ *    satisfy them.
+ * A row failing both attempts is recorded (id + message) in `failedIds` /
+ * `errors` so the caller can exclude it and keep the run going. Never throws
+ * for row-level failures; those are collected, not raised.
  */
-export async function migrateBatch(adminSupabase, target, direction, limit = 50) {
+export async function migrateBatch(
+	adminSupabase,
+	target,
+	direction,
+	limit = 50,
+	skipIds = [],
+	userSupabase = null
+) {
 	const { table, column, idColumn } = target;
 	const safeLimit = Math.min(Math.max(Number(limit) || 50, 1), 200);
+	const skip = parseSkipIds(skipIds);
 
-	const { data: rows, error: fetchError } = await adminSupabase
+	let query = adminSupabase
 		.from(table)
 		.select(`${idColumn}, ${column}`)
 		.ilike(column, likePattern(needlesFor(direction).needle))
 		.order(idColumn, { ascending: true })
 		.limit(safeLimit);
+	if (skip.length > 0) {
+		query = query.not(idColumn, 'in', `(${skip.join(',')})`);
+	}
+	const { data: rows, error: fetchError } = await query;
 
 	if (fetchError) {
 		return {
@@ -154,7 +209,9 @@ export async function migrateBatch(adminSupabase, target, direction, limit = 50)
 			failed: 0,
 			done: true,
 			backupAvailable: false,
+			skipped: skip.length,
 			errors: [fetchError.message ?? 'fetch failed'],
+			failedIds: [],
 			changes: []
 		};
 	}
@@ -169,34 +226,14 @@ export async function migrateBatch(adminSupabase, target, direction, limit = 50)
 			failed: 0,
 			done: true,
 			backupAvailable: true,
+			skipped: skip.length,
 			errors: [],
+			failedIds: [],
 			changes: []
 		};
 	}
 
-	let updated = 0;
-	let failed = 0;
-	const errors = [];
-	const changes = [];
-	const backupRows = [];
-
-	for (const row of rows) {
-		const recordId = row[idColumn];
-		const oldValue = row[column];
-		const newValue = rewriteValue(oldValue, direction);
-		if (newValue === null) {
-			continue;
-		}
-		const { error: updateError } = await adminSupabase
-			.from(table)
-			.update({ [column]: newValue })
-			.eq(idColumn, recordId);
-		if (updateError) {
-			failed += 1;
-			errors.push(`${table}.${column} id=${recordId}: ${updateError.message}`);
-			continue;
-		}
-		updated += 1;
+	const recordSuccess = (recordId, oldValue, newValue, backupRows, changes) => {
 		backupRows.push({
 			table_name: table,
 			record_id: String(recordId),
@@ -213,6 +250,54 @@ export async function migrateBatch(adminSupabase, target, direction, limit = 50)
 				after: newValue.slice(0, 160)
 			});
 		}
+	};
+
+	let updated = 0;
+	let failed = 0;
+	const errors = [];
+	const failedIds = [];
+	const changes = [];
+	const backupRows = [];
+
+	for (const row of rows) {
+		const recordId = row[idColumn];
+		const oldValue = row[column];
+		const newValue = rewriteValue(oldValue, direction);
+		if (newValue === null) {
+			continue;
+		}
+		const { error: updateError } = await adminSupabase
+			.from(table)
+			.update({ [column]: newValue })
+			.eq(idColumn, recordId);
+		if (!updateError) {
+			updated += 1;
+			recordSuccess(recordId, oldValue, newValue, backupRows, changes);
+			continue;
+		}
+		// Fallback: retry as the verified admin user. Triggers enforcing
+		// permissions via auth.uid() reject service-role (NULL uid) but may
+		// accept the real admin identity.
+		let finalMessage = updateError.message ?? 'update failed';
+		let retried = false;
+		if (userSupabase) {
+			retried = true;
+			const { error: retryError } = await userSupabase
+				.from(table)
+				.update({ [column]: newValue })
+				.eq(idColumn, recordId);
+			if (!retryError) {
+				updated += 1;
+				recordSuccess(recordId, oldValue, newValue, backupRows, changes);
+				continue;
+			}
+			finalMessage = retryError.message ?? finalMessage;
+		}
+		failed += 1;
+		failedIds.push(recordId);
+		errors.push(
+			`${table}.${column} id=${recordId}: ${finalMessage}${retried ? ' (also retried as admin user)' : ''}`
+		);
 	}
 
 	// Best-effort audit backup — a missing backup table must not fail the migration.
@@ -225,7 +310,8 @@ export async function migrateBatch(adminSupabase, target, direction, limit = 50)
 	}
 
 	// `done` is true when we fetched fewer rows than the limit: nothing left
-	// matching the needle (a follow-up scan confirming zero is cheap anyway).
+	// matching the needle outside the skip list (a follow-up scan confirming
+	// zero is cheap anyway).
 	const done = rows.length < safeLimit;
 
 	return {
@@ -237,7 +323,9 @@ export async function migrateBatch(adminSupabase, target, direction, limit = 50)
 		failed,
 		done,
 		backupAvailable,
+		skipped: skip.length,
 		errors,
+		failedIds,
 		changes
 	};
 }

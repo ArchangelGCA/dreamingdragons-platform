@@ -30,6 +30,9 @@
     // this page-load; a `0` means that direction is fully applied (already done).
     let forwardCount = $state(null);
     let reverseCount = $state(null);
+    // Rows the database rejected (trigger/RLS) — skipped, collected, reported.
+    let failures = $state([]);
+    let targetErrors = $state([]);
 
     let overallPct = $derived(runTotal > 0 ? Math.min(100, Math.round((processed / runTotal) * 100)) : 0);
     let confirmWord = $derived(pendingDirection === 'reverse' ? CONFIRM_REVERSE : CONFIRM_FORWARD);
@@ -41,6 +44,11 @@
     let reverseDone = $derived(reverseCount === 0);
     let pendingKnownCount = $derived(pendingDirection === 'reverse' ? reverseCount : forwardCount);
     let pendingAlreadyDone = $derived(pendingKnownCount === 0);
+    // Hint when failures look like DB trigger/RLS rejections (service-role
+    // bypasses RLS but not triggers) rather than connectivity problems.
+    let policyHint = $derived(
+        failures.some((f) => /not allowed|permission denied|row-level security|policy|trigger|forbidden|unauthorized/i.test(f.message ?? ''))
+    );
 
     function pushLog(message, kind = 'info') {
         const time = new Date().toLocaleTimeString();
@@ -148,9 +156,15 @@
         perTarget = {};
         lastSummary = null;
         runJson = null;
+        failures = [];
+        targetErrors = [];
         currentLabel = 'Scanning…';
         const startedAt = Date.now();
         const batches = [];
+        // Ids already rejected by the database for a given target — sent back
+        // as skip_ids so subsequent batches move past them instead of
+        // re-fetching the same blocked rows forever.
+        const failedIdsByTarget = {};
         let backupMissing = false;
         let aborted = false;
         let abortReason = '';
@@ -215,17 +229,18 @@
                     formData.append('column', target.column);
                     formData.append('direction', direction);
                     formData.append('limit', String(BATCH_SIZE));
+                    const knownFailed = failedIdsByTarget[key] ?? [];
+                    if (knownFailed.length > 0) formData.append('skip_ids', knownFailed.join(','));
                     const result = await postAction('pockethost_batch', formData);
                     if (result.type !== 'success') {
-                        aborted = true;
-                        abortReason = `Batch request failed for ${key}.`;
-                        pushLog(`✗ ${key}: request failed (non-success action result).`, 'error');
+                        targetErrors.push(`${key}: batch request failed (non-success action result).`);
+                        pushLog(`✗ ${key}: request failed — skipping the rest of this target, continuing with the next.`, 'error');
                         break;
                     }
                     if (result.data?.status !== 200 && result.data?.status !== 207) {
-                        aborted = true;
-                        abortReason = result.data?.body?.message ?? `Batch rejected for ${key}.`;
-                        pushLog(`✗ ${key}: ${abortReason}`, 'error');
+                        const msg = result.data?.body?.message ?? 'batch rejected';
+                        targetErrors.push(`${key}: ${msg}`);
+                        pushLog(`✗ ${key}: ${msg} — skipping the rest of this target, continuing with the next.`, 'error');
                         break;
                     }
                     const batch = result.data.body.batch;
@@ -241,10 +256,28 @@
                         pushLog(`  • id=${c.id}: ${c.before} → ${c.after}`, 'info');
                     }
                     if (batch.failed > 0) {
-                        aborted = true;
-                        abortReason = `${batch.failed} row(s) failed in ${key}: ${(batch.errors ?? []).slice(0, 3).join(' | ')}`;
-                        pushLog(`✗ ${key}: ${abortReason}`, 'error');
-                        break;
+                        // Fault-tolerant: record the blocked rows, exclude them
+                        // from subsequent batches, and keep going. A single row
+                        // rejected by a DB trigger/policy must not stop the run —
+                        // each was already retried once as your admin account.
+                        const known = failedIdsByTarget[key] ?? (failedIdsByTarget[key] = []);
+                        for (const fid of (batch.failedIds ?? [])) {
+                            if (!known.includes(fid)) known.push(fid);
+                        }
+                        for (const msg of (batch.errors ?? [])) {
+                            if (failures.length < 1000) {
+                                const m = String(msg);
+                                const idMatch = m.match(/id=([A-Za-z0-9_-]{1,64})/);
+                                failures.push({
+                                    table: target.table,
+                                    column: target.column,
+                                    id: idMatch ? idMatch[1] : null,
+                                    message: m
+                                });
+                            }
+                        }
+                        pushLog(`⚠ ${key}: ${batch.failed} row(s) blocked by the database — skipped, continuing (${known.length} skipped in this target).`, 'error');
+                        for (const msg of (batch.errors ?? []).slice(0, 2)) pushLog(`  ✗ ${msg}`, 'error');
                     }
                     if (batch.done || batch.fetched === 0) {
                         targetDone = true;
@@ -252,12 +285,9 @@
                         pushLog(`✓ ${key}: done (${perTarget[key].processed}/${target.count}).`, 'success');
                     }
                 }
-                if (aborted) break;
                 if (guard >= 2000) {
-                    aborted = true;
-                    abortReason = `Safety guard tripped for ${key} (too many batches).`;
-                    pushLog(`✗ ${abortReason}`, 'error');
-                    break;
+                    targetErrors.push(`${key}: safety guard tripped (too many batches — updates may not be sticking).`);
+                    pushLog(`✗ ${key}: safety guard tripped — moving on to the next target.`, 'error');
                 }
             }
 
@@ -273,13 +303,22 @@
             else forwardCount = null;
 
             const durationMs = Date.now() - startedAt;
-            const ok = !aborted && remaining === 0;
+            // Blocked rows still contain the old host, so they show up in the
+            // verify scan too. Anything remaining beyond the known-blocked ids
+            // was never attempted (e.g. a target-level error cut it short).
+            const failedUnique = Object.values(failedIdsByTarget).reduce((n, a) => n + a.length, 0);
+            const unattempted = remaining >= 0 ? Math.max(0, remaining - failedUnique) : -1;
+            const ok = !aborted && targetErrors.length === 0 && remaining === 0;
+            const blockedOnly = !aborted && targetErrors.length === 0 && remaining > 0 && unattempted === 0;
             lastSummary = {
                 direction,
                 processed,
                 planned: runTotal,
                 remaining,
+                failed: failedUnique,
+                targetErrors,
                 ok,
+                blockedOnly,
                 alreadyDone: false,
                 aborted,
                 abortReason,
@@ -292,17 +331,21 @@
                 oldHost: OLD_HOST,
                 newHost: NEW_HOST,
                 ...lastSummary,
+                failures: failures.slice(0, 1000),
                 batches
             };
 
             if (ok) {
                 pushLog(`Done in ${(durationMs / 1000).toFixed(1)}s — ${processed} cell(s) rewritten, 0 remaining.`, 'success');
                 showToast(direction === 'reverse' ? 'Rollback complete!' : 'Migration complete!');
+            } else if (blockedOnly) {
+                pushLog(`Done in ${(durationMs / 1000).toFixed(1)}s — ${processed} rewritten, ${failedUnique} blocked by the database (see failures below).`, 'error');
+                showToast(`Finished with ${failedUnique} blocked row(s) — see failures.`, false);
             } else if (aborted) {
                 pushLog(`Stopped: ${abortReason}`, 'error');
                 showToast(`Migration stopped: ${abortReason}`, false);
             } else {
-                pushLog(`Finished with ${remaining} cell(s) still remaining — re-run to drain the rest.`, 'error');
+                pushLog(`Finished with issues — ${remaining} cell(s) still match (${failedUnique} blocked, ${unattempted} not yet attempted). Re-run to retry.`, 'error');
                 showToast(`Incomplete: ${remaining} remaining — re-run.`, false);
             }
         } finally {
@@ -550,17 +593,27 @@
                 {/if}
 
                 {#if lastSummary}
-                    <div class="alert {lastSummary.ok ? 'alert-success' : 'alert-danger'}" role="alert">
+                    <div class="alert {lastSummary.ok ? 'alert-success' : lastSummary.blockedOnly ? 'alert-warning' : 'alert-danger'}" role="alert">
                         {#if lastSummary.alreadyDone}
                             <strong>{lastSummary.direction === 'reverse' ? 'Rollback already done!' : 'Migration already done!'}</strong>
                             The database reports 0 matching cells — nothing was rewritten.
                         {:else if lastSummary.ok}
                             <strong>{lastSummary.direction === 'reverse' ? 'Rollback complete!' : 'Migration complete!'}</strong>
                             {lastSummary.processed} cell(s) rewritten in {(lastSummary.durationMs / 1000).toFixed(1)}s, 0 remaining.
+                        {:else if lastSummary.blockedOnly}
+                            <strong>Finished with {lastSummary.failed} blocked row(s).</strong>
+                            {lastSummary.processed} cell(s) rewritten; the rest were rejected by the database (each retried once as your admin account) and skipped — see failures below. Fix the cause, then re-run to retry just those rows.
                         {:else if lastSummary.aborted}
                             <strong>Stopped.</strong> {lastSummary.abortReason} Re-run after fixing the issue — already-rewritten rows are skipped automatically.
                         {:else}
-                            <strong>Incomplete.</strong> {lastSummary.remaining} cell(s) still match — re-run to drain the rest ({lastSummary.processed} done so far).
+                            <strong>Incomplete.</strong> {lastSummary.remaining} cell(s) still match ({lastSummary.failed ?? 0} blocked, {Math.max(0, (lastSummary.remaining ?? 0) - (lastSummary.failed ?? 0))} not yet attempted) — re-run to continue ({lastSummary.processed} done so far).
+                        {/if}
+                        {#if (lastSummary.targetErrors ?? []).length > 0}
+                            <ul class="mt-2 mb-0 small">
+                                {#each lastSummary.targetErrors as terr (terr)}
+                                    <li>{terr}</li>
+                                {/each}
+                            </ul>
                         {/if}
                         {#if lastSummary.backupMissing}
                             <div class="mt-1 small">Note: <code>pockethost_host_migration_backup</code> table was not found, so no audit rows were stored this run. Apply the SQL in <code>supabase/migrations/</code> to enable the audit trail (rollback still works via string replace).</div>
@@ -569,6 +622,39 @@
                             <button type="button" class="btn btn-sm btn-outline-dark" onclick={downloadLog} disabled={!runJson}>Download run JSON</button>
                         </div>
                     </div>
+                    {#if failures.length > 0}
+                        {#if policyHint}
+                            <div class="alert alert-warning small" role="alert">
+                                These rejections come <strong>from inside the database</strong> (a trigger or policy — the app already verified you as admin, and service-role bypasses RLS but <em>not</em> triggers).
+                                Check <strong>Supabase Dashboard → Database → Triggers</strong> on the failing tables (e.g. a rule guarding avatar changes), or fix the flagged rows and re-run — already-migrated rows are skipped automatically.
+                            </div>
+                        {/if}
+                        <div class="table-responsive mb-3">
+                            <table class="table table-sm table-striped align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Table</th>
+                                        <th>Column</th>
+                                        <th>Record id</th>
+                                        <th>Database message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {#each failures.slice(0, 50) as f (f.table + '.' + f.column + '.' + f.id)}
+                                        <tr>
+                                            <td><code>{f.table}</code></td>
+                                            <td><code>{f.column}</code></td>
+                                            <td><code>{f.id ?? '—'}</code></td>
+                                            <td class="small">{f.message}</td>
+                                        </tr>
+                                    {/each}
+                                </tbody>
+                            </table>
+                        </div>
+                        {#if failures.length > 50}
+                            <p class="small text-secondary">…and {failures.length - 50} more — all {failures.length} are included in the downloaded run JSON.</p>
+                        {/if}
+                    {/if}
                 {/if}
             </div>
         </div>
@@ -615,6 +701,7 @@
                     </div>
                     <ul class="small mb-3">
                         <li>Runs in small batches with live progress; you can watch each table drain.</li>
+                        <li>Fault-tolerant: rows the database rejects (e.g. a trigger guarding avatar changes) are automatically retried once as your admin account, then skipped and reported — they never stop the run. Re-run after fixing to retry just those rows.</li>
                         <li>Reversible: run the opposite direction to undo. Already-rewritten rows are skipped on re-run.</li>
                         <li>Writes an audit row per cell to <code>pockethost_host_migration_backup</code> when that table exists.</li>
                         {#if pendingAlreadyDone}

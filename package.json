@@ -1,6 +1,6 @@
 {
   "name": "dd-tales-svelte",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "private": true,
   "packageManager": "bun@1.4.2",
   "scripts": {
