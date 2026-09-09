@@ -1,5 +1,7 @@
 .DS_Store
 node_modules
+.bun-cache
+bun.lockb
 /build
 /.svelte-kit
 /package

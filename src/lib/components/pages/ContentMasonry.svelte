@@ -9,6 +9,7 @@
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
     import {createBookPath, createProfilePath} from "$lib/utils/slugs.js";
+    import { resolveImageUrl } from '$lib/utils/images.js';
 
     /** @type {{book: any, image_proxy: any, session: any, onBookUpdate?: function}} */
     let {book, image_proxy, session, onBookUpdate} = $props();
@@ -25,7 +26,7 @@
         id: null
     });
 
-    let finalLinkImage = $derived(image_proxy && !normalizedBook.cover_url.startsWith(image_proxy) ? image_proxy + normalizedBook.cover_url : normalizedBook.cover_url);
+    let finalLinkImage = $derived(resolveImageUrl(normalizedBook.cover_url, image_proxy));
     let finalBookTitle = $derived(normalizedBook.title && normalizedBook.title.length > 20 ? normalizedBook.title.substring(0, 18) + '...' : (normalizedBook.title || 'Untitled'));
     let finalUsername = $derived(profileData.username && profileData.username.length > 16 ? profileData.username.substring(0, 15) + '...' : (profileData.username || 'Unknown'));
     let chapterCount = $derived(normalizedBook.chapter_count ?? 0);
@@ -225,23 +226,23 @@
                 <div class="placeholder-glow m-0 p-0" style="height: 25vh;">
                     <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
                         <img
-                                srcset="{finalLinkImage + `?width=${width}&quality=80`} 2x,
-                        {finalLinkImage + `?width=${width}&quality=80`} 1x"
-                                src={finalLinkImage + `?width=${width}&quality=80`}
+                                src={finalLinkImage}
                                 alt="Cover: {finalBookTitle}"
                                 style="width: 1px; height: 1px;"
+                                loading="lazy"
+                                decoding="async"
                                 onload={() => isImageLoaded = true}
                         >
                     </div>
                 </div>
             {:else}
                 <img
-                        srcset="{finalLinkImage + `?width=${width}&quality=80`} 2x,
-                        {finalLinkImage + `?width=${width}&quality=80`} 1x"
-                        src={finalLinkImage + `?width=${width}&quality=80`}
+                        src={finalLinkImage}
                         alt="Cover: {finalBookTitle}"
                         class="img-fluid rounded-3"
                         width={width}
+                        loading="lazy"
+                        decoding="async"
                 >
             {/if}
         </div>

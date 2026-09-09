@@ -1,6 +1,7 @@
 import {error as errorx} from "@sveltejs/kit";
 import sharp from "sharp";
 import PocketBase from "pocketbase";
+import crypto from "crypto";
 import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
 import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_RESIZE, PUBLIC_POCKETBASE_URL } from "$env/static/public";
 
@@ -33,8 +34,18 @@ export async function isAdmin(session, supabase) {
 }
 
 export const uploadImage = async (image, cover_id = null) => {
-    const imageSharp = sharp(await image.arrayBuffer(), {animated: true});
-    const metadata = await imageSharp.metadata();
+    let imageSharp;
+    try {
+        imageSharp = sharp(await image.arrayBuffer(), {animated: true, limitInputPixels: 25000000, failOn: 'warning'});
+    } catch {
+        return {status: 400, body: {message: 'Invalid image file'}};
+    }
+    let metadata;
+    try {
+        metadata = await imageSharp.metadata();
+    } catch {
+        return {status: 400, body: {message: 'Invalid image file'}};
+    }
 
     // Get image res, if more than 5000px, error
     if ((metadata.format === 'gif' && (metadata.pageHeight > PUBLIC_COVER_MAX_HEIGHT || metadata.width > PUBLIC_COVER_MAX_WIDTH)) || (metadata.format !== 'gif' && (metadata.width > PUBLIC_COVER_MAX_WIDTH || metadata.height > PUBLIC_COVER_MAX_HEIGHT))) {
@@ -62,9 +73,8 @@ export const uploadImage = async (image, cover_id = null) => {
         .webp({ quality: 80 })
         .toBuffer();
 
-    // Assign to image a random name
-    const random = Math.random().toString(36).substring(2, 15);
-    const newImageName = `${random}.webp`;
+    // Assign to image a random name (unpredictable, collision-resistant)
+    const newImageName = `${crypto.randomUUID()}.webp`;
 
     const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
     await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
@@ -76,8 +86,14 @@ export const uploadImage = async (image, cover_id = null) => {
 
     const createdRecord = await pb.collection('media').create(formData);
 
-    // delete old image cover_id
-    if (cover_id) await pb.collection('media').delete(cover_id);
+    // delete old image cover_id (only when it looks like a PB record id)
+    if (cover_id && /^[A-Za-z0-9_-]{1,64}$/.test(String(cover_id))) {
+        try {
+            await pb.collection('media').delete(cover_id);
+        } catch {
+            // Best-effort cleanup; do not fail upload if old file is gone.
+        }
+    }
 
     pb.authStore.clear();
 

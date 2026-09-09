@@ -1,4 +1,5 @@
-import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL, PUBLIC_IMAGE_PROXY_URL } from '$env/static/public'
+import { PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public'
+import { env as publicEnv } from '$env/dynamic/public'
 import {createBrowserClient, createServerClient, isBrowser} from '@supabase/ssr'
 import {getValidatedSession} from "$lib/utils/gcacommons.js";
 
@@ -24,7 +25,8 @@ export const load = async ({ fetch, data, depends, url }) => {
 
     const {session} = isBrowser() ? await getValidatedSession(supabase) : data.session;
 
-    const image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
+    // Deprecated external optimizer; dynamic read so unset var can't crash client.
+    const image_proxy = publicEnv.PUBLIC_IMAGE_PROXY_URL ?? undefined;
 
     let notifications = [];
     let userData = null;

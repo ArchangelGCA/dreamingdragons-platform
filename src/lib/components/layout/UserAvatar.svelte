@@ -2,6 +2,7 @@
     import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createProfilePath } from '$lib/utils/slugs.js';
+    import { resolveImageUrl } from '$lib/utils/images.js';
 
     /** @type {{url?: string, username?: string, id?: string, size?: string, image_proxy?: any}} */
     let {
@@ -66,34 +67,34 @@
                     <span class="avatar-initial">{initial}</span>
                 </div>
             {:else}
-                {@const baseUrl = !url.startsWith(image_proxy) ? image_proxy + url : url}
-                <img 
-                    srcset="{baseUrl}?width=375 2x, {baseUrl}?width=250 1x"
-                    src="{baseUrl}?width=250"
-                    alt='{username} Avatar' 
+                {@const baseUrl = resolveImageUrl(url, image_proxy)}
+                <img
+                    src={baseUrl}
+                    alt='{username} Avatar'
                     class="rounded-circle avatar-style"
                     style="width: {size}; height: {size};"
                     loading="lazy"
+                    decoding="async"
                     draggable="false">
             {/if}
         </a>
     {:else}
         {#if !isAvatarLoaded}
-            <div 
+            <div
                 class="avatar-fallback d-flex align-items-center justify-content-center rounded-circle"
                 style="width: {size}; height: {size}; font-size: {fontSize}px;"
             >
                 <span class="avatar-initial">{initial}</span>
             </div>
         {:else}
-            {@const baseUrl = !url.startsWith(image_proxy) ? image_proxy + url : url}
-            <img 
-                srcset="{baseUrl}?width=375 2x, {baseUrl}?width=250 1x"
-                src="{baseUrl}?width=250"
-                alt='{username} Avatar' 
+            {@const baseUrl = resolveImageUrl(url, image_proxy)}
+            <img
+                src={baseUrl}
+                alt='{username} Avatar'
                 class="rounded-circle avatar-style"
                 style="width: {size}; height: {size};"
                 loading="lazy"
+                decoding="async"
                 draggable="false">
         {/if}
     {/if}

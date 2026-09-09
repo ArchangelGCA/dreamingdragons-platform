@@ -9,12 +9,13 @@
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
     import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
     import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
+    import { resolveImageUrl } from '$lib/utils/images.js';
 
     /** @type {{content: any, image_proxy: any}} */
     let {content = $bindable(), image_proxy} = $props();
     // let width = 500;
     let likeActionActive = false;
-    let finalLinkImage = $derived(image_proxy && !content.cover_url.startsWith(image_proxy) ? image_proxy + content.cover_url + '?width=750&quality=80' : content.cover_url);
+    let finalLinkImage = $derived(resolveImageUrl(content.cover_url, image_proxy));
     let finalBookTitle = $derived(content.title.length > 35 ? content.title.substring(0, 35) + '...' : content.title);
     let isImageLoaded = $state(false);
     let chapterCount = $derived(content.chapter_count ?? 0);
@@ -92,6 +93,8 @@
                                     alt="Book cover"
                                     class="card-img"
                                     style="width: 1px; height: 1px;"
+                                    loading="lazy"
+                                    decoding="async"
                                     onload={() => isImageLoaded = true}
                             >
                         </div>
@@ -101,6 +104,8 @@
                             src={finalLinkImage}
                             alt="Book cover"
                             class="img-fluid rounded-3"
+                            loading="lazy"
+                            decoding="async"
                     >
                 {/if}
             </div>

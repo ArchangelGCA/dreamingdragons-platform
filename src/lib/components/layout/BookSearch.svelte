@@ -4,6 +4,7 @@
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
     import { goto } from '$app/navigation';
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
+    import { resolveImageUrl } from '$lib/utils/images.js';
 
     /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any, chapter_count?: number}} */
     let {
@@ -19,6 +20,7 @@
     
     // Generate SEO-friendly URL
     const bookUrl = $derived(createBookPath(title, book_id));
+    const baseUrl = $derived(resolveImageUrl(book_cover_url, image_proxy));
     
     // Handle card click - navigate to book unless clicking on profile link
     function handleCardClick(event) {
@@ -47,24 +49,13 @@
                 <ContentTypeBadge chapterCount={chapter_count} size="md" />
             </div>
         {/if}
-        {#if image_proxy && !book_cover_url.startsWith(image_proxy)}
-            {@const baseUrl = image_proxy + book_cover_url}
-            <img 
-                srcset="{baseUrl}?width=750&quality=80 2x, {baseUrl}?width=500&quality=80 1x"
-                src="{baseUrl}?width=500&quality=80" 
-                alt="Cover of {title}" 
-                class="w-100 h-100 to-scale" 
-                loading="lazy" 
-                style="object-fit: cover; position: absolute; top: 0; left: 0;">
-        {:else}
-            {@const optimizedUrl = book_cover_url && book_cover_url.startsWith('http') ? book_cover_url : book_cover_url}
-            <img 
-                src={optimizedUrl + (optimizedUrl.includes('?') ? '&' : '?') + 'width=500&quality=80'}
-                alt="Cover of {title}" 
-                class="w-100 h-100 to-scale" 
-                loading="lazy" 
-                style="object-fit: cover; position: absolute; top: 0; left: 0;">
-        {/if}
+        <img
+            src={baseUrl}
+            alt="Cover of {title}"
+            class="w-100 h-100 to-scale"
+            loading="lazy"
+            decoding="async"
+            style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
     <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">
         <div class="row custom-overlay-content justify-content-center rounded-bottom-4 p-2 pt-3 mx-0">

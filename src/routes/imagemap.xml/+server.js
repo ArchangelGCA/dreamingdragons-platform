@@ -1,4 +1,16 @@
 import { createBookPath, createProfilePath } from '$lib/utils/slugs.js';
+import { ORIGIN } from '$env/static/private';
+import { resolveImageUrl, escapeHtml } from '$lib/utils/images.js';
+
+const SITE = ORIGIN || 'https://tales.archangelgca.eu';
+
+const toAbsoluteImage = (value) => {
+    if (!value || typeof value !== 'string') return '';
+    const resolved = resolveImageUrl(value);
+    if (resolved.startsWith('http')) return resolved;
+    if (resolved.startsWith('/')) return `${SITE}${resolved}`;
+    return '';
+};
 
 export const GET = async ({locals: {supabase}}) => {
     const {data: bookCoverUrls, error: errorBook} = await supabase
@@ -29,60 +41,60 @@ export const GET = async ({locals: {supabase}}) => {
         return profile.avatar_url && profile.cover_url && self.findIndex((t) => t.avatar_url === profile.avatar_url && t.cover_url === profile.cover_url) === index;
     });
 
-    // Output xml sitemap format like, following google image search sitemap format
+    // Output xml sitemap format like, following google image search sitemap format.
+    // NOTE: external image proxy decommissioned — sitemap now lists original image URLs at best quality.
     return new Response(
         `<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
                 xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
         <url>
-            <loc>https://tales.archangelgca.eu</loc>
+            <loc>${SITE}</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/legal/privacy-policy</loc>
+            <loc>${SITE}/legal/privacy-policy</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/legal/tos</loc>
+            <loc>${SITE}/legal/tos</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/login</loc>
+            <loc>${SITE}/login</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/search</loc>
+            <loc>${SITE}/search</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/settings</loc>
+            <loc>${SITE}/settings</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/settings/updates</loc>
+            <loc>${SITE}/settings/updates</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/staff/timezones</loc>
+            <loc>${SITE}/staff/timezones</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/updates</loc>
+            <loc>${SITE}/updates</loc>
         </url>
         <url>
-            <loc>https://tales.archangelgca.eu/upload</loc>
+            <loc>${SITE}/upload</loc>
         </url>
-            ${bookCoverUrlsFiltered.map((book) => `
+            ${bookCoverUrlsFiltered.map((book) => {
+                const img = toAbsoluteImage(book.cover_url);
+                return `
                 <url>
-                    <loc>https://tales.archangelgca.eu${createBookPath(book.title, book.id)}</loc>
-                    <image:image>
-                        <image:loc>https://images.archangelgca.eu/image/${book.cover_url}</image:loc>
-                    </image:image>
-                </url>
-            `).join('')}
-            ${profileAvatarCoverUrlFiltered.map((profile) => `
+                    <loc>${SITE}${createBookPath(book.title, book.id)}</loc>
+                    ${img ? `<image:image><image:loc>${escapeHtml(img)}</image:loc></image:image>` : ''}
+                </url>`;
+            }).join('')}
+            ${profileAvatarCoverUrlFiltered.map((profile) => {
+                const avatar = toAbsoluteImage(profile.avatar_url);
+                const cover = toAbsoluteImage(profile.cover_url);
+                return `
                 <url>
-                    <loc>https://tales.archangelgca.eu${createProfilePath(profile.username, profile.id)}</loc>
-                    <image:image>
-                        <image:loc>https://images.archangelgca.eu/image/${profile.avatar_url}</image:loc>
-                    </image:image>
-                    <image:image>
-                        <image:loc>https://images.archangelgca.eu/image/${profile.cover_url}</image:loc>
-                    </image:image>
-                </url>
-            `).join('')}
+                    <loc>${SITE}${createProfilePath(profile.username, profile.id)}</loc>
+                    ${avatar ? `<image:image><image:loc>${escapeHtml(avatar)}</image:loc></image:image>` : ''}
+                    ${cover && cover !== avatar ? `<image:image><image:loc>${escapeHtml(cover)}</image:loc></image:image>` : ''}
+                </url>`;
+            }).join('')}
         </urlset>`, {
             headers: {
                 'Content-Type': 'application/xml'

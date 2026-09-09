@@ -1,5 +1,6 @@
 import {redirect} from '@sveltejs/kit';
 import PocketBase from 'pocketbase';
+import crypto from 'crypto';
 import {
     PRIVATE_POCKETBASE_EMAIL,
     PRIVATE_POCKETBASE_PSW,
@@ -13,12 +14,14 @@ import {
 } from "$env/static/public";
 import sharp from 'sharp';
 import {Resend} from "resend";
+import { safeExternalUrl } from '$lib/utils/images.js';
+
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 
 const uploadImage = async (image, user_id, old_url) => {
 
-    // Random image name
-    const random = Math.random().toString(36).substring(2, 15);
-    const newImageName = `${random}.webp`;
+    // Random image name (unpredictable)
+    const newImageName = `${crypto.randomUUID()}.webp`;
 
     // Admin Pocketbase client
     const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
@@ -78,9 +81,19 @@ export const actions = {
     update: async ({request, locals: {supabase, getSession}}) => {
         const formData = Object.fromEntries(await request.formData());
 
-        const fullName = formData.fullName;
-        const username = formData.username;
-        const website = formData.website;
+        const fullName = typeof formData.fullName === 'string' ? formData.fullName.slice(0, 120) : '';
+        const username = typeof formData.username === 'string' ? formData.username.trim().slice(0, 64) : '';
+        const rawWebsite = typeof formData.website === 'string' ? formData.website.trim().slice(0, 2048) : '';
+        // Only persist safe http(s) URLs; reject javascript:/data: etc.
+        const website = rawWebsite ? safeExternalUrl(rawWebsite) : '';
+        if (rawWebsite && !website) {
+            return {
+                status: 400,
+                body: {
+                    message: 'Website URL must start with http:// or https://'
+                }
+            }
+        }
 
         const {session} = await getSession();
         if (!session) {
@@ -151,9 +164,8 @@ export const actions = {
 
         const formData = Object.fromEntries(await request.formData());
         const file = formData.file;
-        let filePath = formData.filePath;
 
-        if (!file) {
+        if (!file || typeof file.arrayBuffer !== 'function') {
             return {
                 status: 400,
                 body: {
@@ -162,22 +174,27 @@ export const actions = {
             }
         }
 
-        if (!filePath) {
-            return {
-                status: 400,
-                body: {
-                    message: 'No file path provided'
-                }
-            }
+        if (file.type && !String(file.type).startsWith('image/')) {
+            return {status: 400, body: {message: 'File must be an image'}};
+        }
+        if (file.size && file.size > MAX_UPLOAD_BYTES) {
+            return {status: 400, body: {message: 'Image too large (max 8MB)'}};
         }
 
-        const imageSharp = sharp(await file.arrayBuffer());
-
-        const optimizedImage = await imageSharp
-            .rotate()
-            .resize(parseInt(PUBLIC_PROFILE_ICON_RESIZE_WIDTH))
-            .webp({quality: 80})
-            .toBuffer();
+        let optimizedImage;
+        try {
+            const buf = await file.arrayBuffer();
+            if (buf.byteLength > MAX_UPLOAD_BYTES) {
+                return {status: 400, body: {message: 'Image too large (max 8MB)'}};
+            }
+            optimizedImage = await sharp(buf, {animated: false, limitInputPixels: 25000000, failOn: 'warning'})
+                .rotate()
+                .resize(parseInt(PUBLIC_PROFILE_ICON_RESIZE_WIDTH))
+                .webp({quality: 80})
+                .toBuffer();
+        } catch {
+            return {status: 400, body: {message: 'Invalid image file'}};
+        }
 
         const {error2, data: profile} = await supabase
             .from('profiles')
@@ -235,10 +252,9 @@ export const actions = {
 
         const formData = Object.fromEntries(await request.formData());
         const file = formData.file;
-        let filePath = formData.filePath;
         const maxSize = parseInt(PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH);
 
-        if (!file) {
+        if (!file || typeof file.arrayBuffer !== 'function') {
             return {
                 status: 400,
                 body: {
@@ -247,28 +263,30 @@ export const actions = {
             }
         }
 
-        if (!filePath) {
-            return {
-                status: 400,
-                body: {
-                    message: 'No file path provided'
-                }
+        if (file.type && !String(file.type).startsWith('image/')) {
+            return {status: 400, body: {message: 'File must be an image'}};
+        }
+        if (file.size && file.size > MAX_UPLOAD_BYTES) {
+            return {status: 400, body: {message: 'Image too large (max 8MB)'}};
+        }
+
+        let optimizedImage;
+        try {
+            const buf = await file.arrayBuffer();
+            if (buf.byteLength > MAX_UPLOAD_BYTES) {
+                return {status: 400, body: {message: 'Image too large (max 8MB)'}};
             }
+            const coverSharp = sharp(buf, {animated: false, limitInputPixels: 25000000, failOn: 'warning'});
+            const metadata = await coverSharp.metadata();
+            const width = metadata.width ?? 0;
+            const pipeline = coverSharp.rotate();
+            if (width > maxSize) {
+                pipeline.resize(maxSize);
+            }
+            optimizedImage = await pipeline.webp({quality: 80}).toBuffer();
+        } catch {
+            return {status: 400, body: {message: 'Invalid image file'}};
         }
-
-        const imageSharp = sharp(await file.arrayBuffer());
-
-        const metadata = await imageSharp.metadata();
-        const width = metadata.width;
-
-        if (width > maxSize) {
-            imageSharp.rotate().resize(maxSize);
-        }
-
-        const optimizedImage = await imageSharp
-            .rotate()
-            .webp({quality: 80})
-            .toBuffer();
 
         // Get old cover url
         const {data: profile, error: error2} = await supabase

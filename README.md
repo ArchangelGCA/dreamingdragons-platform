@@ -10,15 +10,21 @@ In the future we're planning to move our domain to https://dreamingdragons.net.
 
 Make sure to join our Disord server for more information: [Discord](https://discord.gg/u6qFjfDDy2).
 
-## Developing
+## Changelog
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+See [CHANGELOG.md](./CHANGELOG.md) for release history (Bun 1.4.2 migration,
+image-proxy retirement, dependency upgrades, security fixes).
+
+## Developing (Bun 1.4.2)
+
+This project uses [Bun](https://bun.sh) 1.4.2. Do not use npm/pnpm/yarn.
 
 ```bash
-npm run dev
+bun install
+bun --bun run dev
 
 # or start the server and open the app in a new browser tab
-npm run dev -- --open
+bun --bun run dev -- --open
 ```
 
 ## Building
@@ -26,9 +32,14 @@ npm run dev -- --open
 To create a production version of your app:
 
 ```bash
-npm run build
+bun --bun run build
 ```
 
-You can preview the production build with `npm run preview`.
+You can preview the production build with `bun --bun run preview`.
+
+> Hybrid runtime (deliberate): Bun 1.4.2 locally for installs/dev/builds,
+> stable Node.js 22 for Vercel Functions (`adapter-vercel`
+> `runtime: 'nodejs22.x'`). Vercel detects `bun.lock` for installs
+> automatically. See CHANGELOG for details and Vercel dashboard steps.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

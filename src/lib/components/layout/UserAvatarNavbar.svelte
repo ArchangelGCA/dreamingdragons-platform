@@ -1,4 +1,5 @@
 <script>
+    import { resolveImageUrl } from '$lib/utils/images.js';
     /** @type {{url?: string, username?: string, size?: string, classes?: string, image_proxy?: any}} */
     let {
         url = '',
@@ -8,14 +9,10 @@
         image_proxy = null
     } = $props();
 
-    let finalAvatarUrl = $derived(image_proxy && url !== null && url !== '' && !url.startsWith(image_proxy) ? image_proxy + url : url);
+    // NOTE: image_proxy is deprecated (external optimizer decommissioned).
+    // Serve original at best quality; kept in props for backwards compat.
+    let finalAvatarUrl = $derived(resolveImageUrl(url, image_proxy, ''));
     let isAvatarLoaded = $derived(url !== '' && url !== null && finalAvatarUrl !== null && finalAvatarUrl !== '');
-    
-    let avatarSrcSet = $derived.by(() => {
-        if (!isAvatarLoaded) return '';
-        const baseUrl = finalAvatarUrl;
-        return `${baseUrl}?width=375 2x, ${baseUrl}?width=250 1x`;
-    });
 
     // Get the first letter of the username for the fallback avatar
     let initial = $derived(username && username.length > 0 ? username.charAt(0).toUpperCase() : '?');
@@ -36,14 +33,14 @@
         <span class="avatar-initial">{initial}</span>
     </div>
 {:else}
-    <img 
-        srcset={avatarSrcSet}
-        src="{finalAvatarUrl}?width=250"
-        alt='{username} avatar' 
-        class="rounded-circle avatar {classes}" 
-        width={size} 
+    <img
+        src={finalAvatarUrl}
+        alt='{username} avatar'
+        class="rounded-circle avatar {classes}"
+        width={size}
         height={size}
-        loading="lazy">
+        loading="lazy"
+        decoding="async">
 {/if}
 
 <style>

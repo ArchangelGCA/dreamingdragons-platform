@@ -1,6 +1,7 @@
 <script>
     import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import { safeExternalUrl, resolveImageUrl } from '$lib/utils/images.js';
     import {PUBLIC_DEFAULT_USERNAME} from '$env/static/public';
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
@@ -324,9 +325,9 @@
                 {:else}
                     {@const backgroundImageUrl = profile.cover_url ? profile.cover_url : profile.avatar_url}
                     {@const
-                        optimizedBackgroundUrl = image_proxy && backgroundImageUrl && !backgroundImageUrl.startsWith(image_proxy) ? image_proxy + backgroundImageUrl : backgroundImageUrl}
+                        optimizedBackgroundUrl = resolveImageUrl(backgroundImageUrl, image_proxy)}
                     <div class="rounded-bottom-5 shadow-sm position-relative"
-                         style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({optimizedBackgroundUrl}?quality=80), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
+                         style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({optimizedBackgroundUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                         <!-- Share and RSS buttons in top right corner -->
                         <div class="position-absolute top-0 end-0 p-3">
                             <div class="d-flex gap-2">
@@ -347,9 +348,9 @@
                             <div class="col-auto">
                                 {#if profile.avatar_url}
                                     {@const
-                                        optimizedAvatarUrl = image_proxy && profile.avatar_url && !profile.avatar_url.startsWith(image_proxy) ? image_proxy + profile.avatar_url : profile.avatar_url}
-                                    <img src="{optimizedAvatarUrl}?width=600&quality=80" alt="{profile.username}"
-                                         loading="lazy"
+                                        optimizedAvatarUrl = resolveImageUrl(profile.avatar_url, image_proxy)}
+                                    <img src={optimizedAvatarUrl} alt="{profile.username}"
+                                         loading="lazy" decoding="async"
                                          class="rounded-circle bg-dark shadow" width="150px" height="150px"
                                          id="profileIcon"
                                          onload={() => avatarFound = true} onerror={() => avatarFound = false}>
@@ -380,15 +381,17 @@
                 {#if profile.username.startsWith(PUBLIC_DEFAULT_USERNAME)}
                     <span class="h1 mt-2 mb-1 text-warning-emphasis">Please update your <a href="/settings">profile</a></span>
                 {:else}
+                    {@const safeWebsite = safeExternalUrl(profile.website)}
                     <span class="h1 mt-2 mb-1"><button type="button" class="btn-username" onclick={copyToClipboardId}
-                                                       use:tooltip={{...tooltipConfig, content: 'Click to copy profile ID!'}}>{profile.username}</button> <a
+                                                       use:tooltip={{...tooltipConfig, content: 'Click to copy profile ID!'}}>{profile.username}</button> {#if safeWebsite}<a
                             class="link-purple"
-                            href="{profile.website ? profile.website : ''}"
+                            href={safeWebsite}
                             target="_blank"
-                            data-tooltip="{profile.website ? '⚠️ External link - Careful!' : '🔗 Profile'}"
+                            rel="noopener noreferrer"
+                            data-tooltip="⚠️ External link - Careful!"
                             aria-label="Open profile linked website."
                     ><i
-                            class="fa-solid fa-external-link fa-2xs"></i></a></span>
+                            class="fa-solid fa-external-link fa-2xs"></i></a>{/if}</span>
                 {/if}
             </div>
         </div>
@@ -571,13 +574,13 @@
                                                                 />
                                                             {:else}
                                                                 {@const
-                                                                    optimizedSrc = image_proxy && !gb.book.cover_url.startsWith(image_proxy) ? image_proxy + gb.book.cover_url : gb.book.cover_url}
+                                                                    optimizedSrc = resolveImageUrl(gb.book.cover_url, image_proxy)}
                                                                 <img
-                                                                        src={optimizedSrc + '?width=300&quality=80'}
+                                                                        src={optimizedSrc}
                                                                         alt="Tale cover"
                                                                         class="preview-book"
                                                                         style="z-index: {4-i}; transform: translateX({i * -6}px) translateY({i * -3}px) rotate({(i % 2 === 0 ? -1 : 1) * (i + 1) * 2}deg)"
-                                                                        loading="lazy"
+                                                                        loading="lazy" decoding="async"
                                                                 />
                                                             {/if}
                                                         {/each}

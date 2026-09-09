@@ -8,6 +8,7 @@
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     import {fly, scale} from 'svelte/transition';
+    import { resolveImageUrl } from '$lib/utils/images.js';
 
     let {data} = $props();
 
@@ -17,19 +18,16 @@
     let image_proxy = $derived(data.image_proxy);
     let galleryParam = $derived(data.galleryParam);
 
-    function getOptimizedImageUrl(url, width = 300, quality = 80) {
-        if (!url || url === '') return '/favicon.webp';
-        if (!image_proxy || url.startsWith(image_proxy)) return url;
-        return `${image_proxy}${url}?width=${width}&quality=${quality}`;
+    // image_proxy deprecated: serve originals at best quality.
+    function getOptimizedImageUrl(url) {
+        return resolveImageUrl(url, image_proxy, '/favicon.webp');
     }
 
-    function getOptimizedImageSrcSet(url, baseWidth = 300, quality = 80) {
-        if (!url || url === '') return '/favicon.webp';
-        const baseUrl = image_proxy && !url.startsWith(image_proxy) ? image_proxy + url : url;
-
+    function getOptimizedImageSrcSet(url) {
+        const resolved = resolveImageUrl(url, image_proxy, '/favicon.webp');
         return {
-            src: `${baseUrl}?width=${baseWidth}&quality=${quality}`,
-            srcset: `${baseUrl}?width=${Math.round(baseWidth * 1.5)}&quality=${quality} 2x, ${baseUrl}?width=${baseWidth}&quality=${quality} 1x`
+            src: resolved,
+            srcset: undefined
         };
     }
 

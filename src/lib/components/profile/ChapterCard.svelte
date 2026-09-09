@@ -7,6 +7,7 @@
     import { createChapterPath } from "$lib/utils/slugs.js";
     import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
     import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
+    import { resolveImageUrl } from '$lib/utils/images.js';
 
     /** @type {{content: any, image_proxy: any, index: any, user_id: any, bookTitle?: string}} */
     let {
@@ -17,7 +18,7 @@
     } = $props();
 
     let likeActionActive = false;
-    let finalLinkImage = $derived(image_proxy && !content.chapter_image_url.startsWith(image_proxy) ? image_proxy + content.chapter_image_url + '?width=750&quality=80' : content.chapter_image_url);
+    let finalLinkImage = $derived(resolveImageUrl(content.chapter_image_url, image_proxy));
     
     // Generate SEO-friendly URL
     let chapterUrl = $derived(createChapterPath(bookTitle, content.book_id, content.title, content.id));
@@ -98,7 +99,7 @@
         <PopularBadge likes={content.chapter_likes?.length ?? 0} size="sm" position="top-left" />
         {#if finalLinkImage}
             <a href="{chapterUrl}">
-                <img src={finalLinkImage} alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy"
+                <img src={finalLinkImage} alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy" decoding="async"
                      style="object-fit: cover; position: absolute; top: 0; left: 0;">
                 <div class="chapter-number-over">{index}</div>
             </a>

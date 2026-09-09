@@ -6,6 +6,7 @@
     import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
+    import { resolveImageUrl } from '$lib/utils/images.js';
 
     /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any, chapter_count?: number, likes?: number}} */
     let {
@@ -22,7 +23,7 @@
 
     let isDragging = false;
     let dragTimeout;
-    const final_book_cover_url = $derived(image_proxy && !book_cover_url.startsWith(image_proxy) ? image_proxy + book_cover_url : book_cover_url);
+    const final_book_cover_url = $derived(resolveImageUrl(book_cover_url, image_proxy));
     const final_book_title = $derived(book_title && book_title.length > 45 ? book_title.substring(0, 40) + '...' : book_title);
     const final_owner_username = $derived(owner_username && owner_username.length > 30 ? owner_username.substring(0, 35) + '...' : owner_username);
     
@@ -71,12 +72,11 @@
             </div>
         {/if}
         <img
-                srcset="{final_book_cover_url + '?width=350&quality=80'} 2x,
-                        {final_book_cover_url + '?width=500&quality=80'} 1x"
-                src={final_book_cover_url + '?width=500&quality=80'}
+                src={final_book_cover_url}
                 alt="Book cover"
                 class="w-100 h-100 to-scale"
                 loading="lazy"
+                decoding="async"
                 style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
     <a href="{bookUrl}" draggable="false" onclick={handleClick} onpointerdown={handlePointerDown}

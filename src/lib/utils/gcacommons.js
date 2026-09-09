@@ -58,6 +58,6 @@ export const getValidatedSession = async (supabase) => {
         };
     } catch (err) {
         console.error(err);
-        return null;
+        return {session: null};
     }
 }

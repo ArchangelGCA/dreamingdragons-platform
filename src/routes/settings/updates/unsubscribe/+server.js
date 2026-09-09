@@ -23,12 +23,9 @@ export const GET = async ({ url }) => {
             audienceId: PRIVATE_RESEND_AUDIENCE_ID
         });
 
-        if (!contact || contact.data === null) {
-            return new Response('Contact not found!', { status: 400 });
-        }
-
-        if (contact.data.unsubscribed) {
-            return new Response('Email is already unsubscribed!', { status: 400 });
+        if (!contact || contact.data === null || contact.data.unsubscribed) {
+            // Generic response to avoid email/contact enumeration.
+            return new Response('If this contact was subscribed, it has now been unsubscribed.', { status: 200 });
         }
 
     } else {
@@ -37,14 +34,16 @@ export const GET = async ({ url }) => {
             audienceId: PRIVATE_RESEND_AUDIENCE_ID
         });
 
-        // Check if email is already registered
+        // Check if email is already registered (generic response to avoid enumeration)
         if (audienceList.data.data.length > 0) {
             const isEmailRegistered = audienceList.data.data.find(contact => contact.email === email);
             if (!isEmailRegistered || isEmailRegistered.unsubscribed) {
-                return new Response('Email is not subscribed or already unsubscribed!', {status: 400});
+                return new Response('If this email was subscribed, it has now been unsubscribed.', {status: 200});
             } else {
                 id = isEmailRegistered.id;
             }
+        } else {
+            return new Response('If this email was subscribed, it has now been unsubscribed.', {status: 200});
         }
     }
 

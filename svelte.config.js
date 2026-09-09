@@ -5,7 +5,14 @@ import {vitePreprocess} from "@sveltejs/vite-plugin-svelte";
 const config = {
   preprocess: vitePreprocess(),
   kit: {
+    // Hybrid runtime (deliberate): Bun 1.4.2 locally for installs/dev/builds,
+    // stable Node.js 22 for Vercel Functions. The explicit pin is required —
+    // adapter-vercel auto-detection reads Bun's Node-compat version string
+    // (reports Node 26) and throws. The Bun Functions runtime was evaluated
+    // (Public Beta, no source maps/bytecode cache, native-module risk for
+    // sharp uploads) and rejected for production for now.
     adapter: adapter({
+      runtime: 'nodejs22.x'
     }),
   },
   compilerOptions: {

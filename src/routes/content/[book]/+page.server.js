@@ -103,9 +103,9 @@ export const load = async ({ params, url, locals: { supabase, getSession, image_
         // For SEO $page.data on +layout etc...
         title: bookContent[0].title + " by " + bookContent[0].profiles.username,
         description: "Content by " + bookContent[0].profiles.username + " - " + bookContent[0].title + " on DreamingDragons.",
-        imageURL: bookContent[0].cover_url.startsWith('http') ? 
-            bookContent[0].cover_url + "?width=1024" : 
-            (image_proxy ? image_proxy + bookContent[0].cover_url + "?width=1024" : ORIGIN + bookContent[0].cover_url + "?width=1024"),
+        imageURL: bookContent[0].cover_url?.startsWith('http')
+            ? bookContent[0].cover_url
+            : ORIGIN + (bookContent[0].cover_url ?? '/favicon-192.webp'),
         author: bookContent[0].profiles.username,
         name: bookContent[0].profiles.username,
         type: "article",

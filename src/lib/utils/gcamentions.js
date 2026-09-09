@@ -1,4 +1,4 @@
-import {PUBLIC_IMAGE_PROXY_URL as image_proxy} from "$env/static/public"
+import { resolveImageUrl, escapeHtml } from '$lib/utils/images.js';
 import {browser} from "$app/environment";
 
 let cachedMentions = null;
@@ -57,13 +57,24 @@ export async function listenerMentions(e, supabase) {
         const user = cachedMentions.find((u) => u.id === userId);
         const tooltip = document.createElement('div');
         tooltip.classList.add('mention-tooltip');
-        tooltip.innerHTML = `
-        <div class="d-flex align-items-center">
-          <img src="${image_proxy + user.avatar_url}" alt="${user.username}"
-               class="rounded-circle" style="width: 50px; height: 50px;">
-          <span class="ms-2">${user.username}</span>
-        </div>
-      `;
+        // Build tooltip with DOM APIs to avoid stored XSS via username/avatar_url.
+        const row = document.createElement('div');
+        row.className = 'd-flex align-items-center';
+        const img = document.createElement('img');
+        img.src = resolveImageUrl(user.avatar_url);
+        img.alt = `${user.username ?? 'user'} avatar`;
+        img.className = 'rounded-circle';
+        img.style.width = '50px';
+        img.style.height = '50px';
+        img.loading = 'lazy';
+        const label = document.createElement('span');
+        label.className = 'ms-2';
+        label.textContent = user.username ?? 'user';
+        // Keep escaped HTML string only as fallback structure (no raw interpolation)
+        void escapeHtml;
+        row.appendChild(img);
+        row.appendChild(label);
+        tooltip.appendChild(row);
 
         tooltip.style.position = 'absolute';
         tooltip.style.top = e.pageY + 'px';

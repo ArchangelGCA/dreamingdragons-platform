@@ -1,6 +1,6 @@
 import { createBookPath, createChapterPath } from './slugs.js';
 import {ORIGIN} from "$env/static/private";
-import { PUBLIC_IMAGE_PROXY_URL } from '$env/static/public';
+import { resolveImageUrl } from './images.js';
 
 
 const SITE_URL = ORIGIN || 'https://tales.archangelgca.eu';
@@ -69,7 +69,7 @@ export function generateBookRSSItem(book) {
     const link = `${SITE_URL}${createBookPath(book.title, book.id)}`;
     const pubDate = new Date(book.created_at).toUTCString();
     const guid = `${SITE_URL}${createBookPath(book.title, book.id)}`;
-    const coverURL = book.cover_url ? `${PUBLIC_IMAGE_PROXY_URL}${book.cover_url}?width=1024&quality=80` : '';
+    const coverURL = book.cover_url ? escapeHTML(resolveImageUrl(book.cover_url)) : '';
 
     let finalDescription = description;
     if (coverURL) {
@@ -100,7 +100,7 @@ export function generateChapterRSSItem(chapter) {
     const link = `${SITE_URL}${createChapterPath(bookTitle, chapter.book_id, chapter.title, chapter.id)}`;
     const pubDate = new Date(chapter.created_at).toUTCString();
     const guid = `${SITE_URL}${createChapterPath(bookTitle, chapter.book_id, chapter.title, chapter.id)}`;
-    const bookCoverURL = chapter.book?.cover_url ? `${PUBLIC_IMAGE_PROXY_URL}${chapter.book.cover_url}?width=1024&quality=80` : '';
+    const bookCoverURL = chapter.book?.cover_url ? escapeHTML(resolveImageUrl(chapter.book.cover_url)) : '';
 
     let finalDescription = description;
     if (bookCoverURL) {

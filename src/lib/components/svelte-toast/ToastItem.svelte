@@ -106,7 +106,7 @@
         {#if item.component}
             <item.component.src {...cprops}/>
         {:else}
-            {@html item.msg}
+            {item.msg}
         {/if}
     </div>
     {#if item.dismissable}

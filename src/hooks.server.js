@@ -1,4 +1,5 @@
-import {PUBLIC_IMAGE_PROXY_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL} from '$env/static/public';
+import {PUBLIC_SUPABASE_PUBLISHABLE_KEY, PUBLIC_SUPABASE_URL} from '$env/static/public';
+import {env as publicEnv} from '$env/dynamic/public';
 import {createServerClient} from "@supabase/ssr";
 import {getValidatedSession} from "$lib/utils/gcacommons.js";
 
@@ -22,8 +23,10 @@ export const handle = async ({event, resolve}) => {
     }
 
 
-    /** Image proxy in locals */
-    event.locals.image_proxy = PUBLIC_IMAGE_PROXY_URL ?? undefined;
+    /** Image proxy in locals (deprecated, external optimizer decommissioned).
+     * Read via dynamic env so a missing PUBLIC_IMAGE_PROXY_URL never crashes
+     * the app — static $env imports throw when the var is unset. */
+    event.locals.image_proxy = publicEnv.PUBLIC_IMAGE_PROXY_URL ?? undefined;
 
     return resolve(event, {
         filterSerializedResponseHeaders(name) {

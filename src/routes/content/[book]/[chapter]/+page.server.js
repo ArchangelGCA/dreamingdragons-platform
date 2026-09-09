@@ -131,9 +131,9 @@ export const load = async ({ params, url, locals: { supabase, getSession, image_
         // For SEO $page.data on +layout etc...
         title: chapterContent[0].book.title + " - " + chapterContent[0].title + " by " + chapterContent[0].profiles.username,
         description: chapterContent[0].title + " by " + chapterContent[0].profiles.username + " - " + chapterContent[0].book.title + " on DreamingDragons.",
-        imageURL: chapterContent[0].book.cover_url.startsWith('http') ? 
-            chapterContent[0].book.cover_url + "?width=1024" : 
-            (image_proxy ? image_proxy + chapterContent[0].book.cover_url + "?width=1024" : ORIGIN + chapterContent[0].book.cover_url + "?width=1024"),
+        imageURL: chapterContent[0].book.cover_url?.startsWith('http')
+            ? chapterContent[0].book.cover_url
+            : ORIGIN + (chapterContent[0].book.cover_url ?? '/favicon-192.webp'),
         author: chapterContent[0].profiles.username,
         name: chapterContent[0].profiles.username,
         type: "article",
