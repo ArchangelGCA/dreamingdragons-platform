@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-SvelteKit 2 + Svelte 5 (runes), Bootstrap 5, Supabase (auth + database), PocketBase, TinyMCE editor, Resend, sharp, Node 22.x, deployed on Vercel.
+SvelteKit 2 + Svelte 5 (runes), Bootstrap 5, Supabase (auth + database), PocketBase, TinyMCE editor, Resend, sharp, Node 24.x, deployed on Vercel.
 
 ## Users
 

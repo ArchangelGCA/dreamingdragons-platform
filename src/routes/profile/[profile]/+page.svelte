@@ -388,7 +388,7 @@
                             href={safeWebsite}
                             target="_blank"
                             rel="noopener noreferrer"
-                            data-tooltip="⚠️ External link - Careful!"
+                            use:tooltip={{...tooltipConfig, content: '⚠️ External link - Careful!'}}
                             aria-label="Open profile linked website."
                     ><i
                             class="fa-solid fa-external-link fa-2xs"></i></a>{/if}</span>
@@ -441,7 +441,7 @@
                     </div>
                     <div class="col-4 col-md-3">
                         <div class="row justify-content-center d-flex align-items-center"
-                             data-tooltip="Joined: {new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}"
+                             use:tooltip={{...tooltipConfig, content: `Joined: ${new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}`}}
                         >
                             <div class="col-auto d-flex align-items-center pe-0">
                                 <i class="fas fa-calendar-alt"></i>
@@ -455,7 +455,7 @@
                         <div class="row justify-content-center">
                             <div class="col-11 col-md-auto px-0">
                                 <button class="btn btn-outline-light w-100 mt-3 mt-md-0 shadow" onclick={handleFollow}
-                                        data-tooltip="{isFollowing ? '➖ Unfollow' : '➕ Follow'}">
+                                        use:tooltip={{...tooltipConfig, content: isFollowing ? '➖ Unfollow' : '➕ Follow'}}>
                                     <i class="fas {isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
                                     <span class="ms-1">{isFollowing ? 'Unfollow' : 'Follow'}</span>
                                 </button>
@@ -470,14 +470,14 @@
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'home') ? 'active' : ''}"
                         onclick={() => show = 'home'}
-                        data-tooltip="{profile.username + ' Home 🏠'}">Home
+                        use:tooltip={{...tooltipConfig, content: `${profile.username} Home 🏠`}}>Home
                 </button>
             </div>
             {#if profile.show_favourites || isOwner}
                 <div class="col-auto">
                     <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'favourites') ? 'active' : ''}"
                             onclick={() => show = 'favourites'}
-                            data-tooltip="{isOwner ? 'Owner can always see his favs 😉' : (profile.username + ' Favs 🩷')}"
+                            use:tooltip={{...tooltipConfig, content: isOwner ? 'Owner can always see his favs 😉' : `${profile.username} Favs 🩷`}}
                     >
                         Favourites
                     </button>
@@ -490,7 +490,7 @@
             <div class="col-auto">
                 <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'galleries') ? 'active' : ''}"
                         onclick={() => show = 'galleries'}
-                        data-tooltip="{profile.username + ' Galleries 🖼️'}">Galleries
+                        use:tooltip={{...tooltipConfig, content: `${profile.username} Galleries 🖼️`}}>Galleries
                 </button>
             </div>
         </div>

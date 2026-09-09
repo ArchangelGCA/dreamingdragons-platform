@@ -38,8 +38,8 @@ bun --bun run build
 You can preview the production build with `bun --bun run preview`.
 
 > Hybrid runtime (deliberate): Bun 1.4.2 locally for installs/dev/builds,
-> stable Node.js 22 for Vercel Functions (`adapter-vercel`
-> `runtime: 'nodejs22.x'`). `vercel.json` pins the install toolchain to
+> stable Node.js 24 for Vercel Functions (`adapter-vercel`
+> `runtime: 'nodejs24.x'`). `vercel.json` pins the install toolchain to
 > `bunx bun@1.4.2 install` (Vercel's default Bun 1.3.x can't parse the 1.4
 > lockfile) — no `bunVersion` flag, so Functions stay on Node.
 > See CHANGELOG for details.

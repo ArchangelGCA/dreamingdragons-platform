@@ -1,6 +1,6 @@
 {
   "name": "dd-tales-svelte",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "private": true,
   "packageManager": "bun@1.4.2",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "engines": {
     "bun": "1.4.2",
-    "node": "22.x"
+    "node": "24.x"
   },
   "devDependencies": {
     "@formkit/auto-animate": "^0.10.0",

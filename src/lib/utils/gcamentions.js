@@ -79,13 +79,16 @@ export async function listenerMentions(e, supabase) {
         tooltip.style.position = 'absolute';
         tooltip.style.top = e.pageY + 'px';
         tooltip.style.left = e.pageX + 'px';
-        tooltip.style.backgroundColor = 'rgba(92,0,166,0.85)';
+        // Keep in sync with tooltipConfig in gcacommons.js (svelte-tooltip-gca purple theme).
+        tooltip.style.backgroundColor = 'rgba(92,0,166,0.9)';
         tooltip.style.color = 'white';
         tooltip.style.padding = '10px';
-        tooltip.style.borderRadius = '10px';
-        tooltip.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+        tooltip.style.borderRadius = '5px';
+        tooltip.style.fontSize = '0.875rem';
+        tooltip.style.maxWidth = '300px';
+        tooltip.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
         tooltip.style.pointerEvents = 'none';
-        tooltip.style.transition = 'opacity 0.25s';
+        tooltip.style.transition = 'opacity 0.15s';
         tooltip.style.opacity = 0;
 
         document.body.appendChild(tooltip);

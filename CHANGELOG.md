@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-09-09
+
+### Changed
+
+- **Vercel production runtime Node.js 22 → 24 (hybrid setup kept).**
+  Bun 1.4.2 stays for local installs/dev/builds (`packageManager`,
+  `bun.lock`, `bunfig.toml`, `engines.bun`), while Vercel Functions move to
+  stable Node 24 (`engines.node: 24.x`, adapter `runtime: 'nodejs24.x'`).
+  Node 24 LTS is GA on Vercel for builds + functions; `adapter-vercel`
+  6.3.4 already validates `nodejs24.x`. `vercel.json` keeps only
+  `"installCommand": "bunx bun@1.4.2 install"` — deliberately no
+  `bunVersion`, so installs use Bun 1.4 (Vercel default 1.3.x can't parse
+  the 1.4 lockfile) while Functions stay on Node. Redeploy after pulling
+  so Vercel picks up Node 24 (dashboard setting already switched to 24).
+- **Tooltips: finished migration to `svelte-tooltip-gca` (1.0.4, latest).**
+  The last 6 legacy CSS `data-tooltip` usages in
+  `src/routes/profile/[profile]/+page.svelte` (external-link warning,
+  joined-date, follow/unfollow, Home / Favourites / Galleries tabs) are now
+  `use:tooltip={{...tooltipConfig, content}}` — same purple theme
+  (`rgba(92,0,166,0.9)`, white, 10px padding, 5px radius, `0.875rem`,
+  `300px` max) so the design is preserved, plus Popover top-layer,
+  mobile tap/long-press, focus + Escape and `prefers-reduced-motion`
+  handling from the library. Removed the dead `[data-tooltip]` CSS from
+  `src/lib/css/style.css`. `gcamentions.js` mention popups stay imperative
+  (dynamic rich-text content can't use the Svelte action) but their inline
+  style was aligned to `tooltipConfig` (0.9 alpha, 5px radius,
+  `0 2px 8px rgba(0,0,0,0.3)`, 150ms fade).
+- **Dependencies: verified latest — no upgrades needed (PocketBase untouched).**
+  `bun outdated` and `ncu` both report only `pocketbase` 0.21.5 → 0.28.1,
+  intentionally pinned per project constraint. Everything else
+  (`svelte` 5.57.0, `@sveltejs/kit` 2.70.3, `adapter-vercel` 6.3.4,
+  `vite` 8.2.2, `bootstrap` 5.3.8, `svelte-tooltip-gca` 1.0.4, etc.) is
+  already at latest.
+
+### Verified
+
+- `bun install` → clean (120 installs, no changes).
+- `bun --bun run build` → succeeds; emitted function runtime is `nodejs24.x`.
+- `rg data-tooltip src` → zero matches (all tooltips via `svelte-tooltip-gca`).
+
 ## [0.9.1] - 2026-09-09
 
 ### Fixed

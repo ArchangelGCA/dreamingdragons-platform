@@ -1,6 +1,6 @@
 # Bun 1.4.2 configuration for DreamingDragons Platform.
-# Hybrid setup (deliberate): Bun locally for installs/dev/builds, Node.js 22
-# for Vercel Functions (adapter-vercel `runtime: 'nodejs22.x'`).
+# Hybrid setup (deliberate): Bun locally for installs/dev/builds, Node.js 24
+# for Vercel Functions (adapter-vercel `runtime: 'nodejs24.x'`).
 # Vercel detects bun.lock for installs automatically, even with Node runtime.
 # Do NOT add [install.trustedDependencies] unless you list sharp/esbuild too —
 # omitting it keeps Bun's default allowlist (sharp postinstall works).
