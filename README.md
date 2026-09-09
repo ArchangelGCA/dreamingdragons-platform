@@ -39,7 +39,9 @@ You can preview the production build with `bun --bun run preview`.
 
 > Hybrid runtime (deliberate): Bun 1.4.2 locally for installs/dev/builds,
 > stable Node.js 22 for Vercel Functions (`adapter-vercel`
-> `runtime: 'nodejs22.x'`). Vercel detects `bun.lock` for installs
-> automatically. See CHANGELOG for details and Vercel dashboard steps.
+> `runtime: 'nodejs22.x'`). `vercel.json` pins the install toolchain to
+> `bunx bun@1.4.2 install` (Vercel's default Bun 1.3.x can't parse the 1.4
+> lockfile) — no `bunVersion` flag, so Functions stay on Node.
+> See CHANGELOG for details.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.

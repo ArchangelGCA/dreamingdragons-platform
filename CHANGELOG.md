@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] - 2026-09-09
+
+### Fixed
+
+- **Vercel deploy used Bun 1.3.14 for installs, failing on our lockfile**
+  (`Unknown lockfile version` at `bun.lock`, `lockfileVersion: 2`).
+  Vercel's default Bun is the `1.x` track (currently 1.3.14), which cannot parse
+  the Bun 1.4 lockfile format — nothing was missing on our side. Fixed with
+  `vercel.json` → `"installCommand": "bunx bun@1.4.2 install"` (per Vercel's own
+  KB on pinning Bun for builds; mechanism verified locally, resolves exactly
+  `1.4.2`). Deliberately **not** `bunVersion`: per Vercel docs that flag moves
+  *all* Functions to the Bun runtime, which would undo the hybrid — the install
+  command pins only the install toolchain, Functions stay `nodejs22.x`.
+  The previous deploy "worked" anyway because Vercel fell back to a fresh
+  (unlocked) npm resolve — redeploy after this fix so installs honor `bun.lock`.
+
 ## [0.9.0] - 2026-09-09
 
 ### Fixed
