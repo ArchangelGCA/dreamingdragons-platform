@@ -123,6 +123,16 @@
             </div>
         </div>
     </div>
+    <div class="col-12 mb-3">
+        <div class="card bg-black bg-opacity-25 text-white border-warning">
+            <div class="card-body text-center">
+                <i class="fas fa-exchange-alt fa-3x mb-3 text-warning"></i>
+                <h5 class="card-title">Pockethost Host Migration</h5>
+                <p class="card-text">Rewrite image URLs from <code>rosesintheflames.pockethost.io</code> to <code>dreamingdragons-images.pockethost.io</code> — scan, live progress, reversible rollback.</p>
+                <a href="/admin/dashboard/migrations" class="btn btn-warning">Go to Migrations</a>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>

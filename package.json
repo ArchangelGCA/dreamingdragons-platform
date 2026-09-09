@@ -1,6 +1,6 @@
 {
   "name": "dd-tales-svelte",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "private": true,
   "packageManager": "bun@1.4.2",
   "scripts": {
@@ -26,7 +26,7 @@
     "bootstrap": "^5.3.8",
     "jose": "^6.2.12",
     "pocketbase": "^0.28.1",
-    "resend": "^6.26.0",
+    "resend": "^6.27.0",
     "svelte": "^5.57.0",
     "vite": "^8.2.2",
     "vite-plugin-devtools-json": "^1.1.0"

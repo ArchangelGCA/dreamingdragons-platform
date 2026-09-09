@@ -5,6 +5,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-09-09
+
+### Added
+
+- **Pockethost host migration: `rosesintheflames.pockethost.io` → `dreamingdragons-images.pockethost.io`.**
+  New reversible admin tool at Admin Dashboard → Migrations (plus a card on the
+  main admin dashboard linking to it). Code search confirmed no hardcoded old
+  host in `src/` (URLs come from PocketBase `getURL()` + env), so the migration
+  rewrites stored Supabase values: `profiles.avatar_url`, `profiles.cover_url`,
+  `book.cover_url` (direct image URLs) plus embedded-URL sweep of
+  `book.description`, `chapters.text`, `comments.content`. Pure substring
+  replace (`rosesintheflames` → `dreamingdragons-images`), exactly reversible.
+  - Dry-run scan per table/column (`pockethost_scan`, `ilike` counts) before
+    anything is written.
+  - Type-to-confirm warning modal (`MIGRATE` / `ROLLBACK`, no native
+    `confirm()`), explicit consequences + audit-table note.
+  - Real-time progress: per-target status table, overall progress bar, live
+    timestamped log, final summary with duration, and downloadable run JSON.
+  - Vercel-safe batching: the client drives 50-row `pockethost_batch` calls
+    (drain-from-front, no offsets), each well under serverless timeouts.
+  - Reversible two ways: symmetric forward/reverse string replace plus
+    best-effort audit rows in new `pockethost_host_migration_backup` table
+    (see `supabase/migrations/20260909000000_pockethost_host_migration_backup.sql`;
+    missing table warns but never blocks, rollback still works).
+  - Idempotent already-done guard, always database-checked: every run starts
+    with a live re-scan and stops with "already done — nothing rewritten" when
+    zero cells match; trigger buttons disable once their direction scans to
+    zero (opposite direction re-enables after a run); accidental confirm
+    re-checks the DB instead of writing.
+  - New server-only helper `src/lib/server/pockethost-migration.js`
+    (allowlisted targets, `rewriteValue`, `scanAll`, `migrateBatch`).
+  - Admin-only (`isAdmin`), service-role client for reads/writes.
+
+### Changed
+
+- **Dependencies: `resend` 6.26.0 → 6.27.0.** `bun outdated` is clean again
+  (everything else already latest: `svelte` 5.57.0, `@sveltejs/kit` 2.70.3,
+  `adapter-vercel` 6.3.4, `vite` 8.2.2, `bootstrap` 5.3.8, `pocketbase` 0.28.1).
+
+### Verified
+
+- `bun install` → clean; `bun outdated` → empty, zero outdated packages.
+- `rewriteValue` unit check → 6/6 pass (forward, reverse, multi-occurrence,
+  non-matching/external/null/empty → null; allowlist rejects unknown columns).
+- `svelte-autofixer` on the migrations page → zero issues.
+- `bun --bun run build` → succeeds (client + SSR + `@sveltejs/adapter-vercel`).
+
 ## [0.11.0] - 2026-09-09
 
 ### Changed

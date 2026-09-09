@@ -3,6 +3,26 @@ import { SUPABASE_SECRET_KEY } from '$env/static/private';
 import {createClient} from "@supabase/supabase-js";
 import {isAdmin} from "$lib/utils/misc.js";
 import {buildFileUrl, createSuperuserClient} from "$lib/server/pocketbase.js";
+import {
+	DIRECTIONS,
+	MIGRATION_TARGETS,
+	NEW_HOST,
+	NEW_SUBSTRING,
+	OLD_HOST,
+	OLD_SUBSTRING,
+	findTarget,
+	migrateBatch,
+	scanAll
+} from "$lib/server/pockethost-migration.js";
+
+function createAdminSupabase() {
+	return createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
+		auth: {
+			autoRefreshToken: false,
+			persistSession: false
+		}
+	});
+}
 
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();
@@ -206,6 +226,97 @@ export const actions = {
         }
         } finally {
             pb.authStore.clear();
+        }
+    },
+    pockethost_scan: async ({request, locals: {supabase, getSession}}) => {
+        const {session} = await getSession();
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        const formData = await request.formData();
+        const direction = String(formData.get('direction') ?? 'forward');
+        if (!DIRECTIONS.includes(direction)) {
+            return {
+                status: 400,
+                body: {
+                    message: "Invalid direction (expected 'forward' or 'reverse')"
+                }
+            }
+        }
+
+        const adminSupabase = createAdminSupabase();
+        const scan = await scanAll(adminSupabase, direction);
+
+        return {
+            status: 200,
+            body: {
+                message: "Scan complete",
+                direction,
+                oldHost: OLD_HOST,
+                newHost: NEW_HOST,
+                oldSubstring: OLD_SUBSTRING,
+                newSubstring: NEW_SUBSTRING,
+                targets: MIGRATION_TARGETS.map((t) => ({
+                    table: t.table,
+                    column: t.column,
+                    kind: t.kind
+                })),
+                results: scan.targets,
+                total: scan.total
+            }
+        }
+    },
+    pockethost_batch: async ({request, locals: {supabase, getSession}}) => {
+        const {session} = await getSession();
+
+        const result = await isAdmin(session, supabase);
+        if (result !== true) {
+            return result;
+        }
+
+        const formData = await request.formData();
+        const table = String(formData.get('table') ?? '');
+        const column = String(formData.get('column') ?? '');
+        const direction = String(formData.get('direction') ?? 'forward');
+        const limit = Math.min(Math.max(parseInt(String(formData.get('limit') ?? '50'), 10) || 50, 1), 200);
+
+        if (!DIRECTIONS.includes(direction)) {
+            return {
+                status: 400,
+                body: {
+                    message: "Invalid direction (expected 'forward' or 'reverse')"
+                }
+            }
+        }
+
+        const target = findTarget(table, column);
+        if (!target) {
+            return {
+                status: 400,
+                body: {
+                    message: "Unknown migration target (table/column not in allowlist)"
+                }
+            }
+        }
+
+        const adminSupabase = createAdminSupabase();
+        const batch = await migrateBatch(adminSupabase, target, direction, limit);
+
+        if (batch.failed > 0) {
+            console.error(`Pockethost migration ${direction} ${table}.${column} batch: ${batch.failed} failed`, batch.errors);
+        }
+
+        return {
+            status: batch.failed > 0 ? 207 : 200,
+            body: {
+                message: batch.failed > 0
+                    ? `Batch partially failed (${batch.updated} updated, ${batch.failed} failed)`
+                    : `Batch processed (${batch.updated} updated)`,
+                batch
+            }
         }
     }
 }
