@@ -1,20 +1,17 @@
 import {redirect} from '@sveltejs/kit';
-import PocketBase from 'pocketbase';
 import crypto from 'crypto';
 import {
-    PRIVATE_POCKETBASE_EMAIL,
-    PRIVATE_POCKETBASE_PSW,
     PRIVATE_RESEND_API_KEY,
     PRIVATE_RESEND_AUDIENCE_ID
 } from '$env/static/private';
 import {
     PUBLIC_PROFILE_ICON_RESIZE_WIDTH,
-    PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH,
-    PUBLIC_POCKETBASE_URL
+    PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH
 } from "$env/static/public";
 import sharp from 'sharp';
 import {Resend} from "resend";
 import { safeExternalUrl } from '$lib/utils/images.js';
+import {buildFileUrl, createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "$lib/server/pocketbase.js";
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 
@@ -23,32 +20,31 @@ const uploadImage = async (image, user_id, old_url) => {
     // Random image name (unpredictable)
     const newImageName = `${crypto.randomUUID()}.webp`;
 
-    // Admin Pocketbase client
-    const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-    await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
+    // Admin Pocketbase client (superuser auth, PocketBase >= 0.23)
+    const pb = await createSuperuserClient();
+    try {
+        // Create image file for FormData
+        const file = new File([image], newImageName, {type: 'image/webp', lastModified: Date.now()});
 
-    // Create image file for FormData
-    const file = new File([image], newImageName, {type: 'image/webp', lastModified: Date.now()});
+        // Create FormData
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('user_id', user_id);
 
-    // Create FormData
-    const formData = new FormData();
-    formData.append('image', file);
-    formData.append('user_id', user_id);
+        // Upload image
+        const createdRecord = await pb.collection('profiles_media').create(formData);
 
-    // Upload image
-    const createdRecord = await pb.collection('profiles_media').create(formData);
+        // If found, delete old image (best-effort: never fail the upload)
+        const oldRecordId = extractRecordIdFromFileUrl(old_url);
+        if (oldRecordId) {
+            await deleteFileRecordBestEffort(pb, 'profiles_media', oldRecordId);
+        }
 
-    // If found, delete old image
-    if (old_url && old_url !== '' && old_url.startsWith(PUBLIC_POCKETBASE_URL)) {
-        const old_url_parts = old_url.split('/');
-        const old_url_id = old_url_parts[old_url_parts.length - 2];
-        await pb.collection('profiles_media').delete(old_url_id);
+        return buildFileUrl(pb, createdRecord, createdRecord.image);
+    } finally {
+        // Close session
+        pb.authStore.clear();
     }
-
-    // Close session
-    pb.authStore.clear();
-
-    return PUBLIC_POCKETBASE_URL + '/api/files/' + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
 }
 
 export const load = async ({locals: {supabase, getSession}}) => {

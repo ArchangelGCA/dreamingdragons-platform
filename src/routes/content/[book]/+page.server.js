@@ -1,8 +1,7 @@
 import { error as errorx, redirect } from '@sveltejs/kit';
-import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW, ORIGIN } from '$env/static/private';
-import { PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from "$env/static/public";
-import PocketBase from "pocketbase";
+import { ORIGIN } from '$env/static/private';
 import { extractId, isValidUrlParam, getCanonicalUrl } from '$lib/utils/slugs.js';
+import {createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "$lib/server/pocketbase.js";
 
 export const load = async ({ params, url, locals: { supabase, getSession, image_proxy } }) => {
     const { session } = await getSession();
@@ -392,12 +391,16 @@ export const actions = {
         }
 
         const cover_url = book[0].cover_url;
-        const cover_url_path = cover_url.substring(PUBLIC_POCKETBASE_URL_IMG_API.length);
-        const cover_id = cover_url_path.split('/')[1];
+        const cover_id = extractRecordIdFromFileUrl(cover_url);
 
-        const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-        await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
-        await pb.collection('media').delete(cover_id);
+        if (cover_id) {
+            const pb = await createSuperuserClient();
+            try {
+                await deleteFileRecordBestEffort(pb, 'media', cover_id);
+            } finally {
+                pb.authStore.clear();
+            }
+        }
 
         const { error } = await supabase
             .from('book')

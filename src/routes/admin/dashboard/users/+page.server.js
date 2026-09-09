@@ -1,9 +1,9 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_POCKETBASE_URL } from '$env/static/public';
-import { SUPABASE_SECRET_KEY, PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { SUPABASE_SECRET_KEY } from '$env/static/private';
 import { createClient } from '@supabase/supabase-js';
 import {error as errorx} from '@sveltejs/kit';
-import PocketBase from "pocketbase";
 import {isAdmin} from "$lib/utils/misc.js";
+import {createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "$lib/server/pocketbase.js";
 
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();
@@ -274,14 +274,15 @@ export const actions = {
         }
 
         if (userAvatar.avatar_url) {
-            const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-            await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
-
-            const old_url_parts = userAvatar.avatar_url.split('/');
-            const old_url_id = old_url_parts[old_url_parts.length - 2];
-            await pb.collection('profiles_media').delete(old_url_id);
-
-            pb.authStore.clear();
+            const old_url_id = extractRecordIdFromFileUrl(userAvatar.avatar_url);
+            if (old_url_id) {
+                const pb = await createSuperuserClient();
+                try {
+                    await deleteFileRecordBestEffort(pb, 'profiles_media', old_url_id);
+                } finally {
+                    pb.authStore.clear();
+                }
+            }
         }
 
         const { data: user, error: userError } = await adminSupabase
@@ -351,14 +352,15 @@ export const actions = {
         }
 
         if (userCover.cover_url) {
-            const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-            await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
-
-            const old_url_parts = userCover.cover_url.split('/');
-            const old_url_id = old_url_parts[old_url_parts.length - 2];
-            await pb.collection('profiles_media').delete(old_url_id);
-
-            pb.authStore.clear();
+            const old_url_id = extractRecordIdFromFileUrl(userCover.cover_url);
+            if (old_url_id) {
+                const pb = await createSuperuserClient();
+                try {
+                    await deleteFileRecordBestEffort(pb, 'profiles_media', old_url_id);
+                } finally {
+                    pb.authStore.clear();
+                }
+            }
         }
 
         const {data: user, error: userError} = await adminSupabase

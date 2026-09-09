@@ -35,7 +35,7 @@ DreamingDragons is the official community platform of the DreamingDragons projec
 ## Capabilities and Constraints
 
 - Auth and data via Supabase (server + browser clients, SSR cookie session validation).
-- PocketBase is pinned at an older version: DO NOT update — there are critical breaking changes and the server cannot be upgraded currently.
+- PocketBase (server >= 0.23, JS SDK 0.28.x) for image/file storage via the `_superusers` system auth collection; all superuser access goes through `src/lib/server/pocketbase.js`.
 - Tailored image proxy pipeline for covers/avatars (srcset, lazyloading, sharp).
 - Svelte 5 runes mode throughout; curated custom components (tooltips, toast, masonry) instead of generic UI libraries.
 - Terminology users expect: "tale" (book), "chapter", "Following", "Favourites", "galleries", "TOS", "privacy policy".

@@ -1,8 +1,8 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_POCKETBASE_URL_IMG_API, PUBLIC_POCKETBASE_URL } from '$env/static/public';
-import { SUPABASE_SECRET_KEY, PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL, PUBLIC_POCKETBASE_URL_IMG_API } from '$env/static/public';
+import { SUPABASE_SECRET_KEY } from '$env/static/private';
 import {createClient} from "@supabase/supabase-js";
-import PocketBase from "pocketbase";
 import {isAdmin} from "$lib/utils/misc.js";
+import {buildFileUrl, createSuperuserClient} from "$lib/server/pocketbase.js";
 
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();
@@ -33,9 +33,8 @@ export const actions = {
             }
         });
 
-        const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-        await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
-
+        const pb = await createSuperuserClient();
+        try {
         // Get all profiles
         const {data: profiles, error: profilesError} = await supabase
             .from('profiles')
@@ -81,7 +80,7 @@ export const actions = {
                 formData.append('user_id', profile.id);
 
                 const createdRecord = await pb.collection('profiles_media').create(formData);
-                const finalUrl = PUBLIC_POCKETBASE_URL_IMG_API + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
+                const finalUrl = buildFileUrl(pb, createdRecord, createdRecord.image);
 
                 // Update the avatar_url in profiles
                 const {error: updateError} = await adminSupabase
@@ -111,6 +110,9 @@ export const actions = {
                 message: "Avatars migrated successfully"
             }
         }
+        } finally {
+            pb.authStore.clear();
+        }
     },
     migrate_covers: async ({request, locals: {supabase, getSession}}) => {
         const {session} = await getSession();
@@ -127,9 +129,8 @@ export const actions = {
             }
         });
 
-        const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-        await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
-
+        const pb = await createSuperuserClient();
+        try {
         // Get all profiles
         const {data: profiles, error: profilesError} = await supabase
             .from('profiles')
@@ -173,7 +174,7 @@ export const actions = {
                 formData.append('user_id', profile.id);
 
                 const createdRecord = await pb.collection('profiles_media').create(formData);
-                const finalUrl = PUBLIC_POCKETBASE_URL_IMG_API + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
+                const finalUrl = buildFileUrl(pb, createdRecord, createdRecord.image);
 
                 // Update the cover_url in profiles
                 const {error: updateError} = await adminSupabase
@@ -202,6 +203,9 @@ export const actions = {
             body: {
                 message: "Covers migrated successfully"
             }
+        }
+        } finally {
+            pb.authStore.clear();
         }
     }
 }

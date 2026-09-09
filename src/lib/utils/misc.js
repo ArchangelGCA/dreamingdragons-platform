@@ -1,9 +1,8 @@
 import {error as errorx} from "@sveltejs/kit";
 import sharp from "sharp";
-import PocketBase from "pocketbase";
 import crypto from "crypto";
-import {PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW} from '$env/static/private';
-import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_RESIZE, PUBLIC_POCKETBASE_URL } from "$env/static/public";
+import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_RESIZE } from "$env/static/public";
+import {buildFileUrl, createSuperuserClient, deleteFileRecordBestEffort} from "$lib/server/pocketbase.js";
 
 export async function isAdmin(session, supabase) {
     if (!session) {
@@ -76,26 +75,22 @@ export const uploadImage = async (image, cover_id = null) => {
     // Assign to image a random name (unpredictable, collision-resistant)
     const newImageName = `${crypto.randomUUID()}.webp`;
 
-    const pb = new PocketBase(PUBLIC_POCKETBASE_URL);
-    await pb.admins.authWithPassword(PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW);
+    const pb = await createSuperuserClient();
+    try {
+        const file = new File([buffer], newImageName, { type: 'image/webp', lastModified: Date.now() });
 
-    const file = new File([buffer], newImageName, { type: 'image/webp', lastModified: Date.now() });
+        const formData = new FormData();
+        formData.append('image', file);
 
-    const formData = new FormData();
-    formData.append('image', file);
+        const createdRecord = await pb.collection('media').create(formData);
 
-    const createdRecord = await pb.collection('media').create(formData);
-
-    // delete old image cover_id (only when it looks like a PB record id)
-    if (cover_id && /^[A-Za-z0-9_-]{1,64}$/.test(String(cover_id))) {
-        try {
-            await pb.collection('media').delete(cover_id);
-        } catch {
-            // Best-effort cleanup; do not fail upload if old file is gone.
+        // delete old image cover_id (only when it looks like a PB record id)
+        if (cover_id && /^[A-Za-z0-9_-]{1,64}$/.test(String(cover_id))) {
+            await deleteFileRecordBestEffort(pb, 'media', String(cover_id));
         }
+
+        return buildFileUrl(pb, createdRecord, createdRecord.image);
+    } finally {
+        pb.authStore.clear();
     }
-
-    pb.authStore.clear();
-
-    return PUBLIC_POCKETBASE_URL + '/api/files/' + createdRecord.collectionId + '/' + createdRecord.id + '/' + createdRecord.image;
 }

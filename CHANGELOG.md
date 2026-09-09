@@ -5,6 +5,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-09-09
+
+### Changed
+
+- **PocketBase upgraded: JS SDK 0.21.5 → 0.28.1 (server must be >= 0.23).**
+  The old `pb.admins.authWithPassword(...)` service was soft-deprecated in
+  SDK 0.22 (admins became the `_superusers` system auth collection on
+  server 0.23) — all 8 call sites now auth via
+  `pb.collection('_superusers').authWithPassword(...)`.
+- **New central helper `src/lib/server/pocketbase.js`** (server-only, so
+  secrets can't leak into the client bundle): `createSuperuserClient()`,
+  `withSuperuserClient()`, `buildFileUrl()` (uses `pb.files.getURL()`
+  instead of manual `PUBLIC_POCKETBASE_URL + '/api/files/' + ...` concat),
+  `extractRecordIdFromFileUrl()` (robust `/api/files/{coll}/{id}/{file}`
+  parsing — replaces fragile `substring`/`split('/')` index math) and
+  `deleteFileRecordBestEffort()` (never throws, so book deletes / avatar
+  resets / uploads no longer fail when the old file is already gone).
+  Migrated: `src/lib/utils/misc.js` (`uploadImage`), `settings/+page.server.js`,
+  `content/[book]/+page.server.js` (`delete_book`),
+  `admin/dashboard/content/+page.server.js`,
+  `admin/dashboard/users/+page.server.js` (`reset_avatar`, `reset_cover`),
+  `admin/dashboard/migrations/+page.server.js` (both migrations).
+  Auth store is now always cleared in `finally` blocks.
+- **Dependencies: everything else already latest — `bun outdated` is clean.**
+  `PRODUCT.md` pin note ("DO NOT update PocketBase") removed.
+
+### Verified
+
+- `bun install` → clean (`pocketbase@0.28.1`, lockfile saved).
+- `bun outdated` → empty, zero outdated packages.
+- `bun --bun run build` → succeeds (client + SSR + `@sveltejs/adapter-vercel`).
+- SDK surface check: `collection('_superusers').authWithPassword`,
+  `files.getURL`, `authStore.clear` all present in 0.28.1; `getURL` output
+  matches the old manual URL shape.
+- `extractRecordIdFromFileUrl` unit check → 9/9 pass (valid ids, Supabase /
+  external URLs, empty/null, malicious ids rejected).
+- Built SSR output contains the `_superusers` + `getURL` path; zero
+  `admins.authWithPassword` matches in `src` or build output.
+
 ## [0.10.0] - 2026-09-09
 
 ### Changed
