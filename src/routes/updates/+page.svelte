@@ -21,11 +21,11 @@
         <div class="col-md-12">
             <h1 class="text-center mb-4 bg-animated-gradient py-2 rounded-4">🚀 Website Updates</h1>
             <p class="text-center mb-4">DreamingDragons Tales Platform Updates</p>
-            {#each updates as update}
+            {#each updates as update (update.id)}
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title"><i class="fas fa-pencil"></i> {formatDate(update.created_at)} <span class="text-muted text-sm">{formatTime(update.created_at)}</span></h5>
-                        <p class="card-text text-secondary-emphasis">{@html update.content}</p>
+                        <div class="card-text text-secondary-emphasis">{@html update.content}</div>
                     </div>
                 </div>
             {/each}

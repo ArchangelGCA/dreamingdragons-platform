@@ -1,3 +1,5 @@
+import {error as errorx} from '@sveltejs/kit';
+
 export const load = async ( { locals: { supabase } }) => {
     const { data: updates, error } = await supabase
         .from('website_updates')

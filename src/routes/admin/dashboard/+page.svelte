@@ -93,7 +93,7 @@
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg-2">
         <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple">
             <div class="card-body text-center p-3 d-flex flex-column justify-content-center">
                 <i class="fas fa-right-left fa-2x mb-2 text-warning" aria-hidden="true"></i>
@@ -102,12 +102,21 @@
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
+    <div class="col-6 col-lg-2">
         <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple">
             <div class="card-body text-center p-3 d-flex flex-column justify-content-center">
                 <i class="fas fa-envelope fa-2x mb-2 text-info" aria-hidden="true"></i>
                 <h3 class="h6">Newsletter</h3>
                 <a href="/admin/dashboard/newsletter" class="btn btn-sm btn-purple mt-1">Open</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple">
+            <div class="card-body text-center p-3 d-flex flex-column justify-content-center">
+                <i class="fas fa-bullhorn fa-2x mb-2" aria-hidden="true"></i>
+                <h3 class="h6">Updates</h3>
+                <a href="/admin/dashboard/updates" class="btn btn-sm btn-purple mt-1">Open</a>
             </div>
         </div>
     </div>

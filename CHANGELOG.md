@@ -5,6 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] - 2026-09-10
+
+### Added
+
+- **Admin Updates publisher** (`/admin/dashboard/updates`): publishing to the
+  public `/updates` page no longer requires the Supabase dashboard. Paste one
+  version block from `CHANGELOG.md` and it is parsed live — `## [x.y.z] - date`
+  header, `### Section` groups, (nested) `-` bullets with wrapped continuations,
+  `**bold**`, `` `code` `` and `[label](https://…)` links — into the HTML stored
+  in `website_updates`, with per-section include/exclude chips (internal
+  `Verified` notes excluded by default), an optional version heading, a
+  hand-editable HTML step (auto-regenerates from the paste, "modified" marker +
+  one-click regenerate) and a sticky live preview styled exactly like the public
+  page. Raw-HTML mode carries over whatever the composer currently holds, and
+  the history list (latest 15) supports in-place edit and delete via the shared
+  `AdminDialog`. New pure helper `src/lib/utils/changelog.js`; writes go through
+  the service-role client after the `isAdmin` gate, with a best-effort
+  active-content scrub on hand-written HTML. Nav link under System, plus a new
+  dashboard card.
+- **Stored update styling:** `.update-version` / `.update-section` global rules
+  so published entries get a proper version heading and small-caps section
+  labels on `/updates`.
+
+### Changed
+
+- **Dependencies:** `vite` 8.2.2 → 8.3.0 (`bun outdated` clean again).
+
+### Fixed
+
+- **`/updates` error path crashed**: `errorx` was called without ever being
+  imported — a fetch error would have thrown `ReferenceError` instead of the
+  intended 500.
+- **Invalid HTML nesting on `/updates`:** update content now renders in a
+  `<div class="card-text">` instead of `<p>`, so generated block markup
+  (`<ul>`, headings) is valid HTML. Keyed the updates `{#each}` block.
+
+### Verified
+
+- Parser unit-checked with Bun against the real `CHANGELOG.md` blocks
+  (`0.16.0` sections/counts/inline markup, legacy `0.6.3` headerless
+  free-bullet block, CRLF, nested bullets, `javascript:` link rejection):
+  28/28 assertions pass.
+- `svelte-autofixer` on all touched components → zero issues beyond the
+  documented pre-existing patterns (admin-controlled `{@html}`, plain `href`
+  without `resolve()` on admin cards).
+- `bun --bun run build` → succeeds (client + SSR + `@sveltejs/adapter-vercel`;
+  only the known sharp/resend optional-dep warnings).
+- `bun outdated` → clean, zero outdated packages.
+- SSR smoke: `/updates` → 200 with the new markup; `/admin/dashboard/updates`
+  → 401 unauthenticated (admin guard intact).
+
 ## [0.16.0] - 2026-09-10
 
 ### Added

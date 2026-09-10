@@ -19,6 +19,7 @@
             links: [
                 { href: '/admin/dashboard/migrations', icon: 'fa-right-left', label: 'Migrations' },
                 { href: '/admin/dashboard/newsletter', icon: 'fa-envelope', label: 'Newsletter' },
+                { href: '/admin/dashboard/updates', icon: 'fa-bullhorn', label: 'Updates' },
             ]
         }
     ];
