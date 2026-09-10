@@ -5,6 +5,59 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - 2026-09-10
+
+### Added
+
+- **Per-user theme picker: Dragon's Deep (default) vs Royal Vault (legacy).**
+  New Appearance section in Settings: two title-only radio-cards with
+  palette swatches, instant apply, `Active` badge. The choice is stored
+  on-device (`dd-theme` cookie + localStorage, no account needed) and
+  paints before first frame via pre-paint script + SSR `transformPageChunk`.
+  Future palettes only need a `THEMES` entry
+  (`src/lib/utils/theme.js`) + one `html[data-theme="<id>"]` block.
+- **Profile refresh:** stats bar rebuilt as a themed plate (Bootstrap grey
+  `bg-light-subtle` removed; aqua followers, gold likes, muted date,
+  tabular numerals, theme-primary Follow button) and Home/Favourites/
+  Galleries rebuilt as a segmented control (pill track, transparent
+  segments, aqua underline-glow active tab, proper tablist semantics).
+
+### Changed
+
+- **Theme engine:** every themed color in `src` now resolves through CSS
+  variables (`html[data-theme]` overrides; RGB triplets for alpha
+  variants; `var()` strings for JS-set tooltip/toast/Auth-UI colors), so
+  both palettes render from one structure. Legacy vault keeps its soul
+  (hue-273 spine, magenta links, ember→magenta heat) under the current
+  calm-surface rules. Pre-paint inline script + SSR `transformPageChunk`
+  in `hooks.server.js` apply the saved palette before first paint (no
+  flash); `theme-color` meta follows the active ground.
+
+### Fixed
+
+- **Dropdown Register button unreadable in Dragon's Deep.** The solid teal
+  fill never painted: the base `.dropdown-item { background-color:
+  transparent }` tied `.register-button` on specificity and won by source
+  order, leaving near-black ink on the dark menu. Both variant rules are
+  now compound selectors (`.dropdown-item.upload-button` /
+  `.dropdown-item.register-button`, also fixing the same latent issue on
+  the logged-in Upload entry) with an explicit bright hover fill.
+
+### Verified
+
+- `bun --bun run build` → succeeds (client + SSR + `@sveltejs/adapter-vercel`).
+- `bun outdated` → clean, zero outdated packages.
+- `svelte-autofixer` on touched components → zero new issues
+  (pre-existing/systemic only).
+- Impeccable `detect` → advisories only, reviewed (vault legacy colors
+  now documented in `DESIGN.md` + sidecar; rest pre-existing).
+- Real-browser check (desktop + 390px mobile): deep default SSR paints
+  `data-theme="deep"`; vault switch flips ground/buttons/links/heat/tooltips;
+  Settings picker applies + persists via cookie (guest); profile stats +
+  segmented tabs verified in both themes; `/`, `/settings`, `/faq`,
+  `/search`, `/updates`, profile, content pages — zero console errors,
+  zero old-palette computed colors, no mobile overflow.
+
 ## [0.15.0] - 2026-09-10
 
 ### Changed

@@ -60,9 +60,9 @@
     }
 
     .popular-glow-wrapper.is-popular {
-        --glow-color-1: rgba(255, 201, 77, 0.4);
-        --glow-color-2: rgba(255, 201, 77, 0.3);
-        --glow-color-3: rgba(255, 216, 138, 0.25);
+        --glow-color-1: rgba(var(--dd-gold-rgb), 0.4);
+        --glow-color-2: rgba(var(--dd-gold-rgb), 0.3);
+        --glow-color-3: rgba(var(--dd-goldsoft-rgb), 0.25);
     }
 
     /*

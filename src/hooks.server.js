@@ -32,5 +32,12 @@ export const handle = async ({event, resolve}) => {
         filterSerializedResponseHeaders(name) {
             return name === 'content-range' || name === 'x-supabase-api-version'
         },
+        // SSR theme: paint the cookie-saved palette (deep default, vault
+        // legacy) on <html> so server HTML matches the client's first frame.
+        transformPageChunk: ({ html }) => {
+            const theme = event.cookies.get('dd-theme');
+            const valid = theme === 'vault' ? 'vault' : 'deep';
+            return html.replace('<html', `<html data-theme="${valid}"`);
+        },
     })
 }

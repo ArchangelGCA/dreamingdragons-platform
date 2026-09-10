@@ -88,17 +88,17 @@
     .container-fluid {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #04090f !important;
-        border: 1px solid #1c3350;
-        color: #f0f8ff;
+            var(--dd-abyss) !important;
+        border: 1px solid var(--dd-edge);
+        color: var(--text-color);
     }
 
     .container-fluid :global(a) {
-        color: #20dde0;
+        color: var(--dd-accent-bright);
     }
 
     .container-fluid :global(a:hover) {
-        color: #8ff7f8;
+        color: var(--dd-accent-hover);
     }
 
     * {
@@ -108,7 +108,7 @@
     }
 
     p {
-        color: #cce0e5;
+        color: var(--text-secondary);
         font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: normal;
@@ -118,7 +118,7 @@
     }
 
     h2 {
-        color: #f0f8ff;
+        color: var(--text-color);
         font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: bold;
@@ -127,7 +127,7 @@
     }
 
     h1 {
-        color: #f0f8ff;
+        color: var(--text-color);
         font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: bold;
@@ -147,7 +147,7 @@
     li > *:first-child:before {
         counter-increment: item;
         content: counter(item, decimal) ". ";
-        color: #f0f8ff;
+        color: var(--text-color);
         font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: bold;

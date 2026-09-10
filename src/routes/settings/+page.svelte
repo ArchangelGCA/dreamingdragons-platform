@@ -6,12 +6,14 @@
     import {invalidateAll} from "$app/navigation";
     import {onMount} from "svelte";
     import {browser} from "$app/environment";
-
+    import {THEMES, applyTheme, getStoredTheme, isValidTheme} from "$lib/utils/theme.js";
     let analyticsEnabled = $state();
+    let selectedTheme = $state('deep');
 
     onMount(() => {
         if (browser) {
             analyticsEnabled = window.localStorage.getItem('analyticsEnabled') === 'true';
+            selectedTheme = getStoredTheme();
         }
     });
 
@@ -52,9 +54,9 @@
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
-                        '--toastBackground': '#004a5a',
-                        '--toastColor': '#f0f8ff',
-                        '--toastProgressBackground': '#00a594',
+                        '--toastBackground': 'var(--dd-deep-2)',
+                        '--toastColor': 'var(--text-color)',
+                        '--toastProgressBackground': 'var(--dd-accent)',
                     }
                 });
                 await invalidateAll();
@@ -102,6 +104,11 @@
         }
     }
 
+    async function handleThemeSelect(id) {
+        if (!isValidTheme(id)) return;
+        selectedTheme = applyTheme(id);
+    }
+
     async function handleNewsletter(e) {
         e.preventDefault();
         if (isActiveNewsletter) return;
@@ -120,9 +127,9 @@
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
-                        '--toastBackground': '#004a5a',
-                        '--toastColor': '#f0f8ff',
-                        '--toastProgressBackground': '#00a594',
+                        '--toastBackground': 'var(--dd-deep-2)',
+                        '--toastColor': 'var(--text-color)',
+                        '--toastProgressBackground': 'var(--dd-accent)',
                     }
                 });
             } else {
@@ -166,9 +173,9 @@
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
-                        '--toastBackground': '#004a5a',
-                        '--toastColor': '#f0f8ff',
-                        '--toastProgressBackground': '#00a594',
+                        '--toastBackground': 'var(--dd-deep-2)',
+                        '--toastColor': 'var(--text-color)',
+                        '--toastProgressBackground': 'var(--dd-accent)',
                     }
                 });
             } else {
@@ -215,9 +222,9 @@
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
-                        '--toastBackground': '#004a5a',
-                        '--toastColor': '#f0f8ff',
-                        '--toastProgressBackground': '#00a594',
+                        '--toastBackground': 'var(--dd-deep-2)',
+                        '--toastColor': 'var(--text-color)',
+                        '--toastProgressBackground': 'var(--dd-accent)',
                     }
                 });
                 password = '';
@@ -385,6 +392,38 @@
             </div>
         </div>
     {/if}
+    <!-- Appearance -->
+    <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
+        <div class="col-12">
+            <p class="h4 fw-bold mb-0">Appearance</p>
+            <p class="text-muted">Pick your palette — applies instantly on this device</p>
+        </div>
+        <div class="col-12 mt-2">
+            <div class="row g-3" role="radiogroup" aria-label="Color theme">
+                {#each THEMES as theme (theme.id)}
+                    <div class="col-12 col-md-6">
+                        <button type="button" role="radio" aria-checked={selectedTheme === theme.id}
+                                class="theme-card w-100 text-start p-3 rounded-4 {selectedTheme === theme.id ? 'selected' : ''}"
+                                onclick={() => handleThemeSelect(theme.id)}>
+                            <span class="d-flex align-items-center gap-2 mb-1">
+                                <span class="theme-dots" aria-hidden="true">
+                                    {#if theme.id === 'deep'}
+                                        <i style="background: #000000; border-color: rgba(255,255,255,0.25)"></i><i style="background: #00a594"></i><i style="background: #ffc94d"></i>
+                                    {:else}
+                                        <i style="background: #0a0610; border-color: rgba(255,255,255,0.25)"></i><i style="background: #5c00a6"></i><i style="background: #ff2bd6"></i>
+                                    {/if}
+                                </span>
+                                <span class="fw-bold">{theme.name}</span>
+                                {#if selectedTheme === theme.id}
+                                    <span class="badge rounded-pill theme-active-badge ms-auto">Active</span>
+                                {/if}
+                            </span>
+                        </button>
+                    </div>
+                {/each}
+            </div>
+        </div>
+    </div>
     <!-- Privacy Settings -->
     <div class="row mt-4 border border-light border-opacity-10 bg-black bg-opacity-10 rounded-4 p-3 py-4 mt-3">
         <div class="col-12">
@@ -473,98 +512,138 @@
 
 <style>
 
+    .theme-card {
+        background: var(--dd-surface);
+        border: 1px solid var(--dd-edge);
+        color: var(--text-color);
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
+    }
+
+    .theme-card:hover {
+        border-color: rgba(var(--dd-bright-rgb), 0.5);
+        transform: translateY(-1px);
+    }
+
+    .theme-card.selected {
+        border-color: var(--dd-accent);
+        box-shadow: 0 0 0.6rem 0.1rem rgba(var(--dd-bright-rgb), 0.3);
+    }
+
+    .theme-card:focus-visible {
+        outline: 2px solid var(--dd-accent-bright);
+        outline-offset: 2px;
+    }
+
+    .theme-dots {
+        display: inline-flex;
+        gap: 4px;
+    }
+
+    .theme-dots i {
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+        border: 1px solid rgba(0, 0, 0, 0.4);
+        display: inline-block;
+    }
+
+    .theme-active-badge {
+        background: var(--dd-accent);
+        color: var(--dd-accent-ink);
+    }
+
     .btn-purple {
         background-color: var(--primary-color);
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .btn-purple:hover {
-        background-color: #00a594;
-        color: #02120f;
+        background-color: var(--dd-accent);
+        color: var(--dd-accent-ink);
     }
 
     .btn-logout {
-        background-color: rgba(0, 165, 148, 0.28);
-        border: 1px solid rgba(32, 221, 224, 0.4);
+        background-color: rgba(var(--dd-accent-rgb), 0.28);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.4);
     }
 
     .btn-logout:hover {
-        background-color: rgba(0, 165, 148, 0.4);
-        border: 1px solid rgba(32, 221, 224, 0.6);
-        color: #f0f8ff;
+        background-color: rgba(var(--dd-accent-rgb), 0.4);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.6);
+        color: var(--text-color);
     }
 
     .btn-logout:focus {
-        box-shadow: 0 0 0 0.08rem rgba(32, 221, 224, 0.4);
+        box-shadow: 0 0 0 0.08rem rgba(var(--dd-bright-rgb), 0.4);
     }
 
     /*
     .bg-animated-gradient {
-        background-color: #0f2c4b;
+        background-color: var(--dd-deep-1);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 
     .accordion-button {
-        background-color: rgba(0, 165, 148, 0.28);
-        border: 1px solid rgba(32, 221, 224, 0.5);
-        color: #f0f8ff;
+        background-color: rgba(var(--dd-accent-rgb), 0.28);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.5);
+        color: var(--text-color);
     }
 
     .accordion-button:not(.collapsed) {
-        background-color: rgba(0, 165, 148, 0.4) !important;
+        background-color: rgba(var(--dd-accent-rgb), 0.4) !important;
     }
 
     .accordion-button:focus {
-        box-shadow: 0 0 0 0.25rem rgba(0, 165, 148, 0.35);
+        box-shadow: 0 0 0 0.25rem rgba(var(--dd-accent-rgb), 0.35);
     }
 
     .accordion-collapse {
-        background-color: rgba(0, 165, 148, 0.12);
+        background-color: rgba(var(--dd-accent-rgb), 0.12);
     }
 
     .form-check-label {
-        color: #f0f8ff;
+        color: var(--text-color);
     }
     */
 
     .form-control {
-        background-color: rgba(0, 165, 148, 0.12);
-        border: 1px solid rgba(32, 221, 224, 0.4);
-        color: #f0f8ff;
+        background-color: rgba(var(--dd-accent-rgb), 0.12);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.4);
+        color: var(--text-color);
     }
 
     .form-control:focus {
-        background-color: rgba(0, 165, 148, 0.18);
-        border: 1px solid rgba(32, 221, 224, 0.6);
-        box-shadow: 0 0 0 0.08rem rgba(32, 221, 224, 0.4);
-        color: #f0f8ff;
+        background-color: rgba(var(--dd-accent-rgb), 0.18);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.6);
+        box-shadow: 0 0 0 0.08rem rgba(var(--dd-bright-rgb), 0.4);
+        color: var(--text-color);
     }
 
     .form-control:disabled {
-        background-color: rgba(0, 165, 148, 0.12);
-        border: 1px solid rgba(32, 221, 224, 0.4);
-        color: #8ba3b0;
+        background-color: rgba(var(--dd-accent-rgb), 0.12);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.4);
+        color: var(--text-muted);
     }
 
     .form-check-input {
-        background-color: rgba(0, 165, 148, 0.12);
-        border: 1px solid #00a594;
-        color: #f0f8ff;
+        background-color: rgba(var(--dd-accent-rgb), 0.12);
+        border: 1px solid var(--dd-accent);
+        color: var(--text-color);
     }
 
     .form-check-input:focus {
-        box-shadow: 0 0 0 0.08rem rgba(32, 221, 224, 0.4);
+        box-shadow: 0 0 0 0.08rem rgba(var(--dd-bright-rgb), 0.4);
     }
 
     .form-check-input:checked {
-        background-color: #00a594;
-        border: 1px solid rgba(32, 221, 224, 0.6);
-        color: #02120f;
+        background-color: var(--dd-accent);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.6);
+        color: var(--dd-accent-ink);
     }
 
     .form-check-input:disabled {
-        background-color: rgba(0, 165, 148, 0.12);
-        border: 1px solid rgba(32, 221, 224, 0.4);
-        color: #8ba3b0;
+        background-color: rgba(var(--dd-accent-rgb), 0.12);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.4);
+        color: var(--text-muted);
     }
 </style>

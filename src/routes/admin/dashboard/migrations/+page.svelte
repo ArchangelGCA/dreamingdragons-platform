@@ -584,11 +584,11 @@
 
 <style>
     .progress {
-        background-color: #06121e;
+        background-color: var(--dd-track);
     }
 
     .progress-bar {
-        background-color: #00a594;
+        background-color: var(--dd-accent);
     }
 
     .migration-log {

@@ -200,7 +200,7 @@
                     toast.push('Error: ' + errorMessage, {
                         theme: {
                             '--toastBackground': '#ff4d4d',
-                            '--toastColor': '#f0f8ff'
+                            '--toastColor': 'var(--text-color)'
                         }
                     });
                 }
@@ -209,14 +209,14 @@
                 toast.push('Error: ' + errorMessage, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             } else {
                 toast.push('Error: Tag suggestions failed', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -277,7 +277,7 @@
                 toast.push('Error: File is not an image', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
                 return;
@@ -300,7 +300,7 @@
             toast.push('Image is not too big', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             return;
@@ -309,7 +309,7 @@
             toast.push('Already compressing image, please wait...', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             return;
@@ -323,7 +323,7 @@
             toast.push('Failed to get token', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             isCompressing = false;
@@ -335,7 +335,7 @@
             toast.push('Error: No image selected', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             isCompressing = false;
@@ -379,7 +379,7 @@
                 toast.push(errorMessage, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
                 isCompressing = false;
@@ -409,14 +409,14 @@
                 toast.push('Image compressed successfully', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             } else {
                 toast.push('Failed to compress image: Image is still too big', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -429,7 +429,7 @@
             toast.push('Failed to compress image: Network or server error', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             isCompressing = false;
@@ -458,7 +458,7 @@
             toast.push('You must select a Content!', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             return;
@@ -489,7 +489,7 @@
                     toast.push('No previous chapters or tags found... ☹️', {
                         theme: {
                             '--toastBackground': '#ff4d4d',
-                            '--toastColor': '#f0f8ff'
+                            '--toastColor': 'var(--text-color)'
                         }
                     });
                 } else {
@@ -505,14 +505,14 @@
                         toast.push(addedTags + ' Tags added successfully! 🤩', {
                             theme: {
                                 '--toastBackground': '#4caf50',
-                                '--toastColor': '#f0f8ff'
+                                '--toastColor': 'var(--text-color)'
                             }
                         });
                     } else {
                         toast.push('No tags were added... 🤔', {
                             theme: {
                                 '--toastBackground': '#ff4d4d',
-                                '--toastColor': '#f0f8ff'
+                                '--toastColor': 'var(--text-color)'
                             }
                         });
                     }
@@ -522,7 +522,7 @@
                 toast.push('Error: ' + errorMessage, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -531,14 +531,14 @@
             toast.push('Error: ' + errorMessage, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         } else {
             toast.push('Error: Previous chapter tags fetch failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }
@@ -554,7 +554,7 @@
             toast.push('Please wait for the image to finish compressing', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             return;
@@ -575,7 +575,7 @@
             toast.push('Error: No image selected', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             activeUpload = false;
@@ -587,7 +587,7 @@
             toast.push('Error: File is not an image', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             activeUpload = false;
@@ -599,7 +599,7 @@
             toast.push('Error: File is too large', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             activeUpload = false;
@@ -633,7 +633,7 @@
                 toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + bookUrl + '" target="_blank">here</a>.', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
 
@@ -653,7 +653,7 @@
                 toast.push('Error: Unexpected response format', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -664,7 +664,7 @@
             toast.push('Error: ' + errorMessage, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         } else {
@@ -672,7 +672,7 @@
             toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }
@@ -723,7 +723,7 @@
                 toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + chapterUrl + '" target="_blank">here</a>.', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
 
@@ -739,7 +739,7 @@
                 toast.push('Error: Unexpected response format', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -750,7 +750,7 @@
             toast.push('Error: ' + errorMessage, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         } else {
@@ -758,7 +758,7 @@
             toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }
@@ -1306,13 +1306,13 @@
     }
 
     .btn-outline-purple-light:hover {
-        color: #02120f;
-        background-color: #00a594;
-        border-color: #00a594;
+        color: var(--dd-accent-ink);
+        background-color: var(--dd-accent);
+        border-color: var(--dd-accent);
     }
 
     .gradient-text {
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .content-type-selector .content-type-btn {
@@ -1330,25 +1330,25 @@
         border-color: var(--primary-color);
         box-shadow: 0 4px 15px var(--primary-color-alpha-90);
         transform: translateY(-2px);
-        background: #004a5a;
-        color: #f0f8ff;
+        background: var(--dd-deep-2);
+        color: var(--text-color);
     }
 
     .content-type-btn.active {
-        background: #00a594;
-        border-color: #00a594;
-        color: #02120f;
+        background: var(--dd-accent);
+        border-color: var(--dd-accent);
+        color: var(--dd-accent-ink);
         box-shadow: 0 8px 25px var(--primary-color-alpha-90);
     }
 
     .content-type-btn.active .text-muted {
-        color: rgba(2, 18, 15, 0.75) !important;
+        color: rgba(var(--dd-accent-ink-rgb), 0.75) !important;
     }
 
     .content-type-btn:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45);
-        outline: 1px solid rgba(32, 221, 224, 0.4);
+        box-shadow: 0 0 0 0.2rem rgba(var(--dd-accent-rgb),0.45);
+        outline: 1px solid rgba(var(--dd-bright-rgb),0.4);
     }
 
     .content-type-content {
@@ -1369,18 +1369,18 @@
     .progress-bar-custom {
         height: 8px;
         border-radius: 10px;
-        background-color: #06121e;
+        background-color: var(--dd-track);
         overflow: hidden;
         border: 1px solid var(--border-color);
     }
 
     .progress-bar {
-        background: #00a594;
+        background: var(--dd-accent);
         transition: width 0.3s ease;
     }
 
     .bg-gradient-primary {
-        background: #00a594 !important;
+        background: var(--dd-accent) !important;
     }
 
     /* Step Indicators */
@@ -1404,10 +1404,10 @@
     }
 
     .step-indicator.active .step-number {
-        background: #00a594;
-        color: #02120f;
+        background: var(--dd-accent);
+        color: var(--dd-accent-ink);
         box-shadow: 0 4px 12px var(--primary-color-alpha-90);
-        border-color: #00a594;
+        border-color: var(--dd-accent);
     }
 
     .step-label {
@@ -1448,7 +1448,7 @@
     }
 
     .form-select.form-control-modern:focus {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300a594' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e6e6e6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
     }
 
     .form-floating > label {
@@ -1502,7 +1502,7 @@
     }
 
     .upload-placeholder .text-muted {
-        color: #8ba3b0 !important;
+        color: var(--text-muted) !important;
     }
 
     .preview-image {
@@ -1519,8 +1519,8 @@
 
     /* Tags */
     .tag-pill {
-        background: #00a594;
-        color: #02120f;
+        background: var(--dd-accent);
+        color: var(--dd-accent-ink);
         border-radius: 20px;
         padding: 8px 12px;
         margin: 4px;
@@ -1537,7 +1537,7 @@
     }
 
     .tag-remove {
-        background: rgba(2, 18, 15, 0.2);
+        background: rgba(var(--dd-accent-ink-rgb), 0.2);
         border: none;
         border-radius: 50%;
         width: 20px;
@@ -1548,11 +1548,11 @@
         justify-content: center;
         cursor: pointer;
         transition: all 0.2s ease;
-        color: #02120f;
+        color: var(--dd-accent-ink);
     }
 
     .tag-remove:hover {
-        background: rgba(2, 18, 15, 0.3);
+        background: rgba(var(--dd-accent-ink-rgb), 0.3);
         transform: scale(1.1);
     }
 
@@ -1566,16 +1566,16 @@
     }
 
     .suggestion-btn:hover {
-        background: #004a5a;
-        border-color: #004a5a;
-        color: #f0f8ff;
+        background: var(--dd-deep-2);
+        border-color: var(--dd-deep-2);
+        color: var(--text-color);
         transform: translateY(-1px);
     }
 
     .suggestion-btn.selected {
-        background: #00a594;
-        border-color: #00a594;
-        color: #02120f;
+        background: var(--dd-accent);
+        border-color: var(--dd-accent);
+        color: var(--dd-accent-ink);
     }
 
     /* Review Section */
@@ -1649,7 +1649,7 @@
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .submit-btn:hover {
@@ -1666,44 +1666,44 @@
 
     /* Buttons */
     .btn-primary {
-        background: #00a594;
+        background: var(--dd-accent);
         border: none;
-        color: #02120f;
+        color: var(--dd-accent-ink);
         transition: all 0.3s ease;
-        border-color: #00a594;
+        border-color: var(--dd-accent);
     }
 
     .btn-primary:hover,
     .btn-primary:focus {
-        background: #20dde0;
-        box-shadow: 0 4px 15px rgba(32, 221, 224, 0.35);
+        background: var(--dd-accent-bright);
+        box-shadow: 0 4px 15px rgba(var(--dd-bright-rgb),0.35);
         transform: translateY(-2px);
-        color: #02120f;
-        border-color: #20dde0;
+        color: var(--dd-accent-ink);
+        border-color: var(--dd-accent-bright);
     }
 
     .btn-primary:disabled {
-        background: #004a5a;
+        background: var(--dd-deep-2);
         opacity: 0.6;
         transform: none;
         box-shadow: none;
-        border-color: #004a5a;
-        color: #f0f8ff;
+        border-color: var(--dd-deep-2);
+        color: var(--text-color);
     }
 
     .btn-outline-primary {
-        color: #20dde0;
-        border-color: #00a594;
+        color: var(--dd-accent-bright);
+        border-color: var(--dd-accent);
         background: transparent;
         transition: all 0.3s ease;
     }
 
     .btn-outline-primary:hover,
     .btn-outline-primary:focus {
-        background: #00a594;
-        border-color: #00a594;
-        color: #02120f;
-        box-shadow: 0 4px 15px rgba(32, 221, 224, 0.35);
+        background: var(--dd-accent);
+        border-color: var(--dd-accent);
+        color: var(--dd-accent-ink);
+        box-shadow: 0 4px 15px rgba(var(--dd-bright-rgb),0.35);
         transform: translateY(-2px);
     }
 
@@ -1716,21 +1716,21 @@
 
     .btn-outline-secondary:hover,
     .btn-outline-secondary:focus {
-        background: #004a5a;
-        border-color: #004a5a;
-        color: #f0f8ff;
+        background: var(--dd-deep-2);
+        border-color: var(--dd-deep-2);
+        color: var(--text-color);
     }
 
     .btn-warning {
         background: hsl(45, 90%, 45%);
         border-color: hsl(45, 90%, 50%);
-        color: #241a04;
+        color: var(--dd-gold-ink);
     }
 
     .btn-warning:hover {
         background: hsl(45, 90%, 50%);
         box-shadow: 0 4px 15px hsla(45, 90%, 50%, 0.4);
-        color: #241a04;
+        color: var(--dd-gold-ink);
     }
 
     /* Step Navigation */
@@ -1750,8 +1750,8 @@
 
     .editor-container:focus-within {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45);
-        outline: 1px solid rgba(32, 221, 224, 0.4);
+        box-shadow: 0 0 0 0.2rem rgba(var(--dd-accent-rgb),0.45);
+        outline: 1px solid rgba(var(--dd-bright-rgb),0.4);
     }
 
     /* Alert Styles */
@@ -1795,7 +1795,7 @@
 
     /* Text colors */
     .text-muted {
-        color: #8ba3b0 !important;
+        color: var(--text-muted) !important;
     }
 
     .text-success {
@@ -1808,7 +1808,7 @@
 
     /* Small text and links */
     small.text-muted {
-        color: #8ba3b0 !important;
+        color: var(--text-muted) !important;
     }
 
     .alert-link {

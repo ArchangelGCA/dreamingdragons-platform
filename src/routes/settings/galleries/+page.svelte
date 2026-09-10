@@ -145,7 +145,7 @@
                 toast.push('Gallery saved successfully!', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
                 await invalidateAll();
@@ -156,7 +156,7 @@
                 toast.push(result.data?.message || 'Error saving gallery', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -165,7 +165,7 @@
             toast.push('Error saving gallery', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         } finally {
@@ -195,7 +195,7 @@
                 toast.push('Gallery deleted successfully!', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
                 selectGallery(null);
@@ -204,7 +204,7 @@
                 toast.push(result.data?.message || 'Error deleting gallery', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -213,7 +213,7 @@
             toast.push('Error deleting gallery', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }
@@ -227,7 +227,7 @@
             toast.push('Book is already in this gallery', {
                 theme: {
                     '--toastBackground': '#ff9800',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             return;
@@ -251,7 +251,7 @@
                 toast.push('Book added to gallery!', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
                 updateLocalGalleryData(selectedGallery.id);
@@ -259,7 +259,7 @@
                 toast.push(result.data?.message || 'Error adding book to gallery', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -268,7 +268,7 @@
             toast.push('Error adding book to gallery', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         } finally {
@@ -297,7 +297,7 @@
                 toast.push('Book removed from gallery!', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
                 // Update local data
@@ -306,7 +306,7 @@
                 toast.push(result.data?.message || 'Error removing book from gallery', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -315,7 +315,7 @@
             toast.push('Error removing book from gallery', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         } finally {
@@ -767,7 +767,7 @@
 <style>
 
     .galleries-title {
-        color: #f0f8ff;
+        color: var(--text-color);
         font-size: 2.5rem;
         font-weight: 700;
     }
@@ -784,9 +784,9 @@
     }
 
     .btn-primary {
-        background: #00a594 !important;
-        border: 1px solid rgba(32, 221, 224, 0.4) !important;
-        color: #02120f !important;
+        background: var(--dd-accent) !important;
+        border: 1px solid rgba(var(--dd-bright-rgb),0.4) !important;
+        color: var(--dd-accent-ink) !important;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
         font-weight: 600;
         transition: all 0.3s ease;
@@ -794,13 +794,13 @@
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.35);
-        background: #20dde0 !important;
-        color: #02120f !important;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(var(--dd-bright-rgb),0.35);
+        background: var(--dd-accent-bright) !important;
+        color: var(--dd-accent-ink) !important;
     }
 
     .bg-purple {
-        background: #00a594 !important;
+        background: var(--dd-accent) !important;
     }
 
     .bg-success {
@@ -850,9 +850,9 @@
     }
 
     .gallery-card.active {
-        background: #0e1c2e !important;
+        background: var(--dd-surface-2) !important;
         border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 2px rgba(32, 221, 224, 0.35) !important;
+        box-shadow: 0 0 0 2px rgba(var(--dd-bright-rgb),0.35) !important;
         transform: translateY(-2px);
     }
 
@@ -922,8 +922,8 @@
     .form-control:focus {
         background: hsla(var(--primary-hue), 15%, 15%, 0.9) !important;
         border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45) !important;
-        outline: 1px solid rgba(32, 221, 224, 0.4);
+        box-shadow: 0 0 0 0.2rem rgba(var(--dd-accent-rgb),0.45) !important;
+        outline: 1px solid rgba(var(--dd-bright-rgb),0.4);
     }
 
     .form-control::placeholder {
@@ -1022,7 +1022,7 @@
     }
 
     .create-gallery-icon i {
-        color: #20dde0;
+        color: var(--dd-accent-bright);
     }
 
     @media (max-width: 768px) {

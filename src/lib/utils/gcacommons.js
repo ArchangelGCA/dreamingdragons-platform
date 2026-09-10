@@ -8,8 +8,9 @@ export const tooltipConfig = {
     animationDuration: 150,
     class: 'text-center w-auto',
     theme: {
-        background: 'rgba(0,65,80,0.95)',
-        color: '#f0f8ff',
+        // var() refs so tooltips follow the active data-theme palette.
+        background: 'var(--tooltip-bg)',
+        color: 'var(--text-color)',
         padding: '10px',
         borderRadius: '5px',
         fontSize: '0.875rem',

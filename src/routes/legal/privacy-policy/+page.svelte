@@ -156,9 +156,9 @@
     .container-fluid {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #04090f !important;
-        border: 1px solid #1c3350;
-        color: #f0f8ff;
+            var(--dd-abyss) !important;
+        border: 1px solid var(--dd-edge);
+        color: var(--text-color);
     }
 
     * {
@@ -168,7 +168,7 @@
     }
 
     h1, h2 {
-        color: #f0f8ff;
+        color: var(--text-color);
         font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: bold;
@@ -184,7 +184,7 @@
     }
 
     p {
-        color: #cce0e5;
+        color: var(--text-secondary);
         font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: normal;
@@ -203,7 +203,7 @@
 
     li > *:first-child:before {
         content: "· ";
-        color: #f0f8ff;
+        color: var(--text-color);
         font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: bold;

@@ -106,7 +106,7 @@
     }
 
     .card:hover {
-        box-shadow: 0 0 10px 0 rgba(32, 221, 224, 0.35);
+        box-shadow: 0 0 10px 0 rgba(var(--dd-bright-rgb), 0.35);
     }
 
     .link-light {
@@ -114,7 +114,7 @@
     }
 
     .link-light:hover {
-        color: #8ff7f8 !important;
+        color: var(--dd-accent-hover) !important;
     }
 
     .btn-link {
@@ -135,8 +135,8 @@
     .custom-overlay-content {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
-            rgba(2, 8, 14, 0.88);
-        border-top: 1px solid rgba(32, 221, 224, 0.14);
+            var(--card-overlay);
+        border-top: 1px solid rgba(var(--dd-bright-rgb), 0.14);
     }
 
     .to-scale {
@@ -144,8 +144,8 @@
     }
 
     .liked {
-        color: #ffc94d;
-        filter: drop-shadow(0 0 6px rgba(255, 201, 77, 0.45));
+        color: var(--dd-gold);
+        filter: drop-shadow(0 0 6px rgba(var(--dd-gold-rgb), 0.45));
         animation: heart-pulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
@@ -156,13 +156,13 @@
 
     .unliked {
         transform: scale(0.8);
-        color: #f0f8ff;
+        color: var(--text-color);
         animation: heart-unpulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
 
     .unliked:hover {
-        color: #ffc94d;
+        color: var(--dd-gold);
         transform: scale(0.9);
     }
 
@@ -180,7 +180,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: #f0f8ff;
+        color: var(--text-color);
         font-size: 1rem;
     }
 

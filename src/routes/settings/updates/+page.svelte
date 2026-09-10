@@ -68,20 +68,20 @@
 <style>
     .custom-button {
         box-shadow: none;
-        background-color: #00a594;
+        background-color: var(--dd-accent);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
         border: none;
-        color: #02120f;
+        color: var(--dd-accent-ink);
         transition: all 0.15s;
     }
 
     .custom-button:hover {
         filter: brightness(1.1);
-        box-shadow: 0 0 0.4rem 0.25rem rgba(0, 165, 148, 0.45);
+        box-shadow: 0 0 0.4rem 0.25rem rgba(var(--dd-accent-rgb),0.45);
     }
 
     .custom-button:focus {
-        box-shadow: 0 0 0.4rem 0.25rem rgba(32, 221, 224, 0.45);
+        box-shadow: 0 0 0.4rem 0.25rem rgba(var(--dd-bright-rgb),0.45);
         border: none;
     }
 
@@ -90,10 +90,10 @@
     }
 
     .form-control-custom {
-        background-color: #0a141f;
+        background-color: var(--dd-surface);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        color: #f0f8ff;
-        border: 1px solid #1c3350;
+        color: var(--text-color);
+        border: 1px solid var(--dd-edge);
         transition: 0.15s ease-in-out all;
     }
 
@@ -102,15 +102,15 @@
     }
 
     .form-control-custom:focus {
-        box-shadow: 0 0 0.4rem 0.25rem rgba(0, 165, 148, 0.45);
-        border-color: rgba(32, 221, 224, 0.4);
+        box-shadow: 0 0 0.4rem 0.25rem rgba(var(--dd-accent-rgb),0.45);
+        border-color: rgba(var(--dd-bright-rgb),0.4);
     }
 
     .rotating-shadow {
         animation: none;
-        background-color: #0a141f;
+        background-color: var(--dd-surface);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        border: 1px solid #1c3350;
+        border: 1px solid var(--dd-edge);
     }
 
 </style>

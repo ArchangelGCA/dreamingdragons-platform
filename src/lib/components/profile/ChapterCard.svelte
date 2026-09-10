@@ -54,15 +54,15 @@
                 if (!content.is_liked) {
                     toast.push('Chapter liked ❤️', {
                         theme: {
-                            '--toastBackground': '#004a5a',
-                            '--toastColor': '#f0f8ff',
+                            '--toastBackground': 'var(--dd-deep-2)',
+                            '--toastColor': 'var(--text-color)',
                         }
                     });
                 } else {
                     toast.push('Chapter unliked 💔', {
                         theme: {
-                            '--toastBackground': '#004a5a',
-                            '--toastColor': '#f0f8ff',
+                            '--toastBackground': 'var(--dd-deep-2)',
+                            '--toastColor': 'var(--text-color)',
                         }
                     });
                 }
@@ -134,12 +134,12 @@
 
 
     .card:hover {
-        box-shadow: 0 0 10px 0 rgba(32, 221, 224, 0.35);
+        box-shadow: 0 0 10px 0 rgba(var(--dd-bright-rgb), 0.35);
     }
 
     .chapter-number {
         font-size: 3rem;
-        color: #f0f8ff;
+        color: var(--text-color);
         position: absolute;
         top: 50%;
         left: 50%;
@@ -150,9 +150,9 @@
         position: absolute;
         top: 10px;
         left: 10px;
-        background-color: rgba(0, 74, 90, 0.85);
-        border: 1px solid rgba(32, 221, 224, 0.3);
-        color: #f0f8ff;
+        background-color: rgba(var(--dd-deep2-rgb), 0.85);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.3);
+        color: var(--text-color);
         width: 40px;
         height: 40px;
         line-height: 40px;
@@ -164,7 +164,7 @@
     }
 
     .chapter-number-over:hover {
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
     }
 
     .content-image {
@@ -189,8 +189,8 @@
     .custom-overlay-content {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
-            rgba(2, 8, 14, 0.88);
-        border-top: 1px solid rgba(32, 221, 224, 0.14);
+            var(--card-overlay);
+        border-top: 1px solid rgba(var(--dd-bright-rgb), 0.14);
     }
 
     .to-scale {
@@ -198,8 +198,8 @@
     }
 
     .liked {
-        color: #ffc94d;
-        filter: drop-shadow(0 0 6px rgba(255, 201, 77, 0.45));
+        color: var(--dd-gold);
+        filter: drop-shadow(0 0 6px rgba(var(--dd-gold-rgb), 0.45));
         animation: heart-pulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
@@ -210,13 +210,13 @@
 
     .unliked {
         transform: scale(0.8);
-        color: #f0f8ff;
+        color: var(--text-color);
         animation: heart-unpulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
 
     .unliked:hover {
-        color: #ffc94d;
+        color: var(--dd-gold);
         transform: scale(0.9);
     }
 
@@ -234,7 +234,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: #f0f8ff;
+        color: var(--text-color);
         font-size: 1rem;
     }
 

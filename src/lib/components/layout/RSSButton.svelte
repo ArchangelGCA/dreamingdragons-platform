@@ -10,8 +10,8 @@
         
         toast.push('🔔 RSS feed opened!', {
             theme: {
-                '--toastBackground': '#004a5a',
-                '--toastColor': '#f0f8ff',
+                '--toastBackground': 'var(--dd-deep-2)',
+                '--toastColor': 'var(--text-color)',
             }
         });
     }
@@ -39,25 +39,25 @@
 
 <style>
     .rss-btn {
-        border-color: #ffc94d;
-        color: #ffc94d;
+        border-color: var(--dd-gold);
+        color: var(--dd-gold);
         transition: all 0.2s ease-in-out;
     }
     
     .rss-btn:hover {
-        background-color: #ffc94d;
-        border-color: #ffc94d;
-        color: #04090f;
+        background-color: var(--dd-gold);
+        border-color: var(--dd-gold);
+        color: var(--dd-abyss);
         transform: scale(1.05);
     }
     
     .rss-btn:focus {
-        box-shadow: 0 0 0 0.2rem rgba(255, 201, 77, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(var(--dd-gold-rgb), 0.25);
     }
     
     /* Compact variant styles */
     .btn-link.rss-btn:hover {
-        color: #ffd88a !important;
+        color: var(--dd-gold-soft) !important;
         background-color: transparent;
         border-color: transparent;
         transform: scale(1.1);

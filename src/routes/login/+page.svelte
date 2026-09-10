@@ -53,7 +53,7 @@
                             default: {
                                 colors: {
                                     messageBackground: '#e7fcf1',
-                                    messageBorder: '#00a594',
+                                    messageBorder: 'var(--dd-accent)',
                                     messageBackgroundDanger: 'rgba(166,0,44,0.1)',
                                     messageBorderDanger: '#822025',
                                     inputLabelText: 'gray',
@@ -63,19 +63,19 @@
                                     anchorTextHoverColor: 'darkgray',
                                     brandButtonText: 'white',
                                     defaultButtonText: 'white',
-                                    dividerBackground: 'rgba(0,165,148,0.4)',
+                                    dividerBackground: 'rgba(var(--dd-accent-rgb),0.4)',
                                     inputText: 'white',
                                     inputPlaceholder: 'darkgray',
-                                    brand: '#00a594',
-                                    brandAccent: '#20dde0',
-                                    inputBackground: 'rgba(0,165,148,0.28)',
-                                    inputBorder: '#00a594',
-                                    inputBorderHover: '#20dde0',
-                                    inputBorderFocus: '#8ff7f8',
-                                    defaultButtonBackground: 'rgba(0,165,148,0.28)',
-                                    defaultButtonBackgroundHover: 'rgba(0,165,148,0.4)',
-                                    defaultButtonBorderHover: '#00a594',
-                                    defaultButtonBorder: '#00a594',
+                                    brand: 'var(--dd-accent)',
+                                    brandAccent: 'var(--dd-accent-bright)',
+                                    inputBackground: 'rgba(var(--dd-accent-rgb),0.28)',
+                                    inputBorder: 'var(--dd-accent)',
+                                    inputBorderHover: 'var(--dd-accent-bright)',
+                                    inputBorderFocus: 'var(--dd-accent-hover)',
+                                    defaultButtonBackground: 'rgba(var(--dd-accent-rgb),0.28)',
+                                    defaultButtonBackgroundHover: 'rgba(var(--dd-accent-rgb),0.4)',
+                                    defaultButtonBorderHover: 'var(--dd-accent)',
+                                    defaultButtonBorder: 'var(--dd-accent)',
                                 },
                                 space: {
                                     spaceSmall: '4px',
@@ -175,27 +175,27 @@
     }
 
     .text-login {
-        color: #20dde0;
+        color: var(--dd-accent-bright);
     }
 
     .text-register {
-        color: #8ff7f8;
+        color: var(--dd-accent-hover);
     }
 
     .text-magic-link {
-        color: #20dde0;
+        color: var(--dd-accent-bright);
     }
 
     /* Auth card: deep abyss plate, calm rest state */
     .bg-purple.border-purple {
-        background-color: #0a141f;
+        background-color: var(--dd-surface);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        border: 1px solid #1c3350;
+        border: 1px solid var(--dd-edge);
         box-shadow: none;
     }
 
     /* Auth card sits on a dark well so the plate reads clean on OLED */
     .main-div {
-        background-color: #0a141f;
+        background-color: var(--dd-surface);
     }
 </style>

@@ -45,20 +45,20 @@
     .badge-book {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%),
-            rgba(6, 16, 26, 0.95);
-        color: #f0f8ff;
-        border: 1px solid rgba(32, 221, 224, 0.3);
+            var(--badge-surface);
+        color: var(--text-color);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.3);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     .badge-book .fas {
-        color: #20dde0;
-        text-shadow: 0 0 0.4rem rgba(32, 221, 224, 0.4);
+        color: var(--dd-accent-bright);
+        text-shadow: 0 0 0.4rem rgba(var(--dd-bright-rgb), 0.4);
     }
 
     .badge-book:hover {
-        box-shadow: 0 4px 12px rgba(32, 221, 224, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        border-color: rgba(32, 221, 224, 0.55);
+        box-shadow: 0 4px 12px rgba(var(--dd-bright-rgb), 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        border-color: rgba(var(--dd-bright-rgb), 0.55);
         transform: translateY(-1px);
     }
 

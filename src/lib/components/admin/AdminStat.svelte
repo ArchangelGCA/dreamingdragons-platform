@@ -28,8 +28,8 @@
 
 <style>
 	.admin-stat {
-		background: var(--forge-iron, #0a141f);
-		border: 1px solid var(--forge-edge, #1c3350);
+		background: var(--forge-iron, var(--dd-surface));
+		border: 1px solid var(--forge-edge, var(--dd-edge));
 		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 	}
 	.stat-icon {
@@ -41,24 +41,24 @@
 		justify-content: center;
 		border-radius: 0.9rem;
 		font-size: 1.2rem;
-		color: #02120f;
-		background: #00a594;
-		border: 1px solid rgba(32, 221, 224, 0.35);
+		color: var(--dd-accent-ink);
+		background: var(--dd-accent);
+		border: 1px solid rgba(var(--dd-bright-rgb), 0.35);
 	}
 	.stat-danger {
 		background: hsl(0, 70%, 40%);
 		border-color: rgba(255, 90, 90, 0.4);
-		color: #f0f8ff;
+		color: var(--text-color);
 	}
 	.stat-warning {
 		background: hsl(45, 90%, 40%);
 		border-color: rgba(255, 200, 90, 0.35);
-		color: #241a04;
+		color: var(--dd-gold-ink);
 	}
 	.stat-success {
 		background: hsl(140, 60%, 38%);
 		border-color: rgba(90, 255, 150, 0.3);
-		color: #02120f;
+		color: var(--dd-accent-ink);
 	}
 	.stat-value {
 		font-size: 1.5rem;
@@ -66,14 +66,14 @@
 		line-height: 1.1;
 	}
 	.stat-label {
-		color: #cce0e5;
+		color: var(--text-secondary);
 		font-size: 0.875rem;
 		margin-bottom: 0.15rem;
 	}
 	.link-purple {
-		color: #20dde0;
+		color: var(--dd-accent-bright);
 	}
 	.link-purple:hover {
-		color: #8ff7f8;
+		color: var(--dd-accent-hover);
 	}
 </style>

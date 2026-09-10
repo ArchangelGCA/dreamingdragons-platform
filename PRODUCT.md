@@ -38,6 +38,7 @@ DreamingDragons is the official community platform of the DreamingDragons projec
 - PocketBase (server >= 0.23, JS SDK 0.28.x) for image/file storage via the `_superusers` system auth collection; all superuser access goes through `src/lib/server/pocketbase.js`.
 - Tailored image proxy pipeline for covers/avatars (srcset, lazyloading, sharp).
 - Svelte 5 runes mode throughout; curated custom components (tooltips, toast, masonry) instead of generic UI libraries.
+- Two user-selectable palettes over one structure: Dragon's Deep (default) and Royal Vault (legacy), switched via `data-theme` + CSS variables (see `src/lib/utils/theme.js`); the choice is stored on-device (cookie/localStorage).
 - Terminology users expect: "tale" (book), "chapter", "Following", "Favourites", "galleries", "TOS", "privacy policy".
 
 ## Brand Commitments

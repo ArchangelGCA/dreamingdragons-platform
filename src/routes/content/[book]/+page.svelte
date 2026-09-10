@@ -137,15 +137,15 @@
                     if (bookContent.is_liked) {
                         toast.push('Tale liked ❤️', {
                             theme: {
-                                '--toastBackground': '#004a5a',
-                                '--toastColor': '#f0f8ff',
+                                '--toastBackground': 'var(--dd-deep-2)',
+                                '--toastColor': 'var(--text-color)',
                             }
                         });
                     } else {
                         toast.push('Tale unliked 💔', {
                             theme: {
-                                '--toastBackground': '#004a5a',
-                                '--toastColor': '#f0f8ff',
+                                '--toastBackground': 'var(--dd-deep-2)',
+                                '--toastColor': 'var(--text-color)',
                             }
                         });
                     }
@@ -157,7 +157,7 @@
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {
                             '--toastBackground': '#f44336',
-                            '--toastColor': '#f0f8ff',
+                            '--toastColor': 'var(--text-color)',
                         }
                     });
                 }
@@ -168,7 +168,7 @@
                 toast.push('Error during action (Please login)', {
                     theme: {
                         '--toastBackground': '#f44336',
-                        '--toastColor': '#f0f8ff',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
             }
@@ -180,7 +180,7 @@
             toast.push('Network error occurred', {
                 theme: {
                     '--toastBackground': '#f44336',
-                    '--toastColor': '#f0f8ff',
+                    '--toastColor': 'var(--text-color)',
                 }
             });
         }
@@ -210,8 +210,8 @@
             if (result.data.status === 200) {
                 toast.push('Tale ' + bookContent.title + ' deleted! 🗑️', {
                     theme: {
-                        '--toastBackground': '#004a5a',
-                        '--toastColor': '#f0f8ff',
+                        '--toastBackground': 'var(--dd-deep-2)',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
                 window.location.href = '/profile';
@@ -219,7 +219,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
-                        '--toastColor': '#f0f8ff',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
             }
@@ -227,7 +227,7 @@
             toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
-                    '--toastColor': '#f0f8ff',
+                    '--toastColor': 'var(--text-color)',
                 }
             });
         }
@@ -252,8 +252,8 @@
             if (result.data.status === 200) {
                 toast.push('Report submitted! 🚩', {
                     theme: {
-                        '--toastBackground': '#004a5a',
-                        '--toastColor': '#f0f8ff',
+                        '--toastBackground': 'var(--dd-deep-2)',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
                 reportText = '';
@@ -266,7 +266,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
-                        '--toastColor': '#f0f8ff',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
             }
@@ -274,7 +274,7 @@
             toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
-                    '--toastColor': '#f0f8ff',
+                    '--toastColor': 'var(--text-color)',
                 }
             });
         }
@@ -513,8 +513,8 @@
     .bg-info-stats {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #04090f;
-        border: 1px solid #1c3350;
+            var(--dd-abyss);
+        border: 1px solid var(--dd-edge);
     }
 
     .bg-purple {
@@ -522,21 +522,21 @@
     }
 
     .bg-purple-opacity-25 {
-        background: rgba(0, 165, 148, 0.25);
+        background: rgba(var(--dd-accent-rgb),0.25);
     }
 
         .bg-purple-opacity-10 {
-        background: rgba(0, 165, 148, 0.1);
+        background: rgba(var(--dd-accent-rgb),0.1);
     }
 
     /* Dragon's Deep reading well: flat abyss, teal hairline, one faint top sheen */
     .fs-5.bg-purple-opacity-25 {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #04090f;
-        border: 1px solid #1c3350;
+            var(--dd-abyss);
+        border: 1px solid var(--dd-edge);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 6px 22px rgba(0, 0, 0, 0.35);
-        color: #f0f8ff;
+        color: var(--text-color);
         line-height: 1.75;
     }
 
@@ -548,7 +548,7 @@
     }
 
     .bg-purple-dark {
-        background-color: #06121e;
+        background-color: var(--dd-track);
     }
 
     .btn-shortcut {
@@ -556,8 +556,8 @@
     }
 
     .btn-shortcut:hover {
-        background-color: #004a5a;
-        border-color: #004a5a;
+        background-color: var(--dd-deep-2);
+        border-color: var(--dd-deep-2);
     }
 
     .btn-link-secondary {
@@ -578,38 +578,38 @@
 
     .btn-submit-report {
         background-color: var(--primary-color);
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .btn-submit-report:hover {
-        background-color: #00a594;
-        color: #f0f8ff;
+        background-color: var(--dd-accent);
+        color: var(--text-color);
     }
 
     .btn-submit-report:focus {
-        background-color: #00a594;
-        color: #f0f8ff;
+        background-color: var(--dd-accent);
+        color: var(--text-color);
     }
 
     .btn-submit-report:active {
-        background-color: #004a5a;
-        color: #f0f8ff;
+        background-color: var(--dd-deep-2);
+        color: var(--text-color);
     }
 
     .btn-close-report {
-        background-color: rgba(0, 165, 148, 0.15);
+        background-color: rgba(var(--dd-accent-rgb),0.15);
     }
 
     .btn-close-report:hover {
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
     }
 
     .btn-close-report:focus {
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
     }
 
     .btn-close-report:active {
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
     }
 
     .form-control {
@@ -618,12 +618,12 @@
 
     .form-control:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(0, 165, 148, 0.45);
-        outline: 1px solid rgba(32, 221, 224, 0.4);
+        box-shadow: 0 0 0 0.25rem rgba(var(--dd-accent-rgb),0.45);
+        outline: 1px solid rgba(var(--dd-bright-rgb),0.4);
     }
 
     .liked {
-        color: #ffc94d;
+        color: var(--dd-gold);
         animation: heart-pulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
@@ -634,26 +634,26 @@
 
     .unliked {
         transform: scale(0.9);
-        color: #f0f8ff;
+        color: var(--text-color);
         animation: heart-unpulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
 
     .unliked:hover {
-        color: #ffc94d;
+        color: var(--dd-gold);
         transform: scale(1);
     }
 
     .dropdown-item:hover {
-        background-color: rgba(0, 65, 80, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb),0.95);
     }
 
     .dropdown-item:active {
-        background-color: rgba(0, 65, 80, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb),0.95);
     }
 
     .dropdown-item:focus {
-        background-color: rgba(0, 65, 80, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb),0.95);
     }
 
     .likes-container {
@@ -664,18 +664,18 @@
 
     .likes-container::-webkit-scrollbar {
         width: 10px;
-        background-color: #06121e;
+        background-color: var(--dd-track);
         border-top-right-radius: 15px;
         border-bottom-right-radius: 15px;
     }
 
     .likes-container::-webkit-scrollbar-thumb {
-        background: #00665e;
+        background: var(--dd-deep-2);
         border-radius: 20px;
     }
 
     .likes-container::-webkit-scrollbar-thumb:hover {
-        background: #00a594;
+        background: var(--dd-accent);
     }
 
     @keyframes heart-pulse {

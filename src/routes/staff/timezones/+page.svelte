@@ -61,7 +61,7 @@
 
 <style>
     .bg-animated {
-        background-color: #0f2c4b;
+        background-color: var(--dd-deep-1);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 </style>

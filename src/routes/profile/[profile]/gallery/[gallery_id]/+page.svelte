@@ -107,20 +107,20 @@
 
 <style>
     .gallery-header {
-        background: #04090f;
-        border-bottom: 1px solid #1c3350;
+        background: var(--dd-abyss);
+        border-bottom: 1px solid var(--dd-edge);
         backdrop-filter: blur(10px);
     }
 
     .gallery-icon {
-        background: #00a594;
+        background: var(--dd-accent);
         width: 80px;
         height: 80px;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
     }
 
     .gallery-title {
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .owner-link {
@@ -136,7 +136,7 @@
         left: 0;
         width: 0;
         height: 2px;
-        background: #20dde0;
+        background: var(--dd-accent-bright);
         transition: width 0.3s ease;
     }
 
@@ -159,19 +159,19 @@
     }
 
     .btn-edit-gallery {
-        background: #00a594 !important;
-        border: 1px solid rgba(32, 221, 224, 0.4) !important;
-        color: #02120f !important;
+        background: var(--dd-accent) !important;
+        border: 1px solid rgba(var(--dd-bright-rgb),0.4) !important;
+        color: var(--dd-accent-ink) !important;
         font-weight: 600;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45);
     }
 
     .btn-edit-gallery:hover {
-        background: #20dde0 !important;
+        background: var(--dd-accent-bright) !important;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.35);
-        color: #02120f !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(var(--dd-bright-rgb),0.35);
+        color: var(--dd-accent-ink) !important;
     }
 
     @media (max-width: 768px) {

@@ -102,11 +102,11 @@
 				{:else if selectedCategory !== 'All'}
 					in <strong>{selectedCategory}</strong>
 				{/if}
-				<div class="progress mt-2" style="height: 4px; background-color: #06121e;">
+				<div class="progress mt-2" style="height: 4px; background-color: var(--dd-track);">
 					<div 
 						class="progress-bar" 
 						role="progressbar" 
-						style="width: {(filteredFAQs.length / data.faqData.length) * 100}%; background-color: #00a594;"
+						style="width: {(filteredFAQs.length / data.faqData.length) * 100}%; background-color: var(--dd-accent);"
 						aria-valuenow={filteredFAQs.length}
 						aria-valuemin="0"
 						aria-valuemax={data.faqData.length}
@@ -123,11 +123,11 @@
 						<small class="text-muted fw-semibold">FAQ Progress</small>
 						<small class="text-muted ms-2">{expandedItems.size} / {data.faqData.length} expanded</small>
 					</div>
-					<div class="progress" style="height: 6px; background-color: #06121e;">
+					<div class="progress" style="height: 6px; background-color: var(--dd-track);">
 						<div 
 							class="progress-bar" 
 							role="progressbar"
-							style="width: {expandedItems.size > 0 ? (expandedItems.size / data.faqData.length) * 100 : 0}%; background-color: #00a594;"
+							style="width: {expandedItems.size > 0 ? (expandedItems.size / data.faqData.length) * 100 : 0}%; background-color: var(--dd-accent);"
 							aria-valuenow={expandedItems.size}
 							aria-valuemin="0"
 							aria-valuemax={data.faqData.length}
@@ -237,14 +237,14 @@
 	.hero-section {
 		background:
 			linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-			#04090f;
+			var(--dd-abyss);
 		border-radius: 24px;
 		padding: 3rem 2rem;
 		margin-bottom: 2rem;
 		position: relative;
 		overflow: hidden;
 		backdrop-filter: blur(10px);
-		border: 1px solid #1c3350;
+		border: 1px solid var(--dd-edge);
 	}
 
 	.hero-content {
@@ -255,7 +255,7 @@
 	.hero-title {
 		font-size: 3rem;
 		font-weight: 700;
-		color: #f0f8ff;
+		color: var(--text-color);
 	}
 
 	.hero-subtitle {
@@ -273,9 +273,9 @@
 	}
 
 	.search-icon {
-		background: #004a5a;
-		border: 1px solid #1c3350;
-		color: #f0f8ff;
+		background: var(--dd-deep-2);
+		border: 1px solid var(--dd-edge);
+		color: var(--text-color);
 		border-radius: 16px 0 0 16px !important;
 		border-right: none !important;
 	}
@@ -295,8 +295,8 @@
 	.search-input:focus {
 		background: hsla(var(--primary-hue), 30%, 20%, 0.9) !important;
 		border-color: var(--primary-color) !important;
-		box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45) !important;
-		outline: 1px solid rgba(32, 221, 224, 0.4);
+		box-shadow: 0 0 0 0.2rem rgba(var(--dd-accent-rgb),0.45) !important;
+		outline: 1px solid rgba(var(--dd-bright-rgb),0.4);
 		color: var(--text-color) !important;
 	}
 
@@ -310,36 +310,36 @@
 	}
 
 	.clear-btn:hover {
-		background: #00a594 !important;
-		color: #02120f !important;
-		border-color: rgba(32, 221, 224, 0.6) !important;
+		background: var(--dd-accent) !important;
+		color: var(--dd-accent-ink) !important;
+		border-color: rgba(var(--dd-bright-rgb),0.6) !important;
 	}
 
 	/* Results Alert styling */
 	.results-alert {
-		background: #04090f !important;
-		border: 1px solid #1c3350 !important;
-		color: #cce0e5 !important;
+		background: var(--dd-abyss) !important;
+		border: 1px solid var(--dd-edge) !important;
+		color: var(--text-secondary) !important;
 		border-radius: 15px !important;
 		backdrop-filter: blur(10px);
 		font-size: 0.95rem;
 	}
 
 	.progress-card {
-		background: #0a141f !important;
+		background: var(--dd-surface) !important;
 		backdrop-filter: blur(10px);
 		border-radius: 15px !important;
-		border: 1px solid #1c3350 !important;
+		border: 1px solid var(--dd-edge) !important;
 		min-width: 280px;
 	}
 
 	.progress-card .progress {
-		background: #06121e !important;
+		background: var(--dd-track) !important;
 		border-radius: 10px;
 	}
 
 	.progress-card .progress-bar {
-		background: #00a594 !important;
+		background: var(--dd-accent) !important;
 		border-radius: 10px;
 		transition: width 0.4s ease;
 	}
@@ -352,8 +352,8 @@
 
 	/* Bootstrap Accordion Customizations */
 	.accordion-item {
-		background: #0a141f;
-		border: 1px solid #1c3350;
+		background: var(--dd-surface);
+		border: 1px solid var(--dd-edge);
 		border-radius: 20px !important;
 		overflow: hidden;
 		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -384,13 +384,13 @@
 
 	.accordion-item:hover {
 		transform: translateY(-4px);
-		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.25);
-		border-color: rgba(32, 221, 224, 0.4);
+		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(var(--dd-bright-rgb),0.25);
+		border-color: rgba(var(--dd-bright-rgb),0.4);
 	}
 
 	.accordion-item.expanded {
-		background: #0e1c2e;
-		border-color: rgba(32, 221, 224, 0.4);
+		background: var(--dd-surface-2);
+		border-color: rgba(var(--dd-bright-rgb),0.4);
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 	}
 
@@ -413,8 +413,8 @@
 	}
 
 	.accordion-button:focus {
-		box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45) !important;
-		outline: 1px solid rgba(32, 221, 224, 0.4);
+		box-shadow: 0 0 0 0.2rem rgba(var(--dd-accent-rgb),0.45) !important;
+		outline: 1px solid rgba(var(--dd-bright-rgb),0.4);
 	}
 
 	.accordion-button:not(.collapsed) {
@@ -437,13 +437,13 @@
 
 	.accordion-item:hover {
 		transform: translateY(-4px);
-		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.25);
-		border-color: rgba(32, 221, 224, 0.4);
+		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(var(--dd-bright-rgb),0.25);
+		border-color: rgba(var(--dd-bright-rgb),0.4);
 	}
 
 	.accordion-item.expanded {
-		background: #0e1c2e;
-		border-color: rgba(32, 221, 224, 0.4);
+		background: var(--dd-surface-2);
+		border-color: rgba(var(--dd-bright-rgb),0.4);
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
 	}
 
@@ -466,8 +466,8 @@
 	}
 
 	.accordion-button:focus {
-		box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45) !important;
-		outline: 1px solid rgba(32, 221, 224, 0.4);
+		box-shadow: 0 0 0 0.2rem rgba(var(--dd-accent-rgb),0.45) !important;
+		outline: 1px solid rgba(var(--dd-bright-rgb),0.4);
 	}
 
 	.accordion-button:not(.collapsed) {
@@ -488,18 +488,18 @@
 		width: 50px;
 		height: 50px;
 		border-radius: 15px;
-		background: #00a594;
+		background: var(--dd-accent);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #02120f;
+		color: var(--dd-accent-ink);
 		font-size: 1.2rem;
 		flex-shrink: 0;
 		transition: all 0.3s ease;
 	}
 
 	.accordion-item.expanded .question-icon {
-		background: #20dde0;
+		background: var(--dd-accent-bright);
 		transform: rotate(180deg);
 	}
 
@@ -520,9 +520,9 @@
 	}
 
 	.category-filter {
-		background: #004a5a !important;
-		border: 1px solid rgba(32, 221, 224, 0.4) !important;
-		color: #f0f8ff !important;
+		background: var(--dd-deep-2) !important;
+		border: 1px solid rgba(var(--dd-bright-rgb),0.4) !important;
+		color: var(--text-color) !important;
 		font-weight: 600 !important;
 		border-radius: 15px !important;
 		backdrop-filter: blur(10px);
@@ -535,11 +535,11 @@
 	.category-filter:focus,
 	.category-filter:active,
 	.category-filter.show {
-		background: #00a594 !important;
-		border-color: rgba(32, 221, 224, 0.6) !important;
-		color: #02120f !important;
+		background: var(--dd-accent) !important;
+		border-color: rgba(var(--dd-bright-rgb),0.6) !important;
+		color: var(--dd-accent-ink) !important;
 		transform: translateY(-1px);
-		box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45) !important;
+		box-shadow: 0 0 0 0.2rem rgba(var(--dd-accent-rgb),0.45) !important;
 	}
 
 	.category-text {
@@ -561,26 +561,26 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50%;
-		background: #0e1c2e;
+		background: var(--dd-surface-2);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #20dde0;
+		color: var(--dd-accent-bright);
 		transition: all 0.3s ease;
 		flex-shrink: 0;
 	}
 
 	.expand-icon.rotated {
 		transform: rotate(180deg);
-		background: #00a594;
-		color: #02120f;
+		background: var(--dd-accent);
+		color: var(--dd-accent-ink);
 	}
 
 	/* Accordion Body */
 	.accordion-body {
 		padding: 2rem !important;
-		border-top: 1px solid #1c3350;
-		background: #04090f;
+		border-top: 1px solid var(--dd-edge);
+		background: var(--dd-abyss);
 		animation: slideDown 0.4s ease;
 	}
 
@@ -593,11 +593,11 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 12px;
-		background: #ffc94d;
+		background: var(--dd-gold);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		color: #241a04;
+		color: var(--dd-gold-ink);
 		font-size: 1.1rem;
 		flex-shrink: 0;
 	}
@@ -641,9 +641,9 @@
 
 	/* Footer CTA using Bootstrap Card */
 	.footer-cta-card {
-		background: #0a141f !important;
+		background: var(--dd-surface) !important;
 		border-radius: 24px !important;
-		border: 1px solid #1c3350 !important;
+		border: 1px solid var(--dd-edge) !important;
 		backdrop-filter: blur(10px);
 		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
 	}
@@ -682,9 +682,9 @@
 	}
 
 	.btn-updates {
-		background: #00a594 !important;
-		border: 1px solid rgba(32, 221, 224, 0.4) !important;
-		color: #02120f !important;
+		background: var(--dd-accent) !important;
+		border: 1px solid rgba(var(--dd-bright-rgb),0.4) !important;
+		color: var(--dd-accent-ink) !important;
 		font-weight: 600 !important;
 		text-decoration: none !important;
 		transition: all 0.3s ease !important;
@@ -693,23 +693,23 @@
 
 	.btn-updates:hover {
 		transform: translateY(-3px) !important;
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.35) !important;
-		color: #02120f !important;
-		background: #20dde0 !important;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(var(--dd-bright-rgb),0.35) !important;
+		color: var(--dd-accent-ink) !important;
+		background: var(--dd-accent-bright) !important;
 		text-decoration: none !important;
 	}
 
 	.help-item {
 		padding: 1rem;
 		border-radius: 15px;
-		background: #0a141f;
-		border: 1px solid #1c3350;
+		background: var(--dd-surface);
+		border: 1px solid var(--dd-edge);
 		transition: all 0.3s ease;
 	}
 
 	.help-item:hover {
-		background: #0e1c2e;
-		border-color: rgba(32, 221, 224, 0.4);
+		background: var(--dd-surface-2);
+		border-color: rgba(var(--dd-bright-rgb),0.4);
 		transform: translateY(-2px);
 	}
 

@@ -126,16 +126,16 @@
                 if (chapterContent.is_liked) {
                     toast.push('Chapter liked ❤️', {
                         theme: {
-                            '--toastBackground': '#004a5a',
-                            '--toastColor': '#f0f8ff',
+                            '--toastBackground': 'var(--dd-deep-2)',
+                            '--toastColor': 'var(--text-color)',
                         }
                     });
                     await invalidateAll();
                 } else {
                     toast.push('Chapter unliked 💔', {
                         theme: {
-                            '--toastBackground': '#004a5a',
-                            '--toastColor': '#f0f8ff',
+                            '--toastBackground': 'var(--dd-deep-2)',
+                            '--toastColor': 'var(--text-color)',
                         }
                     });
                     await invalidateAll();
@@ -145,7 +145,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
-                        '--toastColor': '#f0f8ff',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
             }
@@ -154,7 +154,7 @@
             toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
-                    '--toastColor': '#f0f8ff',
+                    '--toastColor': 'var(--text-color)',
                 }
             });
         }
@@ -185,8 +185,8 @@
             if (result.data.status === 200) {
                 toast.push('Chapter ' + chapterContent.title + ' deleted! 🗑️', {
                     theme: {
-                        '--toastBackground': '#004a5a',
-                        '--toastColor': '#f0f8ff',
+                        '--toastBackground': 'var(--dd-deep-2)',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
                 window.location.href = bookUrl;
@@ -194,7 +194,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
-                        '--toastColor': '#f0f8ff',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
             }
@@ -202,7 +202,7 @@
             toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
-                    '--toastColor': '#f0f8ff',
+                    '--toastColor': 'var(--text-color)',
                 }
             });
         }
@@ -230,8 +230,8 @@
             if (result.data.status === 200) {
                 toast.push('Report submitted! 🚩', {
                     theme: {
-                        '--toastBackground': '#004a5a',
-                        '--toastColor': '#f0f8ff',
+                        '--toastBackground': 'var(--dd-deep-2)',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
                 reportText = '';
@@ -244,7 +244,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#f44336',
-                        '--toastColor': '#f0f8ff',
+                        '--toastColor': 'var(--text-color)',
                     }
                 });
             }
@@ -252,7 +252,7 @@
             toast.push('Error during action (Please login)', {
                 theme: {
                     '--toastBackground': '#f44336',
-                    '--toastColor': '#f0f8ff',
+                    '--toastColor': 'var(--text-color)',
                 }
             });
         }
@@ -568,8 +568,8 @@
     .bg-info-stats {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #04090f;
-        border: 1px solid #1c3350;
+            var(--dd-abyss);
+        border: 1px solid var(--dd-edge);
     }
 
     .bg-purple {
@@ -577,25 +577,25 @@
     }
 
     .bg-purple-opacity-25 {
-        background: rgba(0, 165, 148, 0.25);
+        background: rgba(var(--dd-accent-rgb),0.25);
     }
 
     .bg-purple-opacity-10 {
-        background: rgba(0, 165, 148, 0.1);
+        background: rgba(var(--dd-accent-rgb),0.1);
     }
 
     .bg-text-opacity-10 {
-        background: #04090f;
+        background: var(--dd-abyss);
     }
 
     /* Dragon's Deep reading well: flat abyss, teal hairline, one faint top sheen */
     .bg-text-opacity-10 .bg-black.bg-opacity-25 {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #04090f;
-        border: 1px solid #1c3350;
+            var(--dd-abyss);
+        border: 1px solid var(--dd-edge);
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 28px rgba(0, 0, 0, 0.4);
-        color: #f0f8ff;
+        color: var(--text-color);
         line-height: 1.8;
     }
 
@@ -607,7 +607,7 @@
     }
 
     .bg-purple-dark {
-        background-color: #06121e;
+        background-color: var(--dd-track);
     }
 
     .border-top-purple {
@@ -619,42 +619,42 @@
     }
 
     .btn-shortcut:hover {
-        background-color: #004a5a;
-        border-color: #004a5a;
+        background-color: var(--dd-deep-2);
+        border-color: var(--dd-deep-2);
     }
 
     .btn-chapters {
         background-color: var(--primary-color);
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .btn-chapters:hover {
-        background-color: #00a594;
-        border-color: #00a594;
-        color: #f0f8ff;
+        background-color: var(--dd-accent);
+        border-color: var(--dd-accent);
+        color: var(--text-color);
     }
 
     .btn-chapters:active {
-        background-color: #004a5a;
-        border-color: #004a5a;
-        color: #f0f8ff;
+        background-color: var(--dd-deep-2);
+        border-color: var(--dd-deep-2);
+        color: var(--text-color);
     }
 
     .btn-chapters-active {
-        background-color: #00a594;
-        border-color: #00a594;
-        color: #02120f;
-        box-shadow: 0 0 0.15rem 0.2rem rgba(0, 165, 148, 0.45);
+        background-color: var(--dd-accent);
+        border-color: var(--dd-accent);
+        color: var(--dd-accent-ink);
+        box-shadow: 0 0 0.15rem 0.2rem rgba(var(--dd-accent-rgb),0.45);
     }
 
     .btn-chapters-navigator {
-        background-color: rgba(0, 165, 148, 0.15);
-        border-color: rgba(0, 165, 148, 0.75);
+        background-color: rgba(var(--dd-accent-rgb),0.15);
+        border-color: rgba(var(--dd-accent-rgb),0.75);
     }
 
     .btn-chapters-navigator:hover {
-        background-color: rgba(0, 165, 148, 0.25);
-        border-color: rgba(0, 165, 148, 0.75);
+        background-color: rgba(var(--dd-accent-rgb),0.25);
+        border-color: rgba(var(--dd-accent-rgb),0.75);
     }
 
     .btn-link-secondary {
@@ -675,35 +675,35 @@
 
     .btn-submit-report {
         background-color: var(--primary-color);
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .btn-submit-report:hover {
-        background-color: #00a594;
+        background-color: var(--dd-accent);
     }
 
     .btn-submit-report:focus {
-        background-color: #00a594;
+        background-color: var(--dd-accent);
     }
 
     .btn-submit-report:active {
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
     }
 
     .btn-close-report {
-        background-color: rgba(0, 165, 148, 0.15);
+        background-color: rgba(var(--dd-accent-rgb),0.15);
     }
 
     .btn-close-report:hover {
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
     }
 
     .btn-close-report:focus {
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
     }
 
     .btn-close-report:active {
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
     }
 
     .form-control {
@@ -712,8 +712,8 @@
 
     .form-control:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.25rem rgba(0, 165, 148, 0.45);
-        outline: 1px solid rgba(32, 221, 224, 0.4);
+        box-shadow: 0 0 0 0.25rem rgba(var(--dd-accent-rgb),0.45);
+        outline: 1px solid rgba(var(--dd-bright-rgb),0.4);
     }
 
     .row-horizontal {
@@ -727,25 +727,25 @@
     }
 
     .row-horizontal::-webkit-scrollbar-track {
-        background: #06121e;
+        background: var(--dd-track);
     }
 
     .row-horizontal::-webkit-scrollbar-thumb {
-        background: #00a594;
+        background: var(--dd-accent);
         border-radius: 8px;
         cursor: pointer;
     }
 
     .row-horizontal::-webkit-scrollbar-thumb:hover {
-        background: #20dde0;
+        background: var(--dd-accent-bright);
     }
 
     .row-horizontal::-webkit-scrollbar-thumb:active {
-        background: #20dde0;
+        background: var(--dd-accent-bright);
     }
 
     .liked {
-        color: #ffc94d;
+        color: var(--dd-gold);
         animation: heart-pulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
@@ -756,26 +756,26 @@
 
     .unliked {
         transform: scale(0.9);
-        color: #f0f8ff;
+        color: var(--text-color);
         animation: heart-unpulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
 
     .unliked:hover {
-        color: #ffc94d;
+        color: var(--dd-gold);
         transform: scale(1);
     }
 
     .dropdown-item:hover {
-        background-color: rgba(0, 65, 80, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb),0.95);
     }
 
     .dropdown-item:active {
-        background-color: rgba(0, 65, 80, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb),0.95);
     }
 
     .dropdown-item:focus {
-        background-color: rgba(0, 65, 80, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb),0.95);
     }
 
     .likes-container {
@@ -786,18 +786,18 @@
 
     .likes-container::-webkit-scrollbar {
         width: 10px;
-        background-color: #06121e;
+        background-color: var(--dd-track);
         border-top-right-radius: 15px;
         border-bottom-right-radius: 15px;
     }
 
     .likes-container::-webkit-scrollbar-thumb {
-        background: #00665e;
+        background: var(--dd-deep-2);
         border-radius: 20px;
     }
 
     .likes-container::-webkit-scrollbar-thumb:hover {
-        background: #00a594;
+        background: var(--dd-accent);
     }
 
     @keyframes heart-pulse {

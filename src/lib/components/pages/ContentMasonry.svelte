@@ -114,8 +114,8 @@
                 if (result.data.status === 200) {
                     toast.push(normalizedBook.is_liked ? 'Tale Liked ❤️' : 'Tale Unliked 💔', {
                         theme: {
-                            '--toastBackground': 'rgba(0,65,80,0.95)',
-                            '--toastColor': '#f0f8ff'
+                            '--toastBackground': 'rgba(var(--dd-deep2-rgb), 0.95)',
+                            '--toastColor': 'var(--text-color)'
                         }
                     });
                 } else {
@@ -318,32 +318,32 @@
     .custom-overlay-content {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
-            rgba(2, 8, 14, 0.88);
-        border-top: 1px solid rgba(32, 221, 224, 0.14);
+            var(--card-overlay);
+        border-top: 1px solid rgba(var(--dd-bright-rgb), 0.14);
     }
 
     .card {
-        background: #0a141f;
+        background: var(--dd-surface);
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
         transition: 0.1s all ease-in-out;
     }
 
     .card:hover, .card:focus {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.35);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-bright-rgb), 0.35);
         outline: none;
     }
 
     .card:focus-visible {
-        outline: 2px solid rgba(32, 221, 224, 0.5);
+        outline: 2px solid rgba(var(--dd-bright-rgb), 0.5);
         outline-offset: 2px;
     }
 
     .link-custom {
-        color: #f0f8ff !important;
+        color: var(--text-color) !important;
     }
 
     .link-custom:hover {
-        color: #8ff7f8 !important;
+        color: var(--dd-accent-hover) !important;
     }
 
     .text-title {
@@ -353,7 +353,7 @@
 
     .text-description {
         font-size: 0.9rem;
-        color: rgba(204, 224, 229, 0.85) !important;
+        color: rgba(var(--dd-text2-rgb), 0.85) !important;
     }
 
     .heart-button {
@@ -382,15 +382,15 @@
         top: 43%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: #f0f8ff;
+        color: var(--text-color);
         font-size: 0.7rem;
         font-weight: 600;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
     }
 
     .liked {
-        color: #ffc94d;
-        filter: drop-shadow(0 0 6px rgba(255, 201, 77, 0.45));
+        color: var(--dd-gold);
+        filter: drop-shadow(0 0 6px rgba(var(--dd-gold-rgb), 0.45));
         animation: heart-pulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
@@ -401,12 +401,12 @@
 
     .unliked {
         transform: scale(0.9);
-        color: #f0f8ff;
+        color: var(--text-color);
         transition: 0.15s all ease-in-out;
     }
 
     .unliked:hover {
-        color: #ffc94d;
+        color: var(--dd-gold);
         transform: scale(1.0);
     }
 

@@ -126,9 +126,9 @@
         justify-content: center;
         border-radius: 0.9rem;
         font-size: 1.25rem;
-        color: #02120f;
-        background: #00a594;
-        border: 1px solid rgba(32, 221, 224, 0.35);
+        color: var(--dd-accent-ink);
+        background: var(--dd-accent);
+        border: 1px solid rgba(var(--dd-bright-rgb),0.35);
     }
     .panic-on {
         background: hsl(0, 70%, 40%);

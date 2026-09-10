@@ -13,6 +13,7 @@
     import Seo from "$lib/components/seo/Seo.svelte";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import {initCrossTabCommunication} from "$lib/utils/navigationOptimizations.js";
+    import {initTheme} from "$lib/utils/theme.js";
 
     /** @type {{data: any, children?: import('svelte').Snippet}} */
     let {data, children} = $props();
@@ -70,6 +71,8 @@
     let mountAuthSubscription;
     
     onMount(() => {
+        // Apply the saved data-theme palette (cookie/localStorage).
+        initTheme();
         // Initialize cross-tab communication
         crossTabComm = initCrossTabCommunication();
         
@@ -395,7 +398,7 @@
                                    href="/faq" data-sveltekit-preload-data="hover"><i class="fas fa-question-circle border-end border-light-subtle pe-2"></i>
                                 FAQ</a></li>
                             <li><a class="dropdown-item" href="/rss.xml" target="_blank" rel="noopener noreferrer"><i
-                                    class="fas fa-rss border-end border-light-subtle pe-2" style="color: #ffc94d;"></i>
+                                    class="fas fa-rss border-end border-light-subtle pe-2" style="color: var(--dd-gold);"></i>
                                 RSS Feed</a></li>
                             {#if session}
                                 <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i
@@ -561,16 +564,16 @@
 <style>
     :global(body::-webkit-scrollbar) {
         width: 10px;
-        background: #06121e;
+        background: var(--dd-track);
     }
 
     :global(body::-webkit-scrollbar-thumb) {
-        background: #004a5a;
+        background: var(--dd-deep-2);
         border-radius: 20px;
     }
 
     :global(body::-webkit-scrollbar-thumb:hover) {
-        background: #00a594;
+        background: var(--dd-accent);
     }
 
     :global(.row-horizontal::-webkit-scrollbar) {
@@ -578,101 +581,105 @@
     }
 
     :global(.row-horizontal::-webkit-scrollbar-track) {
-        background: rgba(0, 165, 148, 0.12);
+        background: rgba(var(--dd-accent-rgb),0.12);
     }
 
     :global(.row-horizontal::-webkit-scrollbar-thumb) {
-        background: #004a5a;
+        background: var(--dd-deep-2);
         border-radius: 8px;
         cursor: pointer;
     }
 
     :global(.row-horizontal::-webkit-scrollbar-thumb:hover) {
-        background: #00a594;
+        background: var(--dd-accent);
     }
 
     :global(a) {
-        color: #20dde0;
+        color: var(--dd-accent-bright);
         transition: all 0.12s ease-in-out;
     }
 
     :global(a:hover) {
-        color: #8ff7f8;
+        color: var(--dd-accent-hover);
     }
 
     .offcanvas-body::-webkit-scrollbar {
         width: 10px;
-        background: #06121e;
+        background: var(--dd-track);
     }
 
     .offcanvas-body::-webkit-scrollbar-thumb {
-        background: #004a5a;
+        background: var(--dd-deep-2);
         border-radius: 20px;
     }
 
     .offcanvas-body::-webkit-scrollbar-thumb:hover {
-        background: #00a594;
+        background: var(--dd-accent);
     }
 
     .animate-button {
-        background-color: #0f2c4b;
+        background-color: var(--dd-deep-1);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .animate-button:hover {
-        background-color: #0f2c4b;
+        background-color: var(--dd-deep-1);
     }
 
     .animate-button:active {
         transform: scale(0.95);
     }
 
-    .upload-button {
-        background-color: #0f2c4b;
+    /* Compound selectors: must beat the base .dropdown-item transparency
+       below regardless of source order (equal specificity loses). */
+    .dropdown-item.upload-button {
+        background-color: var(--dd-deep-1);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        color: #f0f8ff;
+        color: var(--text-color);
         transition: transform 0.12s ease-in-out;
     }
 
-    .upload-button:hover {
-        background-color: #0f2c4b;
+    .dropdown-item.upload-button:hover {
+        background-color: var(--dd-deep-1);
     }
 
-    .upload-button:active {
+    .dropdown-item.upload-button:active {
         transform: scale(0.95);
     }
 
-    .register-button {
-        background-color: #00a594;
+    .dropdown-item.register-button {
+        background-color: var(--dd-accent);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        color: #02120f;
+        color: var(--dd-accent-ink);
         transition: transform 0.12s ease-in-out;
     }
 
-    .register-button:hover {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.45);
+    .dropdown-item.register-button:hover {
+        background-color: var(--dd-accent-bright);
+        color: var(--dd-accent-ink);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-bright-rgb),0.45);
     }
 
-    .register-button:active {
+    .dropdown-item.register-button:active {
         transform: scale(0.95);
     }
 
     .btn-outline-search {
-        border-color: #20dde0;
-        color: #20dde0;
+        border-color: var(--dd-accent-bright);
+        color: var(--dd-accent-bright);
     }
 
     .btn-outline-search:hover {
-        background-color: rgba(0, 165, 148, 0.18);
-        color: #8ff7f8;
-        box-shadow: 0 0 0.5rem 0.1rem rgba(32, 221, 224, 0.35);
+        background-color: rgba(var(--dd-accent-rgb),0.18);
+        color: var(--dd-accent-hover);
+        box-shadow: 0 0 0.5rem 0.1rem rgba(var(--dd-bright-rgb),0.35);
     }
 
     /* Search field: deep abyss vent */
     .navbar-container .form-control {
-        background-color: rgba(4, 9, 15, 0.85);
-        border: 1px solid rgba(32, 221, 224, 0.14);
+        background-color: var(--dd-abyss);
+        border: 1px solid rgba(var(--dd-bright-rgb),0.14);
     }
 
     .navbar-container .form-control::placeholder {
@@ -680,14 +687,14 @@
     }
 
     .navbar-container .input-group:focus-within {
-        box-shadow: 0 0 0.8rem 0.2rem rgba(32, 221, 224, 0.25);
+        box-shadow: 0 0 0.8rem 0.2rem rgba(var(--dd-bright-rgb),0.25);
         border-radius: 1rem;
     }
 
     .dropdown-menu {
-        border: 1px solid rgba(32, 221, 224, 0.14);
-        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.35);
-        background-color: #04090f;
+        border: 1px solid rgba(var(--dd-bright-rgb),0.14);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-accent-rgb),0.35);
+        background-color: var(--dd-abyss);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 
@@ -711,22 +718,22 @@
     }
 
     .navbar-container {
-        background-color: #04090f;
+        background-color: var(--dd-abyss);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        border-bottom: 1px solid rgba(32, 221, 224, 0.14);
+        border-bottom: 1px solid rgba(var(--dd-bright-rgb),0.14);
     }
 
     .footer-container {
-        background-color: #04090f;
+        background-color: var(--dd-abyss);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
         border-top: 1px solid var(--dd-edge);
     }
 
     .offcanvas {
-        background-color: #04090f;
+        background-color: var(--dd-abyss);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        border-left: 1px solid rgba(32, 221, 224, 0.14);
-        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.35);
+        border-left: 1px solid rgba(var(--dd-bright-rgb),0.14);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-accent-rgb),0.35);
     }
 
     /* Modern Notifications Offcanvas Styles */
@@ -738,9 +745,9 @@
     }
 
     .notifications-header {
-        background-color: #0a141f;
+        background-color: var(--dd-surface);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        border-bottom: 1px solid rgba(32, 221, 224, 0.14);
+        border-bottom: 1px solid rgba(var(--dd-bright-rgb),0.14);
         padding: 1rem 1.25rem;
         display: flex;
         justify-content: space-between;
@@ -751,13 +758,13 @@
         width: 2.5rem;
         height: 2.5rem;
         border-radius: 50%;
-        background-color: #004a5a;
+        background-color: var(--dd-deep-2);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1rem;
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .notifications-subtitle {
@@ -775,14 +782,14 @@
     }
 
     .notifications-mark-read:hover {
-        background: rgba(0, 165, 148, 0.3);
-        border-color: rgba(32, 221, 224, 0.5);
-        color: #f0f8ff;
+        background: rgba(var(--dd-accent-rgb),0.3);
+        border-color: rgba(var(--dd-bright-rgb),0.5);
+        color: var(--text-color);
     }
 
     .notifications-body {
         padding: 1rem;
-        background-color: #04090f;
+        background-color: var(--dd-abyss);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 
@@ -807,7 +814,7 @@
     }
 
     .text-purple {
-        color: #20dde0 !important;
+        color: var(--dd-accent-bright) !important;
     }
 
     .notifications-end {
@@ -841,9 +848,9 @@
         width: 5rem;
         height: 5rem;
         border-radius: 50%;
-        background-color: #0a141f;
+        background-color: var(--dd-surface);
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
-        border: 1px solid #1c3350;
+        border: 1px solid var(--dd-edge);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -899,11 +906,11 @@
     }
 
     .link-purple {
-        color: #20dde0;
+        color: var(--dd-accent-bright);
     }
 
     .link-purple:hover {
-        color: #8ff7f8;
+        color: var(--dd-accent-hover);
     }
 
     #notificationBell {
@@ -941,7 +948,7 @@
     }
 
     .link-animated {
-        color: #f0f8ff;
+        color: var(--text-color);
         padding: 0.25rem 0.5rem;
         transition: all 0.12s ease-in-out;
     }
@@ -952,15 +959,15 @@
 
     .fa-upload:hover, .fa-bell:hover {
         transform: scale(1.1);
-        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-accent-rgb),0.75);
         background-color: var(--primary-color);
         border-radius: 0.25rem;
     }
 
     .link-animated:hover,
     .link-animated:focus-visible {
-        box-shadow: 0 0 0.8rem 0.3rem rgba(32, 221, 224, 0.5);
-        background-color: rgba(0, 165, 148, 0.5);
+        box-shadow: 0 0 0.8rem 0.3rem rgba(var(--dd-bright-rgb),0.5);
+        background-color: rgba(var(--dd-accent-rgb),0.5);
     }
 
     .logo {
@@ -969,20 +976,20 @@
 
     .logo:hover {
         transform: scale(1.05);
-        filter: drop-shadow(0 0 0.75rem #20dde0);
+        filter: drop-shadow(0 0 0.75rem var(--dd-accent-bright));
 
     }
 
     .form-control:focus {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-accent-rgb),0.75);
     }
 
     :global(.profile-avatar) {
-        border: 1px solid rgba(32, 221, 224, 0.4);
+        border: 1px solid rgba(var(--dd-bright-rgb),0.4);
     }
 
     :global(.profile-avatar:hover) {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-accent-rgb),0.75);
     }
 
     /* Calm rest state: glow only on :hover / :focus-visible (no idle breathing) */
@@ -990,10 +997,10 @@
     /* Deprecated: Old link-animation that caused visual glitches */
     /* @keyframes link-animation {
         from {
-            text-shadow: 0 0 0.1rem #20dde0, 0 0 0.1rem #20dde0, 0 0 0.1rem #20dde0;
+            text-shadow: 0 0 0.1rem var(--dd-accent-bright), 0 0 0.1rem var(--dd-accent-bright), 0 0 0.1rem var(--dd-accent-bright);
         }
         to {
-            text-shadow: 0 0 1rem #20dde0, 0 0 1rem #20dde0, 0 0 1rem #20dde0;
+            text-shadow: 0 0 1rem var(--dd-accent-bright), 0 0 1rem var(--dd-accent-bright), 0 0 1rem var(--dd-accent-bright);
         }
     } */
 

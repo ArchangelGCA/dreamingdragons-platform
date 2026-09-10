@@ -139,12 +139,12 @@
 <style>
     .btn-purple {
         background-color: var(--primary-color);
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .btn-purple:hover {
-        background-color: #004a5a;
-        color: #f0f8ff;
+        background-color: var(--dd-deep-2);
+        color: var(--text-color);
     }
 
     .cover-wrapper {

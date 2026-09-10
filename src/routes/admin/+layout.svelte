@@ -84,15 +84,15 @@
         min-height: 48px;
     }
     .admin-link.active {
-        background: #00a594;
-        color: #02120f;
+        background: var(--dd-accent);
+        color: var(--dd-accent-ink);
     }
     .nav-caption {
         list-style: none;
         font-size: 0.7rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: #8ba3b0;
+        color: var(--text-muted);
         padding: 0.75rem 1rem 0.15rem;
     }
     .admin-content {

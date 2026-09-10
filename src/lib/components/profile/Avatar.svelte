@@ -66,8 +66,8 @@
 
             toast.push('Image uploaded successfully', {
                 theme: {
-                    '--toastBackground': '#004a5a',
-                    '--toastColor': '#f0f8ff',
+                    '--toastBackground': 'var(--dd-deep-2)',
+                    '--toastColor': 'var(--text-color)',
                 },
             });
             setTimeout(() => {
@@ -134,11 +134,11 @@
 <style>
     .btn-purple {
         background-color: var(--primary-color);
-        color: #f0f8ff;
+        color: var(--text-color);
     }
 
     .btn-purple:hover {
-        background-color: #004a5a;
-        color: #f0f8ff;
+        background-color: var(--dd-deep-2);
+        color: var(--text-color);
     }
 </style>

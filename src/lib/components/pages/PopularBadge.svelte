@@ -96,20 +96,20 @@
         align-items: center;
         gap: 0.25rem;
         padding: 0.35rem 0.65rem;
-        background: rgba(255, 201, 77, 0.12);
+        background: rgba(var(--dd-gold-rgb), 0.12);
         border-radius: 2rem;
         font-weight: 600;
-        color: #ffd88a;
+        color: var(--dd-gold-soft);
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-        border: 1px solid rgba(255, 201, 77, 0.4);
+        border: 1px solid rgba(var(--dd-gold-rgb), 0.4);
         overflow: hidden;
         contain: layout style;
     }
 
     .badge-icon {
         font-size: 0.9em;
-        color: #ffd88a;
+        color: var(--dd-gold-soft);
     }
 
     .badge-text {

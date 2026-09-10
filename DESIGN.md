@@ -19,6 +19,16 @@ colors:
   text-primary: "#f0f8ff"
   text-secondary: "#cce0e5"
   text-muted: "#8ba3b0"
+  vault-night: "#0a0610"
+  vault-surface: "#170d21"
+  vault-accent: "#5c00a6"
+  vault-bright: "#c400ff"
+  vault-hover: "#ff00fb"
+  vault-gold: "#ff2bd6"
+  vault-ember: "#ff7b2b"
+  vault-ember-soft: "#ffab5e"
+  vault-deep-1: "#0b0086"
+  vault-deep-2: "#410075"
 typography:
   display:
     fontFamily: "'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
@@ -123,6 +133,31 @@ A two-force palette: dragonfire teal family for identity and calm, trophy gold f
 - **Secondary Text** (`#cce0e5`): Secondary labels and metadata (mother's light).
 - **Muted Text** (`#8ba3b0`): Timestamps and fine print.
 - **Dark Ink** (`#02120f`): Text on teal fills. **Gold Ink** (`#241a04`): text on gold fills.
+
+### Legacy — Royal Vault (`html[data-theme="vault"]`)
+
+The pre-0.15 palette, kept as a user-selectable theme (Settings →
+Appearance). Same structure and calm-surface rules, old soul: royal
+purple spine (`#5c00a6`, hue 273), magenta links (`#c400ff` → `#ff00fb`),
+ember→magenta heat (`#ff7b2b` / `#ffab5e` fresh, `#ff2bd6` loved) over
+vault night (`#0a0610`), surfaces `#120a1c` / `#170d21` / `#221430`,
+edge `#342043`, deep gradient roots `#0b0086` / `#410075`. All component
+colors resolve through the same variable names, so every surface follows
+the switch — including tooltips and toasts, which read `var(--tooltip-bg)`
+/ `var(--dd-deep-2)` instead of literals.
+
+### Switching themes
+
+One structure, N palettes. `:root` holds the Dragon's Deep defaults;
+each extra palette is one `html[data-theme="<id>"]` override block in
+`src/lib/css/style.css` re-pointing the base tokens (hexes, RGB triplets,
+`--tooltip-bg`, `--card-overlay`, `--badge-surface`, `--dd-fire-line`).
+`src/lib/utils/theme.js` is the registry (`THEMES`, allowlisted ids);
+Settings → Appearance renders it automatically. Rules for new code: never
+hardcode a themed color — use `var(--…)` (triplets inside `rgba()` for
+alpha variants); JS-set colors (toasts, tooltips, Auth-UI keys) take
+`var()` strings, never literals. Brand reds, Discord blurple and Reddit
+orange stay literal exceptions.
 
 ### Named Rules
 **The Gold Sparsity Rule.** Gold is love, not surface. At rest, screens are teal-on-abyss; gold appears on liked hearts, popular badges, and rare celebration moments. Its rarity is what makes it gleam.

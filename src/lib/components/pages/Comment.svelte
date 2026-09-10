@@ -32,16 +32,16 @@
             console.error('Error deleting comment: ', error.message);
             toast.push('Error deleting comment!', {
                 theme: {
-                    '--toastBackground': 'rgba(0,65,80,0.95)',
-                    '--toastColor': '#f0f8ff'
+                    '--toastBackground': 'rgba(var(--dd-deep2-rgb), 0.95)',
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             isDeleting = false;
         } else {
             toast.push('Comment deleted!', {
                 theme: {
-                    '--toastBackground': 'rgba(0,65,80,0.95)',
-                    '--toastColor': '#f0f8ff'
+                    '--toastBackground': 'rgba(var(--dd-deep2-rgb), 0.95)',
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             await invalidateAll();
@@ -69,8 +69,8 @@
         if (!replyContent || replyContent.trim() === '') {
             toast.push('Reply content cannot be empty!', {
                 theme: {
-                    '--toastBackground': 'rgba(0,65,80,0.95)',
-                    '--toastColor': '#f0f8ff'
+                    '--toastBackground': 'rgba(var(--dd-deep2-rgb), 0.95)',
+                    '--toastColor': 'var(--text-color)'
                 }
             });
             return;
@@ -80,7 +80,7 @@
 
         const toastId = toast.push('Sending reply...', {
             theme: {
-                '--toastBackground': 'rgba(0,65,80,0.95)',
+                '--toastBackground': 'rgba(var(--dd-deep2-rgb), 0.95)',
                 '--toastColor': 'white'
             }
         });
@@ -106,8 +106,8 @@
             if (result.data.status === 200){
                 toast.push('Reply sent!', {
                     theme: {
-                        '--toastBackground': 'rgba(0,65,80,0.95)',
-                        '--toastColor': '#f0f8ff'
+                        '--toastBackground': 'rgba(var(--dd-deep2-rgb), 0.95)',
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
                 await invalidateAll();
@@ -116,16 +116,16 @@
             } else {
                 toast.push('Error sending reply!', {
                     theme: {
-                        '--toastBackground': 'rgba(0,65,80,0.95)',
-                        '--toastColor': '#f0f8ff'
+                        '--toastBackground': 'rgba(var(--dd-deep2-rgb), 0.95)',
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
         } else {
             toast.push('Error sending reply!', {
                 theme: {
-                    '--toastBackground': 'rgba(0,65,80,0.95)',
-                    '--toastColor': '#f0f8ff'
+                    '--toastBackground': 'rgba(var(--dd-deep2-rgb), 0.95)',
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }
@@ -274,8 +274,8 @@
 <style>
     .comment-card {
         position: relative;
-        background: #0a141f;
-        border: 1px solid #1c3350;
+        background: var(--dd-surface);
+        border: 1px solid var(--dd-edge);
         border-radius: 0.875rem;
         padding: 1rem;
         margin-bottom: 0.5rem;
@@ -284,14 +284,14 @@
     }
 
     .comment-card:hover {
-        border-color: rgba(32, 221, 224, 0.3);
-        background: #0e1c2e;
-        box-shadow: 0 4px 20px rgba(0, 165, 148, 0.15);
+        border-color: rgba(var(--dd-bright-rgb), 0.3);
+        background: var(--dd-surface-2);
+        box-shadow: 0 4px 20px rgba(var(--dd-accent-rgb), 0.15);
     }
 
     .comment-card.is-reply {
         margin-left: 0;
-        background: #04090f;
+        background: var(--dd-abyss);
     }
 
     .comment-card.is-deleting {
@@ -309,7 +309,7 @@
         top: 0;
         bottom: 0;
         width: 3px;
-        background: #00a594;
+        background: var(--dd-accent);
         opacity: 0;
         transition: opacity 0.25s ease;
     }
@@ -340,7 +340,7 @@
         top: 56px;
         bottom: -1rem;
         width: 2px;
-        background: rgba(0, 165, 148, 0.25);
+        background: rgba(var(--dd-accent-rgb), 0.25);
         transform: translateX(-50%);
     }
 
@@ -366,24 +366,24 @@
 
     .username {
         font-weight: 600;
-        color: #f0f8ff;
+        color: var(--text-color);
         text-decoration: none;
         transition: color 0.2s ease;
     }
 
     .username:hover {
-        color: #8ff7f8;
+        color: var(--dd-accent-hover);
         text-decoration: none;
     }
 
     .timestamp {
         font-size: 0.8rem;
-        color: #8ba3b0;
+        color: var(--text-muted);
     }
 
     /* Comment Text */
     .comment-text {
-        color: #cce0e5;
+        color: var(--text-secondary);
         line-height: 1.6;
         word-wrap: break-word;
         font-size: 0.95rem;
@@ -409,8 +409,8 @@
         height: 32px;
         border: none;
         border-radius: 0.5rem;
-        background: rgba(0, 165, 148, 0.15);
-        color: #cce0e5;
+        background: rgba(var(--dd-accent-rgb), 0.15);
+        color: var(--text-secondary);
         cursor: pointer;
         transition: all 0.2s ease;
     }
@@ -420,8 +420,8 @@
     }
 
     .reply-btn:hover {
-        background: rgba(0, 165, 148, 0.25);
-        color: #8ff7f8;
+        background: rgba(var(--dd-accent-rgb), 0.25);
+        color: var(--dd-accent-hover);
     }
 
     .delete-btn:hover {
@@ -443,30 +443,30 @@
         display: flex;
         gap: 0.5rem;
         align-items: center;
-        background: #04090f;
-        border: 1px solid #1c3350;
+        background: var(--dd-abyss);
+        border: 1px solid var(--dd-edge);
         border-radius: 0.625rem;
         padding: 0.5rem;
         transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .reply-input-wrapper:focus-within {
-        border-color: rgba(32, 221, 224, 0.5);
-        box-shadow: 0 0 0 3px rgba(0, 165, 148, 0.15);
+        border-color: rgba(var(--dd-bright-rgb), 0.5);
+        box-shadow: 0 0 0 3px rgba(var(--dd-accent-rgb), 0.15);
     }
 
     .reply-input {
         flex: 1;
         background: transparent;
         border: none;
-        color: #f0f8ff;
+        color: var(--text-color);
         font-size: 0.9rem;
         padding: 0.375rem 0.5rem;
         outline: none;
     }
 
     .reply-input::placeholder {
-        color: #8ba3b0;
+        color: var(--text-muted);
     }
 
     .reply-actions {
@@ -496,12 +496,12 @@
     }
 
     .reply-btn-action.send {
-        background: #004a5a;
-        color: #f0f8ff;
+        background: var(--dd-deep-2);
+        color: var(--text-color);
     }
 
     .reply-btn-action.send:hover:not(:disabled) {
-        background: #00a594;
+        background: var(--dd-accent);
         transform: scale(1.05);
     }
 
@@ -515,7 +515,7 @@
     .replies-container {
         margin-left: 2rem;
         padding-left: 1rem;
-        border-left: 2px solid #1c3350;
+        border-left: 2px solid var(--dd-edge);
         margin-top: 0.25rem;
     }
 

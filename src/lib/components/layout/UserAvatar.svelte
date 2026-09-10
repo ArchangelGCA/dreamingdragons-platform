@@ -109,24 +109,24 @@
     }
 
     .avatar-style:hover {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.35);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-bright-rgb), 0.35);
     }
 
     .avatar-fallback {
-        background: #004a5a;
-        border: 2px solid rgba(32, 221, 224, 0.4);
+        background: var(--dd-deep-2);
+        border: 2px solid rgba(var(--dd-bright-rgb), 0.4);
         transition: all 0.15s ease-in-out;
         user-select: none;
         flex-shrink: 0;
     }
 
     .avatar-fallback:hover {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.35);
-        border-color: rgba(32, 221, 224, 0.7);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(var(--dd-bright-rgb), 0.35);
+        border-color: rgba(var(--dd-bright-rgb), 0.7);
     }
 
     .avatar-initial {
-        color: #f0f8ff;
+        color: var(--text-color);
         font-weight: 600;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         line-height: 1;

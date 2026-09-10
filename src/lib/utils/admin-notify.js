@@ -18,7 +18,7 @@ export function notifyWorking(message) {
 export function notifySuccess(message) {
 	toast.push(message, {
 		duration: 5000,
-		theme: { '--toastBackground': '#004a5a', '--toastColor': '#f0f8ff' }
+		theme: { '--toastBackground': 'var(--dd-deep-2)', '--toastColor': 'var(--text-color)' }
 	});
 }
 

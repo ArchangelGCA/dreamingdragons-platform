@@ -102,16 +102,16 @@
                     isFollowing = true;
                     toast.push('➕ You\'re now following ' + profile.username + "!", {
                         theme: {
-                            '--toastBackground': '#004a5a',
-                            '--toastColor': '#f0f8ff'
+                            '--toastBackground': 'var(--dd-deep-2)',
+                            '--toastColor': 'var(--text-color)'
                         }
                     });
                 } else {
                     isFollowing = false;
                     toast.push('➖ You\'ve unfollowed ' + profile.username + "!", {
                         theme: {
-                            '--toastBackground': '#004a5a',
-                            '--toastColor': '#f0f8ff'
+                            '--toastBackground': 'var(--dd-deep-2)',
+                            '--toastColor': 'var(--text-color)'
                         }
                     });
                 }
@@ -119,7 +119,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -128,7 +128,7 @@
             toast.push('Error: ' + result.data.body.message, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }
@@ -140,15 +140,15 @@
         navigator.clipboard.writeText(profile.id).then(() => {
             toast.push('📋 Copied to clipboard!', {
                 theme: {
-                    '--toastBackground': '#004a5a',
-                    '--toastColor': '#f0f8ff'
+                    '--toastBackground': 'var(--dd-deep-2)',
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }).catch(err => {
             toast.push('Error: ' + err, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         });
@@ -178,8 +178,8 @@
                     allLikedBooksLoaded = true;
                     toast.push('🎉 All favourites loaded!', {
                         theme: {
-                            '--toastBackground': '#004a5a',
-                            '--toastColor': '#f0f8ff'
+                            '--toastBackground': 'var(--dd-deep-2)',
+                            '--toastColor': 'var(--text-color)'
                         }
                     });
                 } else {
@@ -193,7 +193,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -201,7 +201,7 @@
             toast.push('Error: ' + result.data.body.message, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }
@@ -242,7 +242,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#f0f8ff'
+                        '--toastColor': 'var(--text-color)'
                     }
                 });
             }
@@ -250,7 +250,7 @@
             toast.push('Error: ' + result.data.body.message, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#f0f8ff'
+                    '--toastColor': 'var(--text-color)'
                 }
             });
         }
@@ -396,17 +396,17 @@
             </div>
         </div>
         <div class="row justify-content-center mx-0 mt-3">
-            <div class="col-12 bg-light-subtle bg-info-profile rounded-4">
+            <div class="col-12 bg-info-profile rounded-4">
                 <div class="row dropdown justify-content-center align-items-center text-center py-3">
                     <div class="col-4 col-md-3 align-items-center" id="followers"
                          aria-expanded="false">
                         <div class="row justify-content-center d-flex align-items-center" data-bs-toggle="dropdown"
                              use:tooltip={{...tooltipConfig, content: 'Followers'}}>
                             <div class="col-auto d-flex align-items-center pe-0">
-                                <i class="fas fa-user"></i>
+                                <i class="fas fa-user stat-aqua"></i>
                             </div>
                             <div class="col-auto mt-1">
-                                <span class="">{total_followers}</span>
+                                <span class="tnum">{total_followers}</span>
                             </div>
                         </div>
                         <div class="dropdown-menu ms-md-5 py-1 border-0 followers-container"
@@ -432,10 +432,10 @@
                         <div class="row justify-content-center d-flex align-items-center"
                              use:tooltip={{...tooltipConfig, content: 'Total likes'}}>
                             <div class="col-auto d-flex align-items-center pe-0">
-                                <i class="fas fa-heart"></i>
+                                <i class="fas fa-heart stat-gold"></i>
                             </div>
                             <div class="col-auto mt-1">
-                                <span class="">{total_likes}</span>
+                                <span class="tnum">{total_likes}</span>
                             </div>
                         </div>
                     </div>
@@ -444,7 +444,7 @@
                              use:tooltip={{...tooltipConfig, content: `Joined: ${new Date(profile.created_at).toLocaleDateString('en-US', {year: 'numeric', month: 'long'})}`}}
                         >
                             <div class="col-auto d-flex align-items-center pe-0">
-                                <i class="fas fa-calendar-alt"></i>
+                                <i class="fas fa-calendar-alt stat-dim"></i>
                             </div>
                             <div class="col-auto mt-1">
                                 <span class="h6">{new Date(profile.created_at).getFullYear()}</span>
@@ -454,7 +454,7 @@
                     <div class="col-12 col-md-3 px-4">
                         <div class="row justify-content-center">
                             <div class="col-11 col-md-auto px-0">
-                                <button class="btn btn-outline-light w-100 mt-3 mt-md-0 shadow" onclick={handleFollow}
+                                <button class="btn btn-purple w-100 mt-3 mt-md-0" onclick={handleFollow}
                                         use:tooltip={{...tooltipConfig, content: isFollowing ? '➖ Unfollow' : '➕ Follow'}}>
                                     <i class="fas {isFollowing ? 'fa-user-minus' : 'fa-user-plus'}"></i>
                                     <span class="ms-1">{isFollowing ? 'Unfollow' : 'Follow'}</span>
@@ -468,30 +468,29 @@
         <!-- Options to view gallery or favourites -->
         <div class="row mt-3 justify-content-center text-center">
             <div class="col-auto">
-                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'home') ? 'active' : ''}"
+                <div class="view-segment" role="tablist" aria-label="Profile content">
+                <button class="btn btn-view-options px-3 py-2 {(show === 'home') ? 'active' : ''}"
+                        role="tab" aria-selected={show === 'home'}
                         onclick={() => show = 'home'}
                         use:tooltip={{...tooltipConfig, content: `${profile.username} Home 🏠`}}>Home
                 </button>
-            </div>
             {#if profile.show_favourites || isOwner}
-                <div class="col-auto">
-                    <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'favourites') ? 'active' : ''}"
+                    <button class="btn btn-view-options px-3 py-2 {(show === 'favourites') ? 'active' : ''}"
+                            role="tab" aria-selected={show === 'favourites'}
                             onclick={() => show = 'favourites'}
                             use:tooltip={{...tooltipConfig, content: isOwner ? 'Owner can always see his favs 😉' : `${profile.username} Favs 🩷`}}
                     >
                         Favourites
                     </button>
-                </div>
             {:else}
-                <div class="col-auto">
-                    <button class="btn btn-view-options rounded-3 px-3 py-2 disabled">Favourites</button>
-                </div>
+                    <button class="btn btn-view-options px-3 py-2 disabled" disabled>Favourites</button>
             {/if}
-            <div class="col-auto">
-                <button class="btn btn-view-options rounded-3 px-3 py-2 {(show === 'galleries') ? 'active' : ''}"
+                <button class="btn btn-view-options px-3 py-2 {(show === 'galleries') ? 'active' : ''}"
+                        role="tab" aria-selected={show === 'galleries'}
                         onclick={() => show = 'galleries'}
                         use:tooltip={{...tooltipConfig, content: `${profile.username} Galleries 🖼️`}}>Galleries
                 </button>
+                </div>
             </div>
         </div>
         <!-- Content section -->
@@ -634,72 +633,111 @@
         font-size: 1.6rem;
     }
 
+    .stat-aqua {
+        color: var(--dd-accent-bright);
+    }
+
+    .stat-gold {
+        color: var(--dd-gold);
+        filter: drop-shadow(0 0 4px rgba(var(--dd-gold-rgb), 0.45));
+    }
+
+    .stat-dim {
+        color: var(--text-muted);
+    }
+
     .bg-info-profile {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #04090f;
-        border: 1px solid #1c3350;
+            var(--dd-surface);
+        border: 1px solid var(--dd-edge);
         box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
     }
 
     .dropdown-menu {
-        background-color: rgba(0, 65, 80, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb), 0.95);
     }
 
     .dropdown-item:hover {
-        background-color: rgba(0, 74, 90, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb), 0.95);
     }
 
     .dropdown-item:active {
-        background-color: rgba(0, 74, 90, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb), 0.95);
     }
 
     .dropdown-item:focus {
-        background-color: rgba(0, 74, 90, 0.95);
+        background-color: rgba(var(--dd-deep2-rgb), 0.95);
     }
 
     .link-purple {
-        color: #20dde0;
+        color: var(--dd-accent-bright);
         transition: color 0.3s;
     }
 
     .link-purple:hover {
-        color: #8ff7f8;
+        color: var(--dd-accent-hover);
     }
 
     #followers {
         cursor: pointer;
     }
 
+    /* Segmented tab control: quiet pill track, active tab reads as
+       bright text with an aqua underline-glow (no solid fill). */
+    .view-segment {
+        display: inline-flex;
+        gap: 2px;
+        padding: 4px;
+        background: var(--dd-abyss);
+        border: 1px solid var(--dd-edge);
+        border-radius: 999px;
+    }
+
     .btn-view-options {
         background-color: transparent;
-        color: #f0f8ff;
+        color: var(--text-muted);
         border: 1px solid transparent;
-        border-radius: 5px;
-        transition: background-color 0.3s;
+        border-radius: 999px;
+        position: relative;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
     }
 
     .btn-view-options:hover {
-        background-color: #00a594;
-        color: #02120f;
-        border-color: rgba(255, 216, 138, 0.4);
-        box-shadow: 0 0 0.5rem 0.1rem rgba(32, 221, 224, 0.35);
+        background-color: rgba(var(--dd-accent-rgb), 0.10);
+        color: var(--dd-accent-bright);
     }
 
     .btn-view-options.active {
-        background-color: #00a594;
-        color: #02120f;
-        border-color: rgba(255, 216, 138, 0.5);
-        border-radius: 5px;
-        box-shadow: 0 0 0.25rem 0.15rem rgba(0, 165, 148, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        background-color: transparent;
+        color: var(--dd-accent-bright);
+        font-weight: 700;
+    }
+
+    .btn-view-options.active::after {
+        content: '';
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: 2px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--dd-accent-bright);
+        box-shadow: 0 0 0.4rem 0.05rem rgba(var(--dd-bright-rgb), 0.6);
     }
 
     .btn-view-options:active {
-        background-color: #004a5a;
-        color: #f0f8ff;
-        border-color: rgba(255, 216, 138, 0.5);
-        border-radius: 5px;
-        box-shadow: 0 0 0.25rem 0.15rem rgba(0, 165, 148, 0.45);
+        background-color: rgba(var(--dd-accent-rgb), 0.16);
+        color: var(--dd-accent-bright);
+    }
+
+    .btn-view-options.disabled {
+        opacity: 0.4;
+    }
+
+    .btn-view-options:focus-visible {
+        outline: 2px solid var(--dd-accent-bright);
+        outline-offset: 2px;
     }
 
     .btn-username {
@@ -708,13 +746,13 @@
         padding: 0;
         font: inherit;
         cursor: pointer;
-        color: #f0f8ff;
+        color: var(--text-color);
         text-decoration: none;
         transition: color 0.15s;
     }
 
     .btn-username:hover {
-        color: #20dde0;
+        color: var(--dd-accent-bright);
     }
 
     /* Modern Gallery Cards for Profile */
@@ -725,8 +763,8 @@
     .gallery-card-profile {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #0a141f;
-        border: 1px solid #1c3350;
+            var(--dd-surface);
+        border: 1px solid var(--dd-edge);
         border-radius: 16px;
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -744,8 +782,8 @@
 
     .gallery-card-profile:hover {
         transform: translateY(-4px);
-        border-color: rgba(32, 221, 224, 0.4);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.25);
+        border-color: rgba(var(--dd-bright-rgb), 0.4);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(var(--dd-bright-rgb), 0.25);
     }
 
     .gallery-preview-profile {
@@ -753,7 +791,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #04090f;
+        background: var(--dd-abyss);
         position: relative;
         overflow: hidden;
     }
@@ -867,9 +905,9 @@
     }
 
     .btn-edit-gallery {
-        background: #00a594;
-        color: #02120f;
-        border: 1px solid rgba(32, 221, 224, 0.4);
+        background: var(--dd-accent);
+        color: var(--dd-accent-ink);
+        border: 1px solid rgba(var(--dd-bright-rgb), 0.4);
         border-radius: 50%;
         width: 36px;
         height: 36px;
@@ -884,10 +922,10 @@
     }
 
     .btn-edit-gallery:hover {
-        background: #20dde0;
+        background: var(--dd-accent-bright);
         transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.35);
-        color: #02120f;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), 0 0 0.6rem 0.15rem rgba(var(--dd-bright-rgb), 0.35);
+        color: var(--dd-accent-ink);
         text-decoration: none;
     }
 

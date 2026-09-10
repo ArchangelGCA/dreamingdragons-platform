@@ -29,7 +29,7 @@
 
 <style>
     .gradient-text {
-        color: #f0f8ff;
+        color: var(--text-color);
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         font-weight: 700;
     }
@@ -37,8 +37,8 @@
     .edit-header {
         background:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
-            #04090f;
-        border: 1px solid #1c3350;
+            var(--dd-abyss);
+        border: 1px solid var(--dd-edge);
         backdrop-filter: blur(20px);
         border-radius: 20px;
         padding: 2rem;
@@ -57,7 +57,7 @@
     }
 
     .text-muted {
-        color: #8ba3b0 !important;
+        color: var(--text-muted) !important;
     }
 
     /* Mobile Responsiveness */

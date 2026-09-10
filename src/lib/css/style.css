@@ -24,6 +24,29 @@
     --dd-gold-soft: #ffd88a;           /* soft tip of the gold */
     --dd-gold-ink: #241a04;            /* dark text on gold fills */
     --dd-fire-line: linear-gradient(90deg, transparent 0%, rgba(32, 221, 224, 0.5) 30%, rgba(255, 201, 77, 0.55) 55%, rgba(255, 216, 138, 0.35) 80%, transparent 100%);
+    --dd-track: #06121e;               /* scrollbar / progress tracks */
+    --dd-accent-soft: #5eead4;         /* soft mint tip of the teal */
+    --tooltip-bg: rgba(0, 65, 80, 0.95); /* tooltip panel (JS reads this var) */
+    --card-overlay: rgba(2, 8, 14, 0.88); /* content-card inscription overlay */
+    --badge-surface: rgba(6, 16, 26, 0.95); /* content-type badge plate */
+    --edge-translucent: rgba(28, 51, 80, 0.55); /* Bootstrap translucent border */
+    --link-secondary-color: #9db8c2;     /* link-secondary rest (dark-bg only) */
+
+    /* RGB triplets for alpha variants — redefined per theme so
+       rgba(var(--dd-accent-rgb), 0.4) switches palettes automatically. */
+    --dd-accent-rgb: 0, 165, 148;
+    --dd-bright-rgb: 32, 221, 224;
+    --dd-hover-rgb: 143, 247, 248;
+    --dd-gold-rgb: 255, 201, 77;
+    --dd-goldsoft-rgb: 255, 216, 138;
+    --dd-deep2-rgb: 0, 74, 90;
+    --dd-accent-ink-rgb: 2, 18, 15;
+    --dd-text-rgb: 240, 248, 255;
+    --dd-text2-rgb: 204, 224, 229;
+    --dd-muted-rgb: 139, 163, 176;
+    --dd-edge-rgb: 28, 51, 80;
+    --dd-black-rgb: 0, 0, 0;
+    --dd-surface-rgb: 10, 20, 31;
 
     /* Back-compat aliases (old names keep working, new palette shines through) */
     --forge-night: var(--dd-black);
@@ -42,6 +65,8 @@
     --ember-line: var(--dd-fire-line);
 
     --text-color: #f0f8ff;
+    --text-secondary: #cce0e5;
+    --text-muted: #8ba3b0;
     --background-color: var(--dd-black);
     --surface-color: var(--dd-surface);
     --border-color: var(--dd-edge);
@@ -55,31 +80,33 @@
 
     --spacing-unit: 1rem;
 
-    /* Override Bootstrap CSS Variables to match the dragon-teal theme */
+    /* Override Bootstrap CSS Variables to match the active theme.
+       Derived entries reference base tokens so a theme override
+       (html[data-theme="vault"]) cascades automatically. */
     --bs-primary: var(--dd-accent);
-    --bs-primary-rgb: 0, 165, 148;
+    --bs-primary-rgb: var(--dd-accent-rgb);
     --bs-primary-bg-subtle: #06302b;
     --bs-primary-border-subtle: #0a4a43;
-    --bs-primary-text-emphasis: #5eead4;
+    --bs-primary-text-emphasis: var(--dd-accent-soft);
 
     --bs-secondary: var(--surface-color);
-    --bs-secondary-rgb: 10, 20, 31;
+    --bs-secondary-rgb: var(--dd-surface-rgb);
 
     /* Bootstrap text-secondary override for better visibility */
-    --bs-secondary-color: #cce0e5;
-    --bs-secondary-color-rgb: 204, 224, 229;
+    --bs-secondary-color: var(--text-secondary);
+    --bs-secondary-color-rgb: var(--dd-text2-rgb);
 
     --bs-body-color: var(--text-color);
     --bs-body-bg: var(--background-color);
-    --bs-body-bg-rgb: 0, 0, 0;
+    --bs-body-bg-rgb: var(--dd-black-rgb);
 
     --bs-border-color: var(--border-color);
-    --bs-border-color-translucent: rgba(28, 51, 80, 0.55);
+    --bs-border-color-translucent: var(--edge-translucent);
 
-    --bs-link-color: #20dde0;
-    --bs-link-color-rgb: 32, 221, 224;
-    --bs-link-hover-color: #8ff7f8;
-    --bs-link-hover-color-rgb: 143, 247, 248;
+    --bs-link-color: var(--dd-accent-bright);
+    --bs-link-color-rgb: var(--dd-bright-rgb);
+    --bs-link-hover-color: var(--dd-accent-hover);
+    --bs-link-hover-color-rgb: var(--dd-hover-rgb);
 
     --bs-success: hsl(140, 60%, 50%);
     --bs-success-rgb: 51, 204, 102;
@@ -93,31 +120,31 @@
 
 /* Bootstrap text utilities overrides for better visibility in dark theme */
 .text-secondary {
-    --bs-secondary-color: #cce0e5;
+    --bs-secondary-color: var(--text-secondary);
     color: var(--bs-secondary-color) !important;
 }
 
 .link-secondary {
-    --bs-secondary-color: #9db8c2;
+    --bs-secondary-color: var(--link-secondary-color);
     color: var(--bs-secondary-color) !important;
     text-decoration-color: var(--bs-secondary-color) !important;
 }
 
 .link-secondary:hover,
 .link-secondary:focus {
-    --bs-secondary-color: #20dde0;
+    --bs-secondary-color: var(--dd-accent-bright);
     color: var(--bs-secondary-color) !important;
     text-decoration-color: var(--bs-secondary-color) !important;
 }
 
 /* Keep text-secondary-emphasis more visible for important secondary content */
 .text-secondary-emphasis {
-    color: #dfeef3 !important;
+    color: var(--text-color) !important;
 }
 
 /* Text-muted override for better visibility */
 .text-muted {
-    color: #8ba3b0 !important;
+    color: var(--text-muted) !important;
 }
 
 /* For light backgrounds, use darker secondary text */
@@ -162,15 +189,15 @@ body {
 }
 
 ::selection {
-    background: rgba(0, 165, 148, 0.45);
-    color: #f0f8ff;
+    background: rgba(var(--dd-accent-rgb), 0.45);
+    color: var(--text-color);
 }
 
 /* OLED Abyss: true black ground with ONE subtle teal breath at the top.
    Single layer only — no stacked gradients (2026 calm + OLED savings). */
 .bg-main-gradient {
     background:
-        radial-gradient(900px 220px at 50% -60px, rgba(0, 165, 148, 0.10) 0%, transparent 70%),
+        radial-gradient(900px 220px at 50% -60px, rgba(var(--dd-accent-rgb), 0.10) 0%, transparent 70%),
         var(--dd-black);
     background-color: var(--dd-black);
     background-attachment: fixed;
@@ -295,18 +322,18 @@ h1, h2, h3, h4, h5, h6 {
 
 .heat-dot-hot {
     background: var(--dd-accent-bright);
-    box-shadow: 0 0 0.55rem 0.1rem rgba(32, 221, 224, 0.55);
+    box-shadow: 0 0 0.55rem 0.1rem rgba(var(--dd-bright-rgb), 0.55);
 }
 
 .heat-dot-ember {
     background: var(--dd-gold);
-    box-shadow: 0 0 0.5rem 0.1rem rgba(255, 201, 77, 0.5);
+    box-shadow: 0 0 0.5rem 0.1rem rgba(var(--dd-gold-rgb), 0.5);
 }
 
 .heat-dot-cool {
     background: var(--dd-deep-1);
     border: 1px solid var(--dd-edge-teal);
-    box-shadow: 0 0 0.4rem 0.08rem rgba(0, 165, 148, 0.35);
+    box-shadow: 0 0 0.4rem 0.08rem rgba(var(--dd-accent-rgb), 0.35);
 }
 
 .forge-title {
@@ -328,7 +355,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .column-vertical::-webkit-scrollbar-track {
-    background: rgba(0, 165, 148, 0.12);
+    background: rgba(var(--dd-accent-rgb), 0.12);
 }
 
 .column-vertical::-webkit-scrollbar-thumb {
@@ -356,16 +383,16 @@ h1, h2, h3, h4, h5, h6 {
 .btn-dragon {
     background: var(--dd-accent);
     color: var(--dd-accent-ink);
-    border: 1px solid rgba(32, 221, 224, 0.4);
+    border: 1px solid rgba(var(--dd-bright-rgb), 0.4);
     box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
 
 .btn-purple:hover,
 .btn-dragon:hover {
     background: var(--dd-accent-bright);
-    color: #012a26;
-    border-color: rgba(143, 247, 248, 0.7);
-    box-shadow: 0 0 0.7rem 0.15rem rgba(32, 221, 224, 0.4);
+    color: var(--dd-accent-ink);
+    border-color: rgba(var(--dd-hover-rgb), 0.7);
+    box-shadow: 0 0 0.7rem 0.15rem rgba(var(--dd-bright-rgb), 0.4);
 }
 
 .btn-purple:active,
@@ -377,13 +404,13 @@ h1, h2, h3, h4, h5, h6 {
 .btn-gold {
     background: var(--dd-gold);
     color: var(--dd-gold-ink);
-    border: 1px solid rgba(255, 201, 77, 0.5);
+    border: 1px solid rgba(var(--dd-gold-rgb), 0.5);
 }
 
 .btn-gold:hover {
     background: var(--dd-gold-soft);
     color: var(--dd-gold-ink);
-    box-shadow: 0 0 0.7rem 0.15rem rgba(255, 201, 77, 0.35);
+    box-shadow: 0 0 0.7rem 0.15rem rgba(var(--dd-gold-rgb), 0.35);
 }
 
 .blink {
@@ -403,13 +430,13 @@ h1, h2, h3, h4, h5, h6 {
 /* Retained for compat; no longer applied to primary buttons (calm-by-default). */
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(32, 221, 224, 0.45);
+        box-shadow: 0 0 0 0 rgba(var(--dd-bright-rgb), 0.45);
     }
     70% {
-        box-shadow: 0 0 0 10px rgba(32, 221, 224, 0);
+        box-shadow: 0 0 0 10px rgba(var(--dd-bright-rgb), 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(32, 221, 224, 0);
+        box-shadow: 0 0 0 0 rgba(var(--dd-bright-rgb), 0);
     }
 }
 
@@ -460,6 +487,67 @@ h1, h2, h3, h4, h5, h6 {
 /* Tabular numerals for counts and stats. */
 .tnum {
     font-variant-numeric: tabular-nums;
+}
+
+/* ---- Legacy theme: "Royal Vault" (pre-0.15 palette) ----
+   Selected per-user via html[data-theme="vault"] (see src/lib/utils/theme.js).
+   Same structure, old soul: hue-273 royal purple spine, magenta links,
+   ember→magenta heat ramp. To add a third theme, copy this block with a
+   new data-theme value and re-point the base tokens below. */
+html[data-theme="vault"] {
+    --primary-hue: 273;
+    --primary-saturation: 100%;
+    --primary-lightness: 33%;
+
+    --dd-black: #0a0610;
+    --dd-abyss: #120a1c;
+    --dd-surface: #170d21;
+    --dd-surface-2: #221430;
+    --dd-edge: #342043;
+    --dd-edge-teal: rgba(196, 0, 255, 0.14);
+    --dd-deep-1: #0b0086;
+    --dd-deep-2: #410075;
+    --dd-accent: #5c00a6;
+    --dd-accent-bright: #c400ff;
+    --dd-accent-hover: #ff00fb;
+    --dd-accent-ink: #ffffff;
+    --dd-accent-soft: hsl(275, 100%, 67%);
+    --dd-gold: #ff2bd6;
+    --dd-gold-soft: #ffab5e;
+    --dd-gold-ink: #ffffff;
+    --dd-fire-line: linear-gradient(90deg, transparent 0%, rgba(196, 0, 255, 0.55) 30%, rgba(255, 123, 43, 0.75) 55%, rgba(255, 171, 94, 0.4) 80%, transparent 100%);
+    --dd-track: #1f002e;
+    --tooltip-bg: rgba(92, 0, 166, 0.9);
+    --card-overlay: rgba(30, 10, 50, 0.88);
+    --badge-surface: rgba(34, 19, 50, 0.95);
+    --edge-translucent: rgba(64, 64, 64, 0.175);
+    --link-secondary-color: #8f7bb8;
+
+    --dd-accent-rgb: 92, 0, 166;
+    --dd-bright-rgb: 196, 0, 255;
+    --dd-hover-rgb: 255, 0, 251;
+    --dd-gold-rgb: 255, 43, 214;
+    --dd-goldsoft-rgb: 255, 171, 94;
+    --dd-deep2-rgb: 65, 0, 117;
+    --dd-accent-ink-rgb: 255, 255, 255;
+    --dd-text-rgb: 230, 230, 230;
+    --dd-text2-rgb: 166, 166, 166;
+    --dd-muted-rgb: 153, 153, 153;
+    --dd-edge-rgb: 64, 64, 64;
+    --dd-black-rgb: 10, 6, 16;
+    --dd-surface-rgb: 38, 38, 38;
+
+    --text-color: hsl(0, 0%, 90%);
+    --text-secondary: hsl(0, 0%, 65%);
+    --text-muted: hsl(0, 0%, 60%);
+
+    --login-color: hsl(290, 100%, 50%);
+    --register-color: hsl(300, 100%, 50%);
+    --magic-link-color: hsl(275, 100%, 67%);
+
+    --bs-primary-bg-subtle: hsl(273, 100%, 13%);
+    --bs-primary-border-subtle: hsl(273, 100%, 23%);
+    --bs-primary-text-emphasis: hsl(273, 100%, 53%);
 }
 
 @media (prefers-reduced-motion: reduce) {

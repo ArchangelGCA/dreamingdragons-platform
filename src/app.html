@@ -6,6 +6,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="theme-color" content="#000000">
+    <script>
+        /* Pre-paint theme: mirrors src/lib/utils/theme.js (keep ids in sync:
+           deep = default, vault = legacy). Runs before stylesheets apply so
+           the saved palette paints on the very first frame (no flash). */
+        try {
+            var __m = document.cookie.match(/(?:^|; )dd-theme=([^;]*)/);
+            var __t = (__m && decodeURIComponent(__m[1])) || localStorage.getItem('dd-theme') || 'deep';
+            if (__t !== 'deep' && __t !== 'vault') __t = 'deep';
+            document.documentElement.dataset.theme = __t;
+        } catch (e) { document.documentElement.dataset.theme = 'deep'; }
+    </script>
     <link rel="icon" type="image/png" href="%sveltekit.assets%/favicon-96x96.png" sizes="96x96"/>
     <link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg"/>
     <link rel="shortcut icon" href="%sveltekit.assets%/favicon.ico"/>
