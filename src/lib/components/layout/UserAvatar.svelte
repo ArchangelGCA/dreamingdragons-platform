@@ -102,32 +102,31 @@
 
 <style>
     .avatar-style {
-        box-shadow: 0 0 0 0 rgba(92, 0, 166, 0.75);
+        box-shadow: none;
         transition: all 0.15s ease-in-out;
         object-fit: cover;
         flex-shrink: 0;
     }
 
     .avatar-style:hover {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.35);
     }
 
     .avatar-fallback {
-        background: linear-gradient(135deg, #5c00a6 0%, #8b00d4 50%, #5c00a6 100%);
-        border: 2px solid rgba(196, 0, 255, 0.4);
-        box-shadow: 0 0 0.3rem 0.1rem rgba(92, 0, 166, 0.4);
+        background: #004a5a;
+        border: 2px solid rgba(32, 221, 224, 0.4);
         transition: all 0.15s ease-in-out;
         user-select: none;
         flex-shrink: 0;
     }
 
     .avatar-fallback:hover {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
-        border-color: rgba(196, 0, 255, 0.7);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.35);
+        border-color: rgba(32, 221, 224, 0.7);
     }
 
     .avatar-initial {
-        color: #ffffff;
+        color: #f0f8ff;
         font-weight: 600;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         line-height: 1;

@@ -41,24 +41,24 @@
         transition: all 0.15s ease-in-out;
     }
 
-    /* Book badge - forged plate: dark iron, ember book glyph */
+    /* Book badge - Dragon's Deep plate: dark surface, teal glyph */
     .badge-book {
         background:
-            radial-gradient(120px 40px at 50% 0%, rgba(255, 123, 43, 0.30) 0%, transparent 75%),
-            linear-gradient(135deg, rgba(34, 20, 48, 0.95) 0%, rgba(23, 13, 33, 0.98) 100%);
-        color: #fff;
-        border: 1px solid rgba(255, 171, 94, 0.35);
+            linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%),
+            rgba(6, 16, 26, 0.95);
+        color: #f0f8ff;
+        border: 1px solid rgba(32, 221, 224, 0.3);
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
 
     .badge-book .fas {
-        color: #ffab5e;
-        text-shadow: 0 0 0.4rem rgba(255, 123, 43, 0.55);
+        color: #20dde0;
+        text-shadow: 0 0 0.4rem rgba(32, 221, 224, 0.4);
     }
 
     .badge-book:hover {
-        box-shadow: 0 4px 12px rgba(196, 0, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-        border-color: rgba(255, 0, 251, 0.55);
+        box-shadow: 0 4px 12px rgba(32, 221, 224, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        border-color: rgba(32, 221, 224, 0.55);
         transform: translateY(-1px);
     }
 

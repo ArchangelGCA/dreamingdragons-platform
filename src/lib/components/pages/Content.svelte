@@ -109,7 +109,7 @@
     }
 
     .card .link-custom:hover {
-        color: hsl(333, 79%, 50%) !important;
+        color: #8ff7f8 !important;
     }
 
     .card .text-title {
@@ -130,13 +130,13 @@
     }
 
     .card.border-0 {
-        background: var(--forge-iron);
+        background: #0a141f;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
         transition: 0.1s all ease-in-out;
     }
 
     .card.border-0:hover {
-        box-shadow: 0 0 0.6rem 0.25rem hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.35);
     }
 
     .overlay-custom {
@@ -149,12 +149,12 @@
         backdrop-filter: brightness(1.2);
     }
 
-    /* Forged overlay: ember-cooling iron instead of flat purple */
+    /* Dragon's Deep overlay: solid inscription + one subtle top sheen */
     .custom-overlay-content {
         background:
-            radial-gradient(220px 90px at 50% 120%, rgba(255, 123, 43, 0.45) 0%, rgba(196, 0, 255, 0.25) 45%, transparent 75%),
-            linear-gradient(180deg, hsla(273, 100%, 22%, 0.55) 0%, hsl(273, 75%, 16%) 100%);
-        border-top: 1px solid rgba(255, 171, 94, 0.22);
+            linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
+            rgba(2, 8, 14, 0.88);
+        border-top: 1px solid rgba(32, 221, 224, 0.14);
     }
 
     @media (max-width: 768px) {

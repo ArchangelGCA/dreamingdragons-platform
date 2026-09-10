@@ -1,57 +1,86 @@
 :root {
-    /* Royal identity (binding) */
-    --primary-hue: 273;
+    /* Dragon's Deep identity (mother-site aligned, OLED-friendly).
+       Primary hue 174 = #00a594 family (dreamingdragons.net accent). */
+    --primary-hue: 174;
     --primary-saturation: 100%;
-    --primary-lightness: 33%;
+    --primary-lightness: 32%;
     --primary-color: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
     --primary-color-alpha-90: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.9);
 
-    /* Ember-Forge tokens */
-    --forge-night: #0a0610;          /* foundry night: page ground */
-    --forge-floor: #120a1c;          /* wells & large panels */
-    --forge-iron: #170d21;           /* card/panel surface */
-    --forge-iron-2: #221430;         /* raised surface */
-    --forge-edge: #342043;           /* hairline edges */
-    --ember: #ff7b2b;                /* forge heat — used sparingly, glow only */
-    --ember-soft: #ffab5e;           /* warm side of the ember */
-    --ember-magenta: #ff2bd6;        /* hot magenta (spark side) */
-    --ember-line: linear-gradient(90deg, transparent 0%, rgba(196, 0, 255, 0.55) 30%, rgba(255, 123, 43, 0.75) 55%, rgba(255, 171, 94, 0.4) 80%, transparent 100%);
+    /* Canonical Dragon's Deep tokens */
+    --dd-black: #000000;               /* OLED ground: large areas stay truly black */
+    --dd-abyss: #04090f;               /* wells & large panels */
+    --dd-surface: #0a141f;             /* card/panel surface */
+    --dd-surface-2: #0e1c2e;           /* raised surface / hover */
+    --dd-edge: #1c3350;                /* hairline edges */
+    --dd-edge-teal: rgba(32, 221, 224, 0.14); /* teal hairline on dark */
+    --dd-deep-1: #0f2c4b;              /* mother primary: deep sea navy */
+    --dd-deep-2: #004a5a;              /* mother secondary: deep teal */
+    --dd-accent: #00a594;              /* mother accent: dragonfire teal */
+    --dd-accent-bright: #20dde0;       /* mother accent-light: bright aqua */
+    --dd-accent-hover: #8ff7f8;        /* hover: near-white aqua */
+    --dd-accent-ink: #02120f;          /* dark text on teal fills */
+    --dd-gold: #ffc94d;                /* loved/popular heat (mother trophy gold) */
+    --dd-gold-soft: #ffd88a;           /* soft tip of the gold */
+    --dd-gold-ink: #241a04;            /* dark text on gold fills */
+    --dd-fire-line: linear-gradient(90deg, transparent 0%, rgba(32, 221, 224, 0.5) 30%, rgba(255, 201, 77, 0.55) 55%, rgba(255, 216, 138, 0.35) 80%, transparent 100%);
 
-    --text-color: hsl(0, 0%, 90%);
-    --background-color: var(--forge-night);
-    --surface-color: hsl(0, 0%, 15%);
-    --border-color: hsl(0, 0%, 25%);
+    /* Back-compat aliases (old names keep working, new palette shines through) */
+    --forge-night: var(--dd-black);
+    --forge-floor: var(--dd-abyss);
+    --forge-iron: var(--dd-surface);
+    --forge-iron-2: var(--dd-surface-2);
+    --forge-edge: var(--dd-edge);
+    --vault-night: var(--dd-black);
+    --vault-stone: var(--dd-abyss);
+    --vault-velvet: var(--dd-surface);
+    --vault-velvet-2: var(--dd-surface-2);
+    --vault-edge: var(--dd-edge);
+    --ember: var(--dd-gold);
+    --ember-soft: var(--dd-gold-soft);
+    --ember-magenta: var(--dd-gold);
+    --ember-line: var(--dd-fire-line);
 
-    --login-color: hsl(290, 100%, 50%);
-    --register-color: hsl(300, 100%, 50%);
-    --magic-link-color: hsl(275, 100%, 67%);
+    --text-color: #f0f8ff;
+    --background-color: var(--dd-black);
+    --surface-color: var(--dd-surface);
+    --border-color: var(--dd-edge);
+
+    --login-color: #20dde0;
+    --register-color: #ffc94d;
+    --magic-link-color: #5eead4;
 
     --font-family-sans: 'Comfortaa', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     --font-family-mono: "Menlo", "Consolas", "Monaco", "Liberation Mono", "Lucida Console", monospace;
 
     --spacing-unit: 1rem;
 
-    /* Override Bootstrap CSS Variables to match our purple theme */
-    --bs-primary: var(--primary-color);
-    --bs-primary-rgb: 92, 0, 166;
-    --bs-primary-bg-subtle: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 20%));
-    --bs-primary-border-subtle: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 10%));
-    --bs-primary-text-emphasis: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 20%));
-    
+    /* Override Bootstrap CSS Variables to match the dragon-teal theme */
+    --bs-primary: var(--dd-accent);
+    --bs-primary-rgb: 0, 165, 148;
+    --bs-primary-bg-subtle: #06302b;
+    --bs-primary-border-subtle: #0a4a43;
+    --bs-primary-text-emphasis: #5eead4;
+
     --bs-secondary: var(--surface-color);
-    --bs-secondary-rgb: 38, 38, 38;
-    
+    --bs-secondary-rgb: 10, 20, 31;
+
     /* Bootstrap text-secondary override for better visibility */
-    --bs-secondary-color: hsl(0, 0%, 65%);
-    --bs-secondary-color-rgb: 166, 166, 166;
-    
+    --bs-secondary-color: #cce0e5;
+    --bs-secondary-color-rgb: 204, 224, 229;
+
     --bs-body-color: var(--text-color);
     --bs-body-bg: var(--background-color);
-    --bs-body-bg-rgb: 10, 6, 16;
-    
+    --bs-body-bg-rgb: 0, 0, 0;
+
     --bs-border-color: var(--border-color);
-    --bs-border-color-translucent: rgba(64, 64, 64, 0.175);
-    
+    --bs-border-color-translucent: rgba(28, 51, 80, 0.55);
+
+    --bs-link-color: #20dde0;
+    --bs-link-color-rgb: 32, 221, 224;
+    --bs-link-hover-color: #8ff7f8;
+    --bs-link-hover-color-rgb: 143, 247, 248;
+
     --bs-success: hsl(140, 60%, 50%);
     --bs-success-rgb: 51, 204, 102;
     --bs-danger: hsl(0, 70%, 50%);
@@ -64,31 +93,31 @@
 
 /* Bootstrap text utilities overrides for better visibility in dark theme */
 .text-secondary {
-    --bs-secondary-color: hsl(0, 0%, 65%);
+    --bs-secondary-color: #cce0e5;
     color: var(--bs-secondary-color) !important;
 }
 
 .link-secondary {
-    --bs-secondary-color: hsl(0, 0%, 70%);
+    --bs-secondary-color: #9db8c2;
     color: var(--bs-secondary-color) !important;
     text-decoration-color: var(--bs-secondary-color) !important;
 }
 
 .link-secondary:hover,
 .link-secondary:focus {
-    --bs-secondary-color: hsl(0, 0%, 80%);
+    --bs-secondary-color: #20dde0;
     color: var(--bs-secondary-color) !important;
     text-decoration-color: var(--bs-secondary-color) !important;
 }
 
 /* Keep text-secondary-emphasis more visible for important secondary content */
 .text-secondary-emphasis {
-    color: hsl(0, 0%, 75%) !important;
+    color: #dfeef3 !important;
 }
 
 /* Text-muted override for better visibility */
 .text-muted {
-    color: hsl(0, 0%, 60%) !important;
+    color: #8ba3b0 !important;
 }
 
 /* For light backgrounds, use darker secondary text */
@@ -132,24 +161,38 @@ body {
     padding: 0;
 }
 
-/* Foundry night: near-black indigo with ember heat rising off the floor */
+::selection {
+    background: rgba(0, 165, 148, 0.45);
+    color: #f0f8ff;
+}
+
+/* OLED Abyss: true black ground with ONE subtle teal breath at the top.
+   Single layer only — no stacked gradients (2026 calm + OLED savings). */
 .bg-main-gradient {
     background:
-        radial-gradient(1100px 480px at 50% 108%, rgba(255, 123, 43, 0.10) 0%, rgba(196, 0, 255, 0.06) 32%, transparent 62%),
-        radial-gradient(900px 420px at 12% -6%, rgba(92, 0, 166, 0.16) 0%, transparent 60%),
-        radial-gradient(900px 420px at 88% -8%, rgba(196, 0, 255, 0.10) 0%, transparent 60%),
-        linear-gradient(105deg, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5) 0%, hsl(0, 0%, 0%) 140%);
-    background-color: var(--forge-night);
+        radial-gradient(900px 220px at 50% -60px, rgba(0, 165, 148, 0.10) 0%, transparent 70%),
+        var(--dd-black);
+    background-color: var(--dd-black);
     background-attachment: fixed;
 }
 
 a {
-    color: var(--primary-color);
+    color: var(--dd-accent-bright);
     text-decoration: none;
 }
 
 a:hover {
+    color: var(--dd-accent-hover);
     text-decoration: underline;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--dd-accent-bright);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -157,7 +200,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Tooltips are rendered by svelte-tooltip-gca (Popover API, top-layer).
-   See src/lib/utils/gcacommons.js tooltipConfig for the purple theme. */
+   See src/lib/utils/gcacommons.js tooltipConfig for the deep-teal theme. */
 
 .dropdown-menu a:hover {
     text-decoration: none;
@@ -165,6 +208,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .border-purple {
     border-color: var(--primary-color) !important;
+}
+
+/* Canonical alias: prefer .border-dragon in new code. */
+.border-dragon {
+    border-color: var(--dd-edge-teal) !important;
 }
 
 .text-login {
@@ -179,14 +227,29 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--magic-link-color);
 }
 
-/* The forge plate: an iron panel with an ember edge — section identity */
-.bg-purple-gradient {
-    background:
-        radial-gradient(600px 140px at 50% 0%, rgba(196, 0, 255, 0.16) 0%, transparent 70%),
-        linear-gradient(145deg, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5) 10%, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.1));
+.text-dragon {
+    color: var(--dd-accent-bright) !important;
 }
 
-/* Ember heat line: the anvil's edge — sits on top of hot sections */
+/* Dragon plate: flat abyss surface, teal hairline, one soft top sheen.
+   Keeps the old .bg-purple-gradient name working as an alias. */
+.bg-purple-gradient,
+.bg-dragon-plate {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
+        var(--dd-surface);
+    border: 1px solid var(--dd-edge);
+}
+
+.bg-abyss {
+    background-color: var(--dd-abyss);
+}
+
+.bg-surface {
+    background-color: var(--dd-surface);
+}
+
+/* Dragonfire hairline: teal into gold, low opacity — sits on top of hot sections */
 .ember-heat-line {
     position: relative;
 }
@@ -198,22 +261,59 @@ h1, h2, h3, h4, h5, h6 {
     right: 8%;
     bottom: 0;
     height: 2px;
-    background: var(--ember-line);
+    background: var(--dd-fire-line);
     border-radius: 2px;
     pointer-events: none;
 }
 
-/* Cooling rack glow for freshly forged work */
+/* Cooling rack: retired to flat (kept as a no-op alias so old markup stays valid).
+   Fresh sections now read through the heat-dot + card glow, not a wash. */
 .forge-rack {
     position: relative;
 }
 
 .forge-rack::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 -1px 0;
-    background: linear-gradient(180deg, rgba(255, 123, 43, 0.10) 0%, rgba(196, 0, 255, 0.05) 40%, transparent 70%);
-    pointer-events: none;
+    content: none;
+}
+
+/* Central section headers + heat dots (single source of truth).
+   Fresh = aqua spark, Loved = gold ember, Updated = deep-sea cool. */
+.forge-section-head {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 600;
+}
+
+.heat-dot {
+    display: inline-block;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.heat-dot-hot {
+    background: var(--dd-accent-bright);
+    box-shadow: 0 0 0.55rem 0.1rem rgba(32, 221, 224, 0.55);
+}
+
+.heat-dot-ember {
+    background: var(--dd-gold);
+    box-shadow: 0 0 0.5rem 0.1rem rgba(255, 201, 77, 0.5);
+}
+
+.heat-dot-cool {
+    background: var(--dd-deep-1);
+    border: 1px solid var(--dd-edge-teal);
+    box-shadow: 0 0 0.4rem 0.08rem rgba(0, 165, 148, 0.35);
+}
+
+.forge-title {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 25%),
+        var(--dd-surface);
+    border: 1px solid var(--dd-edge);
 }
 
 .column-vertical {
@@ -228,17 +328,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .column-vertical::-webkit-scrollbar-track {
-    background: hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.25);
+    background: rgba(0, 165, 148, 0.12);
 }
 
 .column-vertical::-webkit-scrollbar-thumb {
-    background: linear-gradient(0deg, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0), var(--primary-color) 15% 85%, hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0));
+    background: var(--dd-deep-2);
     border-radius: 8px;
     cursor: pointer;
 }
 
 .column-vertical::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-color);
+    background: var(--dd-accent);
 }
 
 .row-horizontal {
@@ -250,24 +350,40 @@ h1, h2, h3, h4, h5, h6 {
     text-decoration: none !important;
 }
 
-/* Forged primary button: purple iron, ember spark on hover */
-.btn-purple {
-    background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0) 45%),
-        linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 6%)) 0%, var(--primary-color) 100%);
-    color: white;
-    border: 1px solid rgba(196, 0, 255, 0.35);
-    box-shadow: 0 0 0.4rem 0.05rem rgba(92, 0, 166, 0.45);
-    animation: pulse 2s ease-in-out infinite;
+/* Dragon primary button: solid teal, dark ink, calm at rest (no breathing).
+   The old .btn-purple name is kept as a full alias. */
+.btn-purple,
+.btn-dragon {
+    background: var(--dd-accent);
+    color: var(--dd-accent-ink);
+    border: 1px solid rgba(32, 221, 224, 0.4);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
 
-.btn-purple:hover {
-    background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 45%),
-        linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 16%)) 0%, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 8%)) 100%);
-    color: white;
-    border-color: rgba(255, 0, 251, 0.55);
-    box-shadow: 0 0 0.8rem 0.2rem rgba(196, 0, 255, 0.55);
+.btn-purple:hover,
+.btn-dragon:hover {
+    background: var(--dd-accent-bright);
+    color: #012a26;
+    border-color: rgba(143, 247, 248, 0.7);
+    box-shadow: 0 0 0.7rem 0.15rem rgba(32, 221, 224, 0.4);
+}
+
+.btn-purple:active,
+.btn-dragon:active {
+    transform: scale(0.97);
+}
+
+/* Gold accent button for "loved / celebrate" moments (rare). */
+.btn-gold {
+    background: var(--dd-gold);
+    color: var(--dd-gold-ink);
+    border: 1px solid rgba(255, 201, 77, 0.5);
+}
+
+.btn-gold:hover {
+    background: var(--dd-gold-soft);
+    color: var(--dd-gold-ink);
+    box-shadow: 0 0 0.7rem 0.15rem rgba(255, 201, 77, 0.35);
 }
 
 .blink {
@@ -284,29 +400,29 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-/* Forge pulse: the ember breathing under a forged button */
+/* Retained for compat; no longer applied to primary buttons (calm-by-default). */
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(255, 123, 43, 0.55);
+        box-shadow: 0 0 0 0 rgba(32, 221, 224, 0.45);
     }
     70% {
-        box-shadow: 0 0 0 10px rgba(255, 123, 43, 0);
+        box-shadow: 0 0 0 10px rgba(32, 221, 224, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(255, 123, 43, 0);
+        box-shadow: 0 0 0 0 rgba(32, 221, 224, 0);
     }
 }
 
-/* Ember flicker: subtle shimmer used on hot badges and plates */
+/* Ember flicker: retired (kept as a no-op alias so old animation names parse). */
 @keyframes ember-flicker {
     0%, 100% {
         opacity: 1;
     }
     45% {
-        opacity: 0.86;
+        opacity: 0.95;
     }
     70% {
-        opacity: 0.94;
+        opacity: 0.98;
     }
 }
 
@@ -323,24 +439,35 @@ h1, h2, h3, h4, h5, h6 {
 /* ---- Admin console vocabulary (single source of truth) ----
    One card, one chip set, one dialog pattern across all admin pages. */
 .admin-card {
-    background: var(--forge-iron, #170d21);
-    border: 1px solid var(--forge-edge, #342043);
+    background: var(--dd-surface);
+    border: 1px solid var(--dd-edge);
     border-radius: 16px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
 }
 
 .admin-card-accent {
-    border-color: var(--primary-color);
+    border-color: var(--dd-edge-teal);
 }
 
-/* Brand chip for neutral admin metadata (pill, hue-273). */
-.chip-purple {
-    background: hsl(var(--primary-hue), var(--primary-saturation), var(--primary-lightness));
-    color: #fff;
+/* Brand chip for neutral admin metadata (pill, dragon teal, dark ink). */
+.chip-purple,
+.chip-dragon {
+    background: var(--dd-accent);
+    color: var(--dd-accent-ink);
     border-radius: 32px;
 }
 
 /* Tabular numerals for counts and stats. */
 .tnum {
     font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

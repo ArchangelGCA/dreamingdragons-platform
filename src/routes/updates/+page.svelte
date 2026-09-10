@@ -35,28 +35,21 @@
 
 <style>
     .bg-animated-gradient {
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient 10s ease infinite, tranform 1s ease-in-out;
+        background-color: #0f2c4b;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 
     .card {
-        background-color: rgba(92, 0, 166, 0.3);
-        border: 1px solid #bd135a;
-        box-shadow: 0 0 10px rgb(139, 0, 255);
+        background-color: rgba(0, 165, 148, 0.12);
+        border: 1px solid #1c3350;
+        box-shadow: 0 0 10px rgba(32, 221, 224, 0.25);
     }
 
     .fa-pencil {
-        color: #bd135a;
+        color: #20dde0;
     }
 
     .text-sm {
         font-size: 0.8rem;
-    }
-
-    @keyframes Gradient {
-        0% {background-position: 0% 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0% 50%;}
     }
 </style>

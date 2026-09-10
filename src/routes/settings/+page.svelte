@@ -52,9 +52,9 @@
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                        '--toastProgressBackground': '#c800ff',
+                        '--toastBackground': '#004a5a',
+                        '--toastColor': '#f0f8ff',
+                        '--toastProgressBackground': '#00a594',
                     }
                 });
                 await invalidateAll();
@@ -120,9 +120,9 @@
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                        '--toastProgressBackground': '#c800ff',
+                        '--toastBackground': '#004a5a',
+                        '--toastColor': '#f0f8ff',
+                        '--toastProgressBackground': '#00a594',
                     }
                 });
             } else {
@@ -166,9 +166,9 @@
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                        '--toastProgressBackground': '#c800ff',
+                        '--toastBackground': '#004a5a',
+                        '--toastColor': '#f0f8ff',
+                        '--toastProgressBackground': '#00a594',
                     }
                 });
             } else {
@@ -215,9 +215,9 @@
             if (result.data.status === 200) {
                 toast.push(result.data.body.message, {
                     theme: {
-                        '--toastBackground': '#5c00a6',
-                        '--toastColor': '#fff',
-                        '--toastProgressBackground': '#c800ff',
+                        '--toastBackground': '#004a5a',
+                        '--toastColor': '#f0f8ff',
+                        '--toastProgressBackground': '#00a594',
                     }
                 });
                 password = '';
@@ -474,109 +474,97 @@
 <style>
 
     .btn-purple {
-        background-color: #5c00a6;
-        color: #fff;
+        background-color: var(--primary-color);
+        color: #f0f8ff;
     }
 
     .btn-purple:hover {
-        background-color: #4a0086;
+        background-color: #00a594;
+        color: #02120f;
     }
 
     .btn-logout {
-        background-color: rgba(92, 0, 166, 0.3);
-        border: 1px solid rgba(125, 0, 221, 0.5);
+        background-color: rgba(0, 165, 148, 0.28);
+        border: 1px solid rgba(32, 221, 224, 0.4);
     }
 
     .btn-logout:hover {
-        background-color: rgba(92, 0, 166, 0.5);
-        border: 1px solid rgba(125, 0, 221, 0.7);
-        color: #ffffff;
+        background-color: rgba(0, 165, 148, 0.4);
+        border: 1px solid rgba(32, 221, 224, 0.6);
+        color: #f0f8ff;
     }
 
     .btn-logout:focus {
-        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
+        box-shadow: 0 0 0 0.08rem rgba(32, 221, 224, 0.4);
     }
 
     /*
     .bg-animated-gradient {
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient 10s ease infinite, tranform 1s ease-in-out;
+        background-color: #0f2c4b;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 
     .accordion-button {
-        background-color: rgba(92, 0, 166, 0.6);
-        border: 1px solid rgba(125, 0, 221, 0.7);
-        color: #fff;
+        background-color: rgba(0, 165, 148, 0.28);
+        border: 1px solid rgba(32, 221, 224, 0.5);
+        color: #f0f8ff;
     }
 
     .accordion-button:not(.collapsed) {
-        background-color: rgba(92, 0, 166, 0.8) !important;
+        background-color: rgba(0, 165, 148, 0.4) !important;
     }
 
     .accordion-button:focus {
-        box-shadow: 0 0 0 0.25rem rgba(92, 0, 166, 0.5);
+        box-shadow: 0 0 0 0.25rem rgba(0, 165, 148, 0.35);
     }
 
     .accordion-collapse {
-        background-color: rgba(92, 0, 166, 0.3);
+        background-color: rgba(0, 165, 148, 0.12);
     }
 
     .form-check-label {
-        color: #f6e6ff;
+        color: #f0f8ff;
     }
     */
 
     .form-control {
-        background-color: rgba(92, 0, 166, 0.3);
-        border: 1px solid rgba(125, 0, 221, 0.5);
-        color: #f6e6ff;
+        background-color: rgba(0, 165, 148, 0.12);
+        border: 1px solid rgba(32, 221, 224, 0.4);
+        color: #f0f8ff;
     }
 
     .form-control:focus {
-        background-color: rgba(92, 0, 166, 0.5);
-        border: 1px solid rgba(125, 0, 221, 0.7);
-        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
-        color: #f6e6ff;
+        background-color: rgba(0, 165, 148, 0.18);
+        border: 1px solid rgba(32, 221, 224, 0.6);
+        box-shadow: 0 0 0 0.08rem rgba(32, 221, 224, 0.4);
+        color: #f0f8ff;
     }
 
     .form-control:disabled {
-        background-color: rgba(92, 0, 166, 0.3);
-        border: 1px solid rgba(125, 0, 221, 0.5);
-        color: #6c757d;
+        background-color: rgba(0, 165, 148, 0.12);
+        border: 1px solid rgba(32, 221, 224, 0.4);
+        color: #8ba3b0;
     }
 
     .form-check-input {
-        background-color: rgba(92, 0, 166, 0.3);
-        border: 1px solid rgba(125, 0, 221);
-        color: #f6e6ff;
+        background-color: rgba(0, 165, 148, 0.12);
+        border: 1px solid #00a594;
+        color: #f0f8ff;
     }
 
     .form-check-input:focus {
-        box-shadow: 0 0 0 0.08rem rgba(125, 0, 221, 0.5);
+        box-shadow: 0 0 0 0.08rem rgba(32, 221, 224, 0.4);
     }
 
     .form-check-input:checked {
-        background-color: rgba(92, 0, 166, 0.5);
-        border: 1px solid rgba(125, 0, 221, 0.7);
-        color: #f6e6ff;
+        background-color: #00a594;
+        border: 1px solid rgba(32, 221, 224, 0.6);
+        color: #02120f;
     }
 
     .form-check-input:disabled {
-        background-color: rgba(92, 0, 166, 0.3);
-        border: 1px solid rgba(125, 0, 221, 0.5);
-        color: #6c757d;
-    }
-
-    @keyframes Gradient {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
+        background-color: rgba(0, 165, 148, 0.12);
+        border: 1px solid rgba(32, 221, 224, 0.4);
+        color: #8ba3b0;
     }
 </style>

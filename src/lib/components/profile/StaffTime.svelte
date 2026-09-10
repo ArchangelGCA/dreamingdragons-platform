@@ -47,52 +47,54 @@
 
 <style>
     .staff-card {
-        background: linear-gradient(10deg, #120339, #8f00d7);
+        background: #0a141f;
+        border: 1px solid #1c3350;
         transition: all 0.1s ease-in-out;
     }
 
     .staff-card:hover {
         transform: scale(1.03);
-        background: linear-gradient(10deg, #120339, #aa00ff);
+        background: #0e1c2e;
+        border-color: rgba(32, 221, 224, 0.3);
     }
 
     span.fs-3 {
-        color: #ffffff;
+        color: #f0f8ff;
     }
 
     .card-header {
         font-size: 1.5em;
-        color: #ffffff;
+        color: #f0f8ff;
     }
 
     .card-title {
         font-size: 1.2em;
-        color: #c2c2c2;
+        color: #cce0e5;
     }
 
     .card-text {
         font-size: 1em;
-        color: #c2c2c2;
+        color: #cce0e5;
     }
 
     i.fa-user-shield {
-        color: #ff8c00;
+        color: #ffc94d;
     }
 
     i.fa-user {
-        color: #00bfff;
+        color: #20dde0;
     }
 
     i.fa-clock {
-        color: #32cd32;
+        color: #00a594;
     }
 
     i.fa-calendar-alt {
-        color: #ff00ff;
+        color: #20dde0;
     }
 
     i.fa-globe {
-        color: #ff4500;
+        color: #ffd88a;
     }
 
     i {

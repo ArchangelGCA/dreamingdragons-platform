@@ -60,14 +60,13 @@
     }
 
     .popular-glow-wrapper.is-popular {
-        --glow-color-1: hsla(28, 100%, 55%, 0.7);
-        --glow-color-2: hsla(310, 100%, 55%, 0.6);
-        --glow-color-3: hsla(273, 100%, 45%, 0.5);
+        --glow-color-1: rgba(255, 201, 77, 0.4);
+        --glow-color-2: rgba(255, 201, 77, 0.3);
+        --glow-color-3: rgba(255, 216, 138, 0.25);
     }
 
     /*
-     * OPTIMIZED: Using only opacity animation instead of box-shadow animation.
-     * box-shadow is static, only opacity pulses - runs on compositor thread.
+     * Dragon's Deep: static calm gold border. No breathing opacity animation.
      */
     .popular-glow-wrapper.is-popular::before {
         content: '';
@@ -90,72 +89,27 @@
         -webkit-mask-composite: xor;
         mask-composite: exclude;
         pointer-events: none;
-        animation: border-glow-optimized 3s ease-in-out infinite;
         z-index: 1;
-        /* GPU layer promotion hint */
-        will-change: opacity;
         contain: strict;
     }
 
     /*
-     * OPTIMIZED: Static box-shadow with opacity-only animation.
-     * Removed box-shadow keyframe changes which caused expensive repaints.
+     * Dragon's Deep: static soft gold shadow. No pulsing.
      */
     .popular-glow-wrapper.is-popular::after {
         content: '';
         position: absolute;
         inset: 0;
         border-radius: inherit;
-        /* Static shadow - no animation on shadow itself */
-        box-shadow: 
-            0 0 18px var(--glow-color-1),
-            0 0 35px var(--glow-color-2),
-            0 0 50px var(--glow-color-3);
+        box-shadow:
+            0 2px 8px rgba(0, 0, 0, 0.45),
+            0 0 12px var(--glow-color-2);
         pointer-events: none;
-        animation: outer-glow-optimized 3s ease-in-out infinite;
         z-index: 0;
-        /* GPU layer promotion hint */
-        will-change: opacity;
         contain: strict;
     }
 
-    /* Pause animations when element is not visible (Intersection Observer) */
-    .popular-glow-wrapper.is-paused::before,
-    .popular-glow-wrapper.is-paused::after {
-        animation-play-state: paused;
-    }
+    /* Static calm: no pause handling needed. */
 
-    /*
-     * OPTIMIZED: Only animating opacity - runs on compositor thread, no repaints.
-     * Removed filter: hue-rotate() which was expensive.
-     */
-    @keyframes border-glow-optimized {
-        0%, 100% {
-            opacity: 1;
-        }
-        50% {
-            opacity: 0.7;
-        }
-    }
-
-    /*
-     * OPTIMIZED: Only animating opacity - avoids expensive box-shadow recalculation.
-     * The pulsing effect is achieved through opacity changes alone.
-     */
-    @keyframes outer-glow-optimized {
-        0%, 100% {
-            opacity: 0.6;
-        }
-        50% {
-            opacity: 0.9;
-        }
-    }
-
-    /* Reduced motion for accessibility */
-    @media (prefers-reduced-motion: reduce) {
-        .popular-glow-wrapper.is-popular::before,
-        .popular-glow-wrapper.is-popular::after {
-            animation: none;
-        }
-    }
+    /* Reduced motion for accessibility (static glow: nothing to animate). */
 </style>

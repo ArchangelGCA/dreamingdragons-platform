@@ -53,7 +53,7 @@
                             default: {
                                 colors: {
                                     messageBackground: '#e7fcf1',
-                                    messageBorder: '#5c00a6',
+                                    messageBorder: '#00a594',
                                     messageBackgroundDanger: 'rgba(166,0,44,0.1)',
                                     messageBorderDanger: '#822025',
                                     inputLabelText: 'gray',
@@ -63,19 +63,19 @@
                                     anchorTextHoverColor: 'darkgray',
                                     brandButtonText: 'white',
                                     defaultButtonText: 'white',
-                                    dividerBackground: 'rgba(92,0,166,0.5)',
+                                    dividerBackground: 'rgba(0,165,148,0.4)',
                                     inputText: 'white',
                                     inputPlaceholder: 'darkgray',
-                                    brand: '#5c00a6',
-                                    brandAccent: '#7000cc',
-                                    inputBackground: 'rgba(92,0,166,0.5)',
-                                    inputBorder: '#5c00a6',
-                                    inputBorderHover: '#9819ff',
-                                    inputBorderFocus: '#ae48ff',
-                                    defaultButtonBackground: 'rgba(92,0,166,0.5)',
-                                    defaultButtonBackgroundHover: 'rgba(112,0,204,0.5)',
-                                    defaultButtonBorderHover: '#7000cc',
-                                    defaultButtonBorder: '#5c00a6',
+                                    brand: '#00a594',
+                                    brandAccent: '#20dde0',
+                                    inputBackground: 'rgba(0,165,148,0.28)',
+                                    inputBorder: '#00a594',
+                                    inputBorderHover: '#20dde0',
+                                    inputBorderFocus: '#8ff7f8',
+                                    defaultButtonBackground: 'rgba(0,165,148,0.28)',
+                                    defaultButtonBackgroundHover: 'rgba(0,165,148,0.4)',
+                                    defaultButtonBorderHover: '#00a594',
+                                    defaultButtonBorder: '#00a594',
                                 },
                                 space: {
                                     spaceSmall: '4px',
@@ -171,32 +171,31 @@
 
 <style>
     .border-purple {
-        border-color: #5c00a6 !important;
+        border-color: var(--primary-color) !important;
     }
 
     .text-login {
-        color: #C800FFFF;
+        color: #20dde0;
     }
 
     .text-register {
-        color: #FF00FFFF;
+        color: #8ff7f8;
     }
 
     .text-magic-link {
-        color: #b056ff;
+        color: #20dde0;
     }
 
-    /* Foundry gate: the auth card is a forged plate, ember-lit from below */
+    /* Auth card: deep abyss plate, calm rest state */
     .bg-purple.border-purple {
-        background:
-            radial-gradient(420px 130px at 50% 0%, rgba(255, 123, 43, 0.12) 0%, transparent 75%),
-            linear-gradient(165deg, rgba(23, 13, 33, 0.85) 0%, rgba(92, 0, 166, 0.65) 100%);
-        border: 1px solid rgba(196, 0, 255, 0.22);
-        box-shadow: 0 0 1.4rem 0.25rem rgba(92, 0, 166, 0.45), 0 0 3rem 0.3rem rgba(255, 123, 43, 0.10);
+        background-color: #0a141f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        border: 1px solid #1c3350;
+        box-shadow: none;
     }
 
-    /* Auth card sits on a dark well so the plate reads as iron in the foundry night */
+    /* Auth card sits on a dark well so the plate reads clean on OLED */
     .main-div {
-        background-color: rgba(10, 6, 16, 0.65);
+        background-color: #0a141f;
     }
 </style>

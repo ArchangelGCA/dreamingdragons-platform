@@ -61,14 +61,7 @@
 
 <style>
     .bg-animated {
-        background: linear-gradient(270deg, #0b0086, #5c00a6, #0b0086);
-        background-size: 200% 200%;
-        animation: Gradient 5s ease infinite, tranform 1s ease-in-out;
-    }
-
-    @keyframes Gradient {
-        0% {background-position: 0% 50%;}
-        50% {background-position: 100% 50%;}
-        100% {background-position: 0% 50%;}
+        background-color: #0f2c4b;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 </style>

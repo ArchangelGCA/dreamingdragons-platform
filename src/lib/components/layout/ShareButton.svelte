@@ -53,8 +53,8 @@
             await navigator.clipboard.writeText(url);
             toast.push('📋 Link copied to clipboard!', {
                 theme: {
-                    '--toastBackground': '#5c00a6',
-                    '--toastColor': '#fff',
+                    '--toastBackground': '#004a5a',
+                    '--toastColor': '#f0f8ff',
                 }
             });
         } catch (err) {
@@ -151,10 +151,11 @@
     
     .share-btn:hover {
         transform: scale(1.1);
-        color: #5c00a6 !important;
+        color: var(--primary-color) !important;
     }
       .dropdown-menu {
-        background-color: #340061 !important;
+        background-color: #0a141f !important;
+        border: 1px solid rgba(32, 221, 224, 0.14) !important;
         animation: fadeInUp 0.2s ease-out;
     }
     

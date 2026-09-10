@@ -8,8 +8,8 @@ export const tooltipConfig = {
     animationDuration: 150,
     class: 'text-center w-auto',
     theme: {
-        background: 'rgba(92,0,166,0.9)',
-        color: 'white',
+        background: 'rgba(0,65,80,0.95)',
+        color: '#f0f8ff',
         padding: '10px',
         borderRadius: '5px',
         fontSize: '0.875rem',

@@ -5,6 +5,61 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2026-09-10
+
+### Changed
+
+- **Theme rework: "The Dragon's Deep" replaces the royal-purple vault.**
+  Mother-site aligned (`dreamingdragons.net`: deep sea `#0f2c4b`,
+  deep teal `#004a5a`, dragonfire `#00a594`, aqua `#20dde0`) with an
+  OLED-friendly true-black ground (`#000000`, abyss `#04090f`, surface
+  `#0a141f`/`#0e1c2e`, edge `#1c3350`). Fresh work sparks aqua, loved
+  work gleams trophy gold (`#ffc94d`/`#ffd88a`); the old hue-273 purple /
+  magenta / ember-orange system is fully retired — `rg` for all 21 legacy
+  hexes + 7 legacy rgba families across `src` returns zero matches.
+- **2026 calm surfaces:** multi-stop gradients flattened to solid fills
+  with at most one subtle top sheen; infinite rest animations removed
+  (breathing buttons, gradient drifts, shimmer sweeps, pulse loops) —
+  glow now answers hover / `focus-visible` / fresh / loved only.
+  Primary buttons are solid teal with dark `#02120f` ink (no pulse);
+  upload is solid deep sea; register matches primary; gold `btn-gold`
+  exists for rare celebration moments. `prefers-reduced-motion` silences
+  residual motion; `:focus-visible` teal outlines added globally.
+- **Centralized theme vocabulary:** `style.css` now owns canonical
+  `--dd-*` tokens (old `--forge-*`/`--vault-*`/`--ember-*` kept as
+  aliases), central `.forge-section-head` / `.heat-dot-*` /
+  `.forge-title` (homepage local duplicates deleted), plus canonical
+  `.btn-dragon` / `.chip-dragon` / `.text-dragon` / `.border-dragon` /
+  `.bg-abyss` / `.bg-surface` (old `.btn-purple` / `.chip-purple` /
+  `.border-purple` / `.bg-purple-gradient` kept as full aliases, so no
+  markup churn). Tooltips (`gcacommons.js`, `gcamentions.js`) moved to
+  deep-teal `rgba(0,65,80,0.95)` + `#f0f8ff`; admin success toasts to
+  `#004a5a`/`#f0f8ff`; login Auth-UI keys to teal; `theme-color` meta to
+  `#000000` (OLED chrome), manifests to `#00a594`.
+- **Design docs:** `DESIGN.md` rewritten for the new north star (One
+  Teal / Gold Sparsity / Calm Surface rules), `.impeccable/design.json`
+  regenerated (new colorMeta, components, shadows, motion, narrative),
+  `PRODUCT.md` brand commitments updated to abyss + dragonfire-teal.
+
+### Verified
+
+- `bun --bun run build` → succeeds (client + SSR + `@sveltejs/adapter-vercel`;
+  only pre-existing sharp/resend optional-dep warnings).
+- `bun outdated` → clean, zero outdated packages.
+- `svelte-autofixer` on all touched components → zero new issues
+  (remaining notes are pre-existing/systemic: plain `href`/`goto` without
+  `resolve()`, admin-controlled `{@html}`, silenced
+  `state_referenced_locally`).
+- Impeccable `detect` over changed theme targets → advisories only,
+  reviewed (pre-existing type/radius scale notes, Bootstrap signal
+  shades, brand Discord blurple; RSS orange unified to gold; dark-ink
+  tokens documented).
+- Real-browser check under `bun run dev`: `/` (black ground, teal
+  button/link, aqua heat dot, content renders), `/login`, `/faq`,
+  `/search?q=dragon`, `/updates`, `/admin/dashboard` (correct 401),
+  `/content/cat-387` — zero console errors, zero old-palette computed
+  colors on sampled pages.
+
 ## [0.14.0] - 2026-09-09
 
 ### Added

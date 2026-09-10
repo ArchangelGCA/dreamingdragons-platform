@@ -114,8 +114,8 @@
                 if (result.data.status === 200) {
                     toast.push(normalizedBook.is_liked ? 'Tale Liked ❤️' : 'Tale Unliked 💔', {
                         theme: {
-                            '--toastBackground': 'rgba(92,0,166,0.9)',
-                            '--toastColor': 'white'
+                            '--toastBackground': 'rgba(0,65,80,0.95)',
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 } else {
@@ -317,33 +317,33 @@
 
     .custom-overlay-content {
         background:
-            radial-gradient(220px 90px at 50% 120%, rgba(255, 123, 43, 0.45) 0%, rgba(196, 0, 255, 0.25) 45%, transparent 75%),
-            linear-gradient(180deg, hsla(273, 100%, 22%, 0.55) 0%, hsl(273, 75%, 16%) 100%);
-        border-top: 1px solid rgba(255, 171, 94, 0.22);
+            linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
+            rgba(2, 8, 14, 0.88);
+        border-top: 1px solid rgba(32, 221, 224, 0.14);
     }
 
     .card {
-        background: var(--forge-iron);
+        background: #0a141f;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
         transition: 0.1s all ease-in-out;
     }
 
     .card:hover, .card:focus {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.35);
         outline: none;
     }
 
     .card:focus-visible {
-        outline: 2px solid rgba(92, 0, 166, 0.8);
+        outline: 2px solid rgba(32, 221, 224, 0.5);
         outline-offset: 2px;
     }
 
     .link-custom {
-        color: rgba(248, 249, 250) !important;
+        color: #f0f8ff !important;
     }
 
     .link-custom:hover {
-        color: rgb(211, 26, 103) !important;
+        color: #8ff7f8 !important;
     }
 
     .text-title {
@@ -353,7 +353,7 @@
 
     .text-description {
         font-size: 0.9rem;
-        color: rgba(248, 249, 250, 0.8) !important;
+        color: rgba(204, 224, 229, 0.85) !important;
     }
 
     .heart-button {
@@ -382,14 +382,15 @@
         top: 43%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: #fff;
+        color: #f0f8ff;
         font-size: 0.7rem;
         font-weight: 600;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
     }
 
     .liked {
-        color: #bd135a;
+        color: #ffc94d;
+        filter: drop-shadow(0 0 6px rgba(255, 201, 77, 0.45));
         animation: heart-pulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
@@ -400,12 +401,12 @@
 
     .unliked {
         transform: scale(0.9);
-        color: #ffffff;
+        color: #f0f8ff;
         transition: 0.15s all ease-in-out;
     }
 
     .unliked:hover {
-        color: #bd135a;
+        color: #ffc94d;
         transform: scale(1.0);
     }
 

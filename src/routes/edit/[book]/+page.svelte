@@ -104,7 +104,7 @@
             toast.push('You don\'t have permission to edit content!', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             return;
@@ -149,7 +149,7 @@
                     toast.push(result.data.body.message + '. View it <a class="link-light" href="' + bookUrl + '" target="_blank">here</a>.', {
                         theme: {
                             '--toastBackground': '#4caf50',
-                            '--toastColor': '#fff'
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                     
@@ -161,7 +161,7 @@
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {
                             '--toastBackground': '#ff4d4d',
-                            '--toastColor': '#fff'
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 }
@@ -169,7 +169,7 @@
                 toast.push('Error: Update failed', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -178,7 +178,7 @@
             toast.push('Error: Network error', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         } finally {
@@ -297,7 +297,7 @@
                         toast.push('Error: ' + result.data.body.message, {
                             theme: {
                                 '--toastBackground': '#ff4d4d',
-                                '--toastColor': '#fff'
+                                '--toastColor': '#f0f8ff'
                             }
                         });
                     }
@@ -305,7 +305,7 @@
                     toast.push('Error: Tag suggestions failed', {
                         theme: {
                             '--toastBackground': '#ff4d4d',
-                            '--toastColor': '#fff'
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 }
@@ -344,7 +344,7 @@
             toast.push('Image is not too big', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             return;
@@ -353,7 +353,7 @@
             toast.push('Already compressing image, please wait...', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             return;
@@ -367,7 +367,7 @@
             toast.push('Failed to get token', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             isCompressing = false;
@@ -379,7 +379,7 @@
             toast.push('Error: No image selected', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             isCompressing = false;
@@ -425,7 +425,7 @@
                 toast.push(errorMessage, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
                 isCompressing = false;
@@ -455,14 +455,14 @@
                 toast.push('Image compressed successfully', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             } else {
                 toast.push('Failed to compress image: Image is still too big', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -474,7 +474,7 @@
             toast.push('Failed to compress image: Network or server error', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             isCompressing = false;
@@ -535,7 +535,7 @@
                 toast.push('Please drop an image file', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -987,7 +987,7 @@
     }
 
     :global(.form-select.form-control-modern:focus) {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%235c00a6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300a594' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
     }
 
     :global(.form-control-modern::placeholder) {
@@ -1243,8 +1243,8 @@
         margin-top: 1rem;
         padding: 0.75rem;
         border-radius: 8px;
-        background: rgba(92, 0, 166, 0.1);
-        color: #a78bfa;
+        background: rgba(0, 165, 148, 0.1);
+        color: #cce0e5;
         font-size: 0.875rem;
     }
 

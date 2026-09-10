@@ -79,9 +79,9 @@ export async function listenerMentions(e, supabase) {
         tooltip.style.position = 'absolute';
         tooltip.style.top = e.pageY + 'px';
         tooltip.style.left = e.pageX + 'px';
-        // Keep in sync with tooltipConfig in gcacommons.js (svelte-tooltip-gca purple theme).
-        tooltip.style.backgroundColor = 'rgba(92,0,166,0.9)';
-        tooltip.style.color = 'white';
+        // Keep in sync with tooltipConfig in gcacommons.js (svelte-tooltip-gca deep-teal theme).
+        tooltip.style.backgroundColor = 'rgba(0,65,80,0.95)';
+        tooltip.style.color = '#f0f8ff';
         tooltip.style.padding = '10px';
         tooltip.style.borderRadius = '5px';
         tooltip.style.fontSize = '0.875rem';

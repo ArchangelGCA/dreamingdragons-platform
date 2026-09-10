@@ -1,27 +1,24 @@
 ---
 name: DreamingDragons Platform
-description: A dark, royal-purple dragon's treasure vault at night, where tales and art glow as jewels on the hoard floor.
+description: An OLED-black ocean abyss lit by dragonfire teal, where tales and art rest as dark scales and the loved ones gleam gold.
 colors:
-  primary: "hsl(273, 100%, 33%)"
-  primary-alpha-90: "hsla(273, 100%, 33%, 0.9)"
-  accent-magenta: "#c400ff"
-  accent-magenta-hover: "#ff00fb"
-  vault-night: "#06030b"
-  vault-stone: "#0d0815"
-  vault-velvet: "#150c22"
-  vault-velvet-2: "#221332"
-  vault-edge: "#332046"
-  royal-indigo: "#0b0086"
-  royal-purple-mid: "#410075"
-  royal-ember: "#3d34c7"
-  royal-rose: "#830054"
-  ember: "#ff7b2b"
-  ember-soft: "#ffab5e"
-  ember-magenta: "#ff2bd6"
-  search-violet: "#b200e8"
-  text-primary: "hsl(0, 0%, 90%)"
-  text-secondary: "hsl(0, 0%, 65%)"
-  text-muted: "hsl(0, 0%, 60%)"
+  primary: "#00a594"
+  primary-bright: "#20dde0"
+  primary-hover: "#8ff7f8"
+  deep-1: "#0f2c4b"
+  deep-2: "#004a5a"
+  gold: "#ffc94d"
+  gold-soft: "#ffd88a"
+  accent-ink: "#02120f"
+  gold-ink: "#241a04"
+  abyss: "#000000"
+  abyss-2: "#04090f"
+  surface: "#0a141f"
+  surface-2: "#0e1c2e"
+  edge: "#1c3350"
+  text-primary: "#f0f8ff"
+  text-secondary: "#cce0e5"
+  text-muted: "#8ba3b0"
 typography:
   display:
     fontFamily: "'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
@@ -51,32 +48,32 @@ spacing:
 components:
   button-purple:
     backgroundColor: "{colors.primary}"
-    textColor: "{colors.text-primary}"
+    textColor: "#02120f"
     rounded: "{rounded.button}"
     padding: "0.375rem 0.75rem"
   button-purple-hover:
-    backgroundColor: "hsl(273, 100%, 43%)"
-    textColor: "{colors.text-primary}"
+    backgroundColor: "{colors.primary-bright}"
+    textColor: "#012a26"
   button-upload:
-    backgroundColor: "{colors.royal-ember}"
+    backgroundColor: "{colors.deep-1}"
     textColor: "{colors.text-primary}"
     rounded: "{rounded.button}"
   button-register:
-    backgroundColor: "{colors.royal-rose}"
-    textColor: "{colors.text-primary}"
+    backgroundColor: "{colors.primary}"
+    textColor: "#02120f"
     rounded: "{rounded.button}"
   card-surface:
-    backgroundColor: "{colors.vault-velvet}"
+    backgroundColor: "{colors.surface}"
     textColor: "{colors.text-primary}"
     rounded: "{rounded.card}"
   tooltip:
-    backgroundColor: "{colors.primary-alpha-90}"
+    backgroundColor: "rgba(0, 65, 80, 0.95)"
     textColor: "{colors.text-primary}"
     rounded: "{rounded.tooltip}"
     padding: "10px"
   badge-purple:
     backgroundColor: "{colors.primary}"
-    textColor: "{colors.text-primary}"
+    textColor: "#02120f"
     rounded: "{rounded.pill}"
 ---
 
@@ -84,58 +81,54 @@ components:
 
 ## Overview
 
-**Creative North Star: "The Dragon's Hoard"**
+**Creative North Star: "The Dragon's Deep"**
 
-DreamingDragons is a dragon's treasure vault at night. Every tale and artwork is a jewel laid on the hoard floor: fresh work still glows with ember warmth from the deep, loved work gleams brightest magenta, and the whole chamber rests in deep royal-purple torchlight. The community feed is the hoard itself — the interface expresses value as light on a gem, and the more the community loves a piece, the hotter it glows. It feels like entering a well-kept vault: composed and regal at rest, warm and alive when you reach for a treasure, and hottest where the newest work rests.
+DreamingDragons is a night dive into dragon waters. The page ground is true OLED black (`#000000`) — pixels off, battery saved — with a single breath of dragonfire teal at the top of the viewport. Content rests on flat abyss surfaces (`#04090f` wells, `#0a141f` cards, `#0e1c2e` raised), edged with deep-sea hairlines (`#1c3350`, teal `rgba(32,221,224,0.14)`). The identity is the mother site's dragonfire teal (`#00a594`, bright aqua `#20dde0`, hover `#8ff7f8`), drawn from dreamingdragons.net's `--color-accent` family and its deep-sea gradient roots (`#0f2c4b → #004a5a`). Fresh work sparks aqua; loved work gleams trophy gold (`#ffc94d`, soft `#ffd88a`, from the mother site's gold accents); everything else stays calm and dark. It feels like surfacing beside a dragon at night: dark water, one warm breath of light, gold where the hoard is loved.
 
-The voice is **refined royal purple**: polished, confident, premium. Depth is built from layered near-black indigo stone (`#06030b` ground) and deep velvet surfaces (`#150c22`), lit by hue-273 torch pools from above and a faint ember breath off the floor. The ember is reserved for heat: fresh content, likes, hover, and focus. Motion is present but purposeful — ember flicker on hot badges, breathing glows on primary actions, a soft lift and gem-gleam on hover, never gratuitous. Small playful details (dragons, emojis in copy, the treasure voice) keep the royal tone from feeling cold.
+The voice is **deep-sea teal**: calm, premium, deliberate. Depth is built from flat tonal steps and hairlines first, with at most one subtle top sheen per surface — never stacked gradients. Glow is selective: hover, focus-visible, fresh sparks, loved gold. Motion is calm by default — no breathing or pulsing loops at rest; feedback answers interaction only, and `prefers-reduced-motion` silences what remains. Small playful details (dragons, the hoard voice) keep the deep from feeling cold.
 
 **Key Characteristics:**
-- Dark-at-rest: near-black indigo vault night (`#06030b`) with royal-purple torch pools from the top corners and a faint ember breath rising off the floor (`body` radial gradients); deep velvet surfaces carry content.
-- Royal purple is the spine: links, buttons, badges, and borders all resolve to the hue-273 primary `hsl(273, 100%, 33%)`.
-- Ember heat is the process: fresh work glows ember-orange (`#ff7b2b` → `#c400ff`), loved work glows brightest magenta (`#ff2bd6`), and content cools to royal-purple rest. Heat is ranked: Freshly Mined (hot) > Most Precious (magenta gleam) > Kept Updated (cooled).
-- Content cards are gems: the cover is the stone, a facet gleam catches torchlight at the top, and a heat under-glow ranks the work.
-- Layered tones first, glow second: elevation comes from stone/velvet tonal layering and gradients; glow is a selective reward for heat, hover, and focus.
+- OLED-at-rest: true black ground (`#000000`) with one subtle teal breath at the top; flat abyss surfaces carry content, most pixels stay off.
+- Dragonfire teal is the spine: links, buttons, badges, focus rings and scrollbar thumbs all resolve to `#00a594` / `#20dde0`.
+- Gold is the reward: loved hearts, popular badges and celebration moments gleam `#ffc94d`; fresh work sparks `#20dde0`; everything else cools to deep sea (`#0f2c4b`).
+- Content cards are dark scales: flat `#0a141f` body, solid `rgba(2,8,14,0.88)` inscription overlay, one faint top sheen, teal hairline on top.
+- Flat tones first, sheen second, glow last: elevation comes from surface steps + hairlines; one sheen max; glow only for heat, hover, focus, active.
 - Rounded and soft: 8px buttons, 16px cards, pill badges — nothing sharp.
 - Centered, confident rhythm: Bootstrap 12-col grid, centered hero/stat blocks, masonry content, horizontal drag-scroll rows.
 
 ## Colors
 
-A two-force palette: royal purple family for identity and calm, ember-magenta family for heat and feedback, over a near-black indigo vault night.
+A two-force palette: dragonfire teal family for identity and calm, trophy gold for love and celebration, over a true-black ocean abyss. Aligned to dreamingdragons.net (`#0f2c4b`, `#004a5a`, `#00a594`, `#20dde0`, gold `#FFD700` refined to OLED-safe `#ffc94d`).
 
 ### Primary
-- **Royal Purple** (`hsl(273, 100%, 33%)`): The identity color. Links, primary buttons, badges, borders, scrollbar thumbs, focus glows, `bg-purple` utilities, and the tooltip background.
-- **Royal Purple Alpha-90** (`hsla(273, 100%, 33%, 0.9)`): Tooltip panels and semi-transparent purple fills over imagery.
+- **Dragonfire Teal** (`#00a594`): The identity color. Primary buttons (dark `#02120f` ink), badges, focus rings, scrollbar thumbs, active states.
+- **Bright Aqua** (`#20dde0`): Links at rest, fresh sparks, hover fills, search accents, avatar rings.
+- **Aqua Hover** (`#8ff7f8`): Link hover, bright focus outlines, the lightest touch — never a large fill.
 
 ### Secondary
-- **Royal Indigo** (`#0b0086`): The deep partner in gradients — dropdown menus, upload/primary buttons, notification panels.
-- **Royal Purple Mid** (`#410075`): Gradient midpoint for menus and panels.
-- **Royal Ember** (`#3d34c7`): The upload button's brighter gradient stop.
-- **Royal Rose** (`#830054`): The register button's warmer gradient stop.
+- **Deep Sea** (`#0f2c4b`): Mother-site primary. Upload/secondary buttons, cool heat-dot, section depth.
+- **Deep Teal** (`#004a5a`): Mother-site secondary. Toast success fills (with `#f0f8ff` text), avatar fallback, wells, unread washes.
 
-### Tertiary — Ember Heat
-- **Ember** (`#ff7b2b`): The vault's forge-heat — used sparingly as glow, the warm side of the heat ramp on fresh content, popular badges, and the torch seam.
-- **Ember Soft** (`#ffab5e`): The bright tip of the ember — placeholder accents and badge glyphs.
-- **Ember Magenta** (`#ff2bd6`): The spark side of the heat ramp — the hot end of liked/active states; a liked heart ignites this color.
-- **Accent Magenta** (`#c400ff`): Hover states for links, `.link-purple`, `text-purple`, search borders (`#b200e8` sits close by), and the bright side of the glow range.
-- **Magenta Hover** (`#ff00fb`): The brightest ember — link hover and intense glow highlights.
+### Tertiary — Gold Heat
+- **Trophy Gold** (`#ffc94d`): Loved hearts, popular badges, celebration. Dark `#241a04` ink on gold fills. Sparing by design.
+- **Gold Soft** (`#ffd88a`): The bright tip — badge text, icon gleams, hover on gold.
 
-### Neutral — Vault Stone & Velvet
-- **Vault Night** (`#06030b`): Deepest page ground — the vault at night.
-- **Vault Stone** (`#0d0815`): Wells, large panels, and the dark well behind auth cards.
-- **Vault Velvet** (`#150c22`): Card and panel surface — the primary resting surface of the site.
-- **Vault Velvet-2** (`#221332`): Raised surfaces and hover states.
-- **Vault Edge** (`#332046`): Hairline edges on velvet surfaces.
-- **Gem Gleam** (`rgba(255, 255, 255, 0.13)`): The facet highlight that catches torchlight on the top of content cards.
-- **Text** (`hsl(0, 0%, 90%)`): Primary body text.
-- **Secondary Text** (`hsl(0, 0%, 65%)`): Secondary labels and metadata.
-- **Muted Text** (`hsl(0, 0%, 60%)`): Timestamps and fine print.
-- **White** (`#ffffff`): Text on primary/colored fills.
+### Neutral — Abyss & Scale
+- **Abyss** (`#000000`): Page ground — true black, OLED pixels off.
+- **Abyss-2** (`#04090f`): Wells, reading plates, large panels, dropdown/offcanvas bodies.
+- **Surface** (`#0a141f`): Card and panel surface — the primary resting surface.
+- **Surface-2** (`#0e1c2e`): Raised surfaces and hover states.
+- **Edge** (`#1c3350`): Hairline edges; teal hairline `rgba(32,221,224,0.14)` for lit edges.
+- **Text** (`#f0f8ff`): Primary body text (mother's lightest).
+- **Secondary Text** (`#cce0e5`): Secondary labels and metadata (mother's light).
+- **Muted Text** (`#8ba3b0`): Timestamps and fine print.
+- **Dark Ink** (`#02120f`): Text on teal fills. **Gold Ink** (`#241a04`): text on gold fills.
 
 ### Named Rules
-**The Ember Sparsity Rule.** Magenta/ember is heat, not surface. At rest, screens are purple-on-dark-velvet; ember appears on fresh content, hover, focus, likes, and a few sanctioned highlights. Its rarity is what makes it glow.
-**The Heat Ramp Rule.** Freshness and engagement are expressed as a heat ramp: hottest (ember-orange → magenta) on the newest content and highest likes, cooling to the hue-273 purple family at rest. Never invert the ramp; heat always marks what is new or loved.
-**The One Purple Rule.** All purple family members derive from hue 273. Never introduce a blue-violet or red-violet outside the documented gradient stops.
+**The Gold Sparsity Rule.** Gold is love, not surface. At rest, screens are teal-on-abyss; gold appears on liked hearts, popular badges, and rare celebration moments. Its rarity is what makes it gleam.
+**The Heat Ramp Rule.** Freshness and love read as light: newest work sparks bright aqua (`#20dde0`), most-loved work gleams gold (`#ffc94d`), everything else cools to deep sea. Never invert the ramp.
+**The One Teal Rule.** All teal family members derive from hue 174 (`#00a594` spine). Never introduce purple, magenta or orange — the old hue-273 / ember system is retired.
+**The Calm Surface Rule.** Flat solid fills first; at most one subtle top sheen per surface; no stacked multi-stop gradients; no infinite rest animations. A surface must earn every layer.
 
 ## Typography
 
@@ -147,128 +140,128 @@ A two-force palette: royal purple family for identity and calm, ember-magenta fa
 ### Hierarchy
 - **Display / Page Titles** (700, `h1`/`h2` scale, Comfortaa): Page identity — home titles, section headers, profile names.
 - **Headline** (600, `h4`–`h5`): Section and card titles.
-- **Body** (400, `1rem`, Comfortaa): Default reading text; chapter content sits in a warm dark stone well with generous padding and a 72ch measure.
+- **Body** (400, `1rem`, Comfortaa): Default reading text; chapter content sits in a flat abyss well with generous padding and a 72ch measure.
 - **Label / Badge** (600, small caps via Bootstrap badges, uppercase for content-type badges): Chips, tags, badges.
 - **Small Text** (400, `0.8rem`): `.small-text` captions, timestamps, footer fine print.
 
 ### Named Rules
-**The Comfortaa-Only Rule.** All UI copy uses Comfortaa. Do not introduce a second display face; hierarchy is expressed through size, weight, and glow, not a new family.
+**The Comfortaa-Only Rule.** All UI copy uses Comfortaa. Do not introduce a second display face; hierarchy is expressed through size, weight, and light, not a new family.
 
 ## Layout
 
 Bootstrap 5.3 12-column grid on a fluid container (`container-fluid`, `max-width: 100%`, `overflow-x: hidden`). The system is centered and columnar:
 
-- **Navbar (the Vault Gate):** full-width row, logo left (`col-2/3/4`), search center, notifications + profile right. Background is a torch-lit gate: royal-purple torch pools from the top corners over a vertical fade, with a faint ember breath at the top edge; a 2px torch seam (`--ember-line`) separates it from content.
-- **Search ledger slit:** the search field reads as a torch-lit ledger opening — dark stone fill with a violet hairline, focused state gains a magenta glow via `input-group:focus-within`.
-- **Content:** centered rows (`justify-content-center`) with a masonry column layout for tale/art cards (`Masonry` component, min column 350px, 10px gap). Sections are ranked by heat as hoard strata: "Freshly Mined — Still warm from the deep" (ember gem), "Most Precious — The crown jewels" (magenta gem), "Kept Updated — Polished and kept" (cooled gem).
+- **Navbar (the Deep Gate):** full-width row, logo left (`col-2/3/4`), search center, notifications + profile right. Flat `#04090f` bar with a teal hairline seal (`--dd-fire-line`, teal-into-gold, low opacity) separating it from content; one faint teal breath at the top only.
+- **Search:** flat abyss fill with a teal hairline; focused state gains a calm teal glow via `input-group:focus-within`.
+- **Content:** centered rows (`justify-content-center`) with a masonry column layout for tale/art cards (`Masonry` component, min column 350px, 10px gap). Sections are ranked by light: "Newest Content" (aqua spark), "Most Liked" (gold gleam), "Recently Updated" (cooled deep sea).
 - **Horizontal rows:** `.row-horizontal` flex-nowrap rows with drag-scroll (`@svelte-put/dragscroll`) for follow feeds and most-liked carousels.
 - **Responsive:** Bootstrap breakpoints (sm 576px / md 768px / lg 992px / xl 1200px / xxl 1400px). Cards collapse to single column, badges shrink, and the notification panel goes full-width below 576px. On touch devices (`hover: none`), content-card overlays are always visible — no hover-gated information on mobile.
 - **Vertical rhythm:** Bootstrap `gap`/`g-*` scale and `--spacing-unit: 1rem`; generous vertical padding (`py-2`/`mt-3`/`mb-4`) for breathing room.
 
 ## Elevation & Depth
 
-**Layered stone/velvet + selective ember glow.** Depth is constructed in two layers:
+**Flat abyss + one sheen + selective glow.** Depth is constructed in three strict layers:
 
-1. **Tonal layering (always on):** dark velvet translucent surfaces (`var(--vault-velvet)` cards, warm dark stone wells for reading), gradient panels (`.bg-purple-gradient` with an ember radial at the top, dropdown `linear-gradient(160deg, #0b0086, #2e0a55 60%, #1a0736)` with an ember kiss), and subtle velvet edge distinctions.
-2. **Ember glow (selective):** magenta/ember box-shadows reward heat, hover, focus, and active interaction. Glow is the language of "this responds."
+1. **Tonal steps (always on):** `#000000` ground → `#04090f` wells → `#0a141f` cards → `#0e1c2e` raised, separated by `#1c3350` / teal hairlines.
+2. **One sheen (sparingly):** a single `linear-gradient(180deg, rgba(255,255,255,0.03), transparent 22%)` top light on plates and cards. Never two gradients on one surface.
+3. **Glow (selective):** teal box-shadows answer hover, focus-visible and fresh sparks; gold answers loved/popular. Glow is the language of "this responds."
 
 ### Shadow Vocabulary
-- **Focus / Input Glow** (`0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75)`): `form-control:focus`, avatar hover, dropdown menus, upload/link hover.
-- **Hot Ember Glow** (`0 0 0.8rem 0.3rem rgba(196, 0, 255, 0.8)`): `.link-animated:hover`, register button hover.
-- **Breathing Glow** (`0 0 0.2rem 0.1rem rgba(196, 0, 255, 0.3)` → `0 0 0.6rem 0.25rem rgba(196, 0, 255, 0.6)`): the `.link-animated`/upload breathing animation cycle.
-- **Iron Drop** (`0 2px 12px rgba(0, 0, 0, 0.45)`): cards lift with a soft black shadow; the forged plate (`0 6px 24px rgba(0,0,0,0.35)`) for profile stats bars and reading wells.
-- **Loved Gem Gleam** (`0 0 0.5rem 0.12rem rgba(196, 0, 255, 0.35)` at rest → `0 0 0.9rem 0.3rem rgba(255, 43, 214, 0.5)` on hover): the heat under-glow on loved content cards.
-- **Tooltip Drop** (`0 2px 8px rgba(0, 0, 0, 0.3)`): tooltip panels lift with a soft black shadow, not a glow.
+- **Focus Glow** (`0 0 0.7rem 0.15rem rgba(32,221,224,0.4)`): `form-control:focus`, `:focus-visible` outlines, search focus.
+- **Hover Lift** (`0 0 0.7rem 0.15rem rgba(32,221,224,0.4)`): primary button hover, card hover.
+- **Gold Gleam** (`0 0 0.5rem 0.1rem rgba(255,201,77,0.5)`): popular badges, liked hearts.
+- **Iron Drop** (`0 2px 12px rgba(0,0,0,0.45)`): cards rest with a soft black shadow; forged plate (`0 6px 24px rgba(0,0,0,0.35)`) for profile stats bars and reading wells.
+- **Tooltip Drop** (`0 2px 8px rgba(0,0,0,0.3)`): tooltip panels lift with a soft black shadow, not a glow.
 
 ### Named Rules
-**The Selective Glow Rule.** No random glows. A glow must answer heat, hover, focus, active, or a sanctioned breathing accent. At rest, surfaces stay tonal.
+**The Selective Glow Rule.** No random glows and no rest animations. A glow must answer heat, hover, focus-visible, or active. At rest, surfaces stay flat.
 
 ## Shapes
 
 Soft and round everywhere — nothing sharp or clinical.
 
-- **Buttons:** 8px radius (`rounded-3`); active state presses to `scale(0.95)`.
+- **Buttons:** 8px radius (`rounded-3`); active state presses to `scale(0.97)`.
 - **Cards / Containers:** 16px radius (`rounded-4`); cover images clip to the card via `overflow: hidden`.
 - **Badges / Chips:** pill radius (`rounded-pill`/`rounded-5`); content-type badges use full pills with `border-radius: 1rem`.
 - **Tooltips:** 5px radius.
-- **Scrollbars:** 8–10px radius thumbs with purple gradient fills.
-- **Avatars:** full circles with a subtle magenta ring and purple glow; they read as companion seals.
-- **Notification panel:** 16px top radius on mobile, left radius on desktop, gradient `#0b0086 → #2e0a55 → #1a0736` with an ember kiss at the top.
+- **Scrollbars:** 8–10px radius thumbs with solid teal fills.
+- **Avatars:** full circles with a subtle teal ring and teal glow on hover.
+- **Notification panel:** 16px top radius on mobile, left radius on desktop, flat `#04090f` with a teal hairline.
 
 ## Components
 
 ### Buttons
-- **Shape:** rounded 8px; hover scales glow, active `scale(0.95)`; transitions `all 0.12s ease-in-out`.
-- **Primary (`btn-purple`):** royal purple velvet fill with a top highlight, white text, ember breathing pulse (`@keyframes pulse` 2s) at rest; hover lightens purple +16% and glows magenta. A 1px magenta hairline borders it.
-- **Upload:** gradient `linear-gradient(270deg, #3d34c7, #5c00a6)` with breathing glow animation.
-- **Register:** gradient `linear-gradient(270deg, #830054, #5c00a6)` with magenta box-shadow on hover.
-- **Outline Search:** violet border (`#b200e8`) + violet text; hover fills royal purple and glows magenta.
-- **Danger / Warning / Info:** Bootstrap semantic colors (danger `hsl(0,70%,50%)`, warning `hsl(45,90%,50%)`, success `hsl(140,60%,50%)`), used sparingly for destructive/moderate actions.
+- **Shape:** rounded 8px; hover glows calmly, active `scale(0.97)`; transitions `all 0.12s ease-in-out`; visible `:focus-visible` teal outline.
+- **Primary (`btn-purple` / canonical `btn-dragon`):** solid dragonfire teal `#00a594` with dark `#02120f` ink and a teal hairline; hover brightens to `#20dde0` with a calm teal glow. No breathing animation.
+- **Upload:** solid deep sea `#0f2c4b` with `#f0f8ff` text and a teal hairline; hover lifts slightly with teal glow.
+- **Register:** solid dragonfire teal (same as primary); hover bright aqua.
+- **Gold (`btn-gold`, rare):** solid `#ffc94d` with `#241a04` ink for celebration moments only.
+- **Outline Search:** teal border (`#20dde0`) + aqua text; hover fills `rgba(0,165,148,0.18)` and glows calmly.
+- **Danger / Warning / Info:** Bootstrap semantic colors, used sparingly. Discord blurple and Reddit orange stay as brand exceptions.
 
-### Cards / Containers (Gems)
+### Cards / Containers (Scales)
 - **Corner Style:** 16px radius.
-- **Background:** vault velvet — `var(--vault-velvet)` (`#150c22`) with `0 2px 12px rgba(0,0,0,0.45)` drop, over the vault-night ground.
-- **Facet Gleam:** a `.gem-facet` overlay catches torchlight at the top of the cover (`linear-gradient(180deg, var(--gem-gleam) 0%, rgba(255,255,255,0.02) 34%, transparent 55%)`); the card reads as a faceted gem.
-- **Heat Under-Glow:** `gem-rest` (royal purple at rest), `gem-loved` (magenta gleam, `#ff2bd6` on the like state).
-- **Shadow Strategy:** velvet at rest; magenta/ember glow on hover.
-- **Border:** none or `border-purple` (`1px solid var(--primary-color)`) on admin panels; ember hairline (`rgba(255, 171, 94, 0.20)`) tops the overlay plate.
+- **Background:** flat abyss surface `#0a141f` with `0 2px 12px rgba(0,0,0,0.45)` drop over the black ground.
+- **Top Sheen:** at most one faint `rgba(255,255,255,0.03 → 0)` light at the top of the cover; the card reads as a dark scale, not a gem.
+- **Heat Light:** fresh cards carry an aqua under-light, loved cards a gold gleam (`#ffc94d` heart + soft gold shadow).
+- **Shadow Strategy:** flat at rest; teal glow on hover, gold on loved.
+- **Border:** `1px solid var(--dd-edge)` on plates; lit edges use `rgba(32,221,224,0.14)`.
 - **Internal Padding:** `p-2`–`p-3` scale.
 
-### Hoard Strata & Heat Gems
-- **Section headings** use `.forge-section-head` with a `.heat-dot` gem: hot (ember-orange gem, flickers), ember (magenta crown gem), cooled (royal purple gem). Section subtitles carry the vault voice ("Still warm from the deep", "The crown jewels", "Polished and kept").
-- **Vault plate** (`.forge-title`, `.bg-info-profile`, `.bg-info-stats`): a stone panel with a faint ember radial at the top and a 1px magenta hairline; profile stats and tale stats bars use this treatment.
-- **Cooling sheen** (`.forge-rack`): a subtle ember sheen fading downward behind the freshly mined grid.
+### Section Heads & Heat Dots
+- **Section headings** use central `.forge-section-head` with a `.heat-dot`: hot/fresh (bright aqua dot + aqua glow, static), ember/loved (gold dot + gold glow), cool/updated (deep-sea dot with teal hairline). Copy voice stays ("Fresh off the anvil", "The hot rack", "Tempered").
+- **Plates** (`.forge-title`, `.bg-info-profile`, `.bg-info-stats`): flat `#0a141f` panels with one faint top sheen and a `#1c3350` border.
 
 ### Inputs / Fields
-- **Style:** dark stone fill (`rgba(6, 3, 11, 0.55)`), `border-0` or a violet hairline, rounded-3.
-- **Focus:** royal purple glow (`0 0 0.6rem 0.25rem rgba(92,0,166,0.75)`), no border shift.
-- **Search:** input-group with violet search button; the whole group glows magenta on focus.
+- **Style:** flat abyss fill (`#04090f`), 1px `#1c3350` or teal hairline, rounded-3.
+- **Focus:** calm teal glow + visible outline, no border shift.
+- **Search:** input-group with teal search button; the whole group glows calmly on focus.
 
-### Navigation (the Vault Gate)
-- **Dropdown menu:** gradient `linear-gradient(160deg, #0b0086, #2e0a55 60%, #1a0736)` with a faint ember radial at the top, magenta hairline border, purple glow shadow, item hover `background-color: #5c00a6` with 4px radius, active item scale-down.
-- **Navbar icons:** breathing glow animation on the upload link; bell and upload icons scale to 1.1 with purple glow on hover.
-- **Links:** `#c400ff` at rest → `#ff00fb` on hover; `.link-purple` variant uses the same pair.
-- **Avatars:** companion seals — a faint magenta ring at rest (`0 0 0 2px rgba(196, 0, 255, 0.28)`), purple glow on hover.
+### Navigation (the Deep Gate)
+- **Dropdown menu:** flat `#04090f` with a teal hairline border and calm teal shadow; item hover solid `#00a594` with dark ink and 4px radius, active item scale-down.
+- **Navbar icons:** static at rest; bell and upload icons lift with teal glow on hover (no idle breathing).
+- **Links:** `#20dde0` at rest → `#8ff7f8` on hover; `.link-purple` is kept as a teal alias.
+- **Avatars:** solid `#004a5a` fallback with a teal ring at rest (`rgba(32,221,224,0.4)`), teal glow on hover.
 
 ### Badges / Chips
-- **Purple badge** (`bg-purple`): royal purple fill, white text, pill.
-- **Content-type badge:** jeweled spine — dark velvet (`rgba(34,19,50,0.95)` → `rgba(21,12,34,0.98)`) with an ember radial and a warm ember hairline; the book glyph is ember (`#ffab5e`) with an ember glow; hover lights the border magenta and lifts 1px.
-- **Popular badge:** ember heat — a hot gradient (`hsla(28,100%,52%) → hsla(320,100%,48%) → hsla(273,100%,46%)`) with warm ember shadow, pulsing opacity; the icon is a Font Awesome flame (`fa-fire`), never an emoji glyph. The wrapper glows in ember→magenta→purple.
-- **Chapter number:** circular purple plate with the index.
+- **Teal badge** (`bg-purple` kept as alias / canonical `chip-dragon`): solid `#00a594` fill, dark `#02120f` ink, pill.
+- **Content-type badge:** dark plate (`rgba(6,16,26,0.95)`) with a teal hairline and a bright-aqua glyph; hover lights the border teal and lifts 1px.
+- **Popular badge:** gold system — `rgba(255,201,77,0.12)` surface, `rgba(255,201,77,0.4)` border, `#ffd88a` text; the icon is a Font Awesome flame (`fa-fire`), never an emoji glyph. Static — no pulse.
+- **Chapter number:** circular deep-teal plate with the index.
 
 ### Tooltip
-- **Panel:** royal purple alpha-90 fill, white text, 5px radius, 10px padding, 300px max-width, centered text, fade+position animation (~150ms), no arrow (since the tooltip migration to `svelte-tooltip-gca`).
+- **Panel:** deep-teal `rgba(0,65,80,0.95)` fill, `#f0f8ff` text, 5px radius, 10px padding, 300px max-width, centered text, fade (~150ms), no arrow (via `svelte-tooltip-gca`).
 
-### Reading Wells (the Vault's Ledger)
-- **Tale description & chapter text:** warm dark stone well — a radial ember whisper at the top over a `rgba(6,3,11,0.62) → rgba(21,12,34,0.65)` gradient, 1px magenta hairline, inset top highlight, `0 8px 28px rgba(0,0,0,0.4)` drop, body text at `hsl(0,0%,88%)` with `line-height: 1.75–1.8` and a 72ch measure centered.
+### Reading Wells (the Deep Ledger)
+- **Tale description & chapter text:** flat `#04090f` well, 1px `#1c3350` border, at most one faint top sheen, `0 8px 28px rgba(0,0,0,0.4)` drop, body text `#f0f8ff`/`#cce0e5` with `line-height: 1.75–1.8` and a 72ch measure centered.
 
 ### Notifications (the Keeper's Ledger)
-- **Panel:** 16px corner radius, gradient `#0b0086 → #2e0a55 → #1a0736` with an ember kiss at the top and a purple torch pool from the top-right; header icon is a faceted bell-crystal with a magenta glow.
-- **Item:** dark velvet row, unread items carry a gradient magenta/indigo wash and a pulsing ember-magenta indicator dot; hover translates right and lights a magenta border.
-- **Empty state:** a bell-slash crystal with the copy "All caught up!"
+- **Panel:** flat `#04090f`, 16px corners, teal hairline, calm teal shadow; header icon solid `#004a5a`.
+- **Item:** flat abyss row, unread items carry a calm teal wash (`rgba(0,165,148,0.15–0.25)`) and a static aqua indicator dot; hover lights a teal border.
+- **Empty state:** a bell-slash mark with the copy "All caught up!"
 
-### Signature Component: Content Cards (Tale/Art Gems)
-- 16px rounded velvet card with full-bleed cover (`object-fit: cover`, lazy-loaded via srcset), a `.gem-facet` torchlight gleam across the top of the cover, a velvet overlay at the bottom (ember radial rising from the edge + dark purple gradient, ember hairline top border) carrying title + owner, a heart/like counter that ignites magenta (`#ff2bd6`, drop-shadow glow) when liked, a chapter badge as a jeweled spine, and a purple-glow "Click to view" affordance. Popular cards gain the ember heat glow border. On touch devices the overlay inscription is always visible.
+### Signature Component: Content Cards (Tale/Art Scales)
+- 16px rounded flat `#0a141f` card with full-bleed cover (`object-fit: cover`, lazy-loaded via srcset), one faint top sheen across the cover, a solid `rgba(2,8,14,0.88)` overlay at the bottom (teal hairline top border) carrying title + owner, a heart/like counter that gleams gold (`#ffc94d`, soft gold shadow) when liked, a chapter badge as a deep-teal plate, and a calm teal "Click to view" affordance. Popular cards gain the gold hairline. On touch devices the overlay inscription is always visible.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep all purple family colors on hue 273 — it's the identity lock.
-- **Do** use `#c400ff` → `#ff00fb` for link hover; the ember progression is a system signature.
-- **Do** build depth from dark stone/velvet translucent layers and gradients first, glow second.
+- **Do** keep all teal family colors on hue 174 — it's the identity lock.
+- **Do** use `#20dde0` → `#8ff7f8` for link hover; the aqua lift is a system signature.
+- **Do** build depth from flat abyss tonal steps and hairlines first, one sheen second, glow last.
 - **Do** use rounded shapes (8px buttons, 16px cards, pill badges) everywhere.
-- **Do** reserve ember/magenta glow for heat, hover, focus, and breathing accents — sparsity keeps it glowing.
-- **Do** let content cards read as gems: velvet body, facet gleam at the top, heat-colored under-glow; liked work ignites magenta.
-- **Do** keep the reading experience centered and calm: Comfortaa, generous spacing, warm stone reading wells.
-- **Do** use the documented gradient stops (`#0b0086`, `#410075`, `#5c00a6`, `#3d34c7`, `#830054`) rather than inventing new purple mixes.
+- **Do** reserve gold for love and celebration — sparsity keeps it gleaming.
+- **Do** let content cards read as dark scales: flat body, faint top sheen, heat-colored light; liked work gleams gold.
+- **Do** keep the reading experience centered and calm: Comfortaa, generous spacing, flat abyss reading wells.
+- **Do** keep true black (`#000000`) for large grounds so OLED pixels rest.
 - **Do** use Font Awesome glyphs for icons; never let emoji stand in for an icon.
 
 ### Don't:
-- **Don't** introduce light backgrounds or light-mode surfaces — this system is dark-at-rest.
+- **Don't** introduce light backgrounds or light-mode surfaces — this system is OLED-dark at rest.
 - **Don't** add a second display font or a serif pairing; Comfortaa alone carries the voice.
-- **Don't** apply glow to resting content — tonal velvet surfaces at rest, glow as a heat/state response.
-- **Don't** use sharp corners (0px) or clinical flat buttons on core surfaces.
-- **Don't** place ember/magenta on large areas; it is heat, not a fill.
-- **Don't** invert the heat ramp — newest and most-liked content must always read hotter than old content.
-- **Don't** invent purple hues outside the documented family; stay on the hue-273 royal spine.
+- **Don't** apply glow or animation to resting content — flat surfaces at rest, light as a heat/state response.
+- **Don't** use sharp corners (0px) or clinical flat buttons without hairlines on core surfaces.
+- **Don't** place gold or bright aqua on large areas; they are light, not fills.
+- **Don't** invert the heat ramp — newest work sparks aqua, most-loved gleams gold.
+- **Don't** stack multiple gradients on one surface or reintroduce purple/magenta/orange.
 - **Don't** gate content information behind hover on touch devices; `hover: none` surfaces the card inscriptions.

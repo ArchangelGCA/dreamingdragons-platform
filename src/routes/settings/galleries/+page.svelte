@@ -145,7 +145,7 @@
                 toast.push('Gallery saved successfully!', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
                 await invalidateAll();
@@ -156,7 +156,7 @@
                 toast.push(result.data?.message || 'Error saving gallery', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -165,7 +165,7 @@
             toast.push('Error saving gallery', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         } finally {
@@ -195,7 +195,7 @@
                 toast.push('Gallery deleted successfully!', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
                 selectGallery(null);
@@ -204,7 +204,7 @@
                 toast.push(result.data?.message || 'Error deleting gallery', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -213,7 +213,7 @@
             toast.push('Error deleting gallery', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         }
@@ -227,7 +227,7 @@
             toast.push('Book is already in this gallery', {
                 theme: {
                     '--toastBackground': '#ff9800',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             return;
@@ -251,7 +251,7 @@
                 toast.push('Book added to gallery!', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
                 updateLocalGalleryData(selectedGallery.id);
@@ -259,7 +259,7 @@
                 toast.push(result.data?.message || 'Error adding book to gallery', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -268,7 +268,7 @@
             toast.push('Error adding book to gallery', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         } finally {
@@ -297,7 +297,7 @@
                 toast.push('Book removed from gallery!', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
                 // Update local data
@@ -306,7 +306,7 @@
                 toast.push(result.data?.message || 'Error removing book from gallery', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -315,7 +315,7 @@
             toast.push('Error removing book from gallery', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         } finally {
@@ -767,10 +767,7 @@
 <style>
 
     .galleries-title {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #f0f8ff;
         font-size: 2.5rem;
         font-weight: 700;
     }
@@ -787,25 +784,27 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 45%)) !important;
-        border: none !important;
-        box-shadow: 0 4px 20px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
+        background: #00a594 !important;
+        border: 1px solid rgba(32, 221, 224, 0.4) !important;
+        color: #02120f !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
         font-weight: 600;
         transition: all 0.3s ease;
     }
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 25px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.4);
-        background: linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 5%)), hsl(290, 100%, 50%)) !important;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.35);
+        background: #20dde0 !important;
+        color: #02120f !important;
     }
 
     .bg-purple {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 45%)) !important;
+        background: #00a594 !important;
     }
 
     .bg-success {
-        background: linear-gradient(135deg, rgb(46, 204, 113), rgb(88, 214, 141)) !important;
+        background: rgb(46, 204, 113) !important;
     }
 
     .text-purple {
@@ -835,7 +834,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, hsla(var(--primary-hue), 50%, 50%, 0.1), transparent);
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 30%);
         opacity: 0;
         transition: opacity 0.3s ease;
     }
@@ -851,12 +850,9 @@
     }
 
     .gallery-card.active {
-        background: linear-gradient(135deg,
-        hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3),
-        hsla(var(--primary-hue), 80%, 45%, 0.2)
-        ) !important;
+        background: #0e1c2e !important;
         border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 2px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.5) !important;
+        box-shadow: 0 0 0 2px rgba(32, 221, 224, 0.35) !important;
         transform: translateY(-2px);
     }
 
@@ -926,7 +922,8 @@
     .form-control:focus {
         background: hsla(var(--primary-hue), 15%, 15%, 0.9) !important;
         border-color: var(--primary-color) !important;
-        box-shadow: 0 0 0 0.2rem hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.25) !important;
+        box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45) !important;
+        outline: 1px solid rgba(32, 221, 224, 0.4);
     }
 
     .form-control::placeholder {
@@ -1025,10 +1022,7 @@
     }
 
     .create-gallery-icon i {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #20dde0;
     }
 
     @media (max-width: 768px) {

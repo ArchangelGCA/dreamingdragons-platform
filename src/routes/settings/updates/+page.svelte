@@ -68,18 +68,20 @@
 <style>
     .custom-button {
         box-shadow: none;
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
+        background-color: #00a594;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
         border: none;
+        color: #02120f;
         transition: all 0.15s;
     }
 
     .custom-button:hover {
-        filter: brightness(1.3);
-        box-shadow: 0 0 0.4rem 0.25rem rgb(92, 0, 166);
+        filter: brightness(1.1);
+        box-shadow: 0 0 0.4rem 0.25rem rgba(0, 165, 148, 0.45);
     }
 
     .custom-button:focus {
-        box-shadow: 0 0 0.4rem 0.25rem rgb(193, 0, 255);
+        box-shadow: 0 0 0.4rem 0.25rem rgba(32, 221, 224, 0.45);
         border: none;
     }
 
@@ -88,52 +90,27 @@
     }
 
     .form-control-custom {
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
-        color: #dcd6f7;
-        border: none;
+        background-color: #0a141f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        color: #f0f8ff;
+        border: 1px solid #1c3350;
         transition: 0.15s ease-in-out all;
     }
 
     .form-control-custom:hover {
-        filter: brightness(1.3);
+        filter: brightness(1.1);
     }
 
     .form-control-custom:focus {
-        box-shadow: 0 0 0.4rem 0.25rem rgb(92, 0, 166);
+        box-shadow: 0 0 0.4rem 0.25rem rgba(0, 165, 148, 0.45);
+        border-color: rgba(32, 221, 224, 0.4);
     }
 
     .rotating-shadow {
-        animation: bloomingShadow 3s infinite;
-    }
-
-    @keyframes rotatingShadow {
-        0% {
-            box-shadow: 10px 0 10px 0 #5c00a6;
-        }
-        25% {
-            box-shadow: 0 10px 10px 0 #5c00a6;
-        }
-        50% {
-            box-shadow: -10px 0 10px 0 #5c00a6;
-        }
-        75% {
-            box-shadow: 0 -10px 10px 0 #5c00a6;
-        }
-        100% {
-            box-shadow: 10px 0 10px 0 #5c00a6;
-        }
-    }
-
-    @keyframes bloomingShadow {
-        0% {
-            box-shadow: 0 0 10px 0px #5c00a6;
-        }
-        50% {
-            box-shadow: 0 0 20px 10px #5c00a6;
-        }
-        100% {
-            box-shadow: 0 0 10px 0px #5c00a6;
-        }
+        animation: none;
+        background-color: #0a141f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        border: 1px solid #1c3350;
     }
 
 </style>

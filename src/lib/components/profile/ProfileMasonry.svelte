@@ -46,8 +46,8 @@
             if (result.data.status === 200) {
                 toast.push(!content.is_liked ? 'Tale Liked ❤️' : 'Tale Unliked 💔', {
                     theme: {
-                        '--toastBackground': 'rgba(92,0,166,0.9)',
-                        '--toastColor': 'white'
+                        '--toastBackground': 'rgba(0,65,80,0.95)',
+                        '--toastColor': '#f0f8ff'
                     }
                 });
                 await invalidateAll();
@@ -146,7 +146,7 @@
     }
 
     .card:hover {
-        box-shadow: 0 0 10px 0 rgb(211, 26, 103);
+        box-shadow: 0 0 10px 0 rgba(32, 221, 224, 0.35);
     }
 
     .link-light {
@@ -154,7 +154,7 @@
     }
 
     .link-light:hover {
-        color: #d31a67 !important;
+        color: #8ff7f8 !important;
     }
 
     .btn-link {
@@ -174,13 +174,14 @@
 
     .custom-overlay-content {
         background:
-            radial-gradient(220px 90px at 50% 120%, rgba(255, 123, 43, 0.45) 0%, rgba(196, 0, 255, 0.25) 45%, transparent 75%),
-            linear-gradient(180deg, hsla(273, 100%, 22%, 0.55) 0%, hsl(273, 75%, 16%) 100%);
-        border-top: 1px solid rgba(255, 171, 94, 0.22);
+            linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
+            rgba(2, 8, 14, 0.88);
+        border-top: 1px solid rgba(32, 221, 224, 0.14);
     }
 
     .liked {
-        color: #bd135a;
+        color: #ffc94d;
+        filter: drop-shadow(0 0 6px rgba(255, 201, 77, 0.45));
         animation: heart-pulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
@@ -191,13 +192,13 @@
 
     .unliked {
         transform: scale(0.8);
-        color: #ffffff;
+        color: #f0f8ff;
         animation: heart-unpulse 0.3s ease-in-out;
         transition: 0.15s all ease-in-out;
     }
 
     .unliked:hover {
-        color: #bd135a;
+        color: #ffc94d;
         transform: scale(0.9);
     }
 
@@ -215,7 +216,7 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: #fff;
+        color: #f0f8ff;
         font-size: 1rem;
     }
 

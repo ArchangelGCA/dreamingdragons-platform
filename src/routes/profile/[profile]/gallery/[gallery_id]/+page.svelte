@@ -107,26 +107,20 @@
 
 <style>
     .gallery-header {
-        background: linear-gradient(135deg,
-        hsla(var(--primary-hue), 20%, 15%, 0.6),
-        hsla(var(--primary-hue), 15%, 20%, 0.4)
-        );
-        border-bottom: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
+        background: #04090f;
+        border-bottom: 1px solid #1c3350;
         backdrop-filter: blur(10px);
     }
 
     .gallery-icon {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
+        background: #00a594;
         width: 80px;
         height: 80px;
-        box-shadow: 0 8px 25px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.45);
     }
 
     .gallery-title {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #f0f8ff;
     }
 
     .owner-link {
@@ -142,7 +136,7 @@
         left: 0;
         width: 0;
         height: 2px;
-        background: linear-gradient(90deg, var(--primary-color), hsl(290, 100%, 60%));
+        background: #20dde0;
         transition: width 0.3s ease;
     }
 
@@ -165,22 +159,19 @@
     }
 
     .btn-edit-gallery {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%)) !important;
-        border: none !important;
-        color: white !important;
+        background: #00a594 !important;
+        border: 1px solid rgba(32, 221, 224, 0.4) !important;
+        color: #02120f !important;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45);
     }
 
     .btn-edit-gallery:hover {
-        background: linear-gradient(135deg,
-        hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)),
-        hsl(290, 100%, 70%)
-        ) !important;
+        background: #20dde0 !important;
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.4);
-        color: white !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.35);
+        color: #02120f !important;
     }
 
     @media (max-width: 768px) {

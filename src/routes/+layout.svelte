@@ -395,7 +395,7 @@
                                    href="/faq" data-sveltekit-preload-data="hover"><i class="fas fa-question-circle border-end border-light-subtle pe-2"></i>
                                 FAQ</a></li>
                             <li><a class="dropdown-item" href="/rss.xml" target="_blank" rel="noopener noreferrer"><i
-                                    class="fas fa-rss border-end border-light-subtle pe-2" style="color: #ff6600;"></i>
+                                    class="fas fa-rss border-end border-light-subtle pe-2" style="color: #ffc94d;"></i>
                                 RSS Feed</a></li>
                             {#if session}
                                 <li><a class="dropdown-item" href="/settings" data-sveltekit-preload-data="tap"><i
@@ -561,16 +561,16 @@
 <style>
     :global(body::-webkit-scrollbar) {
         width: 10px;
-        background: #1f002e;
+        background: #06121e;
     }
 
     :global(body::-webkit-scrollbar-thumb) {
-        background: #370050;
+        background: #004a5a;
         border-radius: 20px;
     }
 
     :global(body::-webkit-scrollbar-thumb:hover) {
-        background: #5b0083;
+        background: #00a594;
     }
 
     :global(.row-horizontal::-webkit-scrollbar) {
@@ -578,50 +578,50 @@
     }
 
     :global(.row-horizontal::-webkit-scrollbar-track) {
-        background: rgba(92, 0, 166, 0.25);
+        background: rgba(0, 165, 148, 0.12);
     }
 
     :global(.row-horizontal::-webkit-scrollbar-thumb) {
-        background: linear-gradient(90deg, rgba(92, 0, 166, 0), rgba(92, 0, 166, 1) 15% 85%, rgba(92, 0, 166, 0));
+        background: #004a5a;
         border-radius: 8px;
         cursor: pointer;
     }
 
     :global(.row-horizontal::-webkit-scrollbar-thumb:hover) {
-        background: rgba(92, 0, 166, 1);
+        background: #00a594;
     }
 
     :global(a) {
-        color: #c400ff;
+        color: #20dde0;
         transition: all 0.12s ease-in-out;
     }
 
     :global(a:hover) {
-        color: #ff00fb;
+        color: #8ff7f8;
     }
 
     .offcanvas-body::-webkit-scrollbar {
         width: 10px;
-        background: #1f002e;
+        background: #06121e;
     }
 
     .offcanvas-body::-webkit-scrollbar-thumb {
-        background: #5b0083;
+        background: #004a5a;
         border-radius: 20px;
     }
 
     .offcanvas-body::-webkit-scrollbar-thumb:hover {
-        background: #6e00a1;
+        background: #00a594;
     }
 
     .animate-button {
-        background: linear-gradient(270deg, #0b0086, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient 5s ease infinite, tranform 1s ease-in-out;
+        background-color: #0f2c4b;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        color: #f0f8ff;
     }
 
     .animate-button:hover {
-        background: linear-gradient(230deg, #0b0086, #5c00a6);
+        background-color: #0f2c4b;
     }
 
     .animate-button:active {
@@ -629,14 +629,14 @@
     }
 
     .upload-button {
-        background: linear-gradient(270deg, #3d34c7, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient 5s ease infinite, tranform 1s ease-in-out;
+        background-color: #0f2c4b;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        color: #f0f8ff;
         transition: transform 0.12s ease-in-out;
     }
 
     .upload-button:hover {
-        background: linear-gradient(230deg, #3d34c7, #5c00a6);
+        background-color: #0f2c4b;
     }
 
     .upload-button:active {
@@ -644,14 +644,14 @@
     }
 
     .register-button {
-        background: linear-gradient(270deg, #830054, #5c00a6);
-        background-size: 200% 200%;
-        animation: Gradient-Register 5s ease infinite, tranform 1s ease-in-out;
+        background-color: #00a594;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        color: #02120f;
         transition: transform 0.12s ease-in-out;
     }
 
     .register-button:hover {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(255, 0, 250, 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.45);
     }
 
     .register-button:active {
@@ -659,20 +659,20 @@
     }
 
     .btn-outline-search {
-        border-color: #b200e8;
-        color: #b200e8;
+        border-color: #20dde0;
+        color: #20dde0;
     }
 
     .btn-outline-search:hover {
-        background-color: #5c00a6;
-        color: #c400ff;
-        box-shadow: 0 0 0.5rem 0.1rem rgba(196, 0, 255, 0.5);
+        background-color: rgba(0, 165, 148, 0.18);
+        color: #8ff7f8;
+        box-shadow: 0 0 0.5rem 0.1rem rgba(32, 221, 224, 0.35);
     }
 
-    /* Forge vent: the search field reads as a furnace vent drawing in air */
+    /* Search field: deep abyss vent */
     .navbar-container .form-control {
-        background-color: rgba(10, 6, 16, 0.55);
-        border: 1px solid rgba(178, 0, 232, 0.28);
+        background-color: rgba(4, 9, 15, 0.85);
+        border: 1px solid rgba(32, 221, 224, 0.14);
     }
 
     .navbar-container .form-control::placeholder {
@@ -680,17 +680,15 @@
     }
 
     .navbar-container .input-group:focus-within {
-        box-shadow: 0 0 0.8rem 0.2rem rgba(196, 0, 255, 0.35);
+        box-shadow: 0 0 0.8rem 0.2rem rgba(32, 221, 224, 0.25);
         border-radius: 1rem;
     }
 
     .dropdown-menu {
-        border: 1px solid rgba(196, 0, 255, 0.18);
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
-        background:
-            radial-gradient(240px 90px at 50% 0%, rgba(255, 123, 43, 0.08) 0%, transparent 70%),
-            linear-gradient(75deg, #0b0086, #410075);
-        background-size: 150% 150%;
+        border: 1px solid rgba(32, 221, 224, 0.14);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.35);
+        background-color: #04090f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 
     .dropdown-item {
@@ -698,7 +696,7 @@
     }
 
     .dropdown-item:hover {
-        background-color: #5c00a6;
+        background-color: var(--primary-color);
         border-radius: 0.25rem;
     }
 
@@ -708,27 +706,27 @@
     }
 
     .dropdown-item.active {
-        background-color: #5c00a6;
+        background-color: var(--primary-color);
         border-radius: 0.25rem;
     }
 
     .navbar-container {
-        background:
-            radial-gradient(700px 120px at 50% -20%, rgba(255, 123, 43, 0.12) 0%, transparent 70%),
-            linear-gradient(180deg, rgba(65, 0, 117, 0.55), rgba(37, 0, 62, 0));
+        background-color: #04090f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        border-bottom: 1px solid rgba(32, 221, 224, 0.14);
     }
 
     .footer-container {
-        background:
-            radial-gradient(700px 140px at 50% 120%, rgba(255, 123, 43, 0.10) 0%, transparent 70%),
-            linear-gradient(0deg, rgba(65, 0, 117, 0.55), rgba(37, 0, 62, 0));
+        background-color: #04090f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        border-top: 1px solid var(--dd-edge);
     }
 
     .offcanvas {
-        background:
-            radial-gradient(320px 110px at 50% 0%, rgba(255, 123, 43, 0.10) 0%, transparent 70%),
-            linear-gradient(75deg, #0b0086, #410075);
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        background-color: #04090f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        border-left: 1px solid rgba(32, 221, 224, 0.14);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.35);
     }
 
     /* Modern Notifications Offcanvas Styles */
@@ -740,8 +738,9 @@
     }
 
     .notifications-header {
-        background: linear-gradient(135deg, rgba(92, 0, 166, 0.4), rgba(11, 0, 134, 0.6));
-        border-bottom: 1px solid rgba(196, 0, 255, 0.2);
+        background-color: #0a141f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        border-bottom: 1px solid rgba(32, 221, 224, 0.14);
         padding: 1rem 1.25rem;
         display: flex;
         justify-content: space-between;
@@ -752,12 +751,13 @@
         width: 2.5rem;
         height: 2.5rem;
         border-radius: 50%;
-        background: linear-gradient(135deg, rgba(196, 0, 255, 0.5), rgba(92, 0, 166, 0.8));
+        background-color: #004a5a;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 1rem;
-        color: #fff;
+        color: #f0f8ff;
     }
 
     .notifications-subtitle {
@@ -775,14 +775,15 @@
     }
 
     .notifications-mark-read:hover {
-        background: rgba(196, 0, 255, 0.3);
-        border-color: rgba(196, 0, 255, 0.5);
-        color: #fff;
+        background: rgba(0, 165, 148, 0.3);
+        border-color: rgba(32, 221, 224, 0.5);
+        color: #f0f8ff;
     }
 
     .notifications-body {
         padding: 1rem;
-        background: linear-gradient(180deg, rgba(11, 0, 134, 0.3), transparent 50%);
+        background-color: #04090f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
     }
 
     .notifications-list {
@@ -806,7 +807,7 @@
     }
 
     .text-purple {
-        color: #c400ff !important;
+        color: #20dde0 !important;
     }
 
     .notifications-end {
@@ -840,7 +841,9 @@
         width: 5rem;
         height: 5rem;
         border-radius: 50%;
-        background: linear-gradient(135deg, rgba(92, 0, 166, 0.3), rgba(11, 0, 134, 0.4));
+        background-color: #0a141f;
+        background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
+        border: 1px solid #1c3350;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -896,11 +899,11 @@
     }
 
     .link-purple {
-        color: #c400ff;
+        color: #20dde0;
     }
 
     .link-purple:hover {
-        color: #FF00FABF;
+        color: #8ff7f8;
     }
 
     #notificationBell {
@@ -938,10 +941,9 @@
     }
 
     .link-animated {
-        color: #ffffff;
+        color: #f0f8ff;
         padding: 0.25rem 0.5rem;
         transition: all 0.12s ease-in-out;
-        animation: glow-breathing 2.5s ease-in-out infinite;
     }
 
     .fa-upload, .fa-bell {
@@ -950,15 +952,15 @@
 
     .fa-upload:hover, .fa-bell:hover {
         transform: scale(1.1);
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
-        background-color: #5c00a6;
+        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.75);
+        background-color: var(--primary-color);
         border-radius: 0.25rem;
     }
 
-    .link-animated:hover {
-        animation: none;
-        box-shadow: 0 0 0.8rem 0.3rem rgba(196, 0, 255, 0.8);
-        background-color: rgba(92, 0, 166, 0.5);
+    .link-animated:hover,
+    .link-animated:focus-visible {
+        box-shadow: 0 0 0.8rem 0.3rem rgba(32, 221, 224, 0.5);
+        background-color: rgba(0, 165, 148, 0.5);
     }
 
     .logo {
@@ -967,55 +969,32 @@
 
     .logo:hover {
         transform: scale(1.05);
-        filter: drop-shadow(0 0 0.75rem #c400ff);
+        filter: drop-shadow(0 0 0.75rem #20dde0);
 
     }
 
     .form-control:focus {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.75);
     }
 
-    /* Link animation (smooth glowing breathing effect for icons) */
-    @keyframes glow-breathing {
-        0%, 100% {
-            box-shadow: 0 0 0.2rem 0.1rem rgba(196, 0, 255, 0.3);
-        }
-        50% {
-            box-shadow: 0 0 0.6rem 0.25rem rgba(196, 0, 255, 0.6);
-        }
+    :global(.profile-avatar) {
+        border: 1px solid rgba(32, 221, 224, 0.4);
     }
+
+    :global(.profile-avatar:hover) {
+        box-shadow: 0 0 0.6rem 0.25rem rgba(0, 165, 148, 0.75);
+    }
+
+    /* Calm rest state: glow only on :hover / :focus-visible (no idle breathing) */
 
     /* Deprecated: Old link-animation that caused visual glitches */
     /* @keyframes link-animation {
         from {
-            text-shadow: 0 0 0.1rem #c400ff, 0 0 0.1rem #c400ff, 0 0 0.1rem #c400ff;
+            text-shadow: 0 0 0.1rem #20dde0, 0 0 0.1rem #20dde0, 0 0 0.1rem #20dde0;
         }
         to {
-            text-shadow: 0 0 1rem #c400ff, 0 0 1rem #c400ff, 0 0 1rem #c400ff;
+            text-shadow: 0 0 1rem #20dde0, 0 0 1rem #20dde0, 0 0 1rem #20dde0;
         }
     } */
 
-    @keyframes Gradient-Register {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
-
-    @keyframes Gradient {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
-    }
 </style>

@@ -29,29 +29,16 @@
 
 <style>
     .gradient-text {
-        color: white;
+        color: #f0f8ff;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         font-weight: 700;
     }
 
-    @keyframes gradientShift {
-        0%, 100% {
-            background-position: 0 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-    }
-
     .edit-header {
-        background: linear-gradient(135deg, 
-            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 20%)),
-            var(--primary-color),
-            hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%))
-        );
-        background-size: 300% 300%;
-        animation: gradientShift 8s ease infinite;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
+            #04090f;
+        border: 1px solid #1c3350;
         backdrop-filter: blur(20px);
         border-radius: 20px;
         padding: 2rem;
@@ -59,7 +46,7 @@
     }
 
     .alert-danger {
-        background: linear-gradient(135deg, rgba(217, 51, 51, 0.1), rgba(185, 28, 28, 0.05));
+        background: rgba(217, 51, 51, 0.1);
         border: 1px solid rgba(217, 51, 51, 0.3);
         color: #f87171;
         border-radius: 16px;
@@ -70,7 +57,7 @@
     }
 
     .text-muted {
-        color: hsl(0, 0%, 60%) !important;
+        color: #8ba3b0 !important;
     }
 
     /* Mobile Responsiveness */

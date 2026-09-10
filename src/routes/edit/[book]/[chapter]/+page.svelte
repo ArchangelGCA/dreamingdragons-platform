@@ -122,7 +122,7 @@
                     toast.push(result.data.body.message + '. View it <a class="link-light" href="' + chapterUrl + '" target="_blank">here</a>.', {
                         theme: {
                             '--toastBackground': '#4caf50',
-                            '--toastColor': '#fff'
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                     
@@ -134,7 +134,7 @@
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {
                             '--toastBackground': '#ff4d4d',
-                            '--toastColor': '#fff'
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 }
@@ -142,7 +142,7 @@
                 toast.push('Error: Update failed', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -151,7 +151,7 @@
             toast.push('Error: Network error', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         } finally {
@@ -281,7 +281,7 @@
                     toast.push('Error: ' + result.data.body.message, {
                         theme: {
                             '--toastBackground': '#ff4d4d',
-                            '--toastColor': '#fff'
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 }
@@ -289,7 +289,7 @@
                 toast.push('Error: Tag suggestions failed', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }

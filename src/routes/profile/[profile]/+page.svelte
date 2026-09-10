@@ -102,16 +102,16 @@
                     isFollowing = true;
                     toast.push('➕ You\'re now following ' + profile.username + "!", {
                         theme: {
-                            '--toastBackground': '#8b00b6',
-                            '--toastColor': '#fff'
+                            '--toastBackground': '#004a5a',
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 } else {
                     isFollowing = false;
                     toast.push('➖ You\'ve unfollowed ' + profile.username + "!", {
                         theme: {
-                            '--toastBackground': '#7b2eff',
-                            '--toastColor': '#fff'
+                            '--toastBackground': '#004a5a',
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 }
@@ -119,7 +119,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -128,7 +128,7 @@
             toast.push('Error: ' + result.data.body.message, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         }
@@ -140,15 +140,15 @@
         navigator.clipboard.writeText(profile.id).then(() => {
             toast.push('📋 Copied to clipboard!', {
                 theme: {
-                    '--toastBackground': '#7b2eff',
-                    '--toastColor': '#fff'
+                    '--toastBackground': '#004a5a',
+                    '--toastColor': '#f0f8ff'
                 }
             });
         }).catch(err => {
             toast.push('Error: ' + err, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         });
@@ -178,8 +178,8 @@
                     allLikedBooksLoaded = true;
                     toast.push('🎉 All favourites loaded!', {
                         theme: {
-                            '--toastBackground': '#7b2eff',
-                            '--toastColor': '#fff'
+                            '--toastBackground': '#004a5a',
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 } else {
@@ -193,7 +193,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -201,7 +201,7 @@
             toast.push('Error: ' + result.data.body.message, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         }
@@ -242,7 +242,7 @@
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -250,7 +250,7 @@
             toast.push('Error: ' + result.data.body.message, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         }
@@ -636,35 +636,35 @@
 
     .bg-info-profile {
         background:
-            radial-gradient(600px 130px at 50% 0%, rgba(255, 123, 43, 0.14) 0%, transparent 75%),
-            linear-gradient(90deg, rgba(128, 0, 128, 0.5) 0%, rgba(75, 0, 130, 0.5) 50%, rgba(60, 0, 104, 0.5) 100%);
-        border: 1px solid rgba(196, 0, 255, 0.16);
+            linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
+            #04090f;
+        border: 1px solid #1c3350;
         box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
     }
 
     .dropdown-menu {
-        background-color: rgba(60, 0, 104, 0.9);
+        background-color: rgba(0, 65, 80, 0.95);
     }
 
     .dropdown-item:hover {
-        background-color: rgba(43, 0, 73, 0.95);
+        background-color: rgba(0, 74, 90, 0.95);
     }
 
     .dropdown-item:active {
-        background-color: rgba(43, 0, 73, 0.95);
+        background-color: rgba(0, 74, 90, 0.95);
     }
 
     .dropdown-item:focus {
-        background-color: rgba(43, 0, 73, 0.95);
+        background-color: rgba(0, 74, 90, 0.95);
     }
 
     .link-purple {
-        color: #7d00dd;
+        color: #20dde0;
         transition: color 0.3s;
     }
 
     .link-purple:hover {
-        color: #9100ff;
+        color: #8ff7f8;
     }
 
     #followers {
@@ -673,33 +673,33 @@
 
     .btn-view-options {
         background-color: transparent;
-        color: #fff;
+        color: #f0f8ff;
         border: 1px solid transparent;
         border-radius: 5px;
         transition: background-color 0.3s;
     }
 
     .btn-view-options:hover {
-        background-color: #7d00dd;
-        color: #fff;
-        border-color: rgba(255, 171, 94, 0.4);
-        box-shadow: 0 0 0.5rem 0.1rem rgba(196, 0, 255, 0.35);
+        background-color: #00a594;
+        color: #02120f;
+        border-color: rgba(255, 216, 138, 0.4);
+        box-shadow: 0 0 0.5rem 0.1rem rgba(32, 221, 224, 0.35);
     }
 
     .btn-view-options.active {
-        background-color: #7d00dd;
-        color: #fff;
-        border-color: rgba(255, 171, 94, 0.5);
+        background-color: #00a594;
+        color: #02120f;
+        border-color: rgba(255, 216, 138, 0.5);
         border-radius: 5px;
-        box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        box-shadow: 0 0 0.25rem 0.15rem rgba(0, 165, 148, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
     .btn-view-options:active {
-        background-color: #7d00dd;
-        color: #fff;
-        border-color: rgba(255, 171, 94, 0.5);
+        background-color: #004a5a;
+        color: #f0f8ff;
+        border-color: rgba(255, 216, 138, 0.5);
         border-radius: 5px;
-        box-shadow: 0 0 0.25rem 0.15rem rgba(125, 0, 221, 0.75);
+        box-shadow: 0 0 0.25rem 0.15rem rgba(0, 165, 148, 0.45);
     }
 
     .btn-username {
@@ -708,13 +708,13 @@
         padding: 0;
         font: inherit;
         cursor: pointer;
-        color: #fff;
+        color: #f0f8ff;
         text-decoration: none;
         transition: color 0.15s;
     }
 
     .btn-username:hover {
-        color: #7d00dd;
+        color: #20dde0;
     }
 
     /* Modern Gallery Cards for Profile */
@@ -723,11 +723,10 @@
     }
 
     .gallery-card-profile {
-        background: linear-gradient(135deg,
-        hsla(var(--primary-hue), 20%, 15%, 0.8),
-        hsla(var(--primary-hue), 15%, 20%, 0.6)
-        );
-        border: 1px solid hsla(var(--primary-hue), 30%, 40%, 0.3);
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
+            #0a141f;
+        border: 1px solid #1c3350;
         border-radius: 16px;
         overflow: hidden;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -736,20 +735,7 @@
     }
 
     .gallery-card-profile::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient(135deg,
-        hsla(var(--primary-hue), 60%, 50%, 0.1) 0%,
-        transparent 50%,
-        hsla(var(--primary-hue), 40%, 60%, 0.05) 100%
-        );
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
+        content: none;
     }
 
     .gallery-card-profile:hover::before {
@@ -758,8 +744,8 @@
 
     .gallery-card-profile:hover {
         transform: translateY(-4px);
-        border-color: hsla(var(--primary-hue), 60%, 60%, 0.6);
-        box-shadow: 0 12px 24px hsla(var(--primary-hue), var(--primary-saturation), var(--primary-lightness), 0.2);
+        border-color: rgba(32, 221, 224, 0.4);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.25);
     }
 
     .gallery-preview-profile {
@@ -767,10 +753,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(45deg,
-        hsla(var(--primary-hue), 20%, 10%, 0.8),
-        hsla(var(--primary-hue), 15%, 15%, 0.6)
-        );
+        background: #04090f;
         position: relative;
         overflow: hidden;
     }
@@ -884,9 +867,9 @@
     }
 
     .btn-edit-gallery {
-        background: linear-gradient(135deg, var(--primary-color), hsl(290, 100%, 60%));
-        color: white;
-        border: none;
+        background: #00a594;
+        color: #02120f;
+        border: 1px solid rgba(32, 221, 224, 0.4);
         border-radius: 50%;
         width: 36px;
         height: 36px;
@@ -901,13 +884,10 @@
     }
 
     .btn-edit-gallery:hover {
-        background: linear-gradient(135deg,
-        hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)),
-        hsl(290, 100%, 70%)
-        );
+        background: #20dde0;
         transform: translateY(-2px) scale(1.05);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-        color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), 0 0 0.6rem 0.15rem rgba(32, 221, 224, 0.35);
+        color: #02120f;
         text-decoration: none;
     }
 

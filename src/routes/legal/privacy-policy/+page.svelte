@@ -154,7 +154,11 @@
 
 <style>
     .container-fluid {
-        background-color: white !important;
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 22%),
+            #04090f !important;
+        border: 1px solid #1c3350;
+        color: #f0f8ff;
     }
 
     * {
@@ -164,8 +168,8 @@
     }
 
     h1, h2 {
-        color: black;
-        font-family: Arial, sans-serif;
+        color: #f0f8ff;
+        font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: bold;
         text-decoration: none;
@@ -180,8 +184,8 @@
     }
 
     p {
-        color: black;
-        font-family: Arial, sans-serif;
+        color: #cce0e5;
+        font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: normal;
         text-decoration: none;
@@ -199,8 +203,8 @@
 
     li > *:first-child:before {
         content: "· ";
-        color: black;
-        font-family: Arial, sans-serif;
+        color: #f0f8ff;
+        font-family: 'Comfortaa', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-style: normal;
         font-weight: bold;
         text-decoration: none;

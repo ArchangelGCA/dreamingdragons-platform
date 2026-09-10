@@ -3,7 +3,7 @@
  * also imported by server `load`/actions where component code can't run).
  *
  * One vocabulary for the whole console:
- * working = dark + long, success = royal purple, error = red.
+ * working = dark + long, success = dragon teal, error = red.
  */
 import { toast } from '$lib/components/svelte-toast';
 
@@ -18,7 +18,7 @@ export function notifyWorking(message) {
 export function notifySuccess(message) {
 	toast.push(message, {
 		duration: 5000,
-		theme: { '--toastBackground': '#5c00a6', '--toastColor': '#fff' }
+		theme: { '--toastBackground': '#004a5a', '--toastColor': '#f0f8ff' }
 	});
 }
 

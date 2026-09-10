@@ -204,8 +204,8 @@
                 <button class="btn btn-purple mt-3 w-100" onclick={handleAddAll} disabled={isAdding}>Add all users</button>
                 <!-- Progress bar -->
                 {#if progress >= 0 && isAdding}
-                    <div class="progress mt-3" role="progressbar" aria-label="Adding all users" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="width: {progress}%"></div>
+                    <div class="progress mt-3" role="progressbar" aria-label="Adding all users" aria-valuenow={progress} aria-valuemin="0" aria-valuemax="100" style="background-color: #06121e;">
+                        <div class="progress-bar" style="width: {progress}%; background-color: #00a594;"></div>
                     </div>
                 {/if}
             {:else if users && users.length === 0}

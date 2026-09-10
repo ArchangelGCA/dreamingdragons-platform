@@ -200,7 +200,7 @@
                     toast.push('Error: ' + errorMessage, {
                         theme: {
                             '--toastBackground': '#ff4d4d',
-                            '--toastColor': '#fff'
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 }
@@ -209,14 +209,14 @@
                 toast.push('Error: ' + errorMessage, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             } else {
                 toast.push('Error: Tag suggestions failed', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -277,7 +277,7 @@
                 toast.push('Error: File is not an image', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
                 return;
@@ -300,7 +300,7 @@
             toast.push('Image is not too big', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             return;
@@ -309,7 +309,7 @@
             toast.push('Already compressing image, please wait...', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             return;
@@ -323,7 +323,7 @@
             toast.push('Failed to get token', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             isCompressing = false;
@@ -335,7 +335,7 @@
             toast.push('Error: No image selected', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             isCompressing = false;
@@ -379,7 +379,7 @@
                 toast.push(errorMessage, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
                 isCompressing = false;
@@ -409,14 +409,14 @@
                 toast.push('Image compressed successfully', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             } else {
                 toast.push('Failed to compress image: Image is still too big', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -429,7 +429,7 @@
             toast.push('Failed to compress image: Network or server error', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             isCompressing = false;
@@ -458,7 +458,7 @@
             toast.push('You must select a Content!', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             return;
@@ -489,7 +489,7 @@
                     toast.push('No previous chapters or tags found... ☹️', {
                         theme: {
                             '--toastBackground': '#ff4d4d',
-                            '--toastColor': '#fff'
+                            '--toastColor': '#f0f8ff'
                         }
                     });
                 } else {
@@ -505,14 +505,14 @@
                         toast.push(addedTags + ' Tags added successfully! 🤩', {
                             theme: {
                                 '--toastBackground': '#4caf50',
-                                '--toastColor': '#fff'
+                                '--toastColor': '#f0f8ff'
                             }
                         });
                     } else {
                         toast.push('No tags were added... 🤔', {
                             theme: {
                                 '--toastBackground': '#ff4d4d',
-                                '--toastColor': '#fff'
+                                '--toastColor': '#f0f8ff'
                             }
                         });
                     }
@@ -522,7 +522,7 @@
                 toast.push('Error: ' + errorMessage, {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -531,14 +531,14 @@
             toast.push('Error: ' + errorMessage, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         } else {
             toast.push('Error: Previous chapter tags fetch failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         }
@@ -554,7 +554,7 @@
             toast.push('Please wait for the image to finish compressing', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             return;
@@ -575,7 +575,7 @@
             toast.push('Error: No image selected', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             activeUpload = false;
@@ -587,7 +587,7 @@
             toast.push('Error: File is not an image', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             activeUpload = false;
@@ -599,7 +599,7 @@
             toast.push('Error: File is too large', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
             activeUpload = false;
@@ -633,7 +633,7 @@
                 toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + bookUrl + '" target="_blank">here</a>.', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
 
@@ -653,7 +653,7 @@
                 toast.push('Error: Unexpected response format', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -664,7 +664,7 @@
             toast.push('Error: ' + errorMessage, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         } else {
@@ -672,7 +672,7 @@
             toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         }
@@ -723,7 +723,7 @@
                 toast.push(result.data.body.message + '. View it <a class="link-light" href=\"' + chapterUrl + '" target="_blank">here</a>.', {
                     theme: {
                         '--toastBackground': '#4caf50',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
 
@@ -739,7 +739,7 @@
                 toast.push('Error: Unexpected response format', {
                     theme: {
                         '--toastBackground': '#ff4d4d',
-                        '--toastColor': '#fff'
+                        '--toastColor': '#f0f8ff'
                     }
                 });
             }
@@ -750,7 +750,7 @@
             toast.push('Error: ' + errorMessage, {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         } else {
@@ -758,7 +758,7 @@
             toast.push('Error: Upload failed', {
                 theme: {
                     '--toastBackground': '#ff4d4d',
-                    '--toastColor': '#fff'
+                    '--toastColor': '#f0f8ff'
                 }
             });
         }
@@ -1306,18 +1306,13 @@
     }
 
     .btn-outline-purple-light:hover {
-        color: white;
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
+        color: #02120f;
+        background-color: #00a594;
+        border-color: #00a594;
     }
 
     .gradient-text {
-        background: linear-gradient(135deg, var(--primary-color), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%)));
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-size: 200% 200%;
-        animation: gradientShift 3s ease-in-out infinite;
+        color: #f0f8ff;
     }
 
     .content-type-selector .content-type-btn {
@@ -1335,24 +1330,25 @@
         border-color: var(--primary-color);
         box-shadow: 0 4px 15px var(--primary-color-alpha-90);
         transform: translateY(-2px);
-        background: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) - 20%));
-        color: white;
+        background: #004a5a;
+        color: #f0f8ff;
     }
 
     .content-type-btn.active {
-        background: linear-gradient(135deg, var(--primary-color), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)));
-        border-color: var(--primary-color);
-        color: white;
+        background: #00a594;
+        border-color: #00a594;
+        color: #02120f;
         box-shadow: 0 8px 25px var(--primary-color-alpha-90);
     }
 
     .content-type-btn.active .text-muted {
-        color: rgba(255, 255, 255, 0.8) !important;
+        color: rgba(2, 18, 15, 0.75) !important;
     }
 
     .content-type-btn:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem var(--primary-color-alpha-90);
+        box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45);
+        outline: 1px solid rgba(32, 221, 224, 0.4);
     }
 
     .content-type-content {
@@ -1373,18 +1369,18 @@
     .progress-bar-custom {
         height: 8px;
         border-radius: 10px;
-        background-color: var(--surface-color);
+        background-color: #06121e;
         overflow: hidden;
         border: 1px solid var(--border-color);
     }
 
     .progress-bar {
-        background: linear-gradient(90deg, var(--primary-color), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%)));
+        background: #00a594;
         transition: width 0.3s ease;
     }
 
     .bg-gradient-primary {
-        background: linear-gradient(90deg, var(--primary-color), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%))) !important;
+        background: #00a594 !important;
     }
 
     /* Step Indicators */
@@ -1408,10 +1404,10 @@
     }
 
     .step-indicator.active .step-number {
-        background: var(--primary-color);
-        color: white;
+        background: #00a594;
+        color: #02120f;
         box-shadow: 0 4px 12px var(--primary-color-alpha-90);
-        border-color: var(--primary-color);
+        border-color: #00a594;
     }
 
     .step-label {
@@ -1452,7 +1448,7 @@
     }
 
     .form-select.form-control-modern:focus {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%235c00a6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2300a594' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
     }
 
     .form-floating > label {
@@ -1506,7 +1502,7 @@
     }
 
     .upload-placeholder .text-muted {
-        color: hsl(0, 0%, 60%) !important;
+        color: #8ba3b0 !important;
     }
 
     .preview-image {
@@ -1523,8 +1519,8 @@
 
     /* Tags */
     .tag-pill {
-        background: linear-gradient(135deg, var(--primary-color), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)));
-        color: white;
+        background: #00a594;
+        color: #02120f;
         border-radius: 20px;
         padding: 8px 12px;
         margin: 4px;
@@ -1541,7 +1537,7 @@
     }
 
     .tag-remove {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(2, 18, 15, 0.2);
         border: none;
         border-radius: 50%;
         width: 20px;
@@ -1552,11 +1548,11 @@
         justify-content: center;
         cursor: pointer;
         transition: all 0.2s ease;
-        color: white;
+        color: #02120f;
     }
 
     .tag-remove:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(2, 18, 15, 0.3);
         transform: scale(1.1);
     }
 
@@ -1570,16 +1566,16 @@
     }
 
     .suggestion-btn:hover {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
+        background: #004a5a;
+        border-color: #004a5a;
+        color: #f0f8ff;
         transform: translateY(-1px);
     }
 
     .suggestion-btn.selected {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
+        background: #00a594;
+        border-color: #00a594;
+        color: #02120f;
     }
 
     /* Review Section */
@@ -1645,7 +1641,7 @@
 
     /* Submit Button */
     .submit-btn {
-        background: linear-gradient(135deg, hsl(140, 60%, 40%), hsl(140, 60%, 50%));
+        background: hsl(140, 60%, 40%);
         border: none;
         border-radius: 12px;
         padding: 12px 32px;
@@ -1653,13 +1649,13 @@
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
-        color: white;
+        color: #f0f8ff;
     }
 
     .submit-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 25px hsla(140, 60%, 40%, 0.4);
-        background: linear-gradient(135deg, hsl(140, 60%, 45%), hsl(140, 60%, 55%));
+        background: hsl(140, 60%, 45%);
     }
 
     .submit-btn:disabled {
@@ -1670,43 +1666,44 @@
 
     /* Buttons */
     .btn-primary {
-        background: linear-gradient(135deg, var(--primary-color), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 10%)));
+        background: #00a594;
         border: none;
-        color: white;
+        color: #02120f;
         transition: all 0.3s ease;
-        border-color: var(--primary-color);
+        border-color: #00a594;
     }
 
     .btn-primary:hover,
     .btn-primary:focus {
-        background: linear-gradient(135deg, hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 5%)), hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 15%)));
-        box-shadow: 0 4px 15px var(--primary-color-alpha-90);
+        background: #20dde0;
+        box-shadow: 0 4px 15px rgba(32, 221, 224, 0.35);
         transform: translateY(-2px);
-        color: white;
-        border-color: var(--primary-color);
+        color: #02120f;
+        border-color: #20dde0;
     }
 
     .btn-primary:disabled {
-        background: var(--primary-color);
+        background: #004a5a;
         opacity: 0.6;
         transform: none;
         box-shadow: none;
-        border-color: var(--primary-color);
+        border-color: #004a5a;
+        color: #f0f8ff;
     }
 
     .btn-outline-primary {
-        color: var(--primary-color);
-        border-color: var(--primary-color);
+        color: #20dde0;
+        border-color: #00a594;
         background: transparent;
         transition: all 0.3s ease;
     }
 
     .btn-outline-primary:hover,
     .btn-outline-primary:focus {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
-        box-shadow: 0 4px 15px var(--primary-color-alpha-90);
+        background: #00a594;
+        border-color: #00a594;
+        color: #02120f;
+        box-shadow: 0 4px 15px rgba(32, 221, 224, 0.35);
         transform: translateY(-2px);
     }
 
@@ -1719,20 +1716,21 @@
 
     .btn-outline-secondary:hover,
     .btn-outline-secondary:focus {
-        background: var(--primary-color);
-        border-color: var(--primary-color);
-        color: white;
+        background: #004a5a;
+        border-color: #004a5a;
+        color: #f0f8ff;
     }
 
     .btn-warning {
-        background: linear-gradient(135deg, hsl(45, 90%, 45%), hsl(45, 90%, 55%));
+        background: hsl(45, 90%, 45%);
         border-color: hsl(45, 90%, 50%);
-        color: white;
+        color: #241a04;
     }
 
     .btn-warning:hover {
-        background: linear-gradient(135deg, hsl(45, 90%, 50%), hsl(45, 90%, 60%));
+        background: hsl(45, 90%, 50%);
         box-shadow: 0 4px 15px hsla(45, 90%, 50%, 0.4);
+        color: #241a04;
     }
 
     /* Step Navigation */
@@ -1752,7 +1750,8 @@
 
     .editor-container:focus-within {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem var(--primary-color-alpha-90);
+        box-shadow: 0 0 0 0.2rem rgba(0, 165, 148, 0.45);
+        outline: 1px solid rgba(32, 221, 224, 0.4);
     }
 
     /* Alert Styles */
@@ -1796,7 +1795,7 @@
 
     /* Text colors */
     .text-muted {
-        color: hsl(0, 0%, 60%) !important;
+        color: #8ba3b0 !important;
     }
 
     .text-success {
@@ -1809,7 +1808,7 @@
 
     /* Small text and links */
     small.text-muted {
-        color: hsl(0, 0%, 70%) !important;
+        color: #8ba3b0 !important;
     }
 
     .alert-link {
@@ -1910,16 +1909,7 @@
         }
     }
 
-    /* Animations */
-    @keyframes gradientShift {
-        0%, 100% {
-            background-position: 0 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-    }
-
+    /* Animations (drag feedback only — no infinite rest motion) */
     @keyframes pulse {
         0%, 100% {
             opacity: 1;

@@ -454,7 +454,7 @@
                         <span>{processed}/{runTotal} ({overallPct}%)</span>
                     </div>
                     <div class="progress mb-3" role="progressbar" aria-label="Migration progress" aria-valuenow={overallPct} aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" style:width={overallPct + '%'}>{overallPct}%</div>
+                        <div class="progress-bar" style:width={overallPct + '%'}>{overallPct}%</div>
                     </div>
                 {/if}
 
@@ -583,6 +583,14 @@
 {/if}
 
 <style>
+    .progress {
+        background-color: #06121e;
+    }
+
+    .progress-bar {
+        background-color: #00a594;
+    }
+
     .migration-log {
         max-height: 260px;
         overflow-y: auto;

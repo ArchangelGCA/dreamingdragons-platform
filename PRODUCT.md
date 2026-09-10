@@ -44,7 +44,7 @@ DreamingDragons is the official community platform of the DreamingDragons projec
 
 - Name: DreamingDragons; owner/developer: ArchangelGCA.
 - Official Discord community; social presence linked in the site footer.
-- The visual theme is binding and must be preserved: dark background with a purple/magenta identity (deep indigo-to-purple gradients, purple `#5c00a6`-family accents, magenta highlights such as `#c400ff`, glowing hover/breathing effects, Bootstrap dark theme `data-bs-theme="dark"`).
+- The visual theme is binding and must be preserved: OLED-dark abyss with a dragonfire-teal identity (true-black grounds, flat abyss surfaces, teal `#00a594`/`#20dde0` accents, trophy-gold `#ffc94d` highlights for loved content, calm hover/focus glow only, Bootstrap dark theme `data-bs-theme="dark"`).
 - Logo: purple dragon favicon (`static/favicon.*`, `src/lib/images/favicon.webp`).
 
 ## Evidence on Hand
@@ -58,5 +58,5 @@ DreamingDragons is the official community platform of the DreamingDragons projec
 1. Creators come first: publishing and showcasing are the primary jobs; everything else supports them.
 2. One community for art and literature: never split tales and visual art into separate isolated worlds.
 3. Independence is a feature: self-hosted control over rules, algorithms, and the experience.
-4. The identity is non-negotiable: preserve the dark purple/magenta theme in every surface.
+4. The identity is non-negotiable: preserve the OLED abyss + dragonfire-teal theme in every surface.
 5. Keep the platform fast and light: targeted, lightweight custom components over heavy UI dependencies.

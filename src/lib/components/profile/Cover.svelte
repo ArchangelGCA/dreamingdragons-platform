@@ -138,12 +138,13 @@
 
 <style>
     .btn-purple {
-        background-color: #5c00a6;
-        color: #fff;
+        background-color: var(--primary-color);
+        color: #f0f8ff;
     }
 
     .btn-purple:hover {
-        background-color: #4a0086;
+        background-color: #004a5a;
+        color: #f0f8ff;
     }
 
     .cover-wrapper {

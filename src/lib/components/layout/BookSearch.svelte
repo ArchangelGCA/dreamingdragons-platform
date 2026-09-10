@@ -87,9 +87,9 @@
 
     .custom-overlay-content {
         background:
-            radial-gradient(220px 90px at 50% 120%, rgba(255, 123, 43, 0.45) 0%, rgba(196, 0, 255, 0.25) 45%, transparent 75%),
-            linear-gradient(180deg, hsla(273, 100%, 22%, 0.55) 0%, hsl(273, 75%, 16%) 100%);
-        border-top: 1px solid rgba(255, 171, 94, 0.22);
+            linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 30%),
+            rgba(2, 8, 14, 0.88);
+        border-top: 1px solid rgba(32, 221, 224, 0.14);
     }
 
     .to-scale {
@@ -97,13 +97,13 @@
     }
 
     .card {
-        background: var(--forge-iron);
+        background: #0a141f;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
         transition: 0.1s all ease-in-out;
     }
 
     .card:hover {
-        box-shadow: 0 0 0.6rem 0.25rem rgba(92, 0, 166, 0.75);
+        box-shadow: 0 0 0.6rem 0.25rem rgba(32, 221, 224, 0.35);
     }
 
     .cursor-pointer {
