@@ -46,7 +46,7 @@
 
 <style>
     .avatar {
-        transition: all 0.15s ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out, opacity 0.15s ease-in-out, filter 0.15s ease-in-out, text-decoration-color 0.15s ease-in-out;
     }
 
     .avatar:hover {
@@ -57,7 +57,7 @@
     .avatar-fallback {
         background: var(--dd-deep-2);
         border: 2px solid rgba(var(--dd-bright-rgb), 0.4);
-        transition: all 0.15s ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out, opacity 0.15s ease-in-out, filter 0.15s ease-in-out, text-decoration-color 0.15s ease-in-out;
         user-select: none;
     }
 

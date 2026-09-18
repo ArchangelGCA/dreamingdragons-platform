@@ -287,7 +287,7 @@
 		font-size: 1.1rem !important;
 		backdrop-filter: blur(10px);
 		border-radius: 0 !important;
-		transition: all 0.3s ease !important;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease !important;
 		border-left: none !important;
 		border-right: none !important;
 	}
@@ -305,7 +305,7 @@
 		background: hsla(var(--primary-hue), 80%, 20%, 0.8) !important;
 		color: var(--text-color) !important;
 		border-radius: 0 16px 16px 0 !important;
-		transition: all 0.3s ease;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
 		border-left: none !important;
 	}
 
@@ -356,7 +356,7 @@
 		border: 1px solid var(--dd-edge);
 		border-radius: 20px !important;
 		overflow: hidden;
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		transition: color 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), filter 0.4s cubic-bezier(0.4, 0, 0.2, 1), text-decoration-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 		backdrop-filter: blur(15px);
 		position: relative;
 		margin-bottom: 1.5rem !important;
@@ -402,7 +402,7 @@
 		font-weight: 600 !important;
 		font-size: 1.1rem !important;
 		border-radius: 0 !important;
-		transition: all 0.3s ease !important;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease !important;
 		box-shadow: none !important;
 		position: relative;
 		z-index: 2;
@@ -455,7 +455,7 @@
 		font-weight: 600 !important;
 		font-size: 1.1rem !important;
 		border-radius: 0 !important;
-		transition: all 0.3s ease !important;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease !important;
 		box-shadow: none !important;
 		position: relative;
 		z-index: 2;
@@ -495,7 +495,7 @@
 		color: var(--dd-accent-ink);
 		font-size: 1.2rem;
 		flex-shrink: 0;
-		transition: all 0.3s ease;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
 	}
 
 	.accordion-item.expanded .question-icon {
@@ -526,7 +526,7 @@
 		font-weight: 600 !important;
 		border-radius: 15px !important;
 		backdrop-filter: blur(10px);
-		transition: all 0.3s ease !important;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease !important;
 		min-width: 180px;
 		white-space: nowrap;
 	}
@@ -566,7 +566,7 @@
 		align-items: center;
 		justify-content: center;
 		color: var(--dd-accent-bright);
-		transition: all 0.3s ease;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
 		flex-shrink: 0;
 	}
 
@@ -612,7 +612,7 @@
 	.answer-text :global(a) {
 		color: hsl(var(--primary-hue), var(--primary-saturation), calc(var(--primary-lightness) + 20%));
 		text-decoration: underline;
-		transition: all 0.3s ease;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
 	}
 
 	.answer-text :global(a:hover) {
@@ -670,7 +670,7 @@
 		color: white !important;
 		font-weight: 600 !important;
 		text-decoration: none !important;
-		transition: all 0.3s ease !important;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease !important;
 		border-radius: 15px !important;
 	}
 
@@ -687,7 +687,7 @@
 		color: var(--dd-accent-ink) !important;
 		font-weight: 600 !important;
 		text-decoration: none !important;
-		transition: all 0.3s ease !important;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease !important;
 		border-radius: 15px !important;
 	}
 
@@ -704,7 +704,7 @@
 		border-radius: 15px;
 		background: var(--dd-surface);
 		border: 1px solid var(--dd-edge);
-		transition: all 0.3s ease;
+		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
 	}
 
 	.help-item:hover {

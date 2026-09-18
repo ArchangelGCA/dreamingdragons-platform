@@ -19,7 +19,7 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="text-center mb-4 bg-animated-gradient py-2 rounded-4">🚀 Website Updates</h1>
+            <h1 class="text-center mb-4 bg-animated-gradient py-2 rounded-4"><i class="fas fa-rocket" aria-hidden="true"></i> Website Updates</h1>
             <p class="text-center mb-4">DreamingDragons Tales Platform Updates</p>
             {#each updates as update (update.id)}
                 <div class="card mb-3">
@@ -47,6 +47,12 @@
 
     .fa-pencil {
         color: var(--dd-accent-bright);
+    }
+
+    /* Stored update HTML can contain long code tokens / URLs — let them wrap
+       instead of spilling past the card edge on narrow screens. */
+    .card-text {
+        overflow-wrap: anywhere;
     }
 
     .text-sm {

@@ -279,7 +279,7 @@
         border-radius: 0.875rem;
         padding: 1rem;
         margin-bottom: 0.5rem;
-        transition: all 0.25s ease;
+        transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, opacity 0.25s ease, filter 0.25s ease, text-decoration-color 0.25s ease;
         overflow: hidden;
     }
 
@@ -412,7 +412,7 @@
         background: rgba(var(--dd-accent-rgb), 0.15);
         color: var(--text-secondary);
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease, text-decoration-color 0.2s ease;
     }
 
     .action-btn:hover:not(:disabled) {
@@ -483,7 +483,7 @@
         border: none;
         border-radius: 0.5rem;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease, text-decoration-color 0.2s ease;
     }
 
     .reply-btn-action.cancel {

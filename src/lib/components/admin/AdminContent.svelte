@@ -31,6 +31,12 @@
     let chapterErrors = $state({});
 
     let description = $derived(item.description ?? '');
+    // Collapsed preview is plain text (tags stripped first, then cut) — a raw
+    // substring can slice an HTML tag or entity in half and break the markup.
+    let descriptionPreview = $derived.by(() => {
+        const text = description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        return text.length > maxChars ? text.slice(0, maxChars).trimEnd() + '…' : text;
+    });
 
     async function runAction(action, formData, verb) {
         if (busy) return null;
@@ -162,8 +168,7 @@
             {#if showFullDescription}
                 {@html description}
             {:else}
-                {@html description.substring(0, maxChars)}
-                {#if description.length > maxChars}...{/if}
+                {descriptionPreview}
             {/if}
             {#if description.length > maxChars}
                 <button class="btn btn-link btn-sm p-0 ms-1" onclick={() => showFullDescription = !showFullDescription}>

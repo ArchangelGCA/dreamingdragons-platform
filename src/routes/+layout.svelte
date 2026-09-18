@@ -1,6 +1,6 @@
 <script>
     import "$lib/css/style.css";
-    import {invalidateAll, invalidate} from "$app/navigation";
+    import {invalidateAll, invalidate, onNavigate} from "$app/navigation";
     import {onDestroy, onMount, tick} from "svelte";
     import favicon from "$lib/images/favicon.webp";
     import {SvelteToast} from "$lib/components/svelte-toast";
@@ -18,6 +18,20 @@
     /** @type {{data: any, children?: import('svelte').Snippet}} */
     let {data, children} = $props();
     let {supabase, session, image_proxy, userData} = $state(data);
+
+    // View transitions on client-side navigation: the documented SvelteKit
+    // pattern (FAQ "How do I use the view transitions API?"). A no-op on
+    // browsers without the API; timing + reduced-motion live in style.css.
+    onNavigate((navigation) => {
+        if (!document.startViewTransition) return;
+        return new Promise((resolve) => {
+            document.startViewTransition(async () => {
+                resolve();
+                await navigation.complete;
+            });
+        });
+    });
+
     // Initialize notifications independently to prevent hydration issues
     let notifications = $state(data.notifications || []);
     let hasInitializedNotifications = $state(false);
@@ -491,7 +505,7 @@
     </div>
 
     <!-- Maintenance and Content -->
-    <div use:autoAnimate style="overflow-y: hidden; overflow-x: hidden">
+    <div style="overflow-y: hidden; overflow-x: hidden">
         {#if maintenance}
             <!-- Warning like row telling peoples that the website is in maintenance mode temporarily and there may be issues -->
             <div class="row border-top border-light-subtle pt-3 pb-2">
@@ -596,7 +610,7 @@
 
     :global(a) {
         color: var(--dd-accent-bright);
-        transition: all 0.12s ease-in-out;
+        transition: color 0.12s ease-in-out, text-decoration-color 0.12s ease-in-out, opacity 0.12s ease-in-out;
     }
 
     :global(a:hover) {
@@ -708,7 +722,7 @@
     }
 
     .dropdown-item:active {
-        transition: all 0.12s ease-in-out;
+        transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out, border-color 0.12s ease-in-out, box-shadow 0.12s ease-in-out, transform 0.12s ease-in-out;
         transform: scale(0.95);
     }
 
@@ -778,7 +792,7 @@
         color: rgba(255, 255, 255, 0.8);
         border-radius: 0.5rem;
         padding: 0.375rem 0.625rem;
-        transition: all 0.2s ease;
+        transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .notifications-mark-read:hover {
@@ -940,7 +954,7 @@
         background-color: transparent;
         color: #ffffff;
         border: none;
-        transition: all 0.1s ease-in-out;
+        transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out, transform 0.1s ease-in-out;
     }
 
     .btn-transparent:active {
@@ -950,11 +964,11 @@
     .link-animated {
         color: var(--text-color);
         padding: 0.25rem 0.5rem;
-        transition: all 0.12s ease-in-out;
+        transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out, border-color 0.12s ease-in-out, box-shadow 0.12s ease-in-out, transform 0.12s ease-in-out;
     }
 
     .fa-upload, .fa-bell {
-        transition: all 0.12s ease-in-out;
+        transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out, border-color 0.12s ease-in-out, box-shadow 0.12s ease-in-out, transform 0.12s ease-in-out;
     }
 
     .fa-upload:hover, .fa-bell:hover {
@@ -971,7 +985,7 @@
     }
 
     .logo {
-        transition: all 0.12s ease-in-out;
+        transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out, border-color 0.12s ease-in-out, box-shadow 0.12s ease-in-out, transform 0.12s ease-in-out;
     }
 
     .logo:hover {

@@ -72,7 +72,7 @@
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
         border: none;
         color: var(--dd-accent-ink);
-        transition: all 0.15s;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out;
     }
 
     .custom-button:hover {
@@ -94,7 +94,7 @@
         background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 22%);
         color: var(--text-color);
         border: 1px solid var(--dd-edge);
-        transition: 0.15s ease-in-out all;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out, opacity 0.15s ease-in-out, filter 0.15s ease-in-out, text-decoration-color 0.15s ease-in-out;
     }
 
     .form-control-custom:hover {

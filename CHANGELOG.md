@@ -5,6 +5,67 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.1] - 2026-09-18
+
+### Fixed
+
+- **Admin Updates history overflowed the page** — the published-updates rows
+  used `min-w-0`, which is not a Bootstrap utility (it only existed scoped in
+  `AdminUser.svelte`), so flex items kept `min-width: auto` and the 160-char
+  nowrap snippet (`text-truncate`) pushed every row up to 3.5x past the page
+  edge on mobile (edit/delete buttons landed off-screen, clipped by the root
+  `overflow-x: hidden`). A real global `.min-w-0 { min-width: 0 !important }`
+  utility now lives in `src/lib/css/style.css`; also fixes the same latent
+  class in `AdminStat.svelte`. Verified zero overflow offenders at 390px /
+  1280px / 2993px with a real changelog pasted.
+- **Admin Updates sticky preview could grow taller than the viewport** — the
+  preview card is now capped (`max-height: calc(100vh - 1.5rem)`, internal
+  scroll, thin scrollbar) on ≥lg; on phones it stays in normal flow.
+- **Admin nav rendered vertically centered in its column** — Bootstrap centers
+  `.navbar` children, leaving ~150px of dead space above the section list; the
+  admin nav (and its collapse) is now top-aligned on ≥lg, and the whole
+  `.admin-shell` is capped at 1720px + centered so the nav and the inner
+  container stay visually attached on ultra-wide screens.
+- **Admin tale cards could render broken HTML** — the collapsed description
+  preview did `{@html description.substring(0, 100)}`, slicing tags/entities
+  in half; the preview is now plain text (tags stripped first, then cut).
+- Public `/updates` heading emoji replaced with a Font Awesome `fa-rocket`
+  (design rules: Font Awesome icons only), and long code tokens / URLs in
+  stored update HTML now wrap (`overflow-wrap: anywhere`) in the public cards
+  and the admin live preview instead of spilling past the card edge.
+
+### Changed
+
+- **Platform-wide page transitions** — SvelteKit's documented
+  `onNavigate` + `document.startViewTransition` pattern wires the View
+  Transitions API into every client-side navigation (root `+layout.svelte`);
+  tuned to a 180ms calm cross-fade in `style.css`, fully disabled under
+  `prefers-reduced-motion: reduce` (both the transition timing and the
+  animation kill-switch cover the `::view-transition` pseudo-elements).
+- **Removed page-wide `autoAnimate` from the admin content root and the
+  global layout content wrapper** — whole-page FLIP animations fired on
+  every state change (transient overflow, broken `position: sticky` during
+  animation, no navigation value since SvelteKit swaps the page root);
+  targeted list-level `autoAnimate` stays (reports, warnings, content grids,
+  toasts) and the admin Updates history list gained it.
+- **`transition: all` eliminated across the platform** (~60 declarations in
+  the root layout, admin components and 17 public routes/components): every
+  transition now names explicit, cheap-to-style properties (`color`,
+  `background-color`, `border-color`, `box-shadow`, `transform`, `opacity`,
+  `filter`, `text-decoration-color`) so no layout property is ever
+  transitioned by accident.
+- **Shared motion vocabulary** in `style.css`: one `.btn` press feedback
+  (`transform 0.12s` + `scale(0.97)` on `:active`, with reduced-motion opt-out)
+  and smooth scrolling for anchor jumps; admin stat cards and dashboard
+  shortcut tiles share one hover/focus-within lift (transform + shadow only)
+  and the admin nav links got a consistent hover tint.
+- `AdminDialog` (the admin console's one dialog) now animates in (backdrop
+  fade + dialog fly/fade, zero-duration under reduced motion), locks body
+  scroll while open, restores it on close, and moves keyboard focus to the
+  confirm button; the migrations type-to-confirm modal was rebuilt on top of
+  it (Escape + scroll-lock + animation for free, same logic).
+- Global `a` links animate `color`/decoration only instead of `all`.
+
 ## [0.18.0] - 2026-09-18
 
 ### Added

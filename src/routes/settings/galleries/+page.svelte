@@ -788,7 +788,7 @@
         color: var(--dd-accent-ink) !important;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .btn-primary:hover {
@@ -821,7 +821,7 @@
     .gallery-card {
         background: hsla(var(--primary-hue), 15%, 20%, 0.4) !important;
         border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.3) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1), text-decoration-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
     }
@@ -915,7 +915,7 @@
         background: hsla(var(--primary-hue), 15%, 12%, 0.8) !important;
         border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.4) !important;
         color: var(--text-color) !important;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .form-control:focus {
@@ -936,7 +936,7 @@
     .book-item.card, .book-item .card {
         background: hsla(var(--primary-hue), 15%, 20%, 0.4) !important;
         border: 1px solid hsla(var(--primary-hue), 30%, 35%, 0.3) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1), text-decoration-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .book-item.card:hover, .book-item .card:hover {
@@ -972,7 +972,7 @@
         transparent 60%,
         hsla(0, 0%, 0%, 0.8) 100%
         );
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .book-item:hover .book-overlay {
@@ -991,7 +991,7 @@
         width: 48px;
         height: 48px;
         font-size: 1.25rem;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .add-book-item:hover .add-icon {

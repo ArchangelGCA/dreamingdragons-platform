@@ -1,6 +1,7 @@
 <script>
     import {deserialize} from "$app/forms";
     import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
+    import AdminDialog from "$lib/components/admin/AdminDialog.svelte";
     import {notifyError, notifySuccess} from "$lib/utils/admin-notify.js";
 
     const OLD_HOST = 'rosesintheflames.pockethost.io';
@@ -537,50 +538,44 @@
     </div>
 </div>
 
-<!-- Confirm modal (no native confirm(): explicit warning + type-to-confirm) -->
-{#if showConfirm}
-    <div class="modal-backdrop show"></div>
-    <div class="modal show d-block" tabindex="-1" role="dialog" aria-modal="true" aria-label="Confirm migration">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-{pendingDirection === 'reverse' ? 'danger' : 'warning'}">
-                <div class="modal-header">
-                    <h5 class="modal-title">{pendingDirection === 'reverse' ? 'Confirm ROLLBACK (new → old)' : 'Confirm MIGRATION (old → new)'}</h5>
-                    <button type="button" class="btn-close" aria-label="Close" disabled={isRunning} onclick={() => { showConfirm = false; }}></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert {pendingDirection === 'reverse' ? 'alert-danger' : 'alert-warning'}" role="alert">
-                        {#if pendingDirection === 'reverse'}
-                            This will rewrite <code>{NEW_HOST}</code> back to <code>{OLD_HOST}</code> in every matched Supabase cell listed above. Use it only if the forward migration caused a problem.
-                        {:else}
-                            This will rewrite <code>{OLD_HOST}</code> to <code>{NEW_HOST}</code> in every matched Supabase cell listed above. Make sure the new PocketHost instance (<code>{NEW_HOST}</code>) is live and serving the same files first.
-                        {/if}
-                    </div>
-                    <ul class="small mb-3">
-                        <li>Runs in small batches with live progress; you can watch each table drain.</li>
-                        <li>Fault-tolerant: rows the database rejects (e.g. a trigger guarding avatar changes) are automatically retried once as your admin account, then skipped and reported — they never stop the run. Re-run after fixing to retry just those rows.</li>
-                        <li>Reversible: run the opposite direction to undo. Already-rewritten rows are skipped on re-run.</li>
-                        <li>Writes an audit row per cell to <code>pockethost_host_migration_backup</code> when that table exists.</li>
-                        {#if pendingAlreadyDone}
-                            <li><strong>Already done:</strong> the last database scan found <strong>0 matching cells</strong> for this direction — confirming will simply re-check the database and report back without rewriting anything.</li>
-                        {:else if scanBody}
-                            <li>Last scan ({scanBody.direction}): <strong>{scanBody.total} matching cell(s)</strong>. A fresh database check runs again before the first batch.</li>
-                        {:else}
-                            <li>No scan yet — a fresh database check runs automatically before the first batch.</li>
-                        {/if}
-                    </ul>
-                    <label class="form-label fw-bold" for="confirm-input">Type <code>{confirmWord}</code> to enable the button:</label>
-                    <input id="confirm-input" class="form-control" type="text" autocomplete="off" placeholder={confirmWord} bind:value={confirmText} />
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick={() => { showConfirm = false; }}>Cancel</button>
-                    <button type="button" class="btn {pendingDirection === 'reverse' ? 'btn-danger' : 'btn-warning'}" disabled={!confirmOk} onclick={confirmAndRun}>
-                        {pendingDirection === 'reverse' ? 'Roll back now' : 'Migrate now'}
-                    </button>
-                </div>
-            </div>
-        </div>
+<!-- Confirm dialog (no native confirm(): explicit warning + type-to-confirm) -->
+<AdminDialog
+    open={showConfirm}
+    title={pendingDirection === 'reverse' ? 'Confirm ROLLBACK (new → old)' : 'Confirm MIGRATION (old → new)'}
+    tone={pendingDirection === 'reverse' ? 'danger' : 'warning'}
+    busy={isRunning}
+    onClose={() => { if (!isRunning) showConfirm = false; }}
+    onConfirm={confirmAndRun}
+>
+    <div class="alert {pendingDirection === 'reverse' ? 'alert-danger' : 'alert-warning'}" role="alert">
+        {#if pendingDirection === 'reverse'}
+            This will rewrite <code>{NEW_HOST}</code> back to <code>{OLD_HOST}</code> in every matched Supabase cell listed above. Use it only if the forward migration caused a problem.
+        {:else}
+            This will rewrite <code>{OLD_HOST}</code> to <code>{NEW_HOST}</code> in every matched Supabase cell listed above. Make sure the new PocketHost instance (<code>{NEW_HOST}</code>) is live and serving the same files first.
+        {/if}
     </div>
-{/if}
+    <ul class="small mb-3">
+        <li>Runs in small batches with live progress; you can watch each table drain.</li>
+        <li>Fault-tolerant: rows the database rejects (e.g. a trigger guarding avatar changes) are automatically retried once as your admin account, then skipped and reported — they never stop the run. Re-run after fixing to retry just those rows.</li>
+        <li>Reversible: run the opposite direction to undo. Already-rewritten rows are skipped on re-run.</li>
+        <li>Writes an audit row per cell to <code>pockethost_host_migration_backup</code> when that table exists.</li>
+        {#if pendingAlreadyDone}
+            <li><strong>Already done:</strong> the last database scan found <strong>0 matching cells</strong> for this direction — confirming will simply re-check the database and report back without rewriting anything.</li>
+        {:else if scanBody}
+            <li>Last scan ({scanBody.direction}): <strong>{scanBody.total} matching cell(s)</strong>. A fresh database check runs again before the first batch.</li>
+        {:else}
+            <li>No scan yet — a fresh database check runs automatically before the first batch.</li>
+        {/if}
+    </ul>
+    <label class="form-label fw-bold" for="confirm-input">Type <code>{confirmWord}</code> to enable the button:</label>
+    <input id="confirm-input" class="form-control" type="text" autocomplete="off" placeholder={confirmWord} bind:value={confirmText} />
+    {#snippet footer()}
+        <button type="button" class="btn btn-secondary" onclick={() => { showConfirm = false; }}>Cancel</button>
+        <button type="button" class="btn {pendingDirection === 'reverse' ? 'btn-danger' : 'btn-warning'}" disabled={!confirmOk || isRunning} onclick={confirmAndRun}>
+            {pendingDirection === 'reverse' ? 'Roll back now' : 'Migrate now'}
+        </button>
+    {/snippet}
+</AdminDialog>
 
 <style>
     .progress {
@@ -602,9 +597,5 @@
     .log-line {
         padding: 0.1rem 0;
         overflow-wrap: anywhere;
-    }
-
-    .modal-backdrop.show {
-        opacity: 0.6;
     }
 </style>

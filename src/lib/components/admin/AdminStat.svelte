@@ -31,6 +31,20 @@
 		background: var(--forge-iron, var(--dd-surface));
 		border: 1px solid var(--forge-edge, var(--dd-edge));
 		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+		transition: transform 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.18s ease-out;
+	}
+	/* One calm lift on hover / keyboard focus of the stretched link. */
+	.admin-stat:hover,
+	.admin-stat:focus-within {
+		transform: translateY(-2px);
+		border-color: rgba(var(--dd-bright-rgb), 0.45);
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.admin-stat:hover,
+		.admin-stat:focus-within {
+			transform: none;
+		}
 	}
 	.stat-icon {
 		width: 2.75rem;

@@ -768,7 +768,7 @@
         border: 1px solid var(--dd-edge);
         border-radius: 16px;
         overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), filter 0.3s cubic-bezier(0.4, 0, 0.2, 1), text-decoration-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         backdrop-filter: blur(10px);
         position: relative;
     }
@@ -810,7 +810,7 @@
         object-fit: cover;
         border-radius: 6px;
         border: 2px solid hsla(var(--primary-hue), 30%, 50%, 0.3);
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
@@ -898,7 +898,7 @@
         right: 8px;
         z-index: 10;
         opacity: 0;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .gallery-card-profile:hover .gallery-edit-overlay {
@@ -918,7 +918,7 @@
         text-decoration: none;
         font-size: 0.8rem;
         box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         backdrop-filter: blur(10px);
     }
 

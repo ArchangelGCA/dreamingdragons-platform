@@ -604,7 +604,7 @@
         border-radius: 12px;
         padding: 12px 16px;
         font-size: 1rem;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         backdrop-filter: blur(10px);
     }
 
@@ -628,7 +628,7 @@
         padding: 0 8px;
         transform: scale(1) translateY(0);
         transform-origin: 0 0;
-        transition: all 0.2s ease-in-out;
+        transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out, opacity 0.2s ease-in-out, filter 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
     }
 
     :global(.form-floating > .form-control-modern:focus ~ label),
@@ -697,7 +697,7 @@
     }
 
     .step-indicator {
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         cursor: pointer;
         padding: 1rem;
         border-radius: 12px;
@@ -735,7 +735,7 @@
         justify-content: center;
         margin: 0 auto 8px;
         font-weight: bold;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         border: 2px solid hsl(var(--primary-hue), 25%, 20%);
     }
 
@@ -764,7 +764,7 @@
         border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         border-radius: 16px;
         padding: 2rem;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .step-header h3 {
@@ -797,7 +797,7 @@
         align-items: center;
         font-size: 0.9rem;
         font-weight: 500;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         border: 1px solid var(--primary-color);
     }
 
@@ -817,7 +817,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease, text-decoration-color 0.2s ease;
         color: white;
         font-size: 0.8rem;
     }
@@ -844,7 +844,7 @@
     .suggestion-btn {
         margin: 4px;
         border-radius: 20px;
-        transition: all 0.2s ease;
+        transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease, text-decoration-color 0.2s ease;
         background: var(--surface-color);
         border: 1px solid var(--border-color);
         color: var(--text-color);
@@ -889,7 +889,7 @@
         padding: 0.75rem 2rem;
         border-radius: 12px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         box-shadow: 0 4px 15px var(--primary-color-alpha-90);
     }
 
@@ -917,7 +917,7 @@
         padding: 0.75rem 2rem;
         border-radius: 12px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .btn-outline-secondary:hover {

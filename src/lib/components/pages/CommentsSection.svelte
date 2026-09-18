@@ -239,7 +239,7 @@
         position: relative;
         margin-bottom: 2rem;
         border-radius: 1rem;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .input-glow {
@@ -285,7 +285,7 @@
         font-size: 1rem;
         line-height: 1.6;
         resize: vertical;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .comment-textarea::placeholder {
@@ -329,7 +329,7 @@
         font-weight: 500;
         font-size: 0.9rem;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease, text-decoration-color 0.2s ease;
     }
 
     .btn-cancel {

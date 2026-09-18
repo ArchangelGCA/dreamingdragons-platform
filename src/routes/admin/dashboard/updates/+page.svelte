@@ -2,6 +2,7 @@
 	import { tooltip } from 'svelte-tooltip-gca';
 	import { tooltipConfig } from '$lib/utils/gcacommons.js';
 	import { toast } from '$lib/components/svelte-toast';
+	import autoAnimate from '@formkit/auto-animate';
 	import AdminPageHeader from '$lib/components/admin/AdminPageHeader.svelte';
 	import AdminDialog from '$lib/components/admin/AdminDialog.svelte';
 	import { formatAdminDate, postAdminAction } from '$lib/utils/admin.js';
@@ -322,7 +323,7 @@
 	{:else if updates.length === 0}
 		<p class="small text-secondary mb-0">No updates published yet.</p>
 	{:else}
-		<ul class="list-group">
+		<ul class="list-group" use:autoAnimate>
 			{#each updates as update (update.id)}
 				<li class="list-group-item d-flex align-items-center gap-2">
 					<div class="min-w-0 flex-grow-1">
@@ -383,11 +384,29 @@
 	.preview-sticky {
 		position: sticky;
 		top: 0.75rem;
+		/* The preview grows with the composer: bound it to the viewport so a
+		   long update can't push its own bottom (or the page) out of reach. */
+		max-height: calc(100vh - 1.5rem);
+		overflow-y: auto;
+		scrollbar-width: thin;
+	}
+	/* On phones the preview sits below the composer in normal flow —
+	   sticky + capped height would fight the page scroll there. */
+	@media (max-width: 991.98px) {
+		.preview-sticky {
+			position: static;
+			max-height: none;
+			overflow: visible;
+		}
 	}
 	.update-preview {
 		background-color: rgba(var(--dd-accent-rgb), 0.12);
 		border: 1px solid var(--dd-edge);
 		box-shadow: 0 0 10px rgba(var(--dd-bright-rgb), 0.25);
+	}
+	/* Mirror the public page: long code tokens and URLs wrap, never spill. */
+	.update-preview .card-text {
+		overflow-wrap: anywhere;
 	}
 	.update-preview .fa-pencil {
 		color: var(--dd-accent-bright);

@@ -94,7 +94,7 @@
         </div>
     </div>
     <div class="col-6 col-lg-2">
-        <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple">
+        <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple admin-tile">
             <div class="card-body text-center p-3 d-flex flex-column justify-content-center">
                 <i class="fas fa-right-left fa-2x mb-2 text-warning" aria-hidden="true"></i>
                 <h3 class="h6">Migrations</h3>
@@ -103,18 +103,18 @@
         </div>
     </div>
     <div class="col-6 col-lg-2">
-        <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple">
+        <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple admin-tile">
             <div class="card-body text-center p-3 d-flex flex-column justify-content-center">
-                <i class="fas fa-envelope fa-2x mb-2 text-info" aria-hidden="true"></i>
+                <i class="fas fa-envelope fa-2x mb-2 text-dragon" aria-hidden="true"></i>
                 <h3 class="h6">Newsletter</h3>
                 <a href="/admin/dashboard/newsletter" class="btn btn-sm btn-purple mt-1">Open</a>
             </div>
         </div>
     </div>
     <div class="col-6 col-lg-2">
-        <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple">
+        <div class="card rounded-4 h-100 bg-black bg-opacity-25 border-purple admin-tile">
             <div class="card-body text-center p-3 d-flex flex-column justify-content-center">
-                <i class="fas fa-bullhorn fa-2x mb-2" aria-hidden="true"></i>
+                <i class="fas fa-bullhorn fa-2x mb-2 text-dragon" aria-hidden="true"></i>
                 <h3 class="h6">Updates</h3>
                 <a href="/admin/dashboard/updates" class="btn btn-sm btn-purple mt-1">Open</a>
             </div>
@@ -125,6 +125,19 @@
 <style>
     .border-purple {
         border-color: var(--primary-color) !important;
+    }
+    /* Shortcut tiles: one calm hover lift, transform + shadow only. */
+    .admin-tile {
+        transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
+    }
+    .admin-tile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .admin-tile:hover {
+            transform: none;
+        }
     }
     .panic-icon {
         width: 2.75rem;

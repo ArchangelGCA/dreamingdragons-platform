@@ -1302,7 +1302,7 @@
         color: var(--text-color);
         border-color: var(--primary-color-alpha-90);
         background-color: transparent;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .btn-outline-purple-light:hover {
@@ -1318,7 +1318,7 @@
     .content-type-selector .content-type-btn {
         min-height: 120px;
         border: 2px solid transparent;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         position: relative;
         overflow: hidden;
         background: hsl(var(--primary-hue), 15%, 12%);
@@ -1385,7 +1385,7 @@
 
     /* Step Indicators */
     .step-indicator {
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .step-number {
@@ -1399,7 +1399,7 @@
         justify-content: center;
         margin: 0 auto 8px;
         font-weight: bold;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         border: 2px solid hsl(var(--primary-hue), 25%, 20%);
     }
 
@@ -1429,7 +1429,7 @@
         padding: 12px 16px;
         background: hsl(var(--primary-hue), 15%, 12%);
         backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         color: var(--text-color);
     }
 
@@ -1469,7 +1469,7 @@
         border-radius: 16px;
         padding: 2rem;
         background: hsl(var(--primary-hue), 15%, 12%);
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         cursor: pointer;
         position: relative;
         overflow: hidden;
@@ -1528,7 +1528,7 @@
         align-items: center;
         font-size: 0.9rem;
         font-weight: 500;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .tag-pill:hover {
@@ -1547,7 +1547,7 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease, text-decoration-color 0.2s ease;
         color: var(--dd-accent-ink);
     }
 
@@ -1559,7 +1559,7 @@
     .suggestion-btn {
         margin: 4px;
         border-radius: 20px;
-        transition: all 0.2s ease;
+        transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease, filter 0.2s ease, text-decoration-color 0.2s ease;
         background: hsl(var(--primary-hue), 15%, 12%);
         border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         color: var(--text-color);
@@ -1585,7 +1585,7 @@
         border: 1px solid hsl(var(--primary-hue), 25%, 20%);
         border-radius: 16px;
         padding: 1.5rem;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .review-card:hover {
@@ -1646,7 +1646,7 @@
         border-radius: 12px;
         padding: 12px 32px;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         position: relative;
         overflow: hidden;
         color: var(--text-color);
@@ -1669,7 +1669,7 @@
         background: var(--dd-accent);
         border: none;
         color: var(--dd-accent-ink);
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         border-color: var(--dd-accent);
     }
 
@@ -1695,7 +1695,7 @@
         color: var(--dd-accent-bright);
         border-color: var(--dd-accent);
         background: transparent;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .btn-outline-primary:hover,
@@ -1711,7 +1711,7 @@
         border-color: hsl(var(--primary-hue), 25%, 20%);
         color: var(--text-color);
         background: hsl(var(--primary-hue), 15%, 12%);
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .btn-outline-secondary:hover,

@@ -130,7 +130,7 @@
 
 <style>
     .card {
-        transition: 0.12s all ease-in-out;
+        transition: color 0.12s ease-in-out, background-color 0.12s ease-in-out, border-color 0.12s ease-in-out, box-shadow 0.12s ease-in-out, transform 0.12s ease-in-out, opacity 0.12s ease-in-out, filter 0.12s ease-in-out, text-decoration-color 0.12s ease-in-out;
     }
 
 
@@ -161,7 +161,7 @@
         border-radius: 50%;
         padding-top: 1px;
         font-size: 20px;
-        transition: 0.2s all ease-in-out;
+        transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out, opacity 0.2s ease-in-out, filter 0.2s ease-in-out, text-decoration-color 0.2s ease-in-out;
     }
 
     .chapter-number-over:hover {
@@ -169,7 +169,7 @@
     }
 
     .content-image {
-        transition: 0.2s all ease-in;
+        transition: color 0.2s ease-in, background-color 0.2s ease-in, border-color 0.2s ease-in, box-shadow 0.2s ease-in, transform 0.2s ease-in, opacity 0.2s ease-in, filter 0.2s ease-in, text-decoration-color 0.2s ease-in;
     }
 
     .content-image:hover {
@@ -178,7 +178,7 @@
     }
 
     .overlay-custom {
-        transition: 0.15s all ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out, opacity 0.15s ease-in-out, filter 0.15s ease-in-out, text-decoration-color 0.15s ease-in-out;
         opacity: 0;
     }
 
@@ -202,7 +202,7 @@
         color: var(--dd-gold);
         filter: drop-shadow(0 0 6px rgba(var(--dd-gold-rgb), 0.45));
         animation: heart-pulse 0.3s ease-in-out;
-        transition: 0.15s all ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out, opacity 0.15s ease-in-out, filter 0.15s ease-in-out, text-decoration-color 0.15s ease-in-out;
     }
 
     .liked:hover {
@@ -213,7 +213,7 @@
         transform: scale(0.8);
         color: var(--text-color);
         animation: heart-unpulse 0.3s ease-in-out;
-        transition: 0.15s all ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out, opacity 0.15s ease-in-out, filter 0.15s ease-in-out, text-decoration-color 0.15s ease-in-out;
     }
 
     .unliked:hover {

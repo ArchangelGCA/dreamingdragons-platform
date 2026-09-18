@@ -49,7 +49,7 @@
     .staff-card {
         background: var(--dd-surface);
         border: 1px solid var(--dd-edge);
-        transition: all 0.1s ease-in-out;
+        transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out, opacity 0.1s ease-in-out, filter 0.1s ease-in-out, text-decoration-color 0.1s ease-in-out;
     }
 
     .staff-card:hover {

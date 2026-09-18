@@ -135,7 +135,7 @@
     .card.border-0 {
         background: var(--dd-surface);
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
-        transition: 0.1s all ease-in-out;
+        transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out, opacity 0.1s ease-in-out, filter 0.1s ease-in-out, text-decoration-color 0.1s ease-in-out;
     }
 
     .card.border-0:hover {
@@ -143,7 +143,7 @@
     }
 
     .overlay-custom {
-        transition: 0.15s all ease-in-out;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, transform 0.15s ease-in-out, opacity 0.15s ease-in-out, filter 0.15s ease-in-out, text-decoration-color 0.15s ease-in-out;
         opacity: 0;
     }
 

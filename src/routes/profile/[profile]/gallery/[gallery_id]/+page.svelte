@@ -126,7 +126,7 @@
     .owner-link {
         color: var(--primary-color) !important;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
     }
 
     .owner-link::after {
@@ -163,7 +163,7 @@
         border: 1px solid rgba(var(--dd-bright-rgb),0.4) !important;
         color: var(--dd-accent-ink) !important;
         font-weight: 600;
-        transition: all 0.3s ease;
+        transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease, text-decoration-color 0.3s ease;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.45);
     }
 

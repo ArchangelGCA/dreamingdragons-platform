@@ -1,6 +1,8 @@
 <script>
 	import { tooltip } from 'svelte-tooltip-gca';
 	import { tooltipConfig } from '$lib/utils/gcacommons.js';
+	import { fade, fly } from 'svelte/transition';
+	import { browser } from '$app/environment';
 
 	/**
 	 * The admin console's one dialog. Svelte-controlled Bootstrap markup —
@@ -41,15 +43,41 @@
 		tone === 'warning' ? 'border-warning' : tone === 'primary' ? 'border-purple' : 'border-danger'
 	);
 
+	// Transitions collapse to zero under prefers-reduced-motion (Svelte
+	// transitions are JS-driven, so the CSS kill-switch in style.css can't).
+	const reduceMotion = browser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const duration = reduceMotion ? 0 : 140;
+
+	/** @type {HTMLButtonElement | null} */
+	let confirmButton = $state(null);
+
 	function handleKeydown(event) {
 		if (event.key === 'Escape' && !busy) onClose();
 	}
+
+	// Body scroll lock + keyboard focus land on the dialog while it is open.
+	$effect(() => {
+		if (!open || !browser) return;
+		const previousOverflow = document.body.style.overflow;
+		document.body.style.overflow = 'hidden';
+		confirmButton?.focus();
+		return () => {
+			document.body.style.overflow = previousOverflow;
+		};
+	});
 </script>
 
 <svelte:window onkeydown={open ? handleKeydown : undefined} />
 
 {#if open}
-	<button type="button" class="modal-backdrop show admin-backdrop" aria-label="Close dialog" disabled={busy} onclick={onClose}></button>
+	<button
+		type="button"
+		class="modal-backdrop show admin-backdrop"
+		aria-label="Close dialog"
+		disabled={busy}
+		onclick={onClose}
+		transition:fade={{ duration }}
+	></button>
 	<div
 		class="modal show d-block"
 		tabindex="-1"
@@ -57,7 +85,11 @@
 		aria-modal="true"
 		aria-label={title}
 	>
-		<div class="modal-dialog modal-dialog-centered">
+		<div
+			class="modal-dialog modal-dialog-centered"
+			in:fly={{ y: 14, duration }}
+			out:fade={{ duration }}
+		>
 			<div class="modal-content {borderClass}">
 				<div class="modal-header">
 					<h5 class="modal-title">{title}</h5>
@@ -81,7 +113,13 @@
 							{cancelLabel}
 						</button>
 						{#if showConfirm}
-							<button type="button" class="btn {confirmClass} min-w-cta" disabled={busy} onclick={onConfirm}>
+							<button
+								type="button"
+								class="btn {confirmClass} min-w-cta"
+								disabled={busy}
+								onclick={onConfirm}
+								bind:this={confirmButton}
+							>
 								{#if busy}
 									<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Working…
 								{:else}

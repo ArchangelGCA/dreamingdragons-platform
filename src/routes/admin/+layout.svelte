@@ -1,6 +1,5 @@
 <script>
     import {page} from "$app/state";
-    import autoAnimate from '@formkit/auto-animate';
     /** @type {{children?: import('svelte').Snippet}} */
     let { children } = $props();
 
@@ -60,15 +59,20 @@
     </nav>
 
     <div class="col-12 col-lg-10">
-        <div class="container py-3 admin-content" use:autoAnimate>
+        <div class="container py-3 admin-content">
             {@render children?.()}
         </div>
     </div>
 </div>
 
 <style>
+    /* Cap the whole shell (nav + content) so the content container and the
+       nav stay visually attached on ultra-wide screens instead of the inner
+       .container centering itself alone and leaving a dead gap. */
     .admin-shell {
         min-height: calc(100vh - 140px);
+        max-width: 1720px;
+        margin-inline: auto;
     }
     .admin-nav {
         background: transparent;
@@ -79,10 +83,20 @@
             top: 0;
             align-self: flex-start;
             min-height: calc(100vh - 140px);
+            /* Bootstrap centers .navbar children vertically — the admin nav
+               must be top-aligned so the section list hugs the column top. */
+            align-items: flex-start;
+        }
+        .admin-nav :global(.navbar-collapse) {
+            align-items: flex-start;
         }
     }
     .admin-link {
         min-height: 48px;
+        transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    }
+    .admin-link:hover {
+        background: rgba(var(--dd-accent-rgb), 0.14);
     }
     .admin-link.active {
         background: var(--dd-accent);
