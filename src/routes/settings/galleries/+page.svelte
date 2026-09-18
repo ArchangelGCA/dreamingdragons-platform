@@ -8,7 +8,7 @@
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
 
     import {fly, scale} from 'svelte/transition';
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     let {data} = $props();
 
@@ -18,16 +18,15 @@
     let image_proxy = $derived(data.image_proxy);
     let galleryParam = $derived(data.galleryParam);
 
-    // image_proxy deprecated: serve originals at best quality.
+    // image_proxy deprecated: covers optimized via wsrv.nl (see $lib/utils/imageopt.js).
     function getOptimizedImageUrl(url) {
-        return resolveImageUrl(url, image_proxy, '/favicon.webp');
+        return optimizeImageUrl(url, IMAGE_WIDTHS.CARD, { fallback: '/favicon.webp' });
     }
 
     function getOptimizedImageSrcSet(url) {
-        const resolved = resolveImageUrl(url, image_proxy, '/favicon.webp');
         return {
-            src: resolved,
-            srcset: undefined
+            src: optimizeImageUrl(url, IMAGE_WIDTHS.CARD, { fallback: '/favicon.webp' }),
+            srcset: imageSrcSet(url, [IMAGE_WIDTHS.CARD, IMAGE_WIDTHS.CARD_2X], { fallback: '/favicon.webp' })
         };
     }
 

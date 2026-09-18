@@ -3,11 +3,13 @@
     import {toast} from "$lib/components/svelte-toast";
     import {PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} from "$env/static/public"
     import autoAnimate from "@formkit/auto-animate";
+    import {optimizeImageUrl, IMAGE_WIDTHS} from '$lib/utils/imageopt.js';
 
     /** @type {{url: any}} */
     let {url, uploadComplete} = $props();
 
-    let coverUrl = $derived(url && url !== '' ? url : '');
+    let hasCover = $derived(url && url !== '');
+    let coverUrl = $derived(hasCover ? optimizeImageUrl(url, IMAGE_WIDTHS.CARD_2X) : '');
     let uploading = $state(false);
     let files = $state();
     let isImageLoaded = $state(false);

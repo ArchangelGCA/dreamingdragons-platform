@@ -6,7 +6,7 @@
     import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any, chapter_count?: number, likes?: number}} */
     let {
@@ -23,7 +23,8 @@
 
     let isDragging = false;
     let dragTimeout;
-    const final_book_cover_url = $derived(resolveImageUrl(book_cover_url, image_proxy));
+    const final_book_cover_url = $derived(optimizeImageUrl(book_cover_url, IMAGE_WIDTHS.CARD));
+    const coverSrcSet = $derived(imageSrcSet(book_cover_url, [IMAGE_WIDTHS.CARD, IMAGE_WIDTHS.CARD_2X]));
     const final_book_title = $derived(book_title && book_title.length > 45 ? book_title.substring(0, 40) + '...' : book_title);
     const final_owner_username = $derived(owner_username && owner_username.length > 30 ? owner_username.substring(0, 35) + '...' : owner_username);
     
@@ -73,6 +74,8 @@
         {/if}
         <img
                 src={final_book_cover_url}
+                srcset={coverSrcSet}
+                sizes="(max-width: 768px) 92vw, 40vw"
                 alt="Book cover"
                 class="w-100 h-100 to-scale"
                 loading="lazy"

@@ -1,7 +1,8 @@
 <script>
     import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { safeExternalUrl, resolveImageUrl } from '$lib/utils/images.js';
+    import { safeExternalUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
     import {PUBLIC_DEFAULT_USERNAME} from '$env/static/public';
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
@@ -325,7 +326,7 @@
                 {:else}
                     {@const backgroundImageUrl = profile.cover_url ? profile.cover_url : profile.avatar_url}
                     {@const
-                        optimizedBackgroundUrl = resolveImageUrl(backgroundImageUrl, image_proxy)}
+                        optimizedBackgroundUrl = optimizeImageUrl(backgroundImageUrl, IMAGE_WIDTHS.HEADER)}
                     <div class="rounded-bottom-5 shadow-sm position-relative"
                          style="background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url({optimizedBackgroundUrl}), linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)); height: 300px; background-repeat: no-repeat; background-position: center; background-size: cover;">
                         <!-- Share and RSS buttons in top right corner -->
@@ -348,7 +349,7 @@
                             <div class="col-auto">
                                 {#if profile.avatar_url}
                                     {@const
-                                        optimizedAvatarUrl = resolveImageUrl(profile.avatar_url, image_proxy)}
+                                        optimizedAvatarUrl = optimizeImageUrl(profile.avatar_url, IMAGE_WIDTHS.CARD)}
                                     <img src={optimizedAvatarUrl} alt="{profile.username}"
                                          loading="lazy" decoding="async"
                                          class="rounded-circle bg-dark shadow" width="150px" height="150px"
@@ -573,7 +574,7 @@
                                                                 />
                                                             {:else}
                                                                 {@const
-                                                                    optimizedSrc = resolveImageUrl(gb.book.cover_url, image_proxy)}
+                                                                    optimizedSrc = optimizeImageUrl(gb.book.cover_url, IMAGE_WIDTHS.CARD)}
                                                                 <img
                                                                         src={optimizedSrc}
                                                                         alt="Tale cover"

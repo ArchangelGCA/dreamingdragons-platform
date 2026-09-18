@@ -1,5 +1,5 @@
 <script>
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
     /** @type {{url?: string, username?: string, size?: string, classes?: string, image_proxy?: any}} */
     let {
         url = '',
@@ -10,8 +10,9 @@
     } = $props();
 
     // NOTE: image_proxy is deprecated (external optimizer decommissioned).
-    // Serve original at best quality; kept in props for backwards compat.
-    let finalAvatarUrl = $derived(resolveImageUrl(url, image_proxy, ''));
+    // Width optimization moved to $lib/utils/imageopt.js (optimizeImageUrl);
+    // prop kept in props for backwards compat.
+    let finalAvatarUrl = $derived(url ? optimizeImageUrl(url, IMAGE_WIDTHS.AVATAR) : '');
     let isAvatarLoaded = $derived(url !== '' && url !== null && finalAvatarUrl !== null && finalAvatarUrl !== '');
 
     // Get the first letter of the username for the fallback avatar

@@ -12,7 +12,7 @@
     import Editor from "@tinymce/tinymce-svelte";
     import {conf} from "$lib/utils/gcatinymce.js";
     import {createBookPath} from "$lib/utils/slugs.js";
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -723,7 +723,7 @@
                                                             </div>
                                                         </div>
                                                     {:else if book?.cover_url}
-                                                        {@const optimizedCoverUrl = resolveImageUrl(book.cover_url, image_proxy)}
+                                                        {@const optimizedCoverUrl = optimizeImageUrl(book.cover_url, IMAGE_WIDTHS.CARD)}
                                                         <div class="image-preview">
                                                             <img src={optimizedCoverUrl}
                                                                  alt="Current cover"

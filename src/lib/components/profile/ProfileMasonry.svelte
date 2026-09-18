@@ -9,13 +9,14 @@
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
     import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
     import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     /** @type {{content: any, image_proxy: any}} */
     let {content = $bindable(), image_proxy} = $props();
     // let width = 500;
     let likeActionActive = false;
-    let finalLinkImage = $derived(resolveImageUrl(content.cover_url, image_proxy));
+    let finalLinkImage = $derived(optimizeImageUrl(content.cover_url, IMAGE_WIDTHS.CARD));
+    let coverSrcSet = $derived(imageSrcSet(content.cover_url, [IMAGE_WIDTHS.CARD, IMAGE_WIDTHS.CARD_2X]));
     let finalBookTitle = $derived(content.title.length > 35 ? content.title.substring(0, 35) + '...' : content.title);
     let isImageLoaded = $state(false);
     let chapterCount = $derived(content.chapter_count ?? 0);
@@ -90,6 +91,8 @@
                         <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
                             <img
                                     src={finalLinkImage}
+                                    srcset={coverSrcSet}
+                                    sizes="(max-width: 768px) 92vw, 350px"
                                     alt="Book cover"
                                     class="card-img"
                                     style="width: 1px; height: 1px;"
@@ -102,6 +105,8 @@
                 {:else}
                     <img
                             src={finalLinkImage}
+                            srcset={coverSrcSet}
+                            sizes="(max-width: 768px) 92vw, 350px"
                             alt="Book cover"
                             class="img-fluid rounded-3"
                             loading="lazy"

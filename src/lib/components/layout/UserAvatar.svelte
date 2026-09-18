@@ -2,7 +2,7 @@
     import {tooltip} from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
     import { createProfilePath } from '$lib/utils/slugs.js';
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     /** @type {{url?: string, username?: string, id?: string, size?: string, image_proxy?: any}} */
     let {
@@ -67,7 +67,7 @@
                     <span class="avatar-initial">{initial}</span>
                 </div>
             {:else}
-                {@const baseUrl = resolveImageUrl(url, image_proxy)}
+                {@const baseUrl = optimizeImageUrl(url, IMAGE_WIDTHS.AVATAR)}
                 <img
                     src={baseUrl}
                     alt='{username} Avatar'
@@ -87,7 +87,7 @@
                 <span class="avatar-initial">{initial}</span>
             </div>
         {:else}
-            {@const baseUrl = resolveImageUrl(url, image_proxy)}
+            {@const baseUrl = optimizeImageUrl(url, IMAGE_WIDTHS.AVATAR)}
             <img
                 src={baseUrl}
                 alt='{username} Avatar'

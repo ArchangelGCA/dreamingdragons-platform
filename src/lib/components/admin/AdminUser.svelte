@@ -6,7 +6,7 @@
     import autoAnimate from "@formkit/auto-animate";
     import {invalidateAll} from "$app/navigation";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { resolveImageUrl } from "$lib/utils/images.js";
+    import { optimizeImageUrl, IMAGE_WIDTHS } from "$lib/utils/imageopt.js";
     import { formatAdminDate, postAdminAction } from "$lib/utils/admin.js";
     import { notifyError, notifySuccess, notifyWorking } from "$lib/utils/admin-notify.js";
 
@@ -21,7 +21,7 @@
     let warningMessage = $state('');
 
     let warningCount = $derived(profile.notifications?.length ?? 0);
-    let coverSrc = $derived(resolveImageUrl(profile.cover_url, image_proxy));
+    let coverSrc = $derived(optimizeImageUrl(profile.cover_url, IMAGE_WIDTHS.CARD_2X));
 
     async function runAction(action, formData, successMessage) {
         if (busy) return false;

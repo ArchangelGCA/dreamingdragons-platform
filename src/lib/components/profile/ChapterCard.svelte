@@ -7,7 +7,7 @@
     import { createChapterPath } from "$lib/utils/slugs.js";
     import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
     import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     /** @type {{content: any, image_proxy: any, index: any, user_id: any, bookTitle?: string}} */
     let {
@@ -18,7 +18,8 @@
     } = $props();
 
     let likeActionActive = false;
-    let finalLinkImage = $derived(resolveImageUrl(content.chapter_image_url, image_proxy));
+    let finalLinkImage = $derived(optimizeImageUrl(content.chapter_image_url, IMAGE_WIDTHS.CARD));
+    let coverSrcSet = $derived(imageSrcSet(content.chapter_image_url, [IMAGE_WIDTHS.CARD, IMAGE_WIDTHS.CARD_2X]));
     
     // Generate SEO-friendly URL
     let chapterUrl = $derived(createChapterPath(bookTitle, content.book_id, content.title, content.id));
@@ -99,7 +100,7 @@
         <PopularBadge likes={content.chapter_likes?.length ?? 0} size="sm" position="top-left" />
         {#if finalLinkImage}
             <a href="{chapterUrl}">
-                <img src={finalLinkImage} alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy" decoding="async"
+                <img src={finalLinkImage} srcset={coverSrcSet} sizes="(max-width: 768px) 92vw, (max-width: 1200px) 40vw, 25vw" alt="Chapter {content.title}" class="w-100 h-100 content-image to-scale rounded-bottom-4" loading="lazy" decoding="async"
                      style="object-fit: cover; position: absolute; top: 0; left: 0;">
                 <div class="chapter-number-over">{index}</div>
             </a>

@@ -3,7 +3,7 @@
     import AdminDialog from "$lib/components/admin/AdminDialog.svelte";
     import { toast } from "$lib/components/svelte-toast";
     import { createProfilePath } from '$lib/utils/slugs.js';
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
     import { formatAdminDate, postAdminAction } from '$lib/utils/admin.js';
     import { notifyError, notifySuccess, notifyWorking } from "$lib/utils/admin-notify.js";
     /** @type {{item: any, image_proxy: any}} */
@@ -143,7 +143,7 @@
 <div class="admin-card overflow-hidden h-100 d-flex flex-column">
     <a href="/content/{item.id}" target="_blank" rel="noopener noreferrer" aria-label="Open {item.title}">
         {#if item.cover_url}
-            {@const optimizedCoverUrl = resolveImageUrl(item.cover_url, image_proxy)}
+            {@const optimizedCoverUrl = optimizeImageUrl(item.cover_url, IMAGE_WIDTHS.CARD)}
             <img src={optimizedCoverUrl} class="card-img-top admin-cover" alt={item.title} loading="lazy" decoding="async" />
         {:else}
             <img src="/favicon.webp" class="card-img-top admin-cover" alt={item.title} loading="lazy" decoding="async" />

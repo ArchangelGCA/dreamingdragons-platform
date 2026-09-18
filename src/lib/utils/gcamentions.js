@@ -1,4 +1,5 @@
-import { resolveImageUrl, escapeHtml } from '$lib/utils/images.js';
+import { escapeHtml } from '$lib/utils/images.js';
+import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 import {browser} from "$app/environment";
 
 let cachedMentions = null;
@@ -61,7 +62,7 @@ export async function listenerMentions(e, supabase) {
         const row = document.createElement('div');
         row.className = 'd-flex align-items-center';
         const img = document.createElement('img');
-        img.src = resolveImageUrl(user.avatar_url);
+        img.src = optimizeImageUrl(user.avatar_url, IMAGE_WIDTHS.AVATAR);
         img.alt = `${user.username ?? 'user'} avatar`;
         img.className = 'rounded-circle';
         img.style.width = '50px';

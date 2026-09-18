@@ -4,7 +4,7 @@
     import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
     import { goto } from '$app/navigation';
     import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any, chapter_count?: number}} */
     let {
@@ -20,7 +20,8 @@
     
     // Generate SEO-friendly URL
     const bookUrl = $derived(createBookPath(title, book_id));
-    const baseUrl = $derived(resolveImageUrl(book_cover_url, image_proxy));
+    const baseUrl = $derived(optimizeImageUrl(book_cover_url, IMAGE_WIDTHS.CARD));
+    const coverSrcSet = $derived(imageSrcSet(book_cover_url, [IMAGE_WIDTHS.CARD, IMAGE_WIDTHS.CARD_2X]));
     
     // Handle card click - navigate to book unless clicking on profile link
     function handleCardClick(event) {
@@ -51,6 +52,8 @@
         {/if}
         <img
             src={baseUrl}
+            srcset={coverSrcSet}
+            sizes="(max-width: 768px) 92vw, 40vw"
             alt="Cover of {title}"
             class="w-100 h-100 to-scale"
             loading="lazy"

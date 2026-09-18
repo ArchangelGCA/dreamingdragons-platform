@@ -2,11 +2,13 @@
     import {toast} from "$lib/components/svelte-toast";
     import {deserialize} from "$app/forms";
     import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH} from "$env/static/public";
+    import {optimizeImageUrl, IMAGE_WIDTHS} from '$lib/utils/imageopt.js';
 
     /** @type {{size?: number, url: any}} */
     let {size = 10, url, upload} = $props();
 
-    let avatarUrl = $derived(url);
+    let hasAvatar = $derived(!!url);
+    let avatarUrl = $derived(optimizeImageUrl(url, IMAGE_WIDTHS.CARD));
     let uploading = $state(false);
     let files = $state();
     let isImageLoaded = $state(false);
@@ -85,7 +87,7 @@
 
 <div class="row">
     <div class="col-auto text-center">
-        {#if avatarUrl}
+        {#if hasAvatar}
             {#if !isImageLoaded}
                 <div class="placeholder-glow m-0 p-0">
                     <div class="placeholder rounded-circle bg-light-subtle rounded-3 w-100 h-100">

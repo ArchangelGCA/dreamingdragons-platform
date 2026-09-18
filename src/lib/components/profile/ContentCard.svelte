@@ -3,12 +3,13 @@
     import {toast} from "$lib/components/svelte-toast";
     import { tooltip } from "svelte-tooltip-gca";
     import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     /** @type {{content: any, image_proxy: any}} */
     let { content, image_proxy, invalidateCard } = $props();
     let likeActionActive = false;
-    let finalLinkImage = $derived(resolveImageUrl(content.cover_url, image_proxy));
+    let finalLinkImage = $derived(optimizeImageUrl(content.cover_url, IMAGE_WIDTHS.CARD));
+    let coverSrcSet = $derived(imageSrcSet(content.cover_url, [IMAGE_WIDTHS.CARD, IMAGE_WIDTHS.CARD_2X]));
 
     function handleMouseEnter(e) {
         e.target.parentElement.querySelector('.to-scale').style.transform = 'scale(1.1)';
@@ -77,7 +78,7 @@
 <div class="card border-0 bg-dark bg-opacity-50 img-home w-100 rounded-4" use:tooltip={{...tooltipConfig, content: 'View'}}>
     <div class="card-img-top img-wrapper position-relative text-center w-100 lazy-background rounded-4"
          style="height: 45vh; overflow: hidden;">
-        <img src={finalLinkImage} alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" decoding="async" style="object-fit: cover; position: absolute; top: 0; left: 0;">
+        <img src={finalLinkImage} srcset={coverSrcSet} sizes="(max-width: 768px) 92vw, 40vw" alt="Book cover" class="w-100 h-100 to-scale" loading="lazy" decoding="async" style="object-fit: cover; position: absolute; top: 0; left: 0;">
     </div>
     <a href="/content/{content.id}" onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}>
         <div class="card-img-overlay overlay-custom d-flex flex-column rounded-bottom-4 justify-content-end p-0">

@@ -9,7 +9,7 @@
     import {deserialize} from "$app/forms";
     import {toast} from "$lib/components/svelte-toast";
     import {createBookPath, createProfilePath} from "$lib/utils/slugs.js";
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
 
     /** @type {{book: any, image_proxy: any, session: any, onBookUpdate?: function}} */
     let {book, image_proxy, session, onBookUpdate} = $props();
@@ -26,7 +26,8 @@
         id: null
     });
 
-    let finalLinkImage = $derived(resolveImageUrl(normalizedBook.cover_url, image_proxy));
+    let finalLinkImage = $derived(optimizeImageUrl(normalizedBook.cover_url, IMAGE_WIDTHS.CARD));
+    let coverSrcSet = $derived(imageSrcSet(normalizedBook.cover_url, [IMAGE_WIDTHS.CARD, IMAGE_WIDTHS.CARD_2X]));
     let finalBookTitle = $derived(normalizedBook.title && normalizedBook.title.length > 20 ? normalizedBook.title.substring(0, 18) + '...' : (normalizedBook.title || 'Untitled'));
     let finalUsername = $derived(profileData.username && profileData.username.length > 16 ? profileData.username.substring(0, 15) + '...' : (profileData.username || 'Unknown'));
     let chapterCount = $derived(normalizedBook.chapter_count ?? 0);
@@ -227,6 +228,8 @@
                     <div class="placeholder bg-light-subtle rounded-3 w-100 h-100">
                         <img
                                 src={finalLinkImage}
+                                srcset={coverSrcSet}
+                                sizes="(max-width: 768px) 92vw, 400px"
                                 alt="Cover: {finalBookTitle}"
                                 style="width: 1px; height: 1px;"
                                 loading="lazy"
@@ -238,6 +241,8 @@
             {:else}
                 <img
                         src={finalLinkImage}
+                        srcset={coverSrcSet}
+                        sizes="(max-width: 768px) 92vw, 400px"
                         alt="Cover: {finalBookTitle}"
                         class="img-fluid rounded-3"
                         width={width}

@@ -5,6 +5,60 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - 2026-09-18
+
+### Added
+
+- **Responsive image optimization via wsrv.nl** — covers and avatars were
+  served at full resolution everywhere; they now go through the free,
+  Cloudflare-cached wsrv.nl resize CDN (`images.weserv.nl`, researched in
+  `IMAGE-OPTIMIZATION.md`) at a small, fixed variant budget so desktop and
+  mobile share the same cached objects:
+  - New central helper `src/lib/utils/imageopt.js`: `optimizeImageUrl()`
+    (`w=`, `q=72`, `output=webp`, `we` no-upscale, `default=1` → 302 to the
+    original when the origin/transform fails — resilience against the
+    proxy-shutdown failure mode of 0.7.0), `imageSrcSet()` (dedup + `w`
+    descriptors) and the `IMAGE_WIDTHS` budget — `AVATAR` 96 (navbar,
+    comments, followers, profile icon), `CARD` 640 + `CARD_2X` 1280
+    (masonry/content/search/chapter/admin covers via `srcset` + real
+    `sizes` attributes), `HEADER` 1600 (profile header background).
+    Relative site assets pass through untouched; empty/unsafe URLs keep the
+    `resolveImageUrl` fallback contract. Pure helper, unit-checked 21/21
+    (signed-URL encoding, relative pass-through, fallbacks, dedup, scheme
+    blocking, `original` opt-out).
+  - Wired into `UserAvatar`, `UserAvatarNavbar`, `ContentMasonry`,
+    `ProfileMasonry`, `ContentCard`, `Content`, `ChapterCard`, `BookSearch`,
+    the profile page (header background 1600, large 150px owner icon 640 so
+    it stays sharp at 2–3x density, gallery previews 640),
+    `/search`, edit-page cover preview, admin covers, settings galleries
+    (`getOptimizedImage*` now emit real srcsets), settings upload previews
+    (`Avatar`, `Cover`) and mention-tooltip avatars (`gcamentions.js`).
+  - **Hero images keep full resolution by design** (per requirements): the
+    `/content` + chapter main cover (`ContentImage`) and profile header
+    background quality tier (1600 cap). RSS, oEmbed, sitemaps and SEO/OG
+    tags keep original URLs (external consumers must not depend on a
+    third-party proxy). `image_proxy` props stay deprecated-but-ignored.
+
+### Verified
+
+- Helper unit checks (Bun) → 21/21 pass.
+- wsrv.nl live checks → `we=`, `default=1` (302 → original on failure),
+  encoded full-HTTPS `url=` (Supabase signed URLs survive) all confirmed;
+  `Cache-Control: public, max-age=31536000` + Cloudflare CDN; 496 KB
+  original → 13 KB @300w.
+- `svelte-autofixer` on all 14 touched Svelte files → zero new issues
+  (pre-existing only: plain `href`/`goto` without `resolve()`,
+  `state_referenced_locally` (silenced), admin `{@html}`).
+- `bun --bun run build` → succeeds (client + SSR + `@sveltejs/adapter-vercel`;
+  only the known sharp/resend optional-dep warnings).
+- `bun outdated` → clean, zero outdated packages.
+- Real-browser check (desktop 1453px + mobile 390px @3x): homepage,
+  `/content/cat-387`, `/search?q=dragon`, profile page — every remote image
+  served by wsrv.nl (96/640/1280 by slot; hero stays original), zero direct
+  full-res fetches, zero console errors, no mobile overflow; `/rss.xml`
+  still emits originals. Profile owner icon re-checked at 640w
+  (512×512 source served natively — `we` prevents upscaling) → crisp.
+
 ## [0.17.0] - 2026-09-10
 
 ### Added

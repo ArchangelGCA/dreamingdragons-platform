@@ -183,7 +183,7 @@ export const actions = {
             if (buf.byteLength > MAX_UPLOAD_BYTES) {
                 return {status: 400, body: {message: 'Image too large (max 8MB)'}};
             }
-            optimizedImage = await sharp(buf, {animated: false, limitInputPixels: 25000000, failOn: 'warning'})
+            optimizedImage = await sharp(buf, {animated: true, limitInputPixels: 25000000, failOn: 'warning'})
                 .rotate()
                 .resize(parseInt(PUBLIC_PROFILE_ICON_RESIZE_WIDTH))
                 .webp({quality: 80})
@@ -272,7 +272,9 @@ export const actions = {
             if (buf.byteLength > MAX_UPLOAD_BYTES) {
                 return {status: 400, body: {message: 'Image too large (max 8MB)'}};
             }
-            const coverSharp = sharp(buf, {animated: false, limitInputPixels: 25000000, failOn: 'warning'});
+            // animated:true — same animation-preservation reason as profileicon
+            // above (sharp, not Bun.Image: Bun runtime-only + drops frames).
+            const coverSharp = sharp(buf, {animated: true, limitInputPixels: 25000000, failOn: 'warning'});
             const metadata = await coverSharp.metadata();
             const width = metadata.width ?? 0;
             const pipeline = coverSharp.rotate();
