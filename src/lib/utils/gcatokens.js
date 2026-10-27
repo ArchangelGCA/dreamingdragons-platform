@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import {PRIVATE_KEY_CONVERTER} from "$env/static/private";
+import {PRIVATE_KEY_CONVERTER} from "$app/env/private";
 
 export const generateToken = () => {
     const data = `${Date.now()}`;

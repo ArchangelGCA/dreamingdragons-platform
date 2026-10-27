@@ -1,8 +1,8 @@
 <script>
     import {deserialize} from "$app/forms";
-    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
-    import AdminDialog from "$lib/components/admin/AdminDialog.svelte";
-    import {notifyError, notifySuccess} from "$lib/utils/admin-notify.js";
+    import AdminPageHeader from "#lib/components/admin/AdminPageHeader.svelte";
+    import AdminDialog from "#lib/components/admin/AdminDialog.svelte";
+    import {notifyError, notifySuccess} from "#lib/utils/admin-notify.js";
 
     const OLD_HOST = 'rosesintheflames.pockethost.io';
     const NEW_HOST = 'dreamingdragons-images.pockethost.io';

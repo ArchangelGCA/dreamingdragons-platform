@@ -1,6 +1,6 @@
 <script>
-    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import BookSearch from "$lib/components/layout/BookSearch.svelte";
+    import UserAvatar from "#lib/components/layout/UserAvatar.svelte";
+    import BookSearch from "#lib/components/layout/BookSearch.svelte";
     import autoAnimate from '@formkit/auto-animate';
     import { dragscroll } from '@svelte-put/dragscroll';
     import {deserialize} from "$app/forms";

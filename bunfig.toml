@@ -1,4 +1,4 @@
-# Bun 1.4.2 configuration for DreamingDragons Platform.
+# Bun 1.4.4 configuration for DreamingDragons Platform.
 # Hybrid setup (deliberate): Bun locally for installs/dev/builds, Node.js 24
 # for Vercel Functions (adapter-vercel `runtime: 'nodejs24.x'`).
 # Vercel detects bun.lock for installs automatically, even with Node runtime.
@@ -11,3 +11,13 @@ frozenLockfile = false
 
 [run]
 bun = true
+
+# `bun fmt` / `bun fmt --check` (Bun 1.4+ built-in formatter). Indentation comes
+# from .editorconfig (4 spaces for code, 2 for JSON/YAML) so the same rules
+# apply in editors; the rest matches the conventions already used in src/.
+# No global reformat was run during the SvelteKit 3 migration, so
+# `bun fmt --check` may still flag older files.
+[fmt]
+printWidth = 120
+singleQuote = true
+semi = true

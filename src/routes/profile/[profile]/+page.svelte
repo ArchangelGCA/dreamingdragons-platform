@@ -1,20 +1,20 @@
 <script>
     import {tooltip} from "svelte-tooltip-gca";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { safeExternalUrl } from '$lib/utils/images.js';
-    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
-    import {PUBLIC_DEFAULT_USERNAME} from '$env/static/public';
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import { safeExternalUrl } from '#lib/utils/images.js';
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
+    import {PUBLIC_DEFAULT_USERNAME} from '$app/env/public';
     import autoAnimate from '@formkit/auto-animate';
     import {deserialize} from "$app/forms";
-    import {invalidateAll, onNavigate} from "$app/navigation";
-    import {toast} from "$lib/components/svelte-toast";
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-    import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
-    import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
-    import ProfileMasonry from "$lib/components/profile/ProfileMasonry.svelte";
-    import ShareButton from "$lib/components/layout/ShareButton.svelte";
-    import RSSButton from "$lib/components/layout/RSSButton.svelte";
-    import { createProfilePath } from '$lib/utils/slugs.js';
+    import {refreshAll, onNavigate} from "$app/navigation";
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import UserAvatarNavbar from "#lib/components/layout/UserAvatarNavbar.svelte";
+    import Masonry from "#lib/components/sveltebricks/Masonry.svelte";
+    import ContentMasonry from "#lib/components/pages/ContentMasonry.svelte";
+    import ProfileMasonry from "#lib/components/profile/ProfileMasonry.svelte";
+    import ShareButton from "#lib/components/layout/ShareButton.svelte";
+    import RSSButton from "#lib/components/layout/RSSButton.svelte";
+    import { createProfilePath } from '#lib/utils/slugs.js';
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -96,7 +96,7 @@
         });
 
         const result = deserialize(await response.text());
-        await invalidateAll(); // Not sure if it's actually necessary.
+        await refreshAll(); // Not sure if it's actually necessary.
         if (result.type === 'success') {
             if (result.data.status === 200) {
                 if (result.data.body.follow) {

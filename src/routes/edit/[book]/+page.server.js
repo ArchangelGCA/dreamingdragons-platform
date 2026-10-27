@@ -1,7 +1,7 @@
 import {error as errorx, redirect} from "@sveltejs/kit";
-import {PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_POCKETBASE_URL_IMG_API } from "$env/static/public";
-import {fetchProfiles} from "$lib/utils/gcafetchers.js";
-import {uploadImage} from "$lib/utils/misc.js";
+import {PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES, PUBLIC_POCKETBASE_URL_IMG_API } from "$app/env/public";
+import {fetchProfiles} from "#lib/utils/gcafetchers.js";
+import {uploadImage} from "#lib/utils/misc.js";
 
 export const load = async ({ params, locals: { supabase, getSession} }) => {
     const {session} = await getSession();

@@ -1,0 +1,17 @@
+root = true
+
+# Shared editor/`bun fmt` conventions. SvelteKit 3 + Bun 1.4.4.
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Data files keep the usual 2-space indentation.
+[*.{json,jsonc,yml,yaml}]
+indent_size = 2
+
+# Markdown: never trim hard line breaks.
+[*.md]
+trim_trailing_whitespace = false

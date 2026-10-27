@@ -1,10 +1,10 @@
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SUPABASE_SECRET_KEY } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL } from '$app/env/public';
+import { SUPABASE_SECRET_KEY } from '$app/env/private';
 import { createClient } from '@supabase/supabase-js';
 import {error as errorx} from '@sveltejs/kit';
-import {isAdmin} from "$lib/utils/misc.js";
-import {createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "$lib/server/pocketbase.js";
-import {pageRange, totalPagesFor} from "$lib/utils/admin.js";
+import {isAdmin} from "#lib/utils/misc.js";
+import {createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "#lib/server/pocketbase.js";
+import {pageRange, totalPagesFor} from "#lib/utils/admin.js";
 
 const PER_PAGE = 20;
 const PROFILE_COLUMNS = 'id,username,full_name,website,can_upload,avatar_url,cover_url,created_at,updated_at';

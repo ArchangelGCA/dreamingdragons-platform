@@ -1,6 +1,6 @@
-import { escapeHtml } from '$lib/utils/images.js';
-import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
-import {browser} from "$app/environment";
+import { escapeHtml } from '#lib/utils/images.js';
+import { optimizeImageUrl, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
+import {browser} from "$app/env";
 
 let cachedMentions = null;
 let abortController;

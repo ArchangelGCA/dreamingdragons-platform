@@ -1,10 +1,10 @@
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SUPABASE_SECRET_KEY } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL } from '$app/env/public';
+import { SUPABASE_SECRET_KEY } from '$app/env/private';
 import {error as errorx} from "@sveltejs/kit";
 import {createClient} from "@supabase/supabase-js";
-import {isAdmin} from "$lib/utils/misc.js";
-import {createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "$lib/server/pocketbase.js";
-import {pageRange, totalPagesFor} from "$lib/utils/admin.js";
+import {isAdmin} from "#lib/utils/misc.js";
+import {createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "#lib/server/pocketbase.js";
+import {pageRange, totalPagesFor} from "#lib/utils/admin.js";
 
 const PER_PAGE = 12;
 // Slim list select: chapter bodies (`chapters.text`) are deliberately excluded —

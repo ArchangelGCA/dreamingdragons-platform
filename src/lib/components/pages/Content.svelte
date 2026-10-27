@@ -1,12 +1,12 @@
 <script>
     import { tooltip } from "svelte-tooltip-gca";
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-    import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
-    import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
-    import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
-    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import UserAvatarNavbar from "#lib/components/layout/UserAvatarNavbar.svelte";
+    import ContentTypeBadge from "#lib/components/pages/ContentTypeBadge.svelte";
+    import PopularBadge from "#lib/components/pages/PopularBadge.svelte";
+    import PopularGlow from "#lib/components/pages/PopularGlow.svelte";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import { createBookPath, createProfilePath } from "#lib/utils/slugs.js";
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     /** @type {{owner_username: any, owner_id: any, book_title: any, book_id: any, book_cover_url: any, owner_avatar_url: any, image_proxy: any, chapter_count?: number, likes?: number}} */
     let {

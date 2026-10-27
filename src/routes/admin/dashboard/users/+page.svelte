@@ -1,8 +1,8 @@
 <script>
-    import AdminUser from "$lib/components/admin/AdminUser.svelte";
-    import AdminPagination from "$lib/components/admin/AdminPagination.svelte";
-    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
-    import AdminEmpty from "$lib/components/admin/AdminEmpty.svelte";
+    import AdminUser from "#lib/components/admin/AdminUser.svelte";
+    import AdminPagination from "#lib/components/admin/AdminPagination.svelte";
+    import AdminPageHeader from "#lib/components/admin/AdminPageHeader.svelte";
+    import AdminEmpty from "#lib/components/admin/AdminEmpty.svelte";
     import { goto } from "$app/navigation";
 
     /** @type {{data: any}} */
@@ -23,7 +23,7 @@
         if (searchInput.trim()) params.set('q', searchInput.trim());
         if (status && status !== 'all') params.set('status', status);
         params.set('page', '1');
-        goto(`?${params.toString()}`, { keepFocus: true });
+        goto(`?${params.toString()}`, { reset: false });
     }
 
     function setStatus(next) {
@@ -31,7 +31,7 @@
         if (q) params.set('q', q);
         if (next && next !== 'all') params.set('status', next);
         params.set('page', '1');
-        goto(`?${params.toString()}`, { keepFocus: true });
+        goto(`?${params.toString()}`, { reset: false });
     }
 </script>
 

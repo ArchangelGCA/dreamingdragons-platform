@@ -1,12 +1,12 @@
 <script>
     import {deserialize} from '$app/forms';
-    import Avatar from '$lib/components/profile/Avatar.svelte';
-    import {toast} from "$lib/components/svelte-toast";
-    import Cover from "$lib/components/profile/Cover.svelte";
-    import {invalidateAll} from "$app/navigation";
+    import Avatar from '#lib/components/profile/Avatar.svelte';
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import Cover from "#lib/components/profile/Cover.svelte";
+    import {refreshAll} from "$app/navigation";
     import {onMount} from "svelte";
-    import {browser} from "$app/environment";
-    import {THEMES, applyTheme, getStoredTheme, isValidTheme} from "$lib/utils/theme.js";
+    import {browser} from "$app/env";
+    import {THEMES, applyTheme, getStoredTheme, isValidTheme} from "#lib/utils/theme.js";
     let analyticsEnabled = $state();
     let selectedTheme = $state('deep');
 
@@ -59,7 +59,7 @@
                         '--toastProgressBackground': 'var(--dd-accent)',
                     }
                 });
-                await invalidateAll();
+                await refreshAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -151,7 +151,7 @@
             });
         }
 
-        await invalidateAll();
+        await refreshAll();
         isActiveNewsletter = false;
     }
 
@@ -197,7 +197,7 @@
             });
         }
 
-        await invalidateAll();
+        await refreshAll();
         isActiveShowFavourites = false;
     }
 
@@ -228,7 +228,7 @@
                     }
                 });
                 password = '';
-                await invalidateAll();
+                await refreshAll();
             } else {
                 toast.push(result.data.body.message, {
                     theme: {
@@ -278,7 +278,7 @@
             <div class="col-12">
                 <form class="form" method="post" action="?/update">
                     <Avatar url={avatarUrl} size={6}
-                            upload={() => {invalidateAll()}}/>
+                            upload={() => {refreshAll()}}/>
                 </form>
             </div>
         </div>
@@ -289,7 +289,7 @@
                 <p class="text-muted">Update your profile cover image</p>
             </div>
             <div class="col-12">
-                <Cover url={coverUrl} uploadComplete={() => {invalidateAll()}}/>
+                <Cover url={coverUrl} uploadComplete={() => {refreshAll()}}/>
             </div>
         </div>
         <!-- Account details - Profile -->

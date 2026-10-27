@@ -1,9 +1,9 @@
 <script>
     import {deserialize} from "$app/forms";
-    import {toast} from "$lib/components/svelte-toast";
+    import {toast} from "#lib/components/svelte-toast/index.js";
     import { tooltip } from "svelte-tooltip-gca";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     /** @type {{content: any, image_proxy: any}} */
     let { content, image_proxy, invalidateCard } = $props();

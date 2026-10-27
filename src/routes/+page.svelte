@@ -1,14 +1,14 @@
 <script>
-    import Content from "$lib/components/pages/Content.svelte";
+    import Content from "#lib/components/pages/Content.svelte";
     import {dragscroll} from '@svelte-put/dragscroll';
     import {tooltip} from "svelte-tooltip-gca";
-    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import ContentMasonry from "$lib/components/pages/ContentMasonry.svelte";
-    import Masonry from "$lib/components/sveltebricks/Masonry.svelte";
+    import UserAvatar from "#lib/components/layout/UserAvatar.svelte";
+    import ContentMasonry from "#lib/components/pages/ContentMasonry.svelte";
+    import Masonry from "#lib/components/sveltebricks/Masonry.svelte";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { createProfilePath } from '$lib/utils/slugs.js';
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import { createProfilePath } from '#lib/utils/slugs.js';
 
     /** @type {{data: any}} */
     let {data} = $props();

@@ -1,11 +1,11 @@
 <script>
     import Editor from "@tinymce/tinymce-svelte";
-    import {toast} from "$lib/components/svelte-toast";
+    import {toast} from "#lib/components/svelte-toast/index.js";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
-    import {invalidateAll} from "$app/navigation";
-    import {conf} from "$lib/utils/gcatinymce.js";
-    import {createChapterPath} from "$lib/utils/slugs.js";
+    import {refreshAll} from "$app/navigation";
+    import {conf} from "#lib/utils/gcatinymce.js";
+    import {createChapterPath} from "#lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -126,7 +126,7 @@
                         }
                     });
                     
-                    await invalidateAll();
+                    await refreshAll();
                     
                     // Reset to first step after successful edit
                     currentStep = 1;

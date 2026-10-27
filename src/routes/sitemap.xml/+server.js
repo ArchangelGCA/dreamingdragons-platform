@@ -1,4 +1,4 @@
-import { createBookPath, createChapterPath, createProfilePath } from '$lib/utils/slugs.js';
+import { createBookPath, createChapterPath, createProfilePath } from '#lib/utils/slugs.js';
 
 export const GET = async ({locals: {supabase}}) => {
 

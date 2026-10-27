@@ -1,7 +1,7 @@
 <script>
     import {onMount, untrack} from "svelte";
-    import StaffTime from "$lib/components/profile/StaffTime.svelte";
-    import {browser} from "$app/environment";
+    import StaffTime from "#lib/components/profile/StaffTime.svelte";
+    import {browser} from "$app/env";
 
     /** @type {{data: any}} */
     let { data } = $props();

@@ -1,5 +1,5 @@
 import {error as errorx, redirect} from "@sveltejs/kit";
-import {fetchProfiles} from "$lib/utils/gcafetchers.js";
+import {fetchProfiles} from "#lib/utils/gcafetchers.js";
 
 export const load = async ({ params, locals: { supabase, getSession} }) => {
     const {session} = await getSession();

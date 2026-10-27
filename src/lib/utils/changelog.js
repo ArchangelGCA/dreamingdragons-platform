@@ -12,7 +12,7 @@
  * runs in the admin browser (live preview) and in server actions (guard).
  */
 
-import { escapeHtml, safeExternalUrl } from '$lib/utils/images.js';
+import { escapeHtml, safeExternalUrl } from '#lib/utils/images.js';
 
 /** Max HTML length accepted for a single update (mirrors server-side cap). */
 export const UPDATE_CONTENT_MAX_LENGTH = 20000;

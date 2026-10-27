@@ -1,8 +1,8 @@
 <script>
-    import Comment from "$lib/components/pages/Comment.svelte";
+    import Comment from "#lib/components/pages/Comment.svelte";
     import {deserialize} from "$app/forms";
-    import {toast} from "$lib/components/svelte-toast";
-    import {invalidateAll} from "$app/navigation";
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import {refreshAll} from "$app/navigation";
     import { fade, slide } from 'svelte/transition';
     import { flip } from 'svelte/animate';
     import { cubicOut } from 'svelte/easing';
@@ -56,7 +56,7 @@
                     }
                 });
                 comments = [result.data.body.comment, ...comments];
-                await invalidateAll();
+                await refreshAll();
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {

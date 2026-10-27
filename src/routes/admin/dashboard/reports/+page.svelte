@@ -1,8 +1,8 @@
 <script>
-    import ReportItem from "$lib/components/admin/ReportItem.svelte";
-    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
-    import AdminEmpty from "$lib/components/admin/AdminEmpty.svelte";
-    import {invalidateAll} from "$app/navigation";
+    import ReportItem from "#lib/components/admin/ReportItem.svelte";
+    import AdminPageHeader from "#lib/components/admin/AdminPageHeader.svelte";
+    import AdminEmpty from "#lib/components/admin/AdminEmpty.svelte";
+    import {refreshAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
 
     /** @type {{data: any}} */
@@ -64,7 +64,7 @@
                         <div class="row gy-2 mb-3" use:autoAnimate>
                             {#each openBooks as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} {image_proxy} closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} {image_proxy} closeReport={() => {refreshAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -74,7 +74,7 @@
                         <div class="row gy-2" use:autoAnimate>
                             {#each openChapters as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} {image_proxy} closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} {image_proxy} closeReport={() => {refreshAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -101,7 +101,7 @@
                         <div class="row gy-2 mb-3" use:autoAnimate>
                             {#each closedBooks as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} {image_proxy} closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} {image_proxy} closeReport={() => {refreshAll()}}/>
                                 </div>
                             {/each}
                         </div>
@@ -111,7 +111,7 @@
                         <div class="row gy-2" use:autoAnimate>
                             {#each closedChapters as report (report.id)}
                                 <div class="col-12">
-                                    <ReportItem {report} {image_proxy} closeReport={() => {invalidateAll()}}/>
+                                    <ReportItem {report} {image_proxy} closeReport={() => {refreshAll()}}/>
                                 </div>
                             {/each}
                         </div>

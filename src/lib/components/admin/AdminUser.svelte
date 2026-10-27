@@ -1,14 +1,14 @@
 <script>
-    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import AdminDialog from "$lib/components/admin/AdminDialog.svelte";
+    import UserAvatar from "#lib/components/layout/UserAvatar.svelte";
+    import AdminDialog from "#lib/components/admin/AdminDialog.svelte";
     import { tooltip } from "svelte-tooltip-gca";
-    import { toast } from "$lib/components/svelte-toast";
+    import { toast } from "#lib/components/svelte-toast/index.js";
     import autoAnimate from "@formkit/auto-animate";
-    import {invalidateAll} from "$app/navigation";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { optimizeImageUrl, IMAGE_WIDTHS } from "$lib/utils/imageopt.js";
-    import { formatAdminDate, postAdminAction } from "$lib/utils/admin.js";
-    import { notifyError, notifySuccess, notifyWorking } from "$lib/utils/admin-notify.js";
+    import {refreshAll} from "$app/navigation";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import { optimizeImageUrl, IMAGE_WIDTHS } from "#lib/utils/imageopt.js";
+    import { formatAdminDate, postAdminAction } from "#lib/utils/admin.js";
+    import { notifyError, notifySuccess, notifyWorking } from "#lib/utils/admin-notify.js";
 
     /** @type {{profile: any, image_proxy: any}} */
     let { profile, image_proxy } = $props();
@@ -32,7 +32,7 @@
             toast.pop(toastId);
             if (result.type === 'success' && result.data.status === 200) {
                 notifySuccess(result.data.body.message ?? successMessage.done);
-                await invalidateAll();
+                await refreshAll();
                 return true;
             }
             notifyError(result.data?.body?.message ?? successMessage.fail);

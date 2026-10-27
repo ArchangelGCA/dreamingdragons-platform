@@ -1,6 +1,6 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
-import {ORIGIN} from '$env/static/private';
-import { extractProfileId, isValidProfileParam, getCanonicalProfileUrl } from '$lib/utils/slugs.js';
+import {ORIGIN} from '$app/env/private';
+import { extractProfileId, isValidProfileParam, getCanonicalProfileUrl } from '#lib/utils/slugs.js';
 
 // Async function to get liked books, from range start to end, from book_likes
 async function fetchBooksLiked(startRange, endRange, profileId, supabase) {

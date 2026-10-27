@@ -1,4 +1,4 @@
-import {generateToken} from "$lib/utils/gcatokens.js";
+import {generateToken} from "#lib/utils/gcatokens.js";
 
 export const GET = async ({ url, locals: {getSession} }) => {
     const {session} = await getSession();

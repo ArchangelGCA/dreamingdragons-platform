@@ -1,8 +1,8 @@
 import {error as errorx} from "@sveltejs/kit";
 import sharp from "sharp";
 import crypto from "crypto";
-import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_RESIZE } from "$env/static/public";
-import {buildFileUrl, createSuperuserClient, deleteFileRecordBestEffort} from "$lib/server/pocketbase.js";
+import {PUBLIC_COVER_MAX_WIDTH, PUBLIC_COVER_MAX_HEIGHT, PUBLIC_COVER_MAX_RESIZE } from "$app/env/public";
+import {buildFileUrl, createSuperuserClient, deleteFileRecordBestEffort} from "#lib/server/pocketbase.js";
 
 export async function isAdmin(session, supabase) {
     if (!session) {

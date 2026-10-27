@@ -1,15 +1,15 @@
 <script>
     import {deserialize} from "$app/forms";
-    import {toast} from "$lib/components/svelte-toast";
+    import {toast} from "#lib/components/svelte-toast/index.js";
     import {tooltip} from "svelte-tooltip-gca";
-    import {invalidateAll} from "$app/navigation";
+    import {refreshAll} from "$app/navigation";
     import autoAnimate from "@formkit/auto-animate";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import {createBookPath} from "$lib/utils/slugs.js";
-    import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
-    import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
-    import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
-    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import {createBookPath} from "#lib/utils/slugs.js";
+    import ContentTypeBadge from "#lib/components/pages/ContentTypeBadge.svelte";
+    import PopularBadge from "#lib/components/pages/PopularBadge.svelte";
+    import PopularGlow from "#lib/components/pages/PopularGlow.svelte";
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     /** @type {{content: any, image_proxy: any}} */
     let {content = $bindable(), image_proxy} = $props();
@@ -51,7 +51,7 @@
                         '--toastColor': 'var(--text-color)'
                     }
                 });
-                await invalidateAll();
+                await refreshAll();
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {

@@ -4,15 +4,15 @@
         PUBLIC_COVER_MAX_HEIGHT,
         PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES,
         PUBLIC_CONVERTER_URL
-    } from "$env/static/public";
-    import {toast} from "$lib/components/svelte-toast";
+    } from "$app/env/public";
+    import {toast} from "#lib/components/svelte-toast/index.js";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
-    import {invalidateAll} from "$app/navigation";
+    import {refreshAll} from "$app/navigation";
     import Editor from "@tinymce/tinymce-svelte";
-    import {conf} from "$lib/utils/gcatinymce.js";
-    import {createBookPath} from "$lib/utils/slugs.js";
-    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import {conf} from "#lib/utils/gcatinymce.js";
+    import {createBookPath} from "#lib/utils/slugs.js";
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -153,7 +153,7 @@
                         }
                     });
                     
-                    await invalidateAll();
+                    await refreshAll();
                     
                     // Reset to first step after successful edit
                     currentStep = 1;

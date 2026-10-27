@@ -1,7 +1,7 @@
-import {error, json} from '@sveltejs/kit';
-import {ORIGIN} from '$env/static/private';
-import { createProfilePath } from '$lib/utils/slugs.js';
-import { resolveImageUrl, escapeHtml } from '$lib/utils/images.js';
+import {error} from '@sveltejs/kit';
+import {ORIGIN} from '$app/env/private';
+import { createProfilePath } from '#lib/utils/slugs.js';
+import { resolveImageUrl, escapeHtml } from '#lib/utils/images.js';
 
 export async function GET({url, locals: {supabase, image_proxy}}) {
     const requestUrl = url.searchParams.get('url');
@@ -97,7 +97,7 @@ export async function GET({url, locals: {supabase, image_proxy}}) {
                 thumbnail_height: 300
             };
 
-            return json(oembedData);
+            return Response.json(oembedData);
         } else {
             // Book page
             const {data: bookContent, error: bookError} = await supabase
@@ -148,7 +148,7 @@ export async function GET({url, locals: {supabase, image_proxy}}) {
                 thumbnail_height: 300
             };
 
-            return json(oembedData);
+            return Response.json(oembedData);
         }
     } catch (err) {
         console.error('oEmbed error:', err);

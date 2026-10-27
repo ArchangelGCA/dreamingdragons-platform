@@ -1,13 +1,13 @@
 <script>
-    import {toast} from "$lib/components/svelte-toast";
+    import {toast} from "#lib/components/svelte-toast/index.js";
     import { tooltip } from "svelte-tooltip-gca";
     import {deserialize} from "$app/forms";
-    import {invalidateAll} from "$app/navigation";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { createChapterPath } from "$lib/utils/slugs.js";
-    import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
-    import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
-    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import {refreshAll} from "$app/navigation";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import { createChapterPath } from "#lib/utils/slugs.js";
+    import PopularBadge from "#lib/components/pages/PopularBadge.svelte";
+    import PopularGlow from "#lib/components/pages/PopularGlow.svelte";
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     /** @type {{content: any, image_proxy: any, index: any, user_id: any, bookTitle?: string}} */
     let {
@@ -67,7 +67,7 @@
                         }
                     });
                 }
-                await invalidateAll();
+                await refreshAll();
             } else {
                 toast.push('Error: ' + result.data.body.message, {
                     theme: {

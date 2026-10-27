@@ -1,20 +1,20 @@
 <script>
     import {tooltip} from "svelte-tooltip-gca";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
-    import {toast} from "$lib/components/svelte-toast";
-    import ChapterCard from "$lib/components/profile/ChapterCard.svelte";
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import ChapterCard from "#lib/components/profile/ChapterCard.svelte";
     import {onDestroy, onMount} from "svelte";
-    import {invalidateAll} from "$app/navigation";
-    import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
-    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
+    import {refreshAll} from "$app/navigation";
+    import CommentsSection from "#lib/components/pages/CommentsSection.svelte";
+    import UserAvatar from "#lib/components/layout/UserAvatar.svelte";
     import autoAnimate from '@formkit/auto-animate';
-    import ContentImage from "$lib/components/layout/ContentImage.svelte";
-    import {browser} from "$app/environment";
-    import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-    import ShareButton from "$lib/components/layout/ShareButton.svelte";
-    import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
+    import ContentImage from "#lib/components/layout/ContentImage.svelte";
+    import {browser} from "$app/env";
+    import {mentionTooltip, removeMentionListener} from "#lib/utils/gcamentions.js";
+    import UserAvatarNavbar from "#lib/components/layout/UserAvatarNavbar.svelte";
+    import ShareButton from "#lib/components/layout/ShareButton.svelte";
+    import { createBookPath, createProfilePath } from "#lib/utils/slugs.js";
     import { page } from '$app/state';
 
     /** @type {{data: any}} */
@@ -149,7 +149,7 @@
                             }
                         });
                     }
-                    await invalidateAll();
+                    await refreshAll();
                 } else {
                     // Revert optimistic update on server error
                     bookContent.is_liked = originalLiked;

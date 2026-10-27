@@ -1,5 +1,5 @@
 <script>
-    import { resolveImageUrl } from '$lib/utils/images.js';
+    import { resolveImageUrl } from '#lib/utils/images.js';
     /** @type {{src?: any, alt?: any, image_proxy?: any}} */
     let {
         src = '',

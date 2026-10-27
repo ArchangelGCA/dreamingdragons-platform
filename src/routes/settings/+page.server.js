@@ -3,15 +3,15 @@ import crypto from 'crypto';
 import {
     PRIVATE_RESEND_API_KEY,
     PRIVATE_RESEND_AUDIENCE_ID
-} from '$env/static/private';
+} from '$app/env/private';
 import {
     PUBLIC_PROFILE_ICON_RESIZE_WIDTH,
     PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH
-} from "$env/static/public";
+} from "$app/env/public";
 import sharp from 'sharp';
 import {Resend} from "resend";
-import { safeExternalUrl } from '$lib/utils/images.js';
-import {buildFileUrl, createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "$lib/server/pocketbase.js";
+import { safeExternalUrl } from '#lib/utils/images.js';
+import {buildFileUrl, createSuperuserClient, deleteFileRecordBestEffort, extractRecordIdFromFileUrl} from "#lib/server/pocketbase.js";
 
 const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 

@@ -1,4 +1,4 @@
-import { PRIVATE_RESEND_API_KEY, PRIVATE_RESEND_AUDIENCE_ID } from '$env/static/private';
+import { PRIVATE_RESEND_API_KEY, PRIVATE_RESEND_AUDIENCE_ID } from '$app/env/private';
 import { Resend } from 'resend';
 
 export const load = async ({}) => {

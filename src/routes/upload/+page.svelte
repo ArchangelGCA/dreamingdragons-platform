@@ -4,14 +4,14 @@
         PUBLIC_COVER_MAX_HEIGHT,
         PUBLIC_COVER_MAX_UPLOAD_SIZE_BYTES,
         PUBLIC_CONVERTER_URL
-    } from "$env/static/public";
+    } from "$app/env/public";
     import {deserialize} from '$app/forms';
-    import {toast} from "$lib/components/svelte-toast";
+    import {toast} from "#lib/components/svelte-toast/index.js";
     import Editor from '@tinymce/tinymce-svelte';
-    import {invalidateAll} from "$app/navigation";
+    import {refreshAll} from "$app/navigation";
     import autoAnimate from '@formkit/auto-animate';
-    import {conf} from "$lib/utils/gcatinymce.js"
-    import {createBookPath, createChapterPath} from "$lib/utils/slugs.js";
+    import {conf} from "#lib/utils/gcatinymce.js"
+    import {createBookPath, createChapterPath} from "#lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -623,7 +623,7 @@
         toast.pop(toastId);
 
         const result = deserialize(await response.text());
-        await invalidateAll();
+        await refreshAll();
         if (result.type === 'success') {
             // For successful responses, data is accessible directly
             if (result.data && result.data.status === 200) {
@@ -711,7 +711,7 @@
         toast.pop(toastId);
 
         const result = deserialize(await response.text());
-        await invalidateAll();
+        await refreshAll();
         if (result.type === 'success') {
             // For successful responses, data is accessible directly
             if (result.data && result.data.status === 200) {

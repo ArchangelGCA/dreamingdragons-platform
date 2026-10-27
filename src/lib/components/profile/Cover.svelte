@@ -1,9 +1,9 @@
 <script>
     import {deserialize} from "$app/forms";
-    import {toast} from "$lib/components/svelte-toast";
-    import {PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} from "$env/static/public"
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import {PUBLIC_PROFILE_COVER_RESIZE_MAX_WIDTH} from "$app/env/public"
     import autoAnimate from "@formkit/auto-animate";
-    import {optimizeImageUrl, IMAGE_WIDTHS} from '$lib/utils/imageopt.js';
+    import {optimizeImageUrl, IMAGE_WIDTHS} from '#lib/utils/imageopt.js';
 
     /** @type {{url: any}} */
     let {url, uploadComplete} = $props();

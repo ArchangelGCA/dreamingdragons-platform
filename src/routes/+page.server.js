@@ -1,5 +1,5 @@
 import {error as errorx} from '@sveltejs/kit';
-import {ORIGIN} from '$env/static/private';
+import {ORIGIN} from '$app/env/private';
 
 export const load = async ({locals: {supabase, getSession}}) => {
     const {session} = await getSession();

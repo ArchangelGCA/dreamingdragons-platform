@@ -1,10 +1,10 @@
 <script>
-    import AdminDialog from "$lib/components/admin/AdminDialog.svelte";
-    import { toast } from "$lib/components/svelte-toast";
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-    import { createProfilePath, createBookPath, createChapterPath } from '$lib/utils/slugs.js';
-    import { formatAdminDate, postAdminAction } from "$lib/utils/admin.js";
-    import { notifyError, notifySuccess, notifyWorking } from "$lib/utils/admin-notify.js";
+    import AdminDialog from "#lib/components/admin/AdminDialog.svelte";
+    import { toast } from "#lib/components/svelte-toast/index.js";
+    import UserAvatarNavbar from "#lib/components/layout/UserAvatarNavbar.svelte";
+    import { createProfilePath, createBookPath, createChapterPath } from '#lib/utils/slugs.js';
+    import { formatAdminDate, postAdminAction } from "#lib/utils/admin.js";
+    import { notifyError, notifySuccess, notifyWorking } from "#lib/utils/admin-notify.js";
     /** @type {{report: any, image_proxy?: string}} */
     let { report, closeReport, image_proxy = '' } = $props();
 

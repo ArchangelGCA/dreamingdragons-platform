@@ -1,6 +1,6 @@
 <script>
 	import { tooltip } from 'svelte-tooltip-gca';
-	import { tooltipConfig } from '$lib/utils/gcacommons.js';
+	import { tooltipConfig } from '#lib/utils/gcacommons.js';
 
 	/** @type {{icon: string, label: string, value: string | number, href: string, linkLabel: string, tip?: string, accent?: 'purple' | 'danger' | 'warning' | 'success'}} */
 	let { icon, label, value, href, linkLabel, tip = '', accent = 'purple' } = $props();

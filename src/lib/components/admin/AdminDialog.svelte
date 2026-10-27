@@ -1,8 +1,8 @@
 <script>
 	import { tooltip } from 'svelte-tooltip-gca';
-	import { tooltipConfig } from '$lib/utils/gcacommons.js';
+	import { tooltipConfig } from '#lib/utils/gcacommons.js';
 	import { fade, fly } from 'svelte/transition';
-	import { browser } from '$app/environment';
+	import { browser } from '$app/env';
 
 	/**
 	 * The admin console's one dialog. Svelte-controlled Bootstrap markup —

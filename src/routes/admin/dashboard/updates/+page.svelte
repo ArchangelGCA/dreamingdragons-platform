@@ -1,19 +1,19 @@
 <script>
 	import { tooltip } from 'svelte-tooltip-gca';
-	import { tooltipConfig } from '$lib/utils/gcacommons.js';
-	import { toast } from '$lib/components/svelte-toast';
+	import { tooltipConfig } from '#lib/utils/gcacommons.js';
+	import { toast } from '#lib/components/svelte-toast/index.js';
 	import autoAnimate from '@formkit/auto-animate';
-	import AdminPageHeader from '$lib/components/admin/AdminPageHeader.svelte';
-	import AdminDialog from '$lib/components/admin/AdminDialog.svelte';
-	import { formatAdminDate, postAdminAction } from '$lib/utils/admin.js';
-	import { notifyError, notifySuccess, notifyWorking } from '$lib/utils/admin-notify.js';
+	import AdminPageHeader from '#lib/components/admin/AdminPageHeader.svelte';
+	import AdminDialog from '#lib/components/admin/AdminDialog.svelte';
+	import { formatAdminDate, postAdminAction } from '#lib/utils/admin.js';
+	import { notifyError, notifySuccess, notifyWorking } from '#lib/utils/admin-notify.js';
 	import {
 		buildUpdateHtml,
 		DEFAULT_EXCLUDED_SECTIONS,
 		htmlToPlainText,
 		parseChangelogBlock,
 		UPDATE_CONTENT_MAX_LENGTH
-	} from '$lib/utils/changelog.js';
+	} from '#lib/utils/changelog.js';
 
 	/** @type {{data: any}} */
 	let { data } = $props();

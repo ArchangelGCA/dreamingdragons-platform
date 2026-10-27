@@ -1,6 +1,6 @@
-import { PUBLIC_DEFAULT_NAME, PUBLIC_DEFAULT_USERNAME } from '$env/static/public';
+import { PUBLIC_DEFAULT_NAME, PUBLIC_DEFAULT_USERNAME } from '$app/env/public';
 import {error as errorx, redirect} from "@sveltejs/kit";
-import { createProfilePath } from '$lib/utils/slugs.js';
+import { createProfilePath } from '#lib/utils/slugs.js';
 
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();

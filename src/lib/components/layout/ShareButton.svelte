@@ -1,8 +1,8 @@
 <script>
     import { tooltip } from "svelte-tooltip-gca";
-    import { tooltipConfig } from "$lib/utils/gcacommons.js";
-    import { toast } from "$lib/components/svelte-toast";
-    import { browser } from "$app/environment";
+    import { tooltipConfig } from "#lib/utils/gcacommons.js";
+    import { toast } from "#lib/components/svelte-toast/index.js";
+    import { browser } from "$app/env";
 
     /** @type {string} */
     let { url, title = "Check this out!", description = "", classes = "", compact = false } = $props();

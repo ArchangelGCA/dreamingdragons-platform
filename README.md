@@ -12,12 +12,13 @@ Make sure to join our Disord server for more information: [Discord](https://disc
 
 ## Changelog
 
-See [CHANGELOG.md](./CHANGELOG.md) for release history (Bun 1.4.2 migration,
-image-proxy retirement, dependency upgrades, security fixes).
+See [CHANGELOG.md](./CHANGELOG.md) for release history (SvelteKit 3 + Bun 1.4.4
+migration, image-proxy retirement, dependency upgrades, security fixes).
 
-## Developing (Bun 1.4.2)
+## Developing (Bun 1.4.4)
 
-This project uses [Bun](https://bun.sh) 1.4.2. Do not use npm/pnpm/yarn.
+This project uses [Bun](https://bun.sh) 1.4.4 and SvelteKit 3. Do not use
+npm/pnpm/yarn.
 
 ```bash
 bun install
@@ -37,10 +38,25 @@ bun --bun run build
 
 You can preview the production build with `bun --bun run preview`.
 
-> Hybrid runtime (deliberate): Bun 1.4.2 locally for installs/dev/builds,
+## Formatting
+
+Bun 1.4 ships a built-in formatter. Formatting is opt-in per file — the
+migration to SvelteKit 3 deliberately kept the diff reviewable instead of
+reformatting the whole tree:
+
+```bash
+bun fmt path/to/file.js   # format
+bun fmt --check           # check everything
+```
+
+`[fmt]` settings in `bunfig.toml` plus `.editorconfig` mirror the existing
+source conventions (4-space code, 2-space JSON/YAML, single quotes, 120
+columns).
+
+> Hybrid runtime (deliberate): Bun 1.4.4 locally for installs/dev/builds,
 > stable Node.js 24 for Vercel Functions (`adapter-vercel`
 > `runtime: 'nodejs24.x'`). `vercel.json` pins the install toolchain to
-> `bunx bun@1.4.2 install` (Vercel's default Bun 1.3.x can't parse the 1.4
+> `bunx bun@1.4.4 install` (Vercel's default Bun can't parse the current
 > lockfile) — no `bunVersion` flag, so Functions stay on Node.
 > See CHANGELOG for details.
 

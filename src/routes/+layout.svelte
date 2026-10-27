@@ -1,19 +1,19 @@
 <script>
-    import "$lib/css/style.css";
-    import {invalidateAll, invalidate, onNavigate} from "$app/navigation";
+    import "#lib/css/style.css";
+    import {refreshAll, invalidate, onNavigate} from "$app/navigation";
     import {onDestroy, onMount, tick} from "svelte";
-    import favicon from "$lib/images/favicon.webp";
-    import {SvelteToast} from "$lib/components/svelte-toast";
+    import favicon from "#lib/images/favicon.webp";
+    import {SvelteToast} from "#lib/components/svelte-toast/index.js";
     import autoAnimate from "@formkit/auto-animate";
-    import Notification from "$lib/components/layout/Notification.svelte";
+    import Notification from "#lib/components/layout/Notification.svelte";
     import {tooltip} from "svelte-tooltip-gca";
     import {page} from '$app/state';
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
+    import UserAvatarNavbar from "#lib/components/layout/UserAvatarNavbar.svelte";
     import {deserialize} from "$app/forms";
-    import Seo from "$lib/components/seo/Seo.svelte";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import {initCrossTabCommunication} from "$lib/utils/navigationOptimizations.js";
-    import {initTheme} from "$lib/utils/theme.js";
+    import Seo from "#lib/components/seo/Seo.svelte";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import {initCrossTabCommunication} from "#lib/utils/navigationOptimizations.js";
+    import {initTheme} from "#lib/utils/theme.js";
 
     /** @type {{data: any, children?: import('svelte').Snippet}} */
     let {data, children} = $props();
@@ -23,6 +23,9 @@
     // pattern (FAQ "How do I use the view transitions API?"). A no-op on
     // browsers without the API; timing + reduced-motion live in style.css.
     onNavigate((navigation) => {
+        // Shallow routing (goto(..., { shallow: true })) fires navigation hooks in
+        // SvelteKit 3, but no new page is rendered, so a view transition would be a no-op.
+        if (navigation.shallow) return;
         if (!document.startViewTransition) return;
         return new Promise((resolve) => {
             document.startViewTransition(async () => {

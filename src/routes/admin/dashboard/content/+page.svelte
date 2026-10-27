@@ -1,10 +1,10 @@
 <script>
-    import AdminContent from "$lib/components/admin/AdminContent.svelte";
-    import AdminPagination from "$lib/components/admin/AdminPagination.svelte";
-    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
-    import AdminEmpty from "$lib/components/admin/AdminEmpty.svelte";
+    import AdminContent from "#lib/components/admin/AdminContent.svelte";
+    import AdminPagination from "#lib/components/admin/AdminPagination.svelte";
+    import AdminPageHeader from "#lib/components/admin/AdminPageHeader.svelte";
+    import AdminEmpty from "#lib/components/admin/AdminEmpty.svelte";
     import autoAnimate from "@formkit/auto-animate";
-    import {invalidateAll, goto} from "$app/navigation";
+    import {refreshAll, goto} from "$app/navigation";
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -21,11 +21,11 @@
         const params = new URLSearchParams();
         if (searchInput.trim()) params.set('q', searchInput.trim());
         params.set('page', '1');
-        goto(`?${params.toString()}`, { keepFocus: true });
+        goto(`?${params.toString()}`, { reset: false });
     }
 
     async function refresh() {
-        await invalidateAll();
+        await refreshAll();
     }
 </script>
 

@@ -1,6 +1,6 @@
 <script>
     import { tooltip } from "svelte-tooltip-gca";
-    import { tooltipConfig } from "$lib/utils/gcacommons.js";
+    import { tooltipConfig } from "#lib/utils/gcacommons.js";
 
     /** @type {{chapterCount?: number, size?: 'sm' | 'md' | 'lg'}} */
     let { chapterCount = 0, size = 'md' } = $props();

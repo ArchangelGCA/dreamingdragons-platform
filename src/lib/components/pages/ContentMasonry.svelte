@@ -1,15 +1,15 @@
 <script>
     import {tooltip} from "svelte-tooltip-gca";
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-    import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
-    import PopularBadge from "$lib/components/pages/PopularBadge.svelte";
-    import PopularGlow from "$lib/components/pages/PopularGlow.svelte";
+    import UserAvatarNavbar from "#lib/components/layout/UserAvatarNavbar.svelte";
+    import ContentTypeBadge from "#lib/components/pages/ContentTypeBadge.svelte";
+    import PopularBadge from "#lib/components/pages/PopularBadge.svelte";
+    import PopularGlow from "#lib/components/pages/PopularGlow.svelte";
     import autoAnimate from "@formkit/auto-animate";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
     import {deserialize} from "$app/forms";
-    import {toast} from "$lib/components/svelte-toast";
-    import {createBookPath, createProfilePath} from "$lib/utils/slugs.js";
-    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import {createBookPath, createProfilePath} from "#lib/utils/slugs.js";
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     /** @type {{book: any, image_proxy: any, session: any, onBookUpdate?: function}} */
     let {book, image_proxy, session, onBookUpdate} = $props();

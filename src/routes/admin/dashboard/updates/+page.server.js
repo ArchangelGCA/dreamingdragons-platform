@@ -1,8 +1,8 @@
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SUPABASE_SECRET_KEY } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL } from '$app/env/public';
+import { SUPABASE_SECRET_KEY } from '$app/env/private';
 import { createClient } from '@supabase/supabase-js';
-import { isAdmin } from '$lib/utils/misc.js';
-import { sanitizeUpdateHtml, UPDATE_CONTENT_MAX_LENGTH } from '$lib/utils/changelog.js';
+import { isAdmin } from '#lib/utils/misc.js';
+import { sanitizeUpdateHtml, UPDATE_CONTENT_MAX_LENGTH } from '#lib/utils/changelog.js';
 
 /**
  * Admin console for the public /updates feed (Supabase `website_updates`).

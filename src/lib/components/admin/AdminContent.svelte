@@ -1,11 +1,11 @@
 <script>
     import autoAnimate from "@formkit/auto-animate";
-    import AdminDialog from "$lib/components/admin/AdminDialog.svelte";
-    import { toast } from "$lib/components/svelte-toast";
-    import { createProfilePath } from '$lib/utils/slugs.js';
-    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
-    import { formatAdminDate, postAdminAction } from '$lib/utils/admin.js';
-    import { notifyError, notifySuccess, notifyWorking } from "$lib/utils/admin-notify.js";
+    import AdminDialog from "#lib/components/admin/AdminDialog.svelte";
+    import { toast } from "#lib/components/svelte-toast/index.js";
+    import { createProfilePath } from '#lib/utils/slugs.js';
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
+    import { formatAdminDate, postAdminAction } from '#lib/utils/admin.js';
+    import { notifyError, notifySuccess, notifyWorking } from "#lib/utils/admin-notify.js";
     /** @type {{item: any, image_proxy: any}} */
     let { item, image_proxy, editContent, deleteContent } = $props();
 

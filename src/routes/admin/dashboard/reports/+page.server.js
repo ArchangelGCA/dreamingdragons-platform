@@ -1,5 +1,5 @@
 import {error as errorx} from "@sveltejs/kit";
-import {isAdmin} from "$lib/utils/misc.js";
+import {isAdmin} from "#lib/utils/misc.js";
 
 export const load = async ( { locals: { supabase, getSession } }) => {
     const {session} = await getSession();

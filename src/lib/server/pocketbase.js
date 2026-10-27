@@ -1,6 +1,6 @@
 import PocketBase from 'pocketbase';
-import { PUBLIC_POCKETBASE_URL } from '$env/static/public';
-import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$env/static/private';
+import { PUBLIC_POCKETBASE_URL } from '$app/env/public';
+import { PRIVATE_POCKETBASE_EMAIL, PRIVATE_POCKETBASE_PSW } from '$app/env/private';
 
 /**
  * System auth collection for admins on PocketBase >= 0.23.

@@ -1,8 +1,8 @@
 <script>
     import {tooltip} from "svelte-tooltip-gca";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import { createProfilePath } from '$lib/utils/slugs.js';
-    import { optimizeImageUrl, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import { createProfilePath } from '#lib/utils/slugs.js';
+    import { optimizeImageUrl, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     /** @type {{url?: string, username?: string, id?: string, size?: string, image_proxy?: any}} */
     let {

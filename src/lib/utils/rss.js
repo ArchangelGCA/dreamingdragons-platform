@@ -1,5 +1,5 @@
 import { createBookPath, createChapterPath } from './slugs.js';
-import {ORIGIN} from "$env/static/private";
+import {ORIGIN} from "$app/env/private";
 import { resolveImageUrl } from './images.js';
 
 

@@ -1,6 +1,6 @@
-import { createBookPath, createProfilePath } from '$lib/utils/slugs.js';
-import { ORIGIN } from '$env/static/private';
-import { resolveImageUrl, escapeHtml } from '$lib/utils/images.js';
+import { createBookPath, createProfilePath } from '#lib/utils/slugs.js';
+import { ORIGIN } from '$app/env/private';
+import { resolveImageUrl, escapeHtml } from '#lib/utils/images.js';
 
 const SITE = ORIGIN || 'https://tales.archangelgca.eu';
 

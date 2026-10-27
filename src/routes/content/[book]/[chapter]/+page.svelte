@@ -1,20 +1,20 @@
 <script>
     import {tooltip} from "svelte-tooltip-gca";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import {toast} from "$lib/components/svelte-toast";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import {toast} from "#lib/components/svelte-toast/index.js";
     import {deserialize} from "$app/forms";
     import autoAnimate from '@formkit/auto-animate';
-    import CommentsSection from "$lib/components/pages/CommentsSection.svelte";
-    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import ContentImage from "$lib/components/layout/ContentImage.svelte";
+    import CommentsSection from "#lib/components/pages/CommentsSection.svelte";
+    import UserAvatar from "#lib/components/layout/UserAvatar.svelte";
+    import ContentImage from "#lib/components/layout/ContentImage.svelte";
     import {onDestroy, onMount} from "svelte";
-    import {browser} from "$app/environment";
-    import {invalidateAll} from "$app/navigation";
-    import {mentionTooltip, removeMentionListener} from "$lib/utils/gcamentions.js";
-    import UserAvatarNavbar from "$lib/components/layout/UserAvatarNavbar.svelte";
-    import ShareButton from "$lib/components/layout/ShareButton.svelte";
-    import RSSButton from "$lib/components/layout/RSSButton.svelte";
-    import { createChapterPath, createBookPath, createProfilePath } from "$lib/utils/slugs.js";
+    import {browser} from "$app/env";
+    import {refreshAll} from "$app/navigation";
+    import {mentionTooltip, removeMentionListener} from "#lib/utils/gcamentions.js";
+    import UserAvatarNavbar from "#lib/components/layout/UserAvatarNavbar.svelte";
+    import ShareButton from "#lib/components/layout/ShareButton.svelte";
+    import RSSButton from "#lib/components/layout/RSSButton.svelte";
+    import { createChapterPath, createBookPath, createProfilePath } from "#lib/utils/slugs.js";
 
     /** @type {{data: any}} */
     let {data} = $props();
@@ -130,7 +130,7 @@
                             '--toastColor': 'var(--text-color)',
                         }
                     });
-                    await invalidateAll();
+                    await refreshAll();
                 } else {
                     toast.push('Chapter unliked 💔', {
                         theme: {
@@ -138,7 +138,7 @@
                             '--toastColor': 'var(--text-color)',
                         }
                     });
-                    await invalidateAll();
+                    await refreshAll();
                 }
             } else {
                 chapterContent.is_liked = !chapterContent.is_liked;
@@ -413,7 +413,7 @@
                     <div class="col-6 px-1" use:autoAnimate>
                         {#if chapterContent.previousChapter && previousChapterUrl}
                             <a href="{previousChapterUrl}"
-                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig, content: 'Previous Chapter'}} data-sveltekit-noscroll>
+                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig, content: 'Previous Chapter'}} data-sveltekit-reset="false">
                                 <i class="fas fa-chevron-left"></i>
                                 <span class="fs-6">Previous</span>
                             </a>
@@ -428,7 +428,7 @@
                     <div class="col-6 px-1" use:autoAnimate>
                         {#if chapterContent.nextChapter && nextChapterUrl}
                             <a href="{nextChapterUrl}"
-                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig, content: 'Next Chapter'}} data-sveltekit-noscroll>
+                               class="btn btn-chapters text-opacity-50 w-100 rounded-3" use:tooltip={{...tooltipConfig, content: 'Next Chapter'}} data-sveltekit-reset="false">
                                 <span class="fs-6">Next</span>
                                 <i class="fas fa-chevron-right"></i>
                             </a>
@@ -549,7 +549,7 @@
                     <div class="row row-horizontal flex-nowrap py-2">
                         {#each chapterContent.chapters as chapter, index (chapter.id)}
                             <div class="col-3 col-md-2 col-lg-1">
-                                <a href="{createChapterPath(chapterContent.book.title, chapter.book_id, chapter.title, chapter.id)}" data-sveltekit-noscroll
+                                <a href="{createChapterPath(chapterContent.book.title, chapter.book_id, chapter.title, chapter.id)}" data-sveltekit-reset="false"
                                    class="btn {chapter.id === chapterContent.id ? 'btn-chapters-active' : 'btn-chapters'} w-100">{index + 1}</a>
                             </div>
                         {/each}

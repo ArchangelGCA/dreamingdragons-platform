@@ -1,12 +1,12 @@
 <script>
     import { tooltip } from "svelte-tooltip-gca";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import {toast} from "$lib/components/svelte-toast";
-    import Comment from "$lib/components/pages/Comment.svelte";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import Comment from "#lib/components/pages/Comment.svelte";
     import {deserialize} from "$app/forms";
-    import UserAvatar from "$lib/components/layout/UserAvatar.svelte";
-    import {invalidateAll} from "$app/navigation";
-    import { createProfilePath } from '$lib/utils/slugs.js';
+    import UserAvatar from "#lib/components/layout/UserAvatar.svelte";
+    import {refreshAll} from "$app/navigation";
+    import { createProfilePath } from '#lib/utils/slugs.js';
     import { fly, slide } from 'svelte/transition';
     import { quintOut, cubicOut } from 'svelte/easing';
 
@@ -44,7 +44,7 @@
                     '--toastColor': 'var(--text-color)'
                 }
             });
-            await invalidateAll();
+            await refreshAll();
         }
     }
 
@@ -110,7 +110,7 @@
                         '--toastColor': 'var(--text-color)'
                     }
                 });
-                await invalidateAll();
+                await refreshAll();
                 replyContent = '';
                 isReplyOpen = false;
             } else {

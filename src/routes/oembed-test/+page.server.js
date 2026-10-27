@@ -1,4 +1,4 @@
-import {ORIGIN} from '$env/static/private';
+import {ORIGIN} from '$app/env/private';
 
 /** @type {import('./$types').PageServerLoad} */
 export async function load({url}) {

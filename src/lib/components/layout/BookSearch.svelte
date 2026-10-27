@@ -1,10 +1,10 @@
 <script>
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
     import { tooltip } from "svelte-tooltip-gca";
-    import { createBookPath, createProfilePath } from "$lib/utils/slugs.js";
+    import { createBookPath, createProfilePath } from "#lib/utils/slugs.js";
     import { goto } from '$app/navigation';
-    import ContentTypeBadge from "$lib/components/pages/ContentTypeBadge.svelte";
-    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import ContentTypeBadge from "#lib/components/pages/ContentTypeBadge.svelte";
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     /** @type {{owner_username: any, owner_id: any, title: any, book_id: any, book_cover_url: any, description: any, image_proxy: any, chapter_count?: number}} */
     let {

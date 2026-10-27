@@ -3,8 +3,8 @@ import {
     generateRSSFooter, 
     generateChapterRSSItem,
     escapeHTML
-} from '$lib/utils/rss.js';
-import { createBookPath } from '$lib/utils/slugs.js';
+} from '#lib/utils/rss.js';
+import { createBookPath } from '#lib/utils/slugs.js';
 
 export const prerender = false;
 

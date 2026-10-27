@@ -1,12 +1,12 @@
 <script>
     import {tooltip} from "svelte-tooltip-gca";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
-    import {toast} from "$lib/components/svelte-toast";
-    import {invalidateAll} from "$app/navigation";
-    import AdminStat from "$lib/components/admin/AdminStat.svelte";
-    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
-    import {postAdminAction} from "$lib/utils/admin.js";
-    import {notifyError, notifySuccess, notifyWorking} from "$lib/utils/admin-notify.js";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import {refreshAll} from "$app/navigation";
+    import AdminStat from "#lib/components/admin/AdminStat.svelte";
+    import AdminPageHeader from "#lib/components/admin/AdminPageHeader.svelte";
+    import {postAdminAction} from "#lib/utils/admin.js";
+    import {notifyError, notifySuccess, notifyWorking} from "#lib/utils/admin-notify.js";
 
     /** @type {{data: any}} */
     let { data } = $props();
@@ -31,7 +31,7 @@
             toast.pop(toastId);
             if (result.type === 'success' && result.data.status === 200) {
                 notifySuccess(result.data.body.message);
-                await invalidateAll();
+                await refreshAll();
             } else {
                 notifyError(result.data?.body?.message ?? 'Error during toggle action');
             }

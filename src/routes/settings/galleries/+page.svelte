@@ -1,14 +1,14 @@
 <script>
     import {onMount} from 'svelte';
-    import {invalidateAll} from '$app/navigation';
-    import {toast} from '$lib/components/svelte-toast/index.js';
+    import {refreshAll} from '$app/navigation';
+    import {toast} from '#lib/components/svelte-toast/index.js';
     import {deserialize} from '$app/forms';
     import autoAnimate from "@formkit/auto-animate";
     import {tooltip} from "svelte-tooltip-gca";
-    import {tooltipConfig} from "$lib/utils/gcacommons.js";
+    import {tooltipConfig} from "#lib/utils/gcacommons.js";
 
     import {fly, scale} from 'svelte/transition';
-    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '$lib/utils/imageopt.js';
+    import { optimizeImageUrl, imageSrcSet, IMAGE_WIDTHS } from '#lib/utils/imageopt.js';
 
     let {data} = $props();
 
@@ -18,7 +18,7 @@
     let image_proxy = $derived(data.image_proxy);
     let galleryParam = $derived(data.galleryParam);
 
-    // image_proxy deprecated: covers optimized via wsrv.nl (see $lib/utils/imageopt.js).
+    // image_proxy deprecated: covers optimized via wsrv.nl (see #lib/utils/imageopt.js).
     function getOptimizedImageUrl(url) {
         return optimizeImageUrl(url, IMAGE_WIDTHS.CARD, { fallback: '/favicon.webp' });
     }
@@ -112,7 +112,7 @@
     function updateLocalGalleryData(galleryId, updater) {
         const galleryIndex = galleries.findIndex(g => g.id === galleryId);
         if (galleryIndex !== -1) {
-            invalidateAll();
+            refreshAll();
         }
     }
 
@@ -147,7 +147,7 @@
                         '--toastColor': 'var(--text-color)'
                     }
                 });
-                await invalidateAll();
+                await refreshAll();
                 if (isNew) {
                     selectedGalleryId = result.data.body.id;
                 }
@@ -198,7 +198,7 @@
                     }
                 });
                 selectGallery(null);
-                await invalidateAll();
+                await refreshAll();
             } else {
                 toast.push(result.data?.message || 'Error deleting gallery', {
                     theme: {

@@ -1,7 +1,7 @@
 <script>
     import { tooltip } from "svelte-tooltip-gca";
-    import { tooltipConfig } from "$lib/utils/gcacommons.js";
-    import { toast } from "$lib/components/svelte-toast";    /** @type {string} */
+    import { tooltipConfig } from "#lib/utils/gcacommons.js";
+    import { toast } from "#lib/components/svelte-toast/index.js";    /** @type {string} */
     let { rssUrl, label = "RSS Feed", classes = "", size = "md", compact = false } = $props();
 
     function handleRSSClick() {

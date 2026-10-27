@@ -1,10 +1,10 @@
 <script>
-    import {toast} from "$lib/components/svelte-toast";
-    import AdminPageHeader from "$lib/components/admin/AdminPageHeader.svelte";
-    import AdminStat from "$lib/components/admin/AdminStat.svelte";
+    import {toast} from "#lib/components/svelte-toast/index.js";
+    import AdminPageHeader from "#lib/components/admin/AdminPageHeader.svelte";
+    import AdminStat from "#lib/components/admin/AdminStat.svelte";
     import autoAnimate from "@formkit/auto-animate";
-    import {isPlausibleEmail, postAdminAction} from "$lib/utils/admin.js";
-    import {notifyError, notifySuccess, notifyWorking} from "$lib/utils/admin-notify.js";
+    import {isPlausibleEmail, postAdminAction} from "#lib/utils/admin.js";
+    import {notifyError, notifySuccess, notifyWorking} from "#lib/utils/admin-notify.js";
 
     let {data} = $props();
     // Writable derived: local adds assign locally, server data re-evaluates on navigation.

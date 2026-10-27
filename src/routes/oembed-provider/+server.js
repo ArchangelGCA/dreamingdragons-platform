@@ -1,8 +1,7 @@
-import {json} from '@sveltejs/kit';
-import {ORIGIN} from '$env/static/private';
+import {ORIGIN} from '$app/env/private';
 
 export async function GET() {
-    return json({
+    return Response.json({
         version: '1.0',
         title: 'DreamingDragons',
         author_name: 'DreamingDragons',

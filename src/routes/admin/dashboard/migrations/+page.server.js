@@ -1,8 +1,8 @@
-import { PUBLIC_SUPABASE_URL, PUBLIC_POCKETBASE_URL_IMG_API } from '$env/static/public';
-import { SUPABASE_SECRET_KEY } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL, PUBLIC_POCKETBASE_URL_IMG_API } from '$app/env/public';
+import { SUPABASE_SECRET_KEY } from '$app/env/private';
 import {createClient} from "@supabase/supabase-js";
-import {isAdmin} from "$lib/utils/misc.js";
-import {buildFileUrl, createSuperuserClient} from "$lib/server/pocketbase.js";
+import {isAdmin} from "#lib/utils/misc.js";
+import {buildFileUrl, createSuperuserClient} from "#lib/server/pocketbase.js";
 import {
 	DIRECTIONS,
 	MIGRATION_TARGETS,
@@ -14,7 +14,7 @@ import {
 	migrateBatch,
 	parseSkipIds,
 	scanAll
-} from "$lib/server/pockethost-migration.js";
+} from "#lib/server/pockethost-migration.js";
 
 function createAdminSupabase() {
 	return createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {

@@ -1,5 +1,5 @@
 <script>
-    import { PUBLIC_LIKES_FOR_COSMETIC_BADGE } from '$env/static/public';
+    import { PUBLIC_LIKES_FOR_COSMETIC_BADGE } from '$app/env/public';
 
     /**
      * @type {{

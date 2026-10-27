@@ -1,6 +1,6 @@
 <script>
     import {onMount} from 'svelte';
-    import {browser} from "$app/environment";
+    import {browser} from "$app/env";
 
     /** @type {{username: any, timezone: any, country?: string}} */
     let { username, timezone, country = '' } = $props();

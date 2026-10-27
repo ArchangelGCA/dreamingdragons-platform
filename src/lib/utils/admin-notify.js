@@ -5,7 +5,7 @@
  * One vocabulary for the whole console:
  * working = dark + long, success = dragon teal, error = red.
  */
-import { toast } from '$lib/components/svelte-toast';
+import { toast } from '#lib/components/svelte-toast/index.js';
 
 /** Working toast; returns the id so callers can `toast.pop(id)` when done. */
 export function notifyWorking(message) {

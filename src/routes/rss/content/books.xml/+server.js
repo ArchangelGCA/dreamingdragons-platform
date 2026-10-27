@@ -3,7 +3,7 @@ import {
     generateBookRSSItem,
     FEEDS,
     SITE_URL
-} from '$lib/utils/rss.js';
+} from '#lib/utils/rss.js';
 
 export const prerender = false;
 

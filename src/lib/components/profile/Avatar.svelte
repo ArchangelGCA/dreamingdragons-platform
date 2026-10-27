@@ -1,8 +1,8 @@
 <script>
-    import {toast} from "$lib/components/svelte-toast";
+    import {toast} from "#lib/components/svelte-toast/index.js";
     import {deserialize} from "$app/forms";
-    import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH} from "$env/static/public";
-    import {optimizeImageUrl, IMAGE_WIDTHS} from '$lib/utils/imageopt.js';
+    import {PUBLIC_PROFILE_ICON_RESIZE_WIDTH} from "$app/env/public";
+    import {optimizeImageUrl, IMAGE_WIDTHS} from '#lib/utils/imageopt.js';
 
     /** @type {{size?: number, url: any}} */
     let {size = 10, url, upload} = $props();

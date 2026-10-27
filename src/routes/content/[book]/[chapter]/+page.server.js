@@ -1,6 +1,6 @@
 import {error as errorx, redirect} from '@sveltejs/kit';
-import {ORIGIN} from '$env/static/private';
-import { extractId, isValidUrlParam, getCanonicalUrl } from '$lib/utils/slugs.js';
+import {ORIGIN} from '$app/env/private';
+import { extractId, isValidUrlParam, getCanonicalUrl } from '#lib/utils/slugs.js';
 
 export const load = async ({ params, url, locals: { supabase, getSession, image_proxy } }) => {
     const { session } = await getSession();

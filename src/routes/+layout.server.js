@@ -1,12 +1,12 @@
-import {env as publicEnv} from "$env/dynamic/public";
-import {ORIGIN} from '$env/static/private';
+import {PUBLIC_IMAGE_PROXY_URL} from "$app/env/public";
+import {ORIGIN} from '$app/env/private';
 
 export const load = async ({locals: {getSession}, cookies, url}) => {
 
 
     return {
         session: await getSession(),
-        image_proxy: publicEnv.PUBLIC_IMAGE_PROXY_URL ?? undefined,
+        image_proxy: PUBLIC_IMAGE_PROXY_URL,
         cookies: cookies.getAll(),
         title: 'DreamingDragons - Platform',
         description: 'Discover amazing content on DreamingDragons!',

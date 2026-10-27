@@ -5,6 +5,63 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.19.0] - 2026-10-28
+
+### Added
+
+- **SvelteKit 3 environment declarations** — new `src/env.js` uses
+  `defineEnvVars` to declare all 22 variables the app reads (15 public, 7
+  private). Imports now come from `$app/env/public` / `$app/env/private`;
+  `PUBLIC_IMAGE_PROXY_URL` is declared without `static` and with
+  `schema: (value) => value || undefined`, so the decommissioned optimizer
+  staying unset still resolves to `undefined` instead of failing the build.
+- **Bun formatter** — `bun fmt` / `bun fmt --check` scripts (Bun 1.4 built-in
+  formatter), a `[fmt]` section in `bunfig.toml` (120 columns, single quotes,
+  semicolons) and a new `.editorconfig` (4-space code / 2-space JSON-YAML, so
+  editors and the formatter agree). No global reformat was run, so the
+  migration diff stays reviewable.
+
+### Changed
+
+- **SvelteKit 2.70 → 3.1** (plus `@sveltejs/adapter-vercel` 6.3 → 7.0):
+  - `svelte.config.js` is gone; Kit config (adapter, `compilerOptions`) now
+    lives in `vite.config.js` under `sveltekit({ ... })`.
+  - `$lib/*` imports became the `#lib/*` subpath alias declared in
+    `package.json#imports` (86 files). Directory imports spell out
+    `index.js` (`#lib/components/svelte-toast/index.js`) because Node's
+    `imports` map has no directory resolution.
+  - `$app/environment` → `$app/env`; `$env/static|dynamic/*` →
+    `$app/env/public|private`.
+  - `invalidateAll()` → `refreshAll()` (keeps `page.state`); `goto`'s
+    `keepFocus: true` → `reset: false`; `data-sveltekit-noscroll` →
+    `data-sveltekit-reset="false"`.
+  - Deprecated `json()` helpers replaced with `Response.json()` in the oEmbed
+    endpoint and provider.
+  - Runes mode is now enforced through `compilerOptions.runes` (same setup the
+    official SvelteKit 3 template ships). `vitePreprocess()` was dropped —
+    no component uses `lang="ts|scss|…"` — and `warningFilter` /
+    `preserveComments` moved into the Vite config.
+  - View transitions: `onNavigate` now skips shallow navigations, which fire
+    navigation hooks in v3 even though no new page is rendered.
+- **Bun 1.4.4** — `packageManager`, `engines.bun` and Vercel's
+  `installCommand` (`bunx bun@1.4.4 install`) all move to 1.4.4.
+- Dependency upgrades: `@supabase/supabase-js` 2.118, `jose` 6.2.13,
+  `resend` 6.35, `svelte` 5.57.3, `vite` 8.3.5,
+  `@sveltejs/vite-plugin-svelte` 7.3.1, `vite-plugin-devtools-json` 1.1.2,
+  `sharp` 0.35.5, `svelte-tooltip-gca` 1.1.0.
+- Docs: `README.md` and `AGENTS.md` describe the SvelteKit 3 layout
+  (`vite.config.js`, `#lib`, `$app/env/*`, Bun 1.4.4).
+
+### Fixed
+
+- **Production build failed at "Analysing routes"** with
+  `Export named 'parseCookie' not found in module …/cookie/dist/index.js`.
+  SvelteKit 3 needs `cookie@2` (`parseCookie`) while `@supabase/ssr` needs
+  `cookie@1` (`parse`/`serialize`); Bun's hoisted linker put v1 at the root
+  `node_modules`, so Kit's externalized `import 'cookie'` resolved to the
+  wrong major. `cookie@2.0.1` is now a direct dependency (documented in
+  `AGENTS.md`), keeping v2 at the root with v1 nested under `@supabase/ssr`.
+
 ## [0.18.1] - 2026-09-18
 
 ### Fixed

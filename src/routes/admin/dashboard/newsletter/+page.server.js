@@ -1,6 +1,6 @@
-import { PRIVATE_RESEND_API_KEY, PRIVATE_RESEND_AUDIENCE_ID, SUPABASE_SECRET_KEY } from '$env/static/private';
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import {isAdmin} from "$lib/utils/misc.js";
+import { PRIVATE_RESEND_API_KEY, PRIVATE_RESEND_AUDIENCE_ID, SUPABASE_SECRET_KEY } from '$app/env/private';
+import { PUBLIC_SUPABASE_URL } from '$app/env/public';
+import {isAdmin} from "#lib/utils/misc.js";
 import {Resend} from "resend";
 import {createClient} from "@supabase/supabase-js";
 
